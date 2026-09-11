@@ -44,3 +44,13 @@ target_link_libraries(echoy_ui PUBLIC echoy_core lvgl m)
 target_compile_options(echoy_ui PRIVATE -Wall -Wextra -Werror)
 add_executable(echoy_ui_runner ui_runner.c)
 target_link_libraries(echoy_ui_runner PRIVATE echoy_ui)
+
+# Explicit PC development adapter. Never linked into ESP-IDF firmware.
+add_executable(echoy_sim_runner platform_pc.c)
+target_link_libraries(echoy_sim_runner PRIVATE echoy_control echoy_ui echoy_audio)
+target_compile_options(echoy_sim_runner PRIVATE -Wall -Wextra -Werror -UNDEBUG)
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+add_test(NAME simulator_contract COMMAND "${Python3_EXECUTABLE}"
+    "${CMAKE_CURRENT_LIST_DIR}/../tools/echoy-sim/test_sim.py")
+
+set_tests_properties(simulator_contract PROPERTIES ENVIRONMENT "ECHOY_SIM_RUNNER=$<TARGET_FILE:echoy_sim_runner>")

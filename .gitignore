@@ -8,3 +8,6 @@ __pycache__/
 
 output/ui/**/*.ppm
 output/ui/**/*.hits.bin
+
+# Local simulator frames, PCM, browser profiles and validation artifacts.
+output/sim/

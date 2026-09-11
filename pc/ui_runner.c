@@ -4,15 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ui_fixtures.inc"
-static uint8_t pixels[480*480*3],drawbuf[480*480*3];
-static void flush(lv_display_t *d,const lv_area_t *a,uint8_t *p){
-    int width=a->x2-a->x1+1;
-    for(int y=a->y1;y<=a->y2;y++)for(int x=a->x1;x<=a->x2;x++){
-        size_t dst=(y*480+x)*3,src=((y-a->y1)*width+x-a->x1)*3;
-        pixels[dst]=p[src+2];pixels[dst+1]=p[src+1];pixels[dst+2]=p[src];
-    }
-    lv_display_flush_ready(d);
-}
+#include "ui_frame.h"
 static bool labels_fit(lv_obj_t *surface){
     for(uint32_t i=0;i<lv_obj_get_child_count(surface);i++){
         lv_obj_t *o=lv_obj_get_child(surface,i);if(lv_obj_has_flag(o,LV_OBJ_FLAG_HIDDEN)||!lv_obj_check_type(o,&lv_label_class))continue;
@@ -48,7 +40,7 @@ static echoy_snapshot_t snapshot(const ui_fixture_t *f){
 int main(int argc,char **argv){
     if(argc!=3&&argc!=4){fprintf(stderr,"usage: %s locale/case output.ppm\n",argv[0]);return 2;}
     const ui_fixture_t *f=NULL;for(size_t i=0;i<sizeof(fixtures)/sizeof(fixtures[0]);i++)if(!strcmp(fixtures[i].id,argv[1]))f=&fixtures[i];if(!f)return 2;
-    lv_init();lv_display_t *display=lv_display_create(480,480);lv_display_set_color_format(display,LV_COLOR_FORMAT_RGB888);lv_display_set_buffers(display,drawbuf,NULL,sizeof(drawbuf),LV_DISPLAY_RENDER_MODE_FULL);lv_display_set_flush_cb(display,flush);
+    lv_display_t *display=pc_display_init();
     lv_obj_t *screen=lv_screen_active();lv_obj_set_style_bg_color(screen,lv_color_hex(0x20231e),0);lv_obj_set_style_bg_opa(screen,255,0);
     lv_obj_t *surface=lv_obj_create(screen);lv_obj_set_pos(surface,0,0);lv_obj_set_size(surface,480,480);
     echoy_view_t *v=echoy_view_create(surface,NULL,NULL);echoy_view_motion(v,true);echoy_snapshot_t s=snapshot(f);echoy_view_update(v,&s,0);echoy_view_locale(v,!strncmp(f->id,"en/",3));echoy_view_route(v,f->route);lv_obj_update_layout(screen);if(!labels_fit(surface))return 4;lv_refr_now(display);
