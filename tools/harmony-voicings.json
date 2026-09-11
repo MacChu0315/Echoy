@@ -1,0 +1,19 @@
+{
+  "source": "reference/extracted/harmony.js",
+  "chords": [
+    {"name": "Dm", "notes": [50, 57, 65]},
+    {"name": "F", "notes": [53, 60, 69]},
+    {"name": "C", "notes": [48, 55, 64]},
+    {"name": "Gm", "notes": [55, 62, 70]},
+    {"name": "Bb", "notes": [46, 53, 62]},
+    {"name": "Am", "notes": [45, 52, 60]}
+  ],
+  "low": [45, 65],
+  "midMinInterval": 3,
+  "midMaxInterval": 12,
+  "midMax": 75,
+  "highMin": 60,
+  "highMinInterval": 3,
+  "highMaxSpan": 19,
+  "highMax": 81
+}
