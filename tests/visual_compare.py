@@ -3,7 +3,8 @@
 import argparse,json,subprocess
 from pathlib import Path
 import numpy as np
-from PIL import Image,ImageChops
+from PIL import Image
+from ui_image_checks import image_checks
 p=argparse.ArgumentParser();p.add_argument('--cases',default='tests/ui_cases.json');p.add_argument('--renderer',default='build-host/echoy_ui_runner');a=p.parse_args()
 root=Path(__file__).resolve().parents[1];out=root/'output/ui';out.mkdir(parents=True,exist_ok=True)
 cases=json.loads((root/a.cases).read_text())['cases'];captures={c['id']:c for c in json.loads((root/'tests/cases/ui-capture.json').read_text())['cases']};results=[]
@@ -29,8 +30,15 @@ for c in cases:
  # RGB565 color quantization allowance is measured separately, never a page mask.
  delta=np.abs(x-y);rgb565=np.array([7,3,7]);beyond=np.maximum(delta-rgb565,0)
  diff=Image.fromarray(np.minimum(delta*4,255).astype(np.uint8));diff.save(dest.with_name(dest.name+'-diff').with_suffix('.png'))
- results.append({'id':key,'mae':float(delta.mean()),'rgb565AdjustedMae':float(beyond.mean()),'fractionOver24':float((delta.max(axis=2)>24).mean()),'max':int(delta.max()),'masks':[],'verifiedControlBoundaries':boundaries})
+ regional=image_checks(x,y,c,capture)
+ results.append({'accepted':regional['accepted'],'regions':regional['regions'],'id':key,'mae':float(delta.mean()),'rgb565AdjustedMae':float(beyond.mean()),'fractionOver24':float((delta.max(axis=2)>24).mean()),'max':int(delta.max()),'masks':[],'verifiedControlBoundaries':boundaries})
 (out/'metrics.json').write_text(json.dumps(results,indent=2)+'\n')
 print(json.dumps({'cases':len(results),'meanMAE':sum(r['mae'] for r in results)/len(results),'worstMAE':max(r['mae'] for r in results),'masks':[]},indent=2))
 # A visible mismatch is a failure; baseline never rewritten by this tool.
-raise SystemExit(any(r['mae']>8 or r['fractionOver24']>.09 for r in results))
+failed=[{'id':r['id'],'checks':[c for c in r['regions'] if not c['accepted']]} for r in results if not r['accepted']]
+if failed:print(json.dumps(failed,indent=2))
+from test_ui_visual_guards import run
+for mutation in ['instrument','role','move','opacity']:run(mutation)
+from test_ui_visual_details import checks
+details=checks();print(json.dumps({'visualDetails':details},indent=2))
+raise SystemExit(bool(failed) or not all(details.values()))

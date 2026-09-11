@@ -1,0 +1,20 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: zh-CN/perform-pulse: detaching screen changed muted Canvas opacity
+
+'1' !== '0.45'
+
+    at captureAll (file:///home/zhuzhengming/esp/ts/Mosaico/Echoy/tools/capture_reference.mjs:209:14)
+    at async main (file:///home/zhuzhengming/esp/ts/Mosaico/Echoy/tools/capture_reference.mjs:247:21)
+    at async file:///home/zhuzhengming/esp/ts/Mosaico/Echoy/tools/capture_reference.mjs:265:1 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '1',
+  expected: '0.45',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.11.1

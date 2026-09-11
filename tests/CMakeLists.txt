@@ -57,3 +57,7 @@ target_link_libraries(test_ui_view PRIVATE echoy_ui)
 target_compile_options(test_ui_view PRIVATE -Wall -Wextra -Werror -UNDEBUG)
 add_test(NAME ui_view COMMAND test_ui_view)
 add_test(NAME ui_fonts COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_LIST_DIR}/../tools/generate_ui_fonts.py" --check)
+add_test(NAME ui_visual COMMAND "${Python3_EXECUTABLE}"
+    "${CMAKE_CURRENT_LIST_DIR}/visual_compare.py"
+    --cases "${CMAKE_CURRENT_LIST_DIR}/ui_cases.json"
+    --renderer $<TARGET_FILE:echoy_ui_runner>)

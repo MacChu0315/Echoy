@@ -105,3 +105,97 @@ capture metadata. Palette-context assertions now accompany each capture.
    required for deliberately re-pinning the corpus, not ordinary builds/checks.
 
 No sibling repository changed; no remote write, flash, deployment or subagent.
+
+## Fix round 1/5 — review corrections (base `5417e5d`)
+
+Status: DONE. All seven requested fixes are implemented and verified. The
+hardware/integration/Recovery constraints above remain; this section supersedes
+the original software validation metrics.
+
+### Root causes and changes
+
+1. **Paused graphics:** the reference also inherited `.channel-muted` from the
+   removed desktop wrapper. The new regression failed with Canvas opacity `1`
+   instead of `0.45`, independently of the previous accent check. The harness
+   now preserves the muted class and computed Canvas opacity before detaching,
+   checks both contexts afterward, and regenerated all 74 captures. Original
+   HTML/hash unchanged. Native paused/waiting instruments and every score dot
+   use opacity 115/255; playing restores 255. A second real-render RED caught
+   the fact that ordinary LVGL `opa` does not attenuate this custom drawing:
+   `opa_layered` is required to composite the complete plotted image once.
+2. **Capture lifetime:** route, blocked state, loading mode, modal visibility
+   and target-device changes invalidate the previous interaction domain.
+   An active expression gesture emits exactly one finish; volume capture ends
+   without another volume event. Subsequent move/up/cancel cannot reach the
+   hidden control. Regression paths cover activity→boot/status/modal/role and
+   volume→boot/status/modal-close/role transitions.
+3. **Visual acceptance:** full-image metrics remain, with no exclusion masks.
+   Added 122 independent critical-region error/coverage/ink-energy checks and
+   962 pixel-measured component/score bounds. Region MAE <=12, foreground
+   coverage within 2px >=65%, ink-energy ratio 0.50–1.65; filled boundaries and
+   all visible score-dot bounds must be within 2px. The modal's visible top
+   instrument portion is checked; opaque dialog pixels are never treated as
+   visible underlying instrumentation. Uniform one-level scrim quantization is
+   accounted for by measuring structural foreground against each image's own
+   local background; absolute pixel errors still include every pixel.
+4. **Waiting:** transport icon and text now use the source `#8b622f`.
+5. **Volume:** measured numeric width, 6px gap and percent width form one
+   centered group; the percent is no longer approximately 18px too far right.
+6. **Selected role:** the accent follows the entire rounded lower edge,
+   replacing the isolated 67px center line.
+7. **Bottom navigation:** separate icon/text labels use the authored 9px gap;
+   their vertical positions moved down to match the browser's painted bounds.
+
+### Regression evidence
+
+- `test_ui_view opacity` failed on the original full-bright property; the
+  layered-opacity variant independently failed before the compositing fix.
+- `test_ui_view capture` failed because the route transition did not emit the
+  one required activity-finish event. Both tests now pass, alongside the
+  original snapshot/locale/modal/object-reuse checks.
+- Four intentionally broken images (deleted 342×218 plot, deleted all role
+  cards, play button moved 8px with unchanged touch metadata, wrong full-bright
+  plot) were each accepted by the old whole-frame check, producing four saved
+  RED failures. All are rejected by the new image-region/structure/bounds gates.
+- Targeted tests against the saved `5417e5d` actual PNGs fail all five checks:
+  waiting color, percent position, selected lower corner thickness, role-nav
+  vertical bounds and play-nav vertical bounds. New actual PNGs pass all five.
+- These guards and detail checks are invoked by the new `ui_visual` CTest,
+  which first renders fresh images. The earlier three UI CTests remain intact.
+
+### Final verification
+
+- Host configure/build: PASS.
+- `ctest --test-dir build-host -R ui --output-on-failure`: **4/4 PASS**
+  (the original 3 plus the new visual-regression test).
+- `ctest --test-dir build-host --output-on-failure`: **16/16 PASS**, 19.02s.
+- Standalone `python3 tests/visual_compare.py --cases tests/ui_cases.json
+  --renderer build-host/echoy_ui_runner`: **74/74 PASS**.
+- **1,084 regional/painted-boundary checks PASS**, maximum painted-boundary
+  error **1px**; the existing **232 actual touch rectangles** still pass.
+- Regional foreground coverage minimum **98.3093%**; observed ink-energy ratio
+  range **0.91947–1.09159**. Wrong full brightness is not hidden by a global MAE.
+- Mean whole-image MAE **1.845843/255**; worst **3.876412/255**. RGB565-adjusted
+  mean **1.583417/255**; maximum >24-channel-error pixel fraction **3.964844%**.
+- **No comparison masks.** All actual images and amplified diffs were replaced
+  with current outputs; both complete contact sheets were regenerated. A single
+  affected-screen inspection batch (`output/ui/round1-affected.png`) compares
+  paused/playing Pulse, waiting Voice, English Harmony, selected Pulse/Harmony
+  role pages, and Chinese/English volume against their corrected references.
+  Confirmed the fade, color, centered percent, rounded selection edge and
+  corrected button text baseline; no extra polishing iteration was used.
+- Chrome `--generate` and `--check`: **74/74 PASS** for each.
+- Font `--check`: **231 glyphs**, regular/bold and generated output PASS.
+- Added `generate_ui_cases.py --check`: **74 frozen input projections PASS**.
+- Oracle self-test: **48,600 music cases / 216,510 events**, **6 trajectories /
+  21 checkpoints**, **74 UI cases**, HTML SHA-256 unchanged.
+- Final `idf.py build`: PASS; **3,154,720 bytes (`0x302320`)**. No compiler
+  warning; the expected reserved-factory size WARNING remains (overflow
+  `0x142320`), while `ota_0` is large enough. No partition or flashing change.
+- `git diff --check`: PASS.
+
+Logs, including each saved RED, are in `output/ui/validation/round1/`.
+Lower-priority curve antialiasing and speaker-line fidelity were not expanded
+in this round. Physical frame rate/latency, layered-draw memory cost and
+concurrent audio/UI load still require Task 10; control-owner wiring remains
+Task 8. No sibling repository changes, remote write or subagent delegation.

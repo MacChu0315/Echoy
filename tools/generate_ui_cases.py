@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Frozen UI input adapter; no pixels, expected labels or layout in renderer fixtures."""
-import json
+import json,sys
 from pathlib import Path
 root=Path(__file__).resolve().parents[1]
 cases=json.loads((root/'tests/cases/ui-cases.json').read_text())['cases'];caps=json.loads((root/'tests/cases/ui-capture.json').read_text())['cases']
@@ -16,4 +16,7 @@ for c,cap in zip(cases,caps):
   es.append('{'+','.join(fields)+'}')
  vals=[json.dumps(c['locale']+'/'+c['id']),json.dumps(c.get('feedbackBranch','')),json.dumps(c['state']),str(roles.index(c['role'])),str(c['phrase']),str(1 if c['route']=='role' else 0),str(c.get('battery',86)),str(c['activity']),str(c.get('committedActivity',c['activity'])),str(c.get('volume',.7))]
  lines.append('{'+','.join(vals)+', {.count=%d,.events={'%len(es)+','.join(es)+'}}},')
-lines+=['};'];(root/'pc/ui_fixtures.inc').write_text('\n'.join(lines)+'\n')
+lines+=['};'];data='\n'.join(lines)+'\n';path=root/'pc/ui_fixtures.inc'
+if '--check' in sys.argv:assert path.read_text()==data,'UI case projection is stale'
+else:path.write_text(data)
+print('UI case projection: 74 frozen inputs verified')

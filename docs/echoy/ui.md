@@ -31,7 +31,9 @@ The control owner retains responsibility for fault recovery and transport intent
 
 Relative expression dragging uses `start + (start_y - current_y) / 180`.
 The direct scale uses `(338 - current_y) / 150`. Both clamp to `[0,1]` and
-end on release/cancel. Volume uses its independent horizontal track. The modal
+end on release/cancel. A change of route, blocked state, loading mode or modal
+visibility cancels an existing capture before the new controls can respond.
+An activity gesture emits one finish; a volume capture simply ends. Volume uses its independent horizontal track. The modal
 has its own hit priority; Enter cannot trigger the obscured transport, arrows
 change volume, and Escape closes it. Loading preserves the requested route.
 
@@ -75,8 +77,21 @@ grids are ignored by Git. The comparator checks every unobscured reference
 pixels at boundaries. It also measures MAE before/after the per-channel RGB565
 quantization allowance, the fraction of pixels with channel error over 24,
 and verifies that every rendered label fits its allocated height. No mask is
-used. Aggregate pixel thresholds are MAE <= 8 and outlier fraction <= 9%; these
-are not a claim that every glyph outline matches within two pixels.
+used. Aggregate pixel thresholds are MAE <= 8 and outlier fraction <= 9%. Independent
+critical-region gates check MAE <= 12, foreground coverage within 2 px >= 65%,
+and ink energy ratio 0.50–1.65. Filled component boundaries and every visible
+score dot are measured from the painted pixels with a <=2 px requirement;
+correct hit metadata cannot substitute for correct rendering. The visible
+upper part of the instrument is checked when the volume dialog occludes it.
+Whole-image errors always include all pixels. Structural foreground masks are
+measurements, not comparison exclusion masks.
+
+`test_ui_visual_guards.py` deliberately erases the instrument, erases all role
+cards, shifts the play button by 8 px and restores incorrect full brightness.
+Every mutation must fail. `test_ui_visual_details.py` checks waiting-text color,
+volume percent placement, selected-card corner thickness and nav text vertical
+bounds. These tests run inside the `ui_visual` CTest. No claim is made that
+every glyph outline matches within two pixels.
 
 The screenshots, differences, contact sheets, metrics and validation logs are
 under `output/ui/`. The reference and the renderer are always separate inputs.
@@ -87,7 +102,11 @@ Task 6 fixed a reference-capture defect: detaching `.screen` from `.unit` lost
 its inherited `--accent`. The harness now preserves the computed value on the
 screen before detaching it, and checks the value before/after. The accepted
 HTML bytes remain unchanged. All 74 reference images were regenerated and
-checked with the pinned Chrome version.
+checked with the pinned Chrome version. Fix round 1 also preserves the inherited
+`channel-muted` class and the computed Canvas opacity, verifying both before and
+after detach. Paused/waiting instruments and all 16 score dots use `.45` opacity;
+playing restores full opacity. The native custom drawing uses LVGL layered
+opacity so the actual pixels, not just a widget property, receive this fade.
 
 ## Hardware limits
 
@@ -95,7 +114,7 @@ No hardware frame-rate, touch-to-feedback latency, simultaneous audio/UI load,
 or font readability measurement has been made. Those are Task 10 checks.
 The 34 ms timer is a target cadence, not a measured 30 fps claim.
 
-The Task 6 image is 3,154,208 bytes (`0x302120`). It fits `ota_0` (`0xdf0000`)
+The Task 6 image is 3,154,720 bytes (`0x302320`). It fits `ota_0` (`0xdf0000`)
 and exceeds the reserved Recovery `factory` partition (`0x1c0000`), producing
 one IDF size warning. Do not enlarge or overwrite factory to hide this warning.
 Use the approved Recovery-to-application update path; the generic `idf.py flash`

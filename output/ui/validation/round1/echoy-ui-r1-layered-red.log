@@ -1,0 +1,1 @@
+test_ui_view: /home/zhuzhengming/esp/ts/Mosaico/Echoy/tests/test_ui_view.c:36: opacity_cases: Assertion `lv_obj_get_style_opa_layered(plot,0)==115' failed.

@@ -150,9 +150,11 @@ const plan=app.plan().find(entry=>entry.id==='A'),motif=JSON.parse(JSON.stringif
 const feedbackElement=screen.querySelector('[data-feedback]');
 const result={id:item.locale+'/'+item.id,locale:item.locale,state:item.state,route:screen.querySelector('.product-page')?.dataset.route??null,screen:{width:round(screenRect.width),height:round(screenRect.height),text:screen.innerText.replace(/[ \\t]+/g,' ').replace(/\\n{2,}/g,'\\n').trim()},feedback:{branch:item.feedbackBranch??null,text:feedbackElement?.textContent.trim()??null},actions,styles,motif,canvas:{width:canvas?.width??0,height:canvas?.height??0,pixelHash,observation:canvas?'CanvasRenderingContext2D.arc calls at score y=210':null,renderedEventSteps}};
 const beforeAccent=getComputedStyle(screen).getPropertyValue('--accent').trim();
+const beforeMuted=!!screen.closest('.channel-muted'),beforeCanvasOpacity=canvas?getComputedStyle(canvas).opacity:null;
 // Preserve the live product's inherited palette when removing its desktop shell.
 screen.style.setProperty('--accent',beforeAccent);
-document.body.replaceChildren(screen);result.paintContext={beforeAccent,afterAccent:getComputedStyle(screen).getPropertyValue('--accent').trim()};screen.style.position='absolute';screen.style.inset='0';screen.style.margin='0';window.__ECHOY_CAPTURE__=result;return result;})();
+screen.classList.toggle('channel-muted',beforeMuted);if(canvas)canvas.style.opacity=beforeCanvasOpacity;
+document.body.replaceChildren(screen);result.paintContext={beforeAccent,afterAccent:getComputedStyle(screen).getPropertyValue('--accent').trim(),beforeMuted,afterMuted:!!screen.closest('.channel-muted'),beforeCanvasOpacity,afterCanvasOpacity:canvas?getComputedStyle(canvas).opacity:null};screen.style.position='absolute';screen.style.inset='0';screen.style.margin='0';window.__ECHOY_CAPTURE__=result;return result;})();
 </script>`;
   return html.replace('</head>', `${head}</head>`).replace('</body>', `${tail}</body>`);
 }
@@ -205,6 +207,8 @@ async function captureAll(uiCases, writeImages) {
       if (evaluated.exceptionDetails) throw new Error(`capture ${item.locale}/${item.id}: ${evaluated.exceptionDetails.text}`);
       const capture = evaluated.result.value;
       assert(capture, `capture ${item.locale}/${item.id} returned no metadata`);
+      assert.equal(capture.paintContext.afterCanvasOpacity,capture.paintContext.beforeCanvasOpacity,`${item.locale}/${item.id}: detaching screen changed muted Canvas opacity`);
+      assert.equal(capture.paintContext.afterMuted,capture.paintContext.beforeMuted,`${item.locale}/${item.id}: detaching screen lost channel-muted context`);
       assert(capture.paintContext.beforeAccent, 'product accent was not inherited before detach');
       assert.equal(capture.paintContext.afterAccent, capture.paintContext.beforeAccent, `${item.locale}/${item.id}: detaching screen lost --accent and makes product controls transparent`);
       const screenshot = await cdp.send('Page.captureScreenshot', {

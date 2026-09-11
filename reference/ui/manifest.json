@@ -10,34 +10,34 @@
     {
       "id": "zh-CN/perform-pulse",
       "path": "reference/ui/zh-CN/perform-pulse.png",
-      "size": 31538,
+      "size": 30259,
       "width": 480,
       "height": 480,
-      "sha256": "35a91b9abb4473984647933f19b26fc7416e49141c4ef9e0c589a53d7b85e855"
+      "sha256": "c5c10ade0d7c866d84ae20a9c2522e0e07310c8334afdefed091165cb0ad98db"
     },
     {
       "id": "zh-CN/perform-voice",
       "path": "reference/ui/zh-CN/perform-voice.png",
-      "size": 37518,
+      "size": 35394,
       "width": 480,
       "height": 480,
-      "sha256": "d562d9314b6f533abef6cb843fbd1718a54b945fff9bad9d5232a04707e40267"
+      "sha256": "a23be38c41652d1c40b6225485879148b7041b144f31d9dfebf41414499db6d3"
     },
     {
       "id": "zh-CN/perform-dust",
       "path": "reference/ui/zh-CN/perform-dust.png",
-      "size": 27379,
+      "size": 26575,
       "width": 480,
       "height": 480,
-      "sha256": "c6dd217646f6fdcf5f48a49f7c09b09b09f6b3ec656c0dd56706085262aeed1c"
+      "sha256": "d4f207d3298641427aa21d06617a517d106b87831b0c9a15e82a4644f30ef2bb"
     },
     {
       "id": "zh-CN/perform-harmony",
       "path": "reference/ui/zh-CN/perform-harmony.png",
-      "size": 26811,
+      "size": 26271,
       "width": 480,
       "height": 480,
-      "sha256": "696642f6077e39798f10f2c7f47229867c86fe4a410d9b2401187538dca5cb89"
+      "sha256": "64495c2132bd231c7f420479d5ed7c8dbb9188122f6e7f1d4d33a2d0e33a55cd"
     },
     {
       "id": "zh-CN/perform-playing",
@@ -50,34 +50,34 @@
     {
       "id": "zh-CN/perform-waiting",
       "path": "reference/ui/zh-CN/perform-waiting.png",
-      "size": 37348,
+      "size": 35218,
       "width": 480,
       "height": 480,
-      "sha256": "7399d4ecc6538db8d1817aecd0acd51f088453675ebb5efae907aa9d3da0ed62"
+      "sha256": "6e8f93fe98acd48faaefdbbd3deb3e4c1b622d75d0454499b425b83a73a61d1d"
     },
     {
       "id": "zh-CN/perform-pending-activity",
       "path": "reference/ui/zh-CN/perform-pending-activity.png",
-      "size": 27264,
+      "size": 26447,
       "width": 480,
       "height": 480,
-      "sha256": "07a9e5f0c0b55157849200fe2a464238ff734bc285ea877286f05a439076fdf4"
+      "sha256": "6ef033aff92d72b455104ed2bf3c8515be65a8e8416da24d9fd785b50c6e82cc"
     },
     {
       "id": "zh-CN/feedback-motif-recovery",
       "path": "reference/ui/zh-CN/feedback-motif-recovery.png",
-      "size": 31611,
+      "size": 30341,
       "width": 480,
       "height": 480,
-      "sha256": "3e6312c48679da5c638a283ab2c9bf2cd3ec77a6a9f66316ab1f3b9534754281"
+      "sha256": "e65d8241661fe212405c1b6d5bceeb768be0a27ea27e333d8290b38e51eac1c5"
     },
     {
       "id": "zh-CN/feedback-play-preparing",
       "path": "reference/ui/zh-CN/feedback-play-preparing.png",
-      "size": 31773,
+      "size": 30503,
       "width": 480,
       "height": 480,
-      "sha256": "e476f4d34e42b267689b2b44346dbe10fd021ed431a6fe550a3f2616a5ae9432"
+      "sha256": "804d0ea8391fc0ca7a1d64ebeaa29467f53ee8eac50c97adc5b17df1263d3427"
     },
     {
       "id": "zh-CN/feedback-sync-failed",
@@ -106,18 +106,18 @@
     {
       "id": "zh-CN/feedback-pending-role",
       "path": "reference/ui/zh-CN/feedback-pending-role.png",
-      "size": 31453,
+      "size": 30167,
       "width": 480,
       "height": 480,
-      "sha256": "d223dc98b9e2862cc3b9a2dfcc6bbc6a5de73403d7f089d904eecb79aedcdff5"
+      "sha256": "35b5bb8a81915514492008296cda38e2e39bdc162875e8243d824ce1060b6f69"
     },
     {
       "id": "zh-CN/feedback-pending-phrase",
       "path": "reference/ui/zh-CN/feedback-pending-phrase.png",
-      "size": 37227,
+      "size": 35108,
       "width": 480,
       "height": 480,
-      "sha256": "84b62abdbd7b57651e15bd124c3460ad9e29330d064dc1f28aa1ef3bfae6748e"
+      "sha256": "756b35daa74977237bf77177f89782a0b5731dac767ca6958994c0cd940a30b6"
     },
     {
       "id": "zh-CN/feedback-moving",
@@ -194,18 +194,18 @@
     {
       "id": "zh-CN/feedback-paused-source",
       "path": "reference/ui/zh-CN/feedback-paused-source.png",
-      "size": 37385,
+      "size": 35383,
       "width": 480,
       "height": 480,
-      "sha256": "93ee0df23de99432660fb57251e2e754d9f0075c08262df2734e393c6d1f4327"
+      "sha256": "76e172cb7ce044fcdce2f21728c0570cb6df5b39bc497594a82da228304a6916"
     },
     {
       "id": "zh-CN/feedback-paused-shared",
       "path": "reference/ui/zh-CN/feedback-paused-shared.png",
-      "size": 31540,
+      "size": 30266,
       "width": 480,
       "height": 480,
-      "sha256": "2b886cbc39a41315672d1cd7959246443e3fd6774cd8b26bf76440969e213036"
+      "sha256": "a66cef0c86bc54f590dfd6dbe92ec0fd0cd43a8167cc587d8b1a258701597dd5"
     },
     {
       "id": "zh-CN/role-pulse",
@@ -242,10 +242,10 @@
     {
       "id": "zh-CN/volume",
       "path": "reference/ui/zh-CN/volume.png",
-      "size": 24708,
+      "size": 24503,
       "width": 480,
       "height": 480,
-      "sha256": "51defe16035aa8dc82375137e340084059b048715824414f264da5abb3eaebbc"
+      "sha256": "feba8a4fb349fd2d47e318b1e05f835e20ca95b6e7aafea2dd5216ea197e416d"
     },
     {
       "id": "zh-CN/boot",
@@ -298,42 +298,42 @@
     {
       "id": "zh-CN/low-battery",
       "path": "reference/ui/zh-CN/low-battery.png",
-      "size": 31721,
+      "size": 30448,
       "width": 480,
       "height": 480,
-      "sha256": "fb737e0f507b2216ca6a11b3c5917bae19058aab9f0d25aad32af12a98a8457a"
+      "sha256": "4466a282527f02dcdc6880e2210e813a40c64009da6cd9bd6468252556a04057"
     },
     {
       "id": "en/perform-pulse",
       "path": "reference/ui/en/perform-pulse.png",
-      "size": 31167,
+      "size": 29807,
       "width": 480,
       "height": 480,
-      "sha256": "5268959cf4683667601a2c3899cc43ddae608901a1ab90b4cca597c9e09ba048"
+      "sha256": "9c91b60bd62752b51d7a608717a4e67e1c16155cc3a98bdc019e446efbf82920"
     },
     {
       "id": "en/perform-voice",
       "path": "reference/ui/en/perform-voice.png",
-      "size": 38243,
+      "size": 36101,
       "width": 480,
       "height": 480,
-      "sha256": "6c7a6d8b397ab3de773f7dd4a738997ad28ffb94a9f1e8b79c510a9ba1152f03"
+      "sha256": "6072c1aa9e6a46e6fba3147e5e0cb07df60ff9f9ec137e5f2f3679e8d66aed3c"
     },
     {
       "id": "en/perform-dust",
       "path": "reference/ui/en/perform-dust.png",
-      "size": 26054,
+      "size": 25251,
       "width": 480,
       "height": 480,
-      "sha256": "17bb890091b94794be066e0d20d7bbe4cc5772d0eded4f0d5526d1a614f414fb"
+      "sha256": "a0ccf2136dd47551fb0e5a4ad971962ff3be93a23b1692ce1fb5e2439d7b1742"
     },
     {
       "id": "en/perform-harmony",
       "path": "reference/ui/en/perform-harmony.png",
-      "size": 28304,
+      "size": 27741,
       "width": 480,
       "height": 480,
-      "sha256": "393806dc1a98686bbe0014c6d5889b3718d00ddecde06da0b089563e1b42002e"
+      "sha256": "6329f475fe01c2625ad79b8d28ab11b53df489eade1e9f34927b4b9a474a207c"
     },
     {
       "id": "en/perform-playing",
@@ -346,34 +346,34 @@
     {
       "id": "en/perform-waiting",
       "path": "reference/ui/en/perform-waiting.png",
-      "size": 38615,
+      "size": 36481,
       "width": 480,
       "height": 480,
-      "sha256": "1deaa715b221d6e993a67560506aa671c371b3e9beb327096526aa192c15d8f1"
+      "sha256": "65aa669431b4c08bf5ea43e695aac7ec24865e78ad7f89f29e367ddabdcb2395"
     },
     {
       "id": "en/perform-pending-activity",
       "path": "reference/ui/en/perform-pending-activity.png",
-      "size": 25638,
+      "size": 24819,
       "width": 480,
       "height": 480,
-      "sha256": "48bf0026b7925fff7e86efaad337f9517e215ccd990d7727ca2f745a40996358"
+      "sha256": "88d5c95f1addf05060ddf1c9f128718f805e211890baf2964f1e5f81f0116f95"
     },
     {
       "id": "en/feedback-motif-recovery",
       "path": "reference/ui/en/feedback-motif-recovery.png",
-      "size": 31706,
+      "size": 30400,
       "width": 480,
       "height": 480,
-      "sha256": "3af2fbcfe248bd9b595895e2d751d47c6b27840cc701871c3c9a8b9eebf785d8"
+      "sha256": "7e5887b963e4fd9f8baf5401836f440a143fe19535adc7c836b235fd222d59bb"
     },
     {
       "id": "en/feedback-play-preparing",
       "path": "reference/ui/en/feedback-play-preparing.png",
-      "size": 31842,
+      "size": 30489,
       "width": 480,
       "height": 480,
-      "sha256": "52b3477961341b131ee69709c2a248a0e25667a52a462667d988681db76fb355"
+      "sha256": "ace4d9ddd6242b317045b84b8c45548618e29e7e2ed0cbd9057a8f6bd912a2b2"
     },
     {
       "id": "en/feedback-sync-failed",
@@ -402,18 +402,18 @@
     {
       "id": "en/feedback-pending-role",
       "path": "reference/ui/en/feedback-pending-role.png",
-      "size": 31719,
+      "size": 30357,
       "width": 480,
       "height": 480,
-      "sha256": "6e124b3a21cf274bf697dbf0e458e23a9e8610a98afbe2b7598ef37d742d4f0b"
+      "sha256": "2527f771164f8ecbca50ad764976a9846208a4f95e7bb1c42265ad9bd3c20468"
     },
     {
       "id": "en/feedback-pending-phrase",
       "path": "reference/ui/en/feedback-pending-phrase.png",
-      "size": 37848,
+      "size": 35718,
       "width": 480,
       "height": 480,
-      "sha256": "4040a90a7d6870ae4aed7dc5f21eedc1e8277a09dd40cfa6ecfffc75689c01af"
+      "sha256": "0a648ad28fb120f3858ca2ef793444d7dd08e316eb0cb3007f0aa3ae1fa090b1"
     },
     {
       "id": "en/feedback-moving",
@@ -490,18 +490,18 @@
     {
       "id": "en/feedback-paused-source",
       "path": "reference/ui/en/feedback-paused-source.png",
-      "size": 38337,
+      "size": 36255,
       "width": 480,
       "height": 480,
-      "sha256": "c0c4f38eb16cc91dc244ef7d11d68e4986afb68815e1bfc3e9a6a917f6e482ce"
+      "sha256": "029cb6a22eb5042b5e10c017a0c8bc90f6b785a39b4debd585e564525003a012"
     },
     {
       "id": "en/feedback-paused-shared",
       "path": "reference/ui/en/feedback-paused-shared.png",
-      "size": 31349,
+      "size": 29990,
       "width": 480,
       "height": 480,
-      "sha256": "81323b1b6bd983a57843599fa74b67ad97df1d6508647bf3df97cbb512d37f06"
+      "sha256": "d4bf414b498b20e80e10ce190304f5f484309357cb125b1c3799213953be5d90"
     },
     {
       "id": "en/role-pulse",
@@ -538,10 +538,10 @@
     {
       "id": "en/volume",
       "path": "reference/ui/en/volume.png",
-      "size": 25784,
+      "size": 25529,
       "width": 480,
       "height": 480,
-      "sha256": "43164c50b7c14045d824faa66ee39dd36dd8fdd591a1b92bc5c1b00f033a7038"
+      "sha256": "44550764d859c8144870bd9c673ebd936c50b6f776c7f1c3556674ddfe24243b"
     },
     {
       "id": "en/boot",
@@ -594,10 +594,10 @@
     {
       "id": "en/low-battery",
       "path": "reference/ui/en/low-battery.png",
-      "size": 30913,
+      "size": 29557,
       "width": 480,
       "height": 480,
-      "sha256": "140925c6de46592f03921267e7f318895b4e448d02ae15d0bb0742b91687d497"
+      "sha256": "a9cf834c8ff2871b776d7cb8a7c309806fcd570a4eef2ec3ee402618185a9d49"
     }
   ]
 }

@@ -576,7 +576,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -1068,7 +1072,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -1550,7 +1558,11 @@
       },
       "paintContext": {
         "beforeAccent": "#7b8452",
-        "afterAccent": "#7b8452"
+        "afterAccent": "#7b8452",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -2097,7 +2109,11 @@
       },
       "paintContext": {
         "beforeAccent": "#aa7b3d",
-        "afterAccent": "#aa7b3d"
+        "afterAccent": "#aa7b3d",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -2619,7 +2635,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -3111,7 +3131,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -3593,7 +3617,11 @@
       },
       "paintContext": {
         "beforeAccent": "#7b8452",
-        "afterAccent": "#7b8452"
+        "afterAccent": "#7b8452",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -4033,7 +4061,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -4555,7 +4587,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -5047,7 +5083,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -5539,7 +5579,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -6031,7 +6075,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -6553,7 +6601,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -7045,7 +7097,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -7567,7 +7623,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -8089,7 +8149,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -8611,7 +8675,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -9133,7 +9201,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -9655,7 +9727,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -10177,7 +10253,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -10659,7 +10739,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -11181,7 +11265,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -11703,7 +11791,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -12185,7 +12277,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -12707,7 +12803,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -13209,7 +13309,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -13684,7 +13788,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -14150,7 +14258,11 @@
       },
       "paintContext": {
         "beforeAccent": "#7b8452",
-        "afterAccent": "#7b8452"
+        "afterAccent": "#7b8452",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -14680,7 +14792,11 @@
       },
       "paintContext": {
         "beforeAccent": "#aa7b3d",
-        "afterAccent": "#aa7b3d"
+        "afterAccent": "#aa7b3d",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -15272,7 +15388,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -15334,7 +15454,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -15544,7 +15668,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -15827,7 +15955,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -16083,7 +16215,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -16293,7 +16429,11 @@
       },
       "paintContext": {
         "beforeAccent": "#7b8452",
-        "afterAccent": "#7b8452"
+        "afterAccent": "#7b8452",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -16604,7 +16744,11 @@
       },
       "paintContext": {
         "beforeAccent": "#aa7b3d",
-        "afterAccent": "#aa7b3d"
+        "afterAccent": "#aa7b3d",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -17126,7 +17270,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -17648,7 +17796,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -18140,7 +18292,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -18622,7 +18778,11 @@
       },
       "paintContext": {
         "beforeAccent": "#7b8452",
-        "afterAccent": "#7b8452"
+        "afterAccent": "#7b8452",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -19169,7 +19329,11 @@
       },
       "paintContext": {
         "beforeAccent": "#aa7b3d",
-        "afterAccent": "#aa7b3d"
+        "afterAccent": "#aa7b3d",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -19691,7 +19855,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -20183,7 +20351,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -20665,7 +20837,11 @@
       },
       "paintContext": {
         "beforeAccent": "#7b8452",
-        "afterAccent": "#7b8452"
+        "afterAccent": "#7b8452",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -21105,7 +21281,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -21627,7 +21807,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -22119,7 +22303,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -22611,7 +22799,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -23103,7 +23295,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -23625,7 +23821,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -24117,7 +24317,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -24639,7 +24843,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -25161,7 +25369,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -25683,7 +25895,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -26205,7 +26421,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -26727,7 +26947,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -27249,7 +27473,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -27731,7 +27959,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -28253,7 +28485,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -28775,7 +29011,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": false,
+        "afterMuted": false,
+        "beforeCanvasOpacity": "1",
+        "afterCanvasOpacity": "1"
       }
     },
     {
@@ -29257,7 +29497,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -29779,7 +30023,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -30281,7 +30529,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -30756,7 +31008,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -31222,7 +31478,11 @@
       },
       "paintContext": {
         "beforeAccent": "#7b8452",
-        "afterAccent": "#7b8452"
+        "afterAccent": "#7b8452",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -31752,7 +32012,11 @@
       },
       "paintContext": {
         "beforeAccent": "#aa7b3d",
-        "afterAccent": "#aa7b3d"
+        "afterAccent": "#aa7b3d",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -32344,7 +32608,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     },
     {
@@ -32406,7 +32674,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -32616,7 +32888,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -32899,7 +33175,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -33155,7 +33435,11 @@
       },
       "paintContext": {
         "beforeAccent": "#496da1",
-        "afterAccent": "#496da1"
+        "afterAccent": "#496da1",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -33365,7 +33649,11 @@
       },
       "paintContext": {
         "beforeAccent": "#7b8452",
-        "afterAccent": "#7b8452"
+        "afterAccent": "#7b8452",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -33676,7 +33964,11 @@
       },
       "paintContext": {
         "beforeAccent": "#aa7b3d",
-        "afterAccent": "#aa7b3d"
+        "afterAccent": "#aa7b3d",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": null,
+        "afterCanvasOpacity": null
       }
     },
     {
@@ -34198,7 +34490,11 @@
       },
       "paintContext": {
         "beforeAccent": "#d95535",
-        "afterAccent": "#d95535"
+        "afterAccent": "#d95535",
+        "beforeMuted": true,
+        "afterMuted": true,
+        "beforeCanvasOpacity": "0.45",
+        "afterCanvasOpacity": "0.45"
       }
     }
   ]

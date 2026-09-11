@@ -11,7 +11,7 @@
 struct echoy_view {
     lv_obj_t *screen,*objects[POOL],*labels[POOL],*plot; lv_group_t *focus; lv_timer_t *timer; lv_obj_t *progress; int progress_kind; bool reduced; uint32_t snapshot_tick; unsigned objects_used,labels_used;
     echoy_snapshot_t snapshot; int device; bool english;
-    echoy_touch_t touch; echoy_route_t requested_route; echoy_ui_emit_fn emit; void *context;
+    echoy_touch_t touch; echoy_route_t requested_route; int interaction_key; bool interaction_valid; echoy_ui_emit_fn emit; void *context;
     echoy_event_t hit; int64_t hit_us,now_us,last_frame; bool has_hit;
 };
 static const uint32_t colors[]={0xd95535,0x496da1,0x7b8452,0xaa7b3d};
@@ -45,7 +45,15 @@ static void render(echoy_view_t *v){
     bool status=d->lifecycle==ECHOY_BOOTING||d->loading||d->preparing_role>=0||d->role_error||d->data_fault||d->output_fault;
     v->touch.loading=d->loading||d->preparing_role>=0;
     v->touch.route=status?UI_STATUS:v->requested_route;v->touch.blocked=d->lifecycle==ECHOY_BOOTING;
-    if(status)v->touch.modal=false;
+    if(status||v->touch.route!=UI_PERFORM)v->touch.modal=false;
+    int interaction_key=v->touch.route|(v->touch.blocked<<2)|(v->touch.modal<<3)|(v->touch.loading<<4)|(v->device<<5);
+    if(v->interaction_valid&&interaction_key!=v->interaction_key&&v->touch.capture){
+        echoy_ui_event_t cancelled=echoy_touch(&v->touch,UI_CANCEL,0,0);
+        if(cancelled.action!=UI_NONE&&v->emit)v->emit(v->context,cancelled);
+        v->touch.activity=d->activity;v->touch.volume=d->volume;
+    }
+    v->interaction_key=interaction_key;v->interaction_valid=true;
+    lv_obj_set_style_opa_layered(v->plot,d->transport==ECHOY_PLAYING?255:115,0);
     bool perform=v->touch.route==UI_PERFORM;
     if(perform)lv_obj_remove_flag(v->plot,LV_OBJ_FLAG_HIDDEN);else lv_obj_add_flag(v->plot,LV_OBJ_FLAG_HIDDEN);
     if(d->lifecycle==ECHOY_BOOTING){
@@ -69,8 +77,9 @@ static void render(echoy_view_t *v){
         snprintf(text,sizeof(text),v->english?"Now: %s · %s":"当前：%s · %s",tr(v,roles[d->role]),phrase(v,d->role,d->phrase));label(v,119,84,333,30,14,false,0x8a937e,text,LEFT);
         int selected=d->pending_role>=0?d->pending_role:(int)d->role;int ph=d->pending_phrase?d->pending_phrase:selected==(int)d->role?d->phrase:d->phrase_memories[selected];
         for(int i=0;i<4;i++){
-            int x=36+i*105;bool sel=i==selected;box(v,x,119,93,101,sel?0xf7f5ef:0xe6e8de,16,255,colors[i],sel?1:0);
-            if(sel)box(v,x+13,216,67,3,colors[i],1,255,0,0);
+            int x=36+i*105;bool sel=i==selected;
+            if(sel){box(v,x,119,93,101,colors[i],16,255,colors[i],1);box(v,x+1,120,91,96,0xf7f5ef,15,255,0,0);}
+            else box(v,x,119,93,101,0xe6e8de,16,255,0,0);
             label(v,x,130,93,34,26,false,colors[i],icons[i],CENTER);label(v,x,164,93,27,i==3?12:15,true,INK,tr(v,roles[i]),CENTER);
             snprintf(key,sizeof(key),"%s-detail",roles[i]);label(v,x,187,93,25,13,false,0x7b836d,tr(v,key),CENTER);
         }
@@ -99,12 +108,18 @@ static void render(echoy_view_t *v){
         uint32_t playbg=d->transport==ECHOY_PLAYING?INK:d->transport==ECHOY_WAITING?0xe8decb:0xdedfd3;
         if(v->touch.pressed==UI_PLAY)playbg=0xc7cbbd;
         box(v,204,384,240,84,playbg,19,255,0,0);
-        snprintf(text,sizeof(text),"%s   %s",icons[d->role],tr(v,"role"));label(v,36,411,144,40,18,false,INK,text,CENTER);
-        snprintf(text,sizeof(text),"%s   %s",playing?"Ⅱ":"▶",tr(v,playing?"pause":"play"));label(v,204,410,240,42,19,false,d->transport==ECHOY_PLAYING?0xf4f3e9:INK,text,CENTER);
+        for(int button=0;button<2;button++){
+            const char *symbol=button?(playing?"Ⅱ":"▶"):icons[d->role];const char *caption=tr(v,button?(playing?"pause":"play"):"role");int size=button?19:18;
+            lv_point_t symbol_size,caption_size;lv_text_get_size(&symbol_size,symbol,echoy_font(18,false),0,0,200,0);lv_text_get_size(&caption_size,caption,echoy_font(size,false),0,0,240,0);
+            int left=(button?204:36)+((button?240:144)-symbol_size.x-9-caption_size.x)/2;
+            uint32_t color=button?(d->transport==ECHOY_PLAYING?0xf4f3e9:d->transport==ECHOY_WAITING?0x8b622f:INK):INK;
+            label(v,left,416,symbol_size.x,40,18,false,color,symbol,LEFT);label(v,left+symbol_size.x+9,416,caption_size.x,42,size,false,color,caption,LEFT);
+        }
         if(v->touch.modal){
             box(v,0,0,480,480,0x252d20,0,69,0,0);lv_obj_t *sheet=box(v,28,204,424,252,0xf4f3eb,29,255,0xd0d5c6,1);lv_obj_set_style_shadow_color(sheet,lv_color_hex(0x20291f),0);lv_obj_set_style_shadow_width(sheet,34,0);lv_obj_set_style_shadow_opa(sheet,51,0);lv_obj_set_style_shadow_offset_y(sheet,14,0);
             label(v,56,228,230,40,24,false,0x48513e,tr(v,"volume"),LEFT);label(v,359,229,84,50,30,false,0x89917e,"×",CENTER);
-            snprintf(text,sizeof(text),"%d",(int)lround(v->touch.volume*100));label(v,130,275,195,65,50,false,0x495340,text,CENTER);label(v,278,301,50,30,19,false,0x8b957c,"%",LEFT);
+            snprintf(text,sizeof(text),"%d",(int)lround(v->touch.volume*100));lv_point_t number_size,percent_size;lv_text_get_size(&number_size,text,echoy_font(50,false),-2,0,366,0);lv_text_get_size(&percent_size,"%",echoy_font(19,false),0,0,80,0);int number_x=240-(number_size.x+6+percent_size.x)/2;
+            lv_obj_t *number=label(v,number_x,275,number_size.x,65,50,false,0x495340,text,LEFT);lv_obj_set_style_text_letter_space(number,-2,0);label(v,number_x+number_size.x+6,301,percent_size.x,30,19,false,0x8b957c,"%",LEFT);
             box(v,57,380,366,4,0xccd3c0,2,255,0,0);int x=(int)lround(70+340*v->touch.volume);box(v,x-13,369,26,26,accent,13,255,0xa6b093,1);box(v,x-12,370,24,24,accent,12,255,0xf4f3eb,4);
             label(v,57,408,80,24,12,false,0x929d84,"0",LEFT);label(v,343,408,80,24,12,false,0x929d84,"100",RIGHT);
         }
@@ -198,7 +213,7 @@ echoy_view_t *echoy_view_create(lv_obj_t *screen,echoy_ui_emit_fn emit,void *con
 void echoy_view_set_sink(echoy_view_t *v,echoy_ui_emit_fn emit,void *context){v->emit=emit;v->context=context;}
 void echoy_view_update(echoy_view_t *v,const echoy_snapshot_t *s,int id){if(!v||!s||id<0||id>=3)return;v->snapshot=*s;v->snapshot_tick=lv_tick_get();v->device=id;v->now_us=s->time_us;if(!v->touch.capture){v->touch.activity=s->devices[id].activity;v->touch.volume=s->devices[id].volume;}v->touch.modal=s->devices[id].volume_open;render(v);}
 void echoy_view_locale(echoy_view_t *v,bool en){v->english=en;render(v);}
-void echoy_view_route(echoy_view_t *v,echoy_route_t route){v->requested_route=route;v->touch.capture=0;v->touch.pressed=0;render(v);}
+void echoy_view_route(echoy_view_t *v,echoy_route_t route){v->requested_route=route;render(v);}
 void echoy_view_motion(echoy_view_t *v,bool reduced){v->reduced=reduced;}
 void echoy_view_hit(echoy_view_t *v,const echoy_event_t *event,int64_t at_us){v->hit=*event;v->hit_us=at_us;v->has_hit=true;}
 void echoy_view_frame(echoy_view_t *v,int64_t now){if(now-v->last_frame<33333)return;v->now_us=now;v->last_frame=now;lv_obj_invalidate(v->plot);
