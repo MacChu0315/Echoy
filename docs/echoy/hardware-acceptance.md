@@ -21,7 +21,10 @@ never erased by Echoy; no flash erase fallback is present.
 `echoy_control` is the only task that changes core/protocol/storage state. UI
 and development RPC callbacks enqueue copied commands into a 16-entry queue
 with zero wait. Radio callbacks use the existing 32-entry copied-event queue.
-The owner drains bounded batches every 10 ms, samples contact every 20 ms,
+The owner drains bounded batches every 10 ms and samples the processing clock
+again for each dequeued radio packet, carrying the newest time into its later
+tick. Callback receive timestamps cannot become newer than a stale loop-start
+time and cause otherwise valid packets to be rejected. It samples contact every 20 ms,
 reads battery every 5 s and publishes diagnostics every 250 ms. All overflow
 paths return failure/count drops; no callback blocks on codec, NVS or core.
 Large runtime and forecast structures are allocated in PSRAM once. Queues,
@@ -93,9 +96,10 @@ roles from MAC suffixes or replace real UIDs.
 Screen begin allocates one full 460800-byte RGB565 surface in aligned PSRAM,
 then uses `lv_snapshot_take_to_draw_buf()` on the complete 480x480 active LVGL
 screen under the display lock. No GSP types or partial flush buffers are used.
-Read returns bounded chunks from that immutable frame. After the final chunk,
-a new offset-zero read captures a new complete frame for pull streaming. End
-is idempotent and frees the surface; the inspected Iris service invokes end
+Read returns bounded chunks from that immutable frame. All reads within one begin/end session return the same immutable frame,
+including arbitrary offsets and repeats after reading the final byte. Only an
+explicit end followed by begin captures a new frame. End is idempotent and frees
+the surface; the inspected Iris service invokes end
 on completion, stop and disconnect. Capture does not take an audio lock. Its
 CPU/PSRAM impact and exact display appearance remain hardware tests.
 

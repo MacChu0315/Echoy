@@ -115,3 +115,5 @@ add_executable(test_diagnostics test_diagnostics.c ../components/echoy_platform/
 target_link_libraries(test_diagnostics PRIVATE echoy_control echoy_audio)
 target_compile_options(test_diagnostics PRIVATE -Wall -Wextra -Werror -UNDEBUG)
 add_test(NAME platform_diagnostics COMMAND test_diagnostics)
+
+add_test(NAME platform_radio_drain COMMAND test_control queued)

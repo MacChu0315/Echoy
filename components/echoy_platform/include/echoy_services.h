@@ -21,7 +21,7 @@ bool echoy_storage_flush(echoy_storage_t *,int64_t now);
 typedef struct { int percent,last_error; unsigned failures; bool valid,low,shutdown_requested; } echoy_battery_t;
 bool echoy_battery_observe(echoy_battery_t *,int error,unsigned state_of_charge);
 /* A whole RGB565 capture is immutable until end. Backend serializes calls. */
-typedef struct { uint8_t *pixels; size_t size; bool consumed; void *ctx;
+typedef struct { uint8_t *pixels; size_t size; void *ctx;
     bool (*capture)(void *,uint8_t **,size_t *); void (*release)(void *,uint8_t *);
 } echoy_mirror_t;
 bool echoy_mirror_begin(echoy_mirror_t *);

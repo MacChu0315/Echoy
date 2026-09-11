@@ -5,11 +5,37 @@
 #include <stdlib.h>
 #include <string.h>
 typedef struct {int from,to;uint8_t bytes[100];size_t n;} packet_t;
-static echoy_control_t c[3];static packet_t network[4096],last_request[3][3];static unsigned used;static int64_t now;static unsigned offline;
+static echoy_control_t c[3];static packet_t network[4096],last_request[3][3];static unsigned used;static int64_t now;static unsigned offline;static bool late_delivery;static unsigned accepted[10],clock_calls,concurrent_packets;
 static bool send(void *ctx,uint64_t target,const uint8_t *p,size_t n){int from=(int)(intptr_t)ctx;for(int to=0;to<3;to++)if(!(offline&(1u<<from))&&!(offline&(1u<<to))&&to!=from&&(!target||target==c[to].protocol.uid)){assert(used<4096);network[used++]=(packet_t){.from=from,.to=to,.n=n};memcpy(network[used-1].bytes,p,n);if(p[39]==1)last_request[from][to]=network[used-1];}return true;}
-static void run(int64_t end){for(;now<end;now+=1000){for(int i=0;i<3;i++)echoy_control_tick(&c[i],now,false);unsigned n=used;packet_t packets[4096];memcpy(packets,network,n*sizeof *packets);used=0;for(unsigned i=0;i<n;i++){packet_t *p=&packets[i];echoy_control_receive(&c[p->to],c[p->from].protocol.uid,c[p->from].protocol.boot,p->bytes,p->n,now,now);}}}
+static int64_t fake_processing_clock(void *ctx){(void)ctx;clock_calls++;return now;}
+static void run(int64_t end){
+ for(;now<end;now+=1000){
+  for(int i=0;i<3;i++){assert(c[i].core.time_us<=now);assert(c[i].protocol.now_us<=now);echoy_control_tick(&c[i],now,false);assert(c[i].core.time_us==now);}
+  if(late_delivery){
+   unsigned initial=used,cursor=0;int64_t round=now,processed=round;
+   /* Responses emitted during receive append to the same live callback queue;
+    * their timestamps are later than both the loop start and earlier packets. */
+   while(cursor<used){
+    packet_t packet=network[cursor++];int64_t received=now+10;now+=15;
+    assert(received>round);unsigned before=used;
+    bool ok=echoy_control_receive_queued(&c[packet.to],c[packet.from].protocol.uid,c[packet.from].protocol.boot,
+        packet.bytes,packet.n,received,&processed,fake_processing_clock,NULL);
+    if(ok)accepted[packet.bytes[3]]++;
+    if(packet.bytes[3]==ECHOY_HELLO)assert(ok&&c[packet.to].protocol.discovered>0);
+    assert(processed>=received&&processed>=now);
+    if(used>before)concurrent_packets+=used-before;
+   }
+   assert(cursor>=initial);used=0;
+   for(int i=0;i<3;i++){echoy_control_tick(&c[i],processed,false);assert(c[i].core.time_us==processed);}
+  }else{
+   unsigned n=used;packet_t packets[4096];memcpy(packets,network,n*sizeof *packets);used=0;
+   for(unsigned i=0;i<n;i++){packet_t *p=&packets[i];echoy_control_receive(&c[p->to],c[p->from].protocol.uid,c[p->from].protocol.boot,p->bytes,p->n,now,now);}
+  }
+ }
+}
 static bool fail_publish(void *ctx,const echoy_snapshot_t *s,const echoy_bar_plan_t *p){(void)ctx;assert(s->revision==p->revision);return false;}
-int main(void){
+int main(int argc,char **argv){
+ late_delivery=argc>1&&!strcmp(argv[1],"queued");
  echoy_settings_t settings;echoy_settings_defaults(&settings);
  for(int i=0;i<3;i++)echoy_control_init(&c[i],100+i,10+i,50+i,&settings,send,(void *)(intptr_t)i);
  assert(c[0].core.devices[0].lifecycle==ECHOY_READY&&c[0].core.devices[0].transport==ECHOY_PAUSED);
@@ -38,5 +64,6 @@ int main(void){
  assert(!echoy_protocol_receive(&c[0].protocol,102,12,replay->bytes,replay->n,now,now));
  assert(!echoy_control_receive(&c[0],102,99,replay->bytes,replay->n,now,now));
  offline=1;run(82000000);assert(c[1].protocol.committed.member_count==2&&c[2].protocol.committed.member_count==2);
+ if(late_delivery){assert(clock_calls>0&&concurrent_packets>0);assert(accepted[ECHOY_HELLO]&&accepted[ECHOY_TIME_REQ]&&accepted[ECHOY_TIME_RESP]&&accepted[ECHOY_PREPARE]&&accepted[ECHOY_COMMIT]);}
  return 0;
 }

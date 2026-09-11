@@ -25,3 +25,10 @@ void echoy_control_tick(echoy_control_t *,int64_t now,bool output_fault);
 /* Private audio look-ahead copy; a received COMMIT can be scheduled before its
  * boundary without mutating product state. Caller must cancel if it is aborted. */
 bool echoy_control_forecast(const echoy_control_t *,int64_t target,echoy_core_t *scratch);
+
+/* Queue handoff clock is sampled per packet; processing_us also carries the
+ * newest processing time back to the owner's later tick. */
+typedef int64_t (*echoy_control_now_fn)(void *);
+bool echoy_control_receive_queued(echoy_control_t *,uint64_t uid,uint32_t boot,
+    const uint8_t *,size_t,int64_t received,int64_t *processing_us,
+    echoy_control_now_fn,void *clock_context);

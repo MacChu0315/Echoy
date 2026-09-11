@@ -123,6 +123,7 @@ static void observe_battery(runtime_t *r,int err,unsigned charge,int64_t now,boo
         esp_err_t power=bsp_power_set_shutdown(true);if(power!=ESP_OK){ESP_LOGE(TAG,"shutdown request failed: %s",esp_err_to_name(power));r->battery.last_error=power;}
     }
 }
+static int64_t processing_clock(void *ctx){(void)ctx;return esp_timer_get_time();}
 static void owner_task(void *ctx){
     runtime_t *r=ctx;r->storage.read=store_read;r->storage.write=store_write;
     if(!echoy_storage_load(&r->storage)&&r->storage.last_error==ESP_ERR_NVS_NOT_FOUND){r->storage.last_error=0;r->storage.failures=0;
@@ -161,7 +162,7 @@ static void owner_task(void *ctx){
                 if(event->kind==ECHOY_RADIO_NEIGHBOR){if(echoy_contact_neighbor(&r->contact,&event->data.neighbor.value,event->data.neighbor.attached)!=ECHOY_OK)r->contact.errors++;}
                 else if(event->kind==ECHOY_RADIO_PACKET){const mosaico_peer_message_t *m=&event->data.packet;
                     echoy_control_physical(&r->control,r->contact.left_uid,r->contact.right_uid,r->contact.uncertain||r->contact.ambiguous||r->contact.unsupported,now);
-                    (void)echoy_control_receive(&r->control,m->source_id,m->source_boot_id,m->payload,m->payload_len,event->received_us,now);}
+                    (void)echoy_control_receive_queued(&r->control,m->source_id,m->source_boot_id,m->payload,m->payload_len,event->received_us,&now,processing_clock,NULL);}
                 else r->contact.errors++;
             }
             if(r->contact.initialized&&now-r->contact_at_us>=20000){r->contact_at_us=now;(void)echoy_contact_sample(&r->contact,now);}

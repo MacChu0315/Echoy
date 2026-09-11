@@ -138,3 +138,60 @@ Logs: `/tmp/echoy-task8-test-final.log`,
 7. Leak checking was not performed because of the inherited LeakSanitizer
    ptrace limitation. Host sanitizer and allocation-balance tests are not a
    substitute for real device heap/watermark measurements.
+
+## Fix round 1/5 — queue handoff timestamps and immutable capture sessions
+
+Status: DONE. Base: `603dec9`.
+
+1. **Fresh per-packet processing timestamps.** A new stateful fake keeps the
+   callback queue live during its drain: receiving TIME/PREPARE causes responses
+   to be appended and consumed in the same drain, with each receive timestamp
+   later than the loop's initial time. With the old loop-start timestamp passed
+   through, `platform_radio_drain` was RED at the first late HELLO's successful
+   receive/discovery assertion. The runtime now calls the portable queue-handoff
+   function for each packet; it samples `esp_timer_get_time()` for that packet,
+   preserves a monotonic lower bound of receive/previous/core/protocol time, and
+   carries the resulting time back into the owner's later tick. The low-level
+   protocol's invalid-time validation remains intact. GREEN exercises actual
+   HELLO, TIME_REQ, TIME_RESP, PREPARE and COMMIT state transitions, physical
+   two-device then 2+1 admission, nonleader role change and reference loss, while
+   checking every owner tick remains monotonic. It explicitly observes packets
+   appended by callbacks during the drain, rather than testing only a prefilled
+   queue or comparing the helper's arithmetic to itself.
+
+2. **One immutable frame per begin/end session.** The previous `consumed` flag
+   incorrectly treated reaching the final byte as the end of a capture session.
+   Updated fake capture generates different bytes for every new capture. The
+   test was RED when reading the tail followed by the head returned a new frame.
+   Removed read-triggered recapture and the consumed flag. Every valid offset,
+   including head/nonzero/tail repeats after end-of-buffer, now returns the same
+   captured bytes until explicit `end`. Only the next explicit `begin` captures
+   a new frame. GREEN covers 100 sessions, tail-first/head/middle/repeated/full
+   reads, unchanged capture count, idempotent disconnect-style repeated end,
+   invalid reads after end, no-allocation capture failure, and failure after
+   backend allocation with balanced cleanup. The old refresh-read test and
+   hardware acceptance text were corrected; the earlier report's offset-zero
+   recapture statement is superseded by this immutable-session contract.
+
+Validation:
+
+- `cmake -S pc -B build-host`; `cmake --build build-host -j8`: PASS.
+- `ctest --test-dir build-host -R platform_ --output-on-failure`: **4/4 PASS**.
+- `ctest --test-dir build-host --output-on-failure`: **28/28 PASS**, 29.99 s.
+- Reconfigured/rebuilt `/tmp/echoy-task8-asan` with unchanged address/undefined
+  sanitizer flags, then `ASAN_OPTIONS=detect_leaks=0 UBSAN_OPTIONS=halt_on_error=1
+  ctest --test-dir /tmp/echoy-task8-asan --output-on-failure`: **28/28 PASS**,
+  58.93 s; no ASan/UBSan diagnostics. The prior ptrace/LeakSanitizer limitation
+  remains; no leak-checking claim is added.
+- Activated the existing IDF export and built with
+  `-D SDKCONFIG=/tmp/echoy-task8-dev-sdkconfig`: PASS; `riscv32-esp-elf-nm` on
+  `libechoy_platform.a` confirms `inject_rpc` exists in the development build.
+- Restored the ordinary `build/sdkconfig`, built with `idf.py build`: PASS;
+  the ordinary configuration leaves injection disabled and the platform archive
+  has no `inject_rpc` symbol. No compiler warning/error diagnostics.
+- `git diff --check`: PASS. No hardware flash, remote writes, sibling changes,
+  sensor/storage behavior changes or deferred diagnostic-field expansion.
+
+Logs: `/tmp/echoy-task8-r1-test.log`, `/tmp/echoy-task8-r1-asan-test.log`,
+`/tmp/echoy-task8-r1-idf-dev.log`, `/tmp/echoy-task8-r1-idf-release.log`,
+`/tmp/echoy-task8-r1-dev-symbol.log`.

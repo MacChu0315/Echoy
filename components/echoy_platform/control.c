@@ -215,3 +215,17 @@ bool echoy_control_forecast(const echoy_control_t *c,int64_t target,echoy_core_t
     }
     echoy_tick(scratch,target);return true;
 }
+
+bool echoy_control_receive_queued(echoy_control_t *c,uint64_t uid,uint32_t boot,
+    const uint8_t *bytes,size_t size,int64_t received,int64_t *processing_us,
+    echoy_control_now_fn clock,void *clock_context){
+    if(!c||!processing_us||!clock||received<0)return false;
+    int64_t now=clock(clock_context);
+    if(now<0)return false;
+    if(now<received)now=received;
+    if(now<*processing_us)now=*processing_us;
+    if(now<c->core.time_us)now=c->core.time_us;
+    if(now<c->protocol.now_us)now=c->protocol.now_us;
+    *processing_us=now;
+    return echoy_control_receive(c,uid,boot,bytes,size,received,now);
+}
