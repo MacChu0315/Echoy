@@ -1,6 +1,6 @@
 # Echoy：后续 agent 交接
 
-更新日期：2026-09-12。用户已将工程位置确定为独立的 `Echoy/`。Tasks 1–7 已完成：原型 oracle、独立固件骨架、音乐/会话/DSP/UI，以及真实 BSP 接触/无线适配、Echoy 协议和漂移时钟已建立。Task 8 起继续设置、电量、诊断、镜像和控制层接线。
+更新日期：2026-09-12。用户已将工程位置确定为独立的 `Echoy/`。Tasks 1–8 已完成：原型 oracle、固件骨架、音乐/会话/DSP/UI/协议，以及设置、电量、诊断、镜像和唯一控制 owner 的真机运行时已建立。Task 9 起继续完整电脑验收工具。
 
 ## 工作位置与阅读顺序
 
@@ -51,7 +51,7 @@
 
 前期已检查原 JS 的 1,200 个音乐组合及独立开机/吸合/拆开保拍/无自动播放路径，并通过 Playwright 查看 UI 和保存截图。截图是现场参考图，含时间状态和截图取整误差；正式视觉测试需重新生成冻结状态的 480×480 基准。详细记录见规格及计划末尾。
 
-当前已实现启动骨架、音乐/会话/DSP/UI 和真实 BSP radio/contact 适配。Task 7 全套 CTest 24/24、wire/clock/session/state 10/10、ASan/UBSan 24/24；三实例延迟/丢包/重排/分区/重启覆盖，12 小时非整数漂移模拟的存储边界误差最大 0.882 us。真实三机无线/起音尚未测；可信成员 UID/boot 与 2+1 组交接必须由 Task 8 控制层接线。Task 6 的 74/74 视觉对照继续通过。镜像 3,154,848 bytes，仅可通过 Recovery 安装到 `ota_0`；1 条 factory 尺寸 warning 保留。
+当前已实现完整设备运行时：唯一 control task 持 core，UI/RPC 16 条队列、radio 32 条队列，真实 speaker/radio/contact/NVS/battery/ESP-Iris snapshot 与 RGB565 连续镜像均已接线；HELLO 不授信，物理确认/已成员可完成 2+1 转交。Task 8 平台测试 4/4、全套 28/28、ASan/UBSan 28/28，普通/开发构建均通过且普通版无 `inject_rpc`。真实电源动作、镜像与音频争用、三机无线/起音仍待 Task 10。当前 `echoy.bin` 3,844,016 bytes，只能经 Recovery 安装到 `ota_0`，factory 尺寸 warning 保留。
 
 结构更新时 Echoy 与外层 Mosaico 均未初始化 Git，三个参考仓库工作区干净。初始化 Echoy Git 前按用户规则取得许可；没有 Git 不阻止已授权的本地实现/验证。不要在参考仓库建立 Echoy 工作分支或提交 Echoy 文件。任何建议的 commit 都以 Echoy 已获准初始化为前提。
 

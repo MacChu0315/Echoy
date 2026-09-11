@@ -344,14 +344,14 @@ A data_recovered：在下一边界恢复来源，不在小节中间重新编曲�
 
 **Consumes:** Task 4 快照、真实 BSP/ESP-Iris 接口。**Produces:** 设置恢复、真实电量、错误与计时诊断、屏幕截图。
 
-- [ ] 应用 NVS 命名空间 `echoy`，schema_version=1；保存已提交 role/phrase、各角色表达/乐句记忆、volume、locale。保存前范围校验；新版本不可读时报告设置错误，不清 sysmeta。不保存会话、播放状态、临时 pending 或 boot 身份。
-- [ ] NVS 写入在输入完成/参数提交后去抖，关闭重启仍默认 paused；角色默认 Pulse，可在本机角色页切换。三台演示身份别名由电脑配置映射，不更改真实 UID。
-- [ ] 电量服务读 `state_of_charge`；<15 提示、读失败保留有效旧值并诊断。0% 的关停流程根据 BSP power API 验证后实现；不从字符串“0”推断所有传感失败都应关机。
-- [ ] 原型 IMU/模块诊断通过本地测试注入与可用的真实识别数据呈现。只有现有 manager 提供无副作用的识别才启用；不为读取 EEPROM 直接抢占 slot，不启动摄像头。
-- [ ] 从已初始化 utils 读取实际 ESP-Iris 扩展入口，注册只读快照和开发构建的测试事件注入；如果没有适合 RPC，使用仓库认可的结构化诊断途径，不能发明 ESP-Iris API。测试注入在普通构建关闭。
-- [ ] 屏幕镜像应从完整 LVGL 帧/受控捕获取得一致快照；参考 gsp_hello 的按需缓冲生命周期，但不能原样调用 GSP 类型操作 LVGL。打开/关闭/断连后内存恢复，音频不中断。
-- [ ] 诊断字段：无线 UID/boot 与 Iris 身份映射、session/membership、active/pending edges、state revision、clock offset/rate/uncertainty、sync stage、音频队列/欠载/声部峰值、堆/任务水位、掉包与拒绝原因。不得记录 pairing token。
-- [ ] 验证持久化范围、坏 schema、NVS 失败、传感失败、镜像反复开关、测试入口发布构建关闭；建议提交 `feat: add Echoy device state and diagnostics`。
+- [x] 应用 NVS 命名空间 `echoy`，schema_version=1；保存已提交 role/phrase、各角色表达/乐句记忆、volume、locale。保存前范围校验；新版本不可读时报告设置错误，不清 sysmeta。不保存会话、播放状态、临时 pending 或 boot 身份。
+- [x] NVS 写入在输入完成/参数提交后去抖，关闭重启仍默认 paused；角色默认 Pulse，可在本机角色页切换。三台演示身份别名由电脑配置映射，不更改真实 UID。
+- [x] 电量服务读 `state_of_charge`；<15 提示、读失败保留有效旧值并诊断。0% 的关停流程根据 BSP power API 验证后实现；不从字符串“0”推断所有传感失败都应关机。
+- [x] 原型 IMU/模块诊断通过本地测试注入与可用的真实识别数据呈现。只有现有 manager 提供无副作用的识别才启用；不为读取 EEPROM 直接抢占 slot，不启动摄像头。
+- [x] 从已初始化 utils 读取实际 ESP-Iris 扩展入口，注册只读快照和开发构建的测试事件注入；如果没有适合 RPC，使用仓库认可的结构化诊断途径，不能发明 ESP-Iris API。测试注入在普通构建关闭。
+- [x] 屏幕镜像应从完整 LVGL 帧/受控捕获取得一致快照；参考 gsp_hello 的按需缓冲生命周期，但不能原样调用 GSP 类型操作 LVGL。打开/关闭/断连后内存恢复，音频不中断。
+- [x] 诊断字段：无线 UID/boot 与 Iris 身份映射、session/membership、active/pending edges、state revision、clock offset/rate/uncertainty、sync stage、音频队列/欠载/声部峰值、堆/任务水位、掉包与拒绝原因。不得记录 pairing token。
+- [x] 验证持久化范围、坏 schema、NVS 失败、传感失败、镜像反复开关、测试入口发布构建关闭；建议提交 `feat: add Echoy device state and diagnostics`。
 
 ## Task 9: 完整电脑验收工具
 
