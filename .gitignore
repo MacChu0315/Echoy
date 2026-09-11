@@ -1,0 +1,7 @@
+build/
+build-host/
+.codex-runs/
+output/generated/
+__pycache__/
+*.pyc
+
