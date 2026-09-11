@@ -1,0 +1,1489 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>合拍 5.0.4 · 把声音摆在一起</title><style>:root{--paper:#f1efe8;--ink:#242621;--muted:#82857c;--line:#d7d9ce;--soft:#e8e9e0;--pulse:#d95535;--voice:#496da1;--dust:#7b8452;--ease-page:cubic-bezier(.2,.7,.2,1)}
+*{box-sizing:border-box}body{margin:0;background:#f5f5ef;color:var(--ink);font-family:Arial,"Noto Sans CJK SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}button,input,select{font:inherit}button{cursor:pointer;color:inherit}button:disabled{opacity:.4;cursor:not-allowed}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #496da1;outline-offset:4px}button{transition:background .15s,box-shadow .15s}button:hover{filter:brightness(.975)}button:active{filter:brightness(.92)}.masthead,main{max-width:1392px;margin:auto}.masthead{padding:33px 48px 30px}.mast-top{display:flex;justify-content:space-between;align-items:center}.wordmark{font-size:11px;font-weight:700;letter-spacing:2px;display:flex;align-items:center;gap:12px}.wordmark i{width:12px;height:12px;background:var(--ink);display:inline-block;border-radius:2px}.slash{color:#929588}.edition{font-size:11px;color:#85897d;letter-spacing:1px}.hero{display:flex;justify-content:space-between;align-items:center;padding-top:33px}.hero h1{font-size:54px;letter-spacing:-3px;line-height:1;margin:0 0 18px;font-weight:700}.title-dot{color:var(--pulse)}.hero p{font-size:14px;color:#696f63;letter-spacing:.8px;margin:0}.listen-controls{display:flex;flex-direction:column;align-items:stretch;gap:14px}.primary{border:0;background:var(--ink);color:#f8f8f2;border-radius:9px;height:54px;padding:0 31px;font-size:14px;display:flex;align-items:center;justify-content:center;gap:13px;min-width:186px}.primary.playing{background:#c95135}.play-icon{font-size:12px}.volume{display:flex;gap:10px;align-items:center;font-size:10px;color:var(--muted)}.volume input{width:114px}.volume output{min-width:26px}input[type=range]{height:3px;accent-color:#42483b;cursor:pointer}.workbench{margin:0 28px;background:#e9ebe2;border:1px solid #dce0d4;border-radius:14px;overflow:hidden}.bench-toolbar{padding:19px 26px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #d3d8cb;gap:14px}.take-label{display:flex;align-items:center;gap:12px;white-space:nowrap}.take-label b{font-size:11px;letter-spacing:1.5px}.take-label>span:last-child{font-family:monospace;font-size:11px;color:#7f8779}.live-dot{width:6px;height:6px;border-radius:100%;background:#969d8b}.live-dot.on{background:#d95535;box-shadow:0 0 0 4px #d9553516}.arrange-controls{display:flex;gap:7px}.arrange-controls button{border:1px solid #c8cec0;background:#f4f5ee;border-radius:6px;padding:9px 13px;font-size:12px;white-space:nowrap}.relation-band{display:flex;align-items:center;justify-content:center;gap:22px;min-height:76px;padding:15px 24px}.chain-text{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:1px;font-weight:700;white-space:nowrap}.role-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px}.chain-arrow{color:#8a9182;margin:0 6px}#relation-text{font-size:12px;color:#69715f;border-left:1px solid #bdc5b6;padding-left:22px}.stage-viewport{overflow-x:auto;overscroll-behavior-x:contain;padding:7px 32px 30px;scrollbar-width:thin;scrollbar-color:#a5ae9a transparent;min-height:590px}.stage{display:flex;justify-content:center;align-items:flex-start;width:max-content;min-width:100%;gap:26px;position:relative}.unit{width:508px;flex:0 0 508px;position:relative}.unit-shell{width:508px;height:508px;padding:14px;background:linear-gradient(140deg,#3b3c36,#20231e 60%,#45483d);border-radius:74px;box-shadow:0 19px 22px -15px #30362566,0 3px 4px #22241e26,inset 0 1px 1px #ffffff40;position:relative}.unit-shell:after{content:'';position:absolute;top:218px;left:-4px;width:5px;height:63px;border-radius:3px;background:#44493b;z-index:-1}.screen{width:480px;height:480px;border-radius:60px;position:relative;overflow:hidden;background:var(--paper);box-shadow:inset 0 0 0 1px #ffffff40;isolation:isolate}.product-page{position:absolute;inset:0;width:480px;height:480px;animation:page-in .18s ease-out;overflow:hidden}.product-page[hidden]{display:none}@keyframes page-in{from{opacity:.65}to{opacity:1}}.screen-label{position:absolute;top:29px;left:39px;font-family:monospace;font-size:11px;letter-spacing:1.7px;color:#7e8376;pointer-events:none}.battery-button{position:absolute;top:12px;right:27px;min-width:84px;min-height:84px;display:flex;gap:7px;align-items:flex-start;padding:17px 9px;background:none;border:0;justify-content:center;font:11px monospace;z-index:2}.battery-icon{width:18px;height:10px;border:1px solid currentColor;border-radius:2px;display:inline-block;position:relative;margin-top:1px}.battery-icon:after{content:'';position:absolute;right:-3px;top:2px;width:2px;height:4px;background:currentColor}.battery-icon i{display:block;height:6px;margin:1px;background:currentColor}.battery-button.low{color:#ba512e}.role-heading{position:absolute;top:64px;left:35px;margin:0;font-size:46px;letter-spacing:-2px;line-height:1.1;font-weight:750;pointer-events:none}.role-subtitle{position:absolute;left:38px;top:122px;font-size:12px;color:#757c6d;display:flex;gap:8px;align-items:center;max-width:404px;white-space:nowrap}.role-subtitle .status-led{width:5px;height:5px;border-radius:50%;background:var(--accent)}.role-subtitle.pending{color:#b85434}.instrument-canvas{position:absolute;left:0;top:145px;width:480px;height:198px;pointer-events:none}.gesture-zone{position:absolute;left:32px;top:149px;width:416px;height:197px;border:0;background:transparent;border-radius:25px;cursor:ns-resize;touch-action:none;z-index:1;user-select:none;-webkit-user-select:none}.gesture-zone:hover{background:#24262103}.activity-row{position:absolute;left:40px;right:40px;top:350px;height:24px;display:flex;align-items:center;gap:12px;font:11px monospace;color:#747a6b}.activity-row span{font:11px Arial,"Noto Sans CJK SC",sans-serif;white-space:nowrap}.activity-meter{height:3px;flex:1;background:#d5d8cc;border-radius:2px;overflow:hidden}.activity-meter i{display:block;height:100%;background:var(--accent);transition:width .08s}.activity-value{min-width:24px;color:#363e30;text-align:right}.bottom-nav{position:absolute;left:36px;right:36px;bottom:12px;display:grid;grid-template-columns:112px 156px 112px;gap:12px}.device-button{height:84px;min-width:84px;border:0;border-radius:19px;background:none;font-size:14px;display:flex;align-items:center;justify-content:center;gap:9px}.device-button.secondary:hover{background:#e5e7dc}.device-button.transport-button{background:#dedfd3;font-size:16px;font-weight:500}.device-button.transport-button.on{background:var(--ink);color:#f4f3e9}.nav-symbol{font-size:18px}.unit-caption{display:flex;justify-content:space-between;align-items:center;padding:16px 17px 0;color:#6c745f}.device-handle{display:flex;align-items:center;gap:9px;cursor:grab;user-select:none;font-size:10px;letter-spacing:1.3px}.device-id-badge{width:23px;height:23px;display:grid;place-items:center;background:#d6dccc;border-radius:5px;font:bold 11px monospace}.unit-caption .caption-state{font-size:10px;color:#7b826f;margin-left:auto;margin-right:8px}.move-buttons{display:flex;gap:4px}.move-buttons button{height:24px;width:27px;border:1px solid #c7cfbd;background:none;border-radius:4px;font-size:12px}.unit.dragging{opacity:.5}.link-indicator{position:absolute;right:-23px;top:228px;z-index:2;width:20px;height:58px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px;pointer-events:none}.link-indicator i{display:block;width:4px;height:4px;background:#a4af93;border-radius:100%;transition:background .2s}.link-indicator i:nth-child(2){width:10px;height:10px;border:1px solid #95a782;background:transparent}.link-indicator.active i{background:#749957}.link-indicator.pending i{background:#c58043}.link-indicator.off{opacity:.24}.stage-foot{display:flex;justify-content:space-between;gap:20px;border-top:1px solid #d6ddcd;padding:17px 26px;color:#757e69;font-size:11px;line-height:1.7}.tiny-disc{display:inline-block;width:5px;height:5px;background:#7d8970;border-radius:50%;margin-right:9px}.resolution{font:10px monospace;white-space:nowrap;align-self:center}.try-strip{display:grid;grid-template-columns:repeat(3,1fr);padding:29px 48px 31px;gap:34px}.try-strip>div{display:flex;gap:13px;align-items:flex-start}.try-strip>div>span{font:11px monospace;color:#acb19f;padding-top:3px}.try-strip p{font-size:11px;line-height:1.85;color:#88907b;margin:0}.try-strip b{display:block;font-size:12px;color:#56604a;font-weight:500}.lab,.mapping{margin:0 28px 15px;border:1px solid #dce0d3;border-radius:10px;background:#fafaf5}.lab summary,.mapping summary{list-style:none;cursor:pointer;padding:19px 24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;gap:12px}.lab summary::-webkit-details-marker,.mapping summary::-webkit-details-marker{display:none}.lab summary>div{display:flex;gap:13px;align-items:center}.lab-mark{font:9px monospace;border:1px solid #bfc7b2;padding:3px 5px;border-radius:3px;color:#6f7b5d;letter-spacing:1px}.lab-subtitle{color:#9a9f90;font-size:11px;font-weight:normal}.chevron{color:#9da793}.lab[open] summary{border-bottom:1px solid #e3e6dc}.lab-body{padding:24px}.lab-controls{display:grid;grid-template-columns:repeat(4,1fr);gap:23px 20px}.lab-controls label{display:flex;flex-direction:column;gap:9px;font-size:11px;color:#7c866f;position:relative}.lab-controls label output{position:absolute;right:0;top:0;font:11px monospace;color:#56644a}.lab-controls select{width:100%;height:34px;min-width:0;border:1px solid #d7ddce;border-radius:5px;padding:0 9px;background:#f5f7ef;color:#536046;font-size:12px}.lab-controls input{margin:17px 0 13px;width:100%}.scenario-row{display:flex;flex-wrap:wrap;gap:7px;align-items:center;padding:22px 0}.scenario-row>span{font-size:11px;color:#929c83;margin-right:7px}.scenario-row button,.lab-bottom button{padding:8px 11px;font-size:11px;border:1px solid #d6decb;border-radius:5px;background:#f9faf5;color:#59664b}.scenario-row #restore{background:#e9eedf}.lab-readout{display:grid;grid-template-columns:1fr 1fr 1fr;background:#eef2e7;border-radius:6px;padding:15px 18px;gap:22px}.lab-readout span{font-size:10px;letter-spacing:.5px;color:#869477}.lab-readout p{font-size:11px;line-height:1.65;margin:6px 0 0;color:#546446}.lab-bottom{display:flex;align-items:center;gap:24px;justify-content:space-between}.lab-bottom p{font-size:10px;color:#99a28d;line-height:1.8;max-width:950px}.lab-bottom button{white-space:nowrap}.event-log{font:10px monospace;max-height:55px;overflow:auto;color:#99a38c;line-height:1.9;border-top:1px solid #e1e6d9;padding-top:9px}.event-log>div:first-child{color:#7b8b68}.mapping summary{color:#7f8b72}.mapping-content, #mapping-content{padding:0 24px 24px}table{width:100%;border-collapse:collapse;font-size:11px;line-height:1.8;text-align:left}th{color:#46563b;background:#eaf0e1}th,td{padding:11px 12px;border:1px solid #dfe5d6;vertical-align:top}td{color:#728367}code{font-size:10px;word-break:break-word}footer{padding:17px 48px 29px;display:flex;justify-content:space-between;font:9px monospace;letter-spacing:1px;color:#a3aa99}.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(18px);opacity:0;pointer-events:none;transition:.2s;background:#30382bef;color:#f0f5e7;padding:14px 22px;border-radius:8px;font-size:12px;z-index:20;max-width:min(620px,90vw);line-height:1.7;box-shadow:0 6px 30px #1d301622}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* The product has exactly three route types. Each remains a native 480×480 canvas. */
+.page-back{position:absolute;top:12px;left:20px;width:84px;height:84px;background:none;border:0;font-size:26px;border-radius:20px;z-index:3}.page-title{position:absolute;top:40px;left:117px;margin:0;font-size:23px;font-weight:600;letter-spacing:-.6px}.page-kicker{position:absolute;top:81px;left:119px;font-size:10px;color:#8a9180}.role-list{position:absolute;left:36px;top:118px;right:36px;display:flex;flex-direction:column;gap:12px}.role-option{height:88px;background:#e7e9df;border:1px solid transparent;border-radius:18px;padding:0 23px;display:flex;gap:17px;align-items:center;text-align:left;position:relative}.role-option.selected{background:#f4f3ed;border-color:var(--option-color)}.role-option .mini-role{width:39px;font-size:33px;line-height:1;color:var(--option-color);text-align:center}.role-option strong{display:block;font-size:21px;letter-spacing:-.5px}.role-option small{display:block;font-size:11px;color:#8c937f;margin-top:5px}.role-check{margin-left:auto;color:var(--option-color);font-size:19px}.page-note{position:absolute;bottom:35px;left:36px;right:36px;text-align:center;font-size:11px;color:#929985;line-height:1.7}.ensemble-title{position:absolute;left:37px;top:121px;font-size:30px;letter-spacing:-1px;margin:0}.ensemble-desc{position:absolute;left:38px;top:167px;font-size:13px;color:#8a917e;line-height:1.8;max-width:402px}.ensemble-chain{position:absolute;left:36px;right:36px;top:227px;display:flex;align-items:center;justify-content:center;gap:13px}.ensemble-node{background:#e4e7db;border-radius:18px;min-width:95px;min-height:91px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:600}.ensemble-node span{font:10px monospace;color:#8a937c}.ensemble-node.self{border:1px solid var(--accent);background:#f5f3ea}.ensemble-arrow{color:#a2ab91}.ensemble-meta{position:absolute;bottom:49px;left:36px;right:36px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #dce0d1;padding-top:24px;font-size:12px;color:#939c85}.ensemble-meta strong{font:24px monospace;color:#545f46}.status-symbol{position:absolute;top:116px;left:38px;width:59px;height:59px;border-radius:16px;background:#e3e7d9;color:#7b8e64;display:grid;place-items:center;font:30px monospace}.status-symbol.error{color:#bd633d;background:#eee0ce}.status-symbol.loading{background:#e2e8ef;color:#6482a0}.status-symbol.loading:before{content:'';width:28px;height:28px;border:2px solid #6382a02b;border-top-color:#6382a0;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.status-heading{position:absolute;top:195px;left:38px;right:38px;font-size:27px;line-height:1.3;letter-spacing:-1px;margin:0}.status-copy{position:absolute;top:248px;left:38px;right:38px;max-height:68px;overflow:hidden;font-size:13px;line-height:1.8;color:#808b72;margin:0}.status-action{position:absolute;left:36px;right:36px;bottom:34px;height:84px;border:0;background:#e2e8d8;border-radius:18px;font-size:15px;color:#536546}.status-action.danger{background:#eddfcf;color:#9a5e32}.status-details{position:absolute;left:38px;right:38px;top:130px;display:flex;flex-direction:column;gap:0}.status-details div{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-bottom:1px solid #dfe4d6;font-size:13px;color:#849274}.status-details strong{font-size:13px;font-weight:500;color:#4d6141}.status-foot{position:absolute;bottom:48px;left:38px;right:38px;font-size:11px;line-height:1.9;color:#99a68b}.no-device .unit-shell{background:#d4dace;box-shadow:inset 0 0 0 1px #bcc6b1}.no-device .screen{background:#e5e9dd;box-shadow:none}.missing-content{height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#9aa68d;gap:16px}.missing-symbol{width:76px;height:76px;border:2px dashed #b8c2ac;border-radius:25px;margin-bottom:6px}.missing-content strong{font-size:22px;font-weight:500;color:#76866a}.missing-content p{font-size:12px;margin:0;color:#a0aa95}.no-device .unit-caption{opacity:.6}.error-tag{font-size:10px;color:#b17446;background:#f0e5d5;border-radius:4px;padding:4px 6px}.channel-muted .instrument-canvas{opacity:.45}.screen .pending-label{color:#b75b3e}.progress-track{position:absolute;top:324px;left:38px;right:38px;height:3px;background:#dce2d6;overflow:hidden}.progress-track i{display:block;width:30%;height:100%;background:#718bab;animation:progress 1.6s ease-in-out infinite}@keyframes progress{0%{transform:translateX(-120%)}100%{transform:translateX(400%)}}.preview-warning{font-size:11px;color:#94774e;margin:12px 0 0;line-height:1.8}@media(max-width:900px){.masthead{padding:25px 24px}.hero{gap:16px}.hero h1{font-size:45px}.hero p{font-size:12px}.workbench,.lab,.mapping{margin-left:12px;margin-right:12px}.bench-toolbar{align-items:flex-start;flex-direction:column;padding:17px}.relation-band{align-items:center;flex-direction:column;gap:9px;padding:14px}.relation-band #relation-text{border:0;padding:0}.stage-viewport{padding-left:18px;padding-right:18px}.try-strip{padding:24px;gap:20px}.stage-foot{padding:15px 18px}.resolution{display:none}.lab-controls{grid-template-columns:repeat(2,1fr)}.lab-subtitle{display:none}.lab-readout{grid-template-columns:1fr}.edition{font-size:10px}.try-strip p{font-size:10px}footer{padding:17px 24px;gap:15px}.mast-top{gap:10px}.hero{align-items:flex-start}.primary{min-width:155px;padding:0 18px}.hero h1{margin-bottom:18px}}@media(max-width:540px){.wordmark{font-size:9px;letter-spacing:1px;gap:8px}.edition{display:none}.hero{flex-direction:column;gap:23px}.listen-controls{flex-direction:row;align-items:center;width:100%;justify-content:space-between}.volume input{width:68px}.try-strip{grid-template-columns:1fr;gap:13px}.try-strip b{display:inline}.try-strip p{font-size:11px}.take-label>span:last-child{font-size:10px}.arrange-controls{gap:5px}.arrange-controls button{padding:9px 10px;font-size:11px}.lab-body{padding:18px}.lab summary{padding:16px 18px}.lab-readout{gap:15px}.lab-bottom{gap:14px}.lab-bottom p{font-size:9px}footer span:last-child{display:none}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+body.three-devices .masthead,body.three-devices main{max-width:1800px}
+
+/* 0.2: preserve the original visual score; simplify product navigation. */
+.simulator-caption{font-size:10px;color:#85897d;text-align:center;letter-spacing:.5px}
+.role-subtitle{font-size:16px;top:121px;color:#67705c;max-width:404px}
+.role-subtitle.pending{color:#aa4e30}
+.activity-row{font-size:15px;gap:12px}.activity-row span{font-size:15px}
+.device-button{font-size:17px}.device-button.transport-button{font-size:19px}
+.phrase-shortcut{gap:6px;font-size:16px}.phrase-shortcut .nav-symbol{font-size:23px}
+.device-button.transport-button.waiting{background:#e8decc;color:#8b622f}
+.battery-button{font-size:14px}.battery-icon{margin-top:3px}
+.commit-track{position:absolute;top:146px;left:39px;right:39px;height:2px;background:#d8dacf;z-index:2;overflow:hidden}
+.commit-track[hidden]{display:none}.commit-track i{height:100%;display:block;background:var(--accent);opacity:.65;transition:width .1s linear}
+.commit-track.indeterminate i{animation:progress 1.6s ease-in-out infinite}
+.page-kicker{font-size:14px;top:80px;color:#767f6b}
+.role-tabs{position:absolute;left:36px;right:36px;top:119px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.role-tab{height:101px;min-width:84px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;border-radius:16px;background:#e6e8de;border:1px solid transparent}
+.role-tab>span{font-size:26px;line-height:26px;color:var(--option-color)}.role-tab strong{font-size:17px;letter-spacing:.3px}.role-tab small{font-size:13px;color:#7b836d}
+.role-tab.selected{background:#f7f5ef;border-color:var(--option-color);box-shadow:inset 0 -3px var(--option-color)}
+.phrase-section-title{position:absolute;top:243px;left:38px;right:38px;display:flex;justify-content:space-between;font-size:16px;color:#5c6652}.phrase-section-title small{font-size:14px;color:#8a927e}
+.phrase-options{position:absolute;left:36px;right:36px;top:276px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.phrase-option{height:98px;min-width:84px;position:relative;border:1px solid transparent;border-radius:17px;background:#e5e8dc;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px}
+.phrase-option span{font:22px monospace;color:#8e987f}.phrase-option strong{font-size:18px;font-weight:500;color:#535e49}.phrase-option i{position:absolute;right:12px;top:8px;font-style:normal;color:var(--option-color)}
+.phrase-option.selected{border-color:var(--option-color);background:#f7f5ec}.phrase-option.selected span{color:var(--option-color)}
+.phrase-explanation{position:absolute;top:390px;left:38px;font-size:15px;line-height:1.7;color:#7b8470;margin:0}.role-pending{position:absolute;bottom:15px;right:38px;font-size:13px;color:#9b663c}
+.status-copy{font-size:16px;line-height:1.7}.status-action{font-size:18px}
+.local-volume{position:absolute;top:117px;left:38px;right:38px;height:117px;display:block}
+.volume-title{display:flex;justify-content:space-between;align-items:center;font-size:18px;color:#536149}
+.volume-title output{font:23px monospace;color:#323d2b}
+.local-volume input[type=range]{display:block;width:100%;height:84px;margin:0;appearance:none;-webkit-appearance:none;background:transparent;border-radius:14px;touch-action:pan-x}
+.local-volume input::-webkit-slider-runnable-track{height:4px;background:#c9d0be;border-radius:3px}
+.local-volume input::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:23px;height:23px;border-radius:50%;margin-top:-9px;background:#4e5a43;box-shadow:0 1px 3px #414f3c33}
+.local-volume input::-moz-range-track{height:4px;background:#c9d0be}.local-volume input::-moz-range-thumb{width:23px;height:23px;border-radius:50%;background:#4e5a43;border:0}
+.local-volume small{position:absolute;left:0;top:102px;color:#7b866c;font-size:13px;pointer-events:none}
+.status-details{top:251px}.status-details div{font-size:15px;padding:10px 0;line-height:18px}.status-details strong{font-size:14px}
+.status-foot{bottom:30px;font-size:13px;line-height:1.7;color:#7f8b71;margin:0}
+.seam-section{display:flex;gap:28px;align-items:center;border-bottom:1px solid #dce0d4;padding-bottom:22px;margin-bottom:24px}
+.seam-heading{flex:1}.seam-heading b{font-size:13px}.seam-heading p{font-size:11px;color:#7c8670;line-height:1.8;margin:7px 0 0}
+.seam-controls{display:flex;gap:18px;flex:1.2}.seam-controls label{flex:1;min-width:140px;display:flex;flex-direction:column;gap:8px}
+.seam-label{font:12px monospace;color:#57614e;display:flex;gap:14px;align-items:center;justify-content:space-between}.seam-label small{font:11px Arial,"Microsoft YaHei",sans-serif;color:#939b87}
+.seam-controls select{background:#f6f6ef;border:1px solid #cfd6c5;border-radius:6px;padding:9px 10px;font-size:12px;min-height:38px;color:#57614e;max-width:100%}
+@media(max-width:900px){.seam-section{flex-direction:column;align-items:stretch;gap:15px}}
+@media(max-width:540px){.simulator-caption{display:none}.seam-controls{flex-direction:column}.local-volume{max-width:none}.listen-controls{gap:12px}.volume{gap:6px}.volume input{width:58px}}
+/* 0.3: product stays native-sized; all drag controls live on the simulated shell. */
+[hidden]{display:none!important}
+.masthead{padding-bottom:28px}.hero{padding-top:26px}.hero h1{margin-bottom:15px}.desk-guide{text-align:right;max-width:360px}.desk-guide>span{font-size:17px;font-weight:600;color:#47503e}.desk-guide p{font-size:12px;line-height:1.8;letter-spacing:.3px;margin-top:7px;color:#7d8672}.desk-state{font-size:12px;color:#727c65;white-space:nowrap}
+.stage-viewport{height:660px;min-height:0;padding:0;overflow:auto;overscroll-behavior:contain;touch-action:pan-x pan-y;cursor:grab;scrollbar-gutter:stable;background-color:#e9ebe2;background-image:radial-gradient(#cbd0c15c .8px,transparent .8px);background-size:24px 24px}
+.stage{display:block;position:relative;width:1960px;min-width:1960px;height:1210px;min-height:1210px;gap:0}.unit{position:absolute;width:508px;height:566px;flex:none;z-index:2;margin:0;will-change:left,top}.unit.lifted{filter:drop-shadow(0 12px 14px #38403029);cursor:grabbing;opacity:.98}.unit-shell{cursor:grab}.screen{cursor:default}.unit-shell:after{display:none}
+.device-handle{display:flex;align-items:center;width:100%;height:36px;border:none;padding:0 17px;gap:10px;border-radius:12px 12px 0 0;cursor:grab;touch-action:none;user-select:none;background:transparent;letter-spacing:.8px;color:#828b73;font-size:10px}.device-handle:hover{background:#dfe3d5}.device-id-badge{background:#d8decf;color:#6f7b5c;border-radius:4px;font:bold 10px monospace;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex:0 0 22px}.handle-grip{font-size:20px;line-height:20px;color:#8c967e;letter-spacing:0}.handle-copy{font-size:11px;letter-spacing:0}.caption-state{margin-left:auto;font-size:11px;letter-spacing:0;color:#87917a}
+.unit-caption{padding:0 20px;height:22px;margin-top:6px;display:flex;align-items:center;justify-content:space-between;gap:8px}.clock-caption{font-size:11px;color:#7c876e;white-space:nowrap;letter-spacing:0}.beat-dots{display:flex;gap:7px}.beat-dots i{width:4px;height:4px;background:#bec6b3;border-radius:50%;display:block}.beat-dots i.active{background:var(--accent);box-shadow:0 0 0 3px #ffffff55}
+.edge-light{position:absolute;top:238px;height:40px;width:4px;border-radius:4px;pointer-events:none;opacity:0}.edge-left{left:-3px}.edge-right{right:-3px}.edge-light.connected{opacity:1;background:#9cac81;box-shadow:0 0 6px #8b9e6b55}.edge-light.pending{opacity:1;background:#c69e54;animation:edge-pulse 1s infinite}@keyframes edge-pulse{50%{opacity:.3}}
+.desk-note{position:absolute;top:19px;left:76px;font-size:10px;color:#a2aa96;letter-spacing:.8px;pointer-events:none}.desk-free-space{position:absolute;left:620px;top:860px;color:#a9b29c;text-align:center;font-size:18px;pointer-events:none}.desk-free-space small{display:block;font-size:12px;margin-top:12px;color:#b1b9a7}.empty-desk{position:absolute;top:155px;left:240px;width:700px;text-align:center;color:#7f8972}.empty-desk>span{font-size:56px;color:#a0ac91}.empty-desk h2{font-size:25px;font-weight:500;margin:18px 0 12px}.empty-desk p{font-size:14px;color:#8f9b7e}
+.snap-hint{position:absolute;width:508px;height:508px;border-radius:74px;outline:2px dashed #849870;outline-offset:6px;z-index:1;pointer-events:none;background:#c7d2b444}.snap-hint span{position:absolute;top:-28px;left:210px;font-size:12px;color:#65784d;white-space:nowrap}.stage-foot{min-height:44px;display:flex;justify-content:space-between;gap:20px;padding:12px 28px;font-size:11px;color:#7c886c;border-top:1px solid #d6ddcc}.stage-foot .resolution{font-size:10px;white-space:nowrap}
+.reserve-dock{display:flex;align-items:center;gap:24px;min-height:117px;padding:15px 28px;background:#e2e5da;border-top:1px solid #d2d8c8;transition:background .15s;position:relative;z-index:1}.reserve-dock.drag-ready{outline:2px dashed #a4b097;outline-offset:-8px}.reserve-dock.drop-ready{background:#d2dec3;outline-color:#768964}.dock-copy{min-width:150px}.dock-copy b{font-size:13px;font-weight:600}.dock-copy p{font-size:11px;color:#8b957e;line-height:1.6;margin:6px 0 0}.reserve-items{display:flex;flex:1;gap:15px;align-items:center;flex-wrap:wrap}.reserve-chip{display:flex;align-items:center;gap:14px;padding:12px 18px;min-width:225px;height:79px;border:1px solid #cbd1c1;border-radius:16px;background:#eef0e7;cursor:grab;touch-action:none;user-select:none}.reserve-chip:hover{background:#f5f7ee;border-color:#a9b79b}.reserve-chip strong{font-size:13px;letter-spacing:1px;color:var(--accent);display:block}.reserve-chip small{font-size:10px;color:#8b977b;display:block;margin-top:7px}.reserve-chip .handle-grip{margin-left:auto}.reserve-shape{width:45px;height:45px;border:3px solid #6f7766;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#d8ddcf;font-size:21px;color:#7c896b}.reserve-ghost{position:fixed;width:160px;height:80px;border-radius:18px;display:flex;align-items:center;justify-content:center;background:#30362b;color:#edf0e6;box-shadow:0 12px 35px #1114;z-index:600;pointer-events:none;letter-spacing:1px}.dock-empty{color:#99a18d;font-size:12px}.moving-tile,.moving-tile *{user-select:none!important;cursor:grabbing!important}
+.role-heading{top:35px;font-size:46px}.phrase-name{position:absolute;left:39px;top:91px;font-size:22px;line-height:26px;color:#66705b;letter-spacing:1px}.role-subtitle{top:126px;font-size:15px;max-width:408px;color:#89917e;gap:8px}.role-subtitle.pending{color:#a07040}.commit-track{top:151px;left:40px;right:40px}.instrument-canvas{top:150px}.gesture-zone{top:153px;height:192px}.activity-row{top:354px}.battery-readout{position:absolute;right:42px;top:40px;display:flex;align-items:center;gap:7px;color:#909784;font:11px monospace;pointer-events:none}.battery-readout.low{color:#b45e3d}.battery-icon i{max-width:14px}.bottom-nav{bottom:12px}.device-button{font-size:18px}.device-button .nav-symbol{font-size:18px}.page-title{font-size:26px}.page-kicker{top:84px;font-size:14px;left:119px;color:#8a937e}.role-tabs{top:119px}.role-selection-note{position:absolute;left:38px;right:38px;top:402px;font-size:15px;line-height:1.6;color:#8a937c}.role-selection-note.pending{color:#a27647}
+.local-volume{top:154px;left:43px;right:43px;height:218px}.volume-number{position:absolute;left:0;right:0;top:15px;text-align:center;font-size:72px;letter-spacing:-3px;color:#444e3a;line-height:90px;font-weight:500}.local-volume .volume-number small{position:static;font-size:24px;letter-spacing:0;color:#8e9a7c;margin-left:7px;pointer-events:none}.local-volume input[type=range]{position:absolute;top:122px;left:0;height:84px;touch-action:none}.local-volume input::-webkit-slider-thumb{width:27px;height:27px;margin-top:-11px}.volume-ends{position:absolute;top:202px;left:0;right:0;display:flex;justify-content:space-between;font:13px monospace;color:#9ba48e}.volume-orbit{position:absolute;top:135px;left:163px;width:154px;height:154px;border:1px solid #d8ddcf;border-radius:50%;opacity:.4;pointer-events:none}.volume-orbit:before,.volume-orbit:after{content:'';position:absolute;inset:15px;border:1px solid #dce0d6;border-radius:50%}.volume-orbit:after{inset:-15px}
+.boot-mark{position:absolute;left:0;right:0;top:143px;text-align:center;font-size:55px;color:var(--accent)}.boot-title{position:absolute;top:237px;left:0;right:0;text-align:center;font-size:22px;font-weight:500;color:#78836b}.boot-track{position:absolute;top:302px;left:148px;width:184px;height:2px;background:#d7decd;overflow:hidden}.boot-track i{display:block;height:2px;width:55%;background:var(--accent);animation:progress 1s infinite}
+.lab-readout{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.lab-readout p{white-space:pre-line;line-height:1.8;overflow-wrap:anywhere}.preview-controls{display:flex;flex-wrap:wrap;gap:8px;max-width:400px}.preview-controls button{font-size:11px;padding:8px 12px;border:1px solid #c9d2bb;background:#f3f6ea;border-radius:7px}.preview-controls .volume{width:100%;margin-top:8px}.lab-controls{grid-template-columns:repeat(4,minmax(0,1fr))}.lab-bottom{align-items:center}.try-strip{gap:24px}.try-strip p{line-height:1.8}
+@media(max-width:900px){.desk-guide{max-width:280px}.desk-guide p{font-size:11px}.reserve-dock{gap:14px;padding:16px 22px}.lab-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.stage-foot .resolution{display:none}}
+@media(max-width:540px){.masthead{padding:24px 20px}.hero h1{font-size:44px}.hero p{font-size:12px;letter-spacing:0}.desk-guide{display:none}.workbench{margin:0 10px}.bench-toolbar{padding:14px;align-items:flex-start;flex-direction:column;gap:8px}.stage-viewport{height:660px}.take-label{gap:7px}.desk-state{font-size:11px}.reserve-dock{align-items:flex-start;flex-direction:column;gap:12px}.dock-copy p{display:inline-block;margin:0 0 0 15px;vertical-align:middle}.reserve-items{width:100%}.reserve-chip{min-width:220px}.stage-foot{padding:12px 16px}.lab-readout{grid-template-columns:1fr}.edition{font-size:9px;letter-spacing:0}.wordmark{font-size:9px;letter-spacing:1px}.try-strip{margin:25px 24px}}
+
+@media(min-width:1700px){.masthead,main{max-width:1900px}.stage-viewport{height:675px}}
+
+/* v0.4: content and transport are primary; output level stays directly accessible.
+   The visible volume glyph is small, NOT its 92×84 physical touch target. */
+.perform-actions{grid-template-columns:144px 240px;gap:24px}
+.volume-trigger{position:absolute;top:23px;right:27px;width:92px;height:84px;border:0;border-radius:20px;background:transparent;color:#7c8471;display:flex;align-items:center;justify-content:center;gap:7px;font-size:15px;z-index:3}
+.volume-trigger:hover{background:#dce1d34d;color:#434d37}
+.volume-trigger svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.battery-readout{top:51px;right:139px;font-size:10px;gap:5px}
+.volume-overlay{position:absolute;inset:0;z-index:20;width:480px;height:480px}
+.volume-scrim{position:absolute;inset:0;width:480px;height:480px;background:#252d2045;border:0;padding:0;cursor:default}
+.volume-sheet{position:absolute;left:28px;right:28px;bottom:24px;height:252px;border-radius:29px;background:#f4f3eb;border:1px solid #d0d5c6;box-shadow:0 14px 34px #20291f33;animation:sheet-in .18s ease-out}
+.volume-sheet h2{position:absolute;top:23px;left:27px;font-size:24px;font-weight:500;margin:0;color:#48513e}
+.volume-close{position:absolute;top:5px;right:8px;width:84px;height:84px;font:30px Arial;border:0;border-radius:22px;background:transparent;color:#89917e}
+.volume-close:hover{background:#e8ebdf}
+.sheet-volume{position:absolute;top:70px;left:28px;right:28px;height:170px}
+.sheet-volume output{display:block;text-align:center;font:50px/58px Arial;letter-spacing:-2px;color:#495340}
+.sheet-volume output small{font-size:19px;letter-spacing:0;margin-left:6px;color:#8b957c}
+.sheet-volume input[type=range]{position:absolute;left:0;top:65px;width:100%;height:84px;margin:0;appearance:none;-webkit-appearance:none;background:transparent;touch-action:none}
+.sheet-volume input::-webkit-slider-runnable-track{height:4px;border-radius:3px;background:#ccd3c0}
+.sheet-volume input::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:26px;height:26px;border:4px solid #f4f3eb;border-radius:50%;background:var(--accent);box-shadow:0 0 0 1px #a6b093;margin-top:-11px}
+.sheet-volume input::-moz-range-track{height:4px;border-radius:3px;background:#ccd3c0}
+.sheet-volume input::-moz-range-thumb{width:20px;height:20px;border:4px solid #f4f3eb;border-radius:50%;background:var(--accent)}
+.sheet-volume-ends{position:absolute;left:0;right:0;top:134px;display:flex;justify-content:space-between;pointer-events:none;font:12px monospace;color:#929d84}
+@keyframes sheet-in{from{opacity:.3;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.volume-sheet{animation:none}}
+
+/* 0.4.1 — Direction A: an interactive control inside, a read-only status at the edge. */
+.visually-hidden{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;padding:0!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.top-status{position:absolute;top:18px;right:36px;height:84px;display:flex;align-items:center;gap:14px;z-index:3;color:#737c67}
+.top-status .volume-trigger{position:relative;inset:auto;flex:0 0 84px;width:84px;height:84px;min-width:84px;min-height:84px;display:grid;place-items:center;padding:0;border-radius:22px;color:#536047;background:transparent}
+.top-status .volume-trigger:hover{background:#dce1d34d}
+.top-status .volume-trigger svg{width:26px;height:26px;stroke-width:1.55;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.status-divider{display:block;width:1px;height:24px;flex:0 0 1px;background:#c4cabd}
+.top-status .battery-readout{position:relative;inset:auto;height:24px;min-width:78px;display:flex;align-items:center;justify-content:flex-end;gap:8px;font:13px/20px monospace;color:#7e8873;pointer-events:none;user-select:none}
+.top-status .battery-readout.low{color:#b44d30}
+.top-status .battery-icon{width:24px;height:14px;border:1.5px solid currentColor;border-radius:3px;margin:0;flex:0 0 24px;padding:2px;display:flex;align-items:stretch}
+.top-status .battery-icon::after{height:6px;width:2px;right:-4px;top:2.5px;border-radius:0 1px 1px 0}
+.top-status .battery-icon i{height:100%;margin:0;max-width:100%;border-radius:1px;flex:none}
+.battery-value{min-width:32px;white-space:nowrap;text-align:right}
+
+/* All instruction UI belongs to the HTML simulator, not the 480px product. */
+.play-guide{margin:0 28px 16px;border:1px solid #d4dacc;border-radius:13px;background:#fafaf4;overflow:hidden}
+.play-guide[hidden]{display:none}
+.guide-welcome{padding:23px 27px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:25px}
+.guide-eyebrow{display:block;font:10px/1.4 monospace;letter-spacing:1.2px;color:#aa583f;margin-bottom:9px}
+.guide-welcome h2,.guide-finish h2{font-size:23px;line-height:1.35;font-weight:600;margin:0 0 8px;letter-spacing:.1px}
+.guide-welcome p,.guide-finish p{font-size:13px;line-height:1.85;color:#69745e;margin:0}
+.guide-welcome-actions{display:flex;gap:11px;align-items:center;flex-wrap:wrap}
+.guide-main,.guide-secondary,.guide-quiet{min-height:44px;padding:0 19px;border-radius:8px;font-size:13px;white-space:nowrap}
+.guide-main{border:1px solid #343d2d;color:#fafaf1;background:#343d2d;font-weight:600}
+.guide-secondary{border:1px solid #cbd2c1;color:#506043;background:#f5f7ee}
+.guide-quiet{border:1px solid transparent;background:none;color:#777f6b}
+.guide-top{display:flex;justify-content:space-between;align-items:center;padding:9px 18px 6px;border-bottom:1px solid #e6e9de;gap:12px}
+.guide-top .guide-eyebrow{margin:0;white-space:nowrap}
+.guide-progress{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0;padding:0;list-style:none}
+.guide-progress li{display:flex;gap:5px;align-items:center;font-size:11px;color:#909785;white-space:nowrap}
+.guide-progress li b{font:10px monospace;border:1px solid #d4daca;border-radius:50%;width:19px;height:19px;display:grid;place-items:center;font-weight:normal}
+.guide-progress li.active{color:#36462b;font-weight:600}
+.guide-progress li.active b{background:#36462b;border-color:#36462b;color:white}
+.guide-progress li.done b{color:#597342;border-color:#9fae90;background:#eef2e5}
+.guide-lesson{padding:19px 25px 17px;display:grid;grid-template-columns:1.3fr 1fr;gap:28px}
+.guide-lesson h2{font-size:22px;line-height:1.4;font-weight:600;margin:0 0 8px}
+.guide-lesson p{font-size:13px;line-height:1.8;color:#58664c;margin:0}
+.guide-listen-box{padding-left:23px;border-left:1px solid #dce2d2;display:flex;flex-direction:column;justify-content:center}
+.guide-listen-box>span{font-size:11px;font-weight:600;letter-spacing:.4px;color:#96775c;margin-bottom:7px}
+.guide-bottom{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:10px 18px 13px;background:#f0f3e8}
+.guide-status{margin:0;font-size:12px;line-height:1.65;color:#768366;display:flex;align-items:center;gap:8px;min-width:0}
+.guide-status::before{content:'';display:block;flex:0 0 6px;height:6px;width:6px;background:#a2ac94;border-radius:50%}
+.guide-status[data-done=true]{color:#456434}
+.guide-status[data-done=true]::before{background:#739853}
+.guide-status[data-warning=true]{color:#a2633e}
+.guide-buttons{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.guide-finish{display:grid;grid-template-columns:1fr auto;gap:28px;padding:24px 27px;align-items:center}
+.guide-finish small{display:block;font-size:12px;line-height:1.8;color:#7e866f;margin-top:6px}
+.bench-actions{display:flex;gap:18px;align-items:center}
+.guide-reopen{min-height:38px;padding:7px 12px;border:1px solid #bdc7b2;background:#f6f8ef;border-radius:7px;color:#56654a;font-size:12px;white-space:nowrap}
+.guide-reopen span{margin-left:10px;color:#909b81}
+.guide-attention{outline:2px solid #ac70524d!important;outline-offset:3px}
+.guide-attention.device-handle{border-radius:8px}
+.guide-attention.gesture-zone{outline-offset:-6px}
+.play-reference{margin:0 28px 15px;border:1px solid #dce0d3;border-radius:10px;background:#fafaf5}
+.play-reference summary{padding:18px 24px;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:space-between;list-style:none;cursor:pointer;color:#59664c}
+.play-reference summary::-webkit-details-marker{display:none}
+.play-reference[open] summary{border-bottom:1px solid #e1e7d7}
+.reference-grid{padding:10px 24px 23px;display:grid;grid-template-columns:1fr 1fr;gap:12px 30px}
+.reference-grid h3{font-size:14px;font-weight:600;color:#414f35;margin:13px 0 8px}
+.reference-grid p{font-size:12px;line-height:1.95;color:#758267;margin:0 0 9px}
+.reference-grid .friend-line{color:#4d6040}
+@media(max-width:900px){.play-guide,.play-reference{margin-left:14px;margin-right:14px}.guide-welcome{gap:16px;padding:18px 20px}.guide-lesson{gap:18px;padding:16px 20px}.guide-progress li span{display:none}.guide-bottom{align-items:flex-start;gap:12px}.guide-buttons{flex-shrink:0}.bench-actions{gap:8px}.guide-bottom .guide-quiet{padding:0 8px}.guide-lesson h2{font-size:20px}}
+@media(max-width:540px){.guide-welcome,.guide-lesson,.guide-finish{grid-template-columns:1fr;gap:15px;padding:18px}.guide-welcome h2,.guide-finish h2{font-size:21px}.guide-listen-box{padding:10px 0 0;border-left:0;border-top:1px solid #dce2d2}.guide-bottom{flex-direction:column;align-items:stretch;padding:12px 16px}.guide-buttons{justify-content:flex-end}.guide-top{padding:7px 12px;gap:5px}.guide-progress{gap:5px}.guide-top .guide-eyebrow{font-size:9px;letter-spacing:0}.guide-top .guide-quiet{padding:0 9px;min-height:38px;font-size:12px}.bench-actions .desk-state{display:none}.guide-reopen{font-size:11px;padding:6px 8px}.guide-reopen span{margin-left:4px}.reference-grid{grid-template-columns:1fr;padding:8px 18px 18px}.play-reference summary{padding:17px 18px}.guide-attention{outline-width:2px}}
+
+/* 0.5: fourth ROLE, still three physical tiles. Four 93px tabs fit the existing page. */
+.role-tabs{grid-template-columns:repeat(4,minmax(84px,1fr))}
+.role-tab strong{font-size:15px;letter-spacing:0}
+.role-tab[data-value="harmony"] strong{font-size:12px;letter-spacing:-.1px}
+.role-heading[data-role="harmony"]{font-size:32px;letter-spacing:-1.1px;top:42px;max-width:198px}
+.harmony-tip{margin:18px 28px 0;padding:18px 26px;border:1px solid #dbd7cb;border-radius:12px;background:#f3f0e7;display:grid;grid-template-columns:140px 1fr;gap:20px;align-items:center}
+.harmony-tip h2{font-size:15px;line-height:1.6;color:#966b33;margin:0}.harmony-tip p{font-size:13px;line-height:1.9;color:#767467;margin:0}
+@media(max-width:540px){.harmony-tip{margin:16px 10px 0;padding:16px;grid-template-columns:1fr;gap:6px}}
+
+/* v5.0.3 / direction A: vertical expression control. The waveform remains a
+   separate, large vertical gesture target; screen geometry stays 480×480. */
+.instrument-canvas{left:16px;top:154px;width:342px;height:218px}
+.gesture-zone{left:26px;top:154px;width:322px;height:218px;border-radius:22px}
+.gesture-zone:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}
+.expression-control{position:absolute;left:360px;top:154px;width:96px;height:218px;border:0;border-radius:16px;cursor:ns-resize;touch-action:none;user-select:none;-webkit-user-select:none;z-index:2;color:#647158;background:transparent}
+.expression-control:hover{background:#67775707}
+.expression-control:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;background:#67775708}
+.expression-control *{pointer-events:none}
+.expression-rich,.expression-simple{position:absolute;left:0;width:54px;height:24px;line-height:24px;text-align:center;font-size:16px;font-weight:500;letter-spacing:1px;color:#647158}
+.expression-rich{top:0}.expression-simple{bottom:0}
+.expression-rail{position:absolute;left:25px;top:34px;width:3px;height:150px;border-radius:3px;background:#d3d8c9}
+.expression-fill{position:absolute;bottom:0;left:0;width:3px;height:calc(var(--expression)*100%);border-radius:3px;background:var(--accent)}
+.expression-marker{position:absolute;left:1.5px;bottom:calc(var(--expression)*100%);width:15px;height:15px;border:3px solid var(--paper);border-radius:50%;background:var(--accent);box-shadow:0 0 0 1px var(--accent);transform:translate(-50%,50%);z-index:2}
+.expression-value{position:absolute;left:17px;bottom:calc(var(--expression)*100%);transform:translateY(50%);height:24px;line-height:24px;min-width:47px;font-family:Arial,"Noto Sans CJK SC",sans-serif;font-size:17px;font-variant-numeric:tabular-nums;color:#48513d;letter-spacing:0;white-space:nowrap}
+.expression-ticks{position:absolute;left:-10px;top:0;width:5px;height:100%;background:repeating-linear-gradient(to bottom,#adb8a1 0px,#adb8a1 1px,transparent 1px,transparent 15px);opacity:.72}
+
+/* v5.0.4 — 合拍 / Echoy. Locale changes presentation, never screen geometry. */
+.mast-tools{display:flex;align-items:center;gap:22px}
+.language-switch{display:flex;align-items:center;padding:3px;gap:2px;border:1px solid #d2d8ca;border-radius:10px;background:#edf0e6;flex-shrink:0}
+.language-switch button{border:0;border-radius:7px;min-height:36px;min-width:58px;padding:0 13px;background:transparent;color:#7a846b;font-size:12px;letter-spacing:0}
+.language-switch button[aria-pressed=true]{background:#3c4833;color:#fbfcf8;box-shadow:0 1px 3px #17210e18}
+.language-switch button:focus-visible{outline-offset:2px}
+html:lang(en) .hero h1{letter-spacing:-2px}
+html:lang(en) .title-dot{font-size:0}html:lang(en) .title-dot:after{content:'.';font-size:54px}
+html:lang(zh-CN) .role-heading[data-role=harmony]{font-size:46px;letter-spacing:-2px;top:35px}
+html:lang(en) .screen .page-title{font-size:28px;letter-spacing:-.6px}
+html:lang(en) .screen .role-subtitle{font-size:15px;letter-spacing:0;max-width:400px;white-space:normal;line-height:1.4}
+html:lang(en) .screen .phrase-name{font-size:20px;letter-spacing:0}
+html:lang(en) .screen .expression-rich,html:lang(en) .screen .expression-simple{letter-spacing:0;font-size:15px}
+html:lang(en) .screen .phrase-option strong{font-size:17px;line-height:1.2;padding:0 8px;max-width:100%;overflow-wrap:normal}
+html:lang(en) .screen .status-heading{font-size:25px;left:30px;right:30px;line-height:1.25}
+html:lang(en) .screen .status-copy{font-size:17px;line-height:1.65;left:42px;right:42px}
+html:lang(en) .screen .page-kicker{font-size:14px;letter-spacing:0;max-width:333px}
+html:lang(en) .screen .role-selection-note{font-size:14px;line-height:1.5}
+html:lang(en) .guide-progress{gap:10px}html:lang(en) .guide-progress li{font-size:10px}
+html:lang(en) .guide-welcome h2{font-size:25px}
+html:lang(en) .guide-bottom{align-items:flex-start}
+html:lang(en) .guide-status{max-width:64%}
+html:lang(en) .bench-toolbar{flex-wrap:wrap}
+html:lang(en) .hero p{letter-spacing:0;line-height:1.6}
+html:lang(en) .desk-guide{max-width:370px}
+@media(max-width:900px){.mast-tools{gap:12px}.mast-tools .edition{display:none}html:lang(en) .guide-status{max-width:none}}
+@media(max-width:540px){.mast-top{align-items:center;flex-wrap:wrap}.wordmark{letter-spacing:.5px}.language-switch button{min-height:36px;min-width:46px;padding:0 10px}.language-switch{margin-left:auto}.mast-tools{margin-left:auto}html:lang(en) .hero h1{font-size:46px}html:lang(en) .desk-note{font-size:10px}html:lang(en) .guide-top{flex-wrap:wrap}html:lang(en) .guide-progress{gap:5px}html:lang(en) .guide-status{max-width:none}}
+</style></head><body>
+<header class="masthead"><div class="mast-top"><span class="wordmark"><i></i>MOSAICO<span class="slash">/</span>SOUND STUDY 01</span><div class="mast-tools"><div class="language-switch" role="group" aria-label="语言"><button id="language-zh" data-language="zh-CN" aria-pressed="true" data-i18n-skip lang="zh-CN">中文</button><button id="language-en" data-language="en" aria-pressed="false" data-i18n-skip lang="en">English</button></div><span class="edition">交互原型 5.0.4 · 非固件</span></div></div><div class="hero"><div><h1>合拍<span class="title-dot">。</span></h1><p>触摸决定怎么演奏，排列决定回应谁。</p></div><div class="desk-guide"><span>先独奏，再碰面。</span><p>拖动外壳靠拢，吸合后自动对拍。<br>向上更丰富，向下更简洁。</p></div></div></header>
+<main><section id="play-guide" class="play-guide" aria-label="第一次玩合拍"></section><section class="workbench" aria-label="虚拟设备桌面"><div class="bench-toolbar"><div class="take-label"><span class="live-dot on"></span><b>NIGHT CIRCUIT</b><span>96 BPM · D MINOR</span></div><div class="bench-actions"><span id="desk-state" class="desk-state"></span><button id="guide-reopen" class="guide-reopen" aria-controls="play-guide" aria-expanded="true">玩法指引 <span aria-hidden="true">↗</span></button></div></div>
+<div id="stage-viewport" class="stage-viewport" aria-label="可滚动的摆放桌面"><div id="stage" class="stage"><div class="desk-note">拖外壳移动 · 上下拖声形：丰富 / 简洁</div><div id="empty-desk" class="empty-desk" hidden><span>◌</span><h2>桌上还没有声音。</h2><p>把下方的设备拖上来，从独奏开始。</p></div><div id="snap-hint" class="snap-hint" hidden><span>松手吸合</span></div><div class="desk-free-space">留一点空地，换一种排列。<small>拖动桌面空白处，或使用滚动条查看其它位置。</small></div></div></div>
+<div class="stage-foot"><span id="session-summary">开机发现不等于同场；首次吸合后才开始对拍。</span><span class="resolution">每块屏幕 480 × 480 · 不缩放</span></div>
+<div id="reserve-dock" class="reserve-dock"><div class="dock-copy"><b>收纳区</b><p>拖进来收起 / 关机<br>拖上桌重新开机</p></div><div class="reserve-items"> <div class="reserve-chip" data-reserve="A" role="button" aria-label="把备用设备 A 拖上桌"><span class="reserve-shape">◉</span><div><strong>PULSE</strong><small>A · 已关机 · 拖上桌</small></div><span class="handle-grip">⠿</span></div><div class="reserve-chip" data-reserve="B" role="button" aria-label="把备用设备 B 拖上桌"><span class="reserve-shape">≋</span><div><strong>VOICE</strong><small>B · 已关机 · 拖上桌</small></div><span class="handle-grip">⠿</span></div><div class="reserve-chip" data-reserve="C" role="button" aria-label="把备用设备 C 拖上桌"><span class="reserve-shape">⠿</span><div><strong>DUST</strong><small>C · 已关机 · 拖上桌</small></div><span class="handle-grip">⠿</span></div><span id="dock-empty" class="dock-empty" hidden>设备都在桌上。拖回此处，可模拟关机。</span></div></div></section>
+<aside class="harmony-tip" aria-label="试试新角色和声"><h2>和声 · 新的说法<br><span>CHORDS IN CONVERSATION</span></h2><p>在任意一块的「角色」里选和声，默认从「分解」开始。先接到 Voice 右边，保持其他设置不变，再切换「短和弦」和「接句」。<br>短和弦在各次落点改变音高，连贯起伏、及时收住；接句在停顿处说一小段，再留出空白。先听几小节，再交换左右比较。</p></aside><section class="try-strip"><div><span>01</span><p><b>一块是一种声音。</b>Pulse 敲出节奏，Voice 拉出旋律，Dust 留下颗粒和余韵，Harmony 用和弦参与回应。</p></div><div><span>02</span><p><b>摆放是一种编曲。</b>左边先说，右边回应。换个位置，就换一种对话。</p></div><div><span>03</span><p><b>你来决定喜欢哪一种。</b>不必找对音或按准拍子，先比较，再留下喜欢的摆法。</p></div></section>
+<details class="play-reference"><summary>随时查：怎么玩、听不到声音怎么办 <span aria-hidden="true">＋</span></summary><div class="reference-grid"><section><h3>先做两个不同的动作</h3><p><b>拖上方的外壳握柄：</b>搬动设备，让左右边缘吸合。<br><b>上下拖声形或右侧刻度：</b>向上更丰富，向下更简洁。松手后保留，不是搬动设备，也不是调音量。</p><p>首次吸合要等对拍；换乐句和编排要等下一小节。看屏幕里的等待提示，不用反复点击。</p></section><section><h3>为什么拆开了还在响？</h3><p>拆开只解除回应关系，设备会回到独奏，已建立的共同拍子仍继续。要听“少了这一块会怎样”，点它自己的暂停。</p><p>第三台在收纳区。拖上桌是开机，拖回收纳区才是关机。加入不会自动播放，请点它自己的播放。</p></section><section><h3>听不到声音？</h3><p>先点设备自己的播放，确认电脑没有静音，再点屏幕内侧的扬声器图标检查本机音量。电池只显示电量，不能点击。</p><p>返回后台后，浏览器预览会暂停，需要重新点各台播放。如果提示输出失败，可点设备上的重试。高级面板的“无声演示”只展示交互，不会发声。</p></section><section><h3>带同事玩，只说这一句</h3><p class="friend-line">“这不是考你会不会音乐。把它们当成两个会互相接话的声音，挪一挪，听哪一种更有意思。”</p><p>让同事亲手换一次左右，再问：“你更喜欢谁先说？”不必问他听出了什么乐理。</p></section></div></details>
+<details class="lab" id="lab"><summary><div><span class="lab-mark">LAB</span><b>高级模拟与诊断</b><span class="lab-subtitle">故障注入 · 不属于设备界面</span></div><span class="chevron">⌄</span></summary><div class="lab-body"><div class="lab-controls"><label>调试对象<select id="target"><option value="A">A · tile-8f31</option><option value="B">B · tile-b472</option><option value="C">C · tile-d6a9</option></select></label><label>电量 <output id="battery-out">86%</output><input id="battery" type="range" min="0" max="100" value="86"></label><label>IMU 倾角 <output id="imu-out">0°</output><input id="imu" type="range" min="-45" max="45" value="0"></label><label>磁吸异常<select id="magnetic"><option value="normal">正常 · 由实际摆放决定</option><option value="uncertain">该设备接触识别不确定</option></select></label><label>该设备网络<select id="network"><option value="online">无线正常</option><option value="wifi-off">Wi-Fi 离线 · 演奏无线正常</option><option value="peer-off">演奏无线失联</option></select></label><label>左侧扩展<select id="module-left"><option value="none">无模块</option><option value="camera">相机</option><option value="button">按键灯</option><option value="joystick">摇杆</option></select></label><label>右侧扩展<select id="module-right"><option value="none">无模块</option><option value="button">按键灯</option><option value="joystick">摇杆</option></select></label></div>
+<div class="scenario-row"><span>异常注入</span><button data-scenario="loading">素材加载</button><button data-scenario="role-fail">下次换角失败</button><button data-scenario="audio-fail">输出失败</button><button data-scenario="data-fail">乐句数据失败</button><button data-scenario="sync-fail">对拍失败</button><button data-scenario="no-peer">仅保留该设备</button><button data-scenario="all-missing">全部缺席</button><button id="restore">解除该设备故障</button><button id="reset">重置模拟器</button></div>
+<div class="lab-readout"><div><span>稳定身份 / 开机世代</span><p id="identity-readout"></p></div><div><span>发现的无线候选（不自动同场）</span><p id="discovery-readout"></p></div><div><span>逻辑会话 / 时间参考</span><p id="clock-readout"></p></div><div><span>接触确认 / 已生效邻接</span><p id="contact-readout"></p></div></div><div class="lab-bottom"><p>逻辑时间与握手状态为模拟；没有测量真实无线时差。几何坐标只进入接触适配器。<br>不使用摄像头、麦克风、USB 或真实无线。扩展模块仅模拟识别，IMU 不改变简洁 / 丰富设置。</p><div class="preview-controls"><button id="preview-audio">启用浏览器声音</button><button id="silent-start">无声演示</button><label class="volume">预览输出<input id="master-volume" type="range" min="0" max="80" value="55" aria-label="浏览器输出音量"><output id="master-value">55%</output></label></div></div><div id="event-log" class="event-log" aria-live="polite"></div></div></details>
+<details class="mapping"><summary>HTML 行为 → 固件基础 → 真机验收 <span>↗</span></summary><div id="mapping-content"></div></details><footer><span>合拍 / Echoy</span><span>5.0.4 · 不连接真实设备 · 建议桌面浏览器体验</span></footer></main><div id="toast" class="toast" role="status"></div><script>/*
+ * SPDX-FileCopyrightText: 2026 Espressif Systems (Shanghai) CO LTD
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+/* Physical display facts shared by the product runtime, capture entry and review adapter.
+ * Keep this module dependency-free so browser code and Node verification can import the
+ * exact same values without creating a DOM or installing a build tool. */
+
+const DEVICE_DISPLAY=Object.freeze({
+  widthPx:480,
+  heightPx:480,
+  panelOuterMm:40.29,
+  viewableAreaMm:38.8,
+  activeAreaMm:38.39,
+  cornerRadiusPx:60
+});
+
+const DEVICE_WIDTH_PX=DEVICE_DISPLAY.widthPx;
+const DEVICE_HEIGHT_PX=DEVICE_DISPLAY.heightPx;
+const DEVICE_VIEWABLE_MM=DEVICE_DISPLAY.viewableAreaMm;
+const DEVICE_PX_PER_MM=DEVICE_WIDTH_PX/DEVICE_VIEWABLE_MM;
+
+
+/*
+ * SPDX-FileCopyrightText: 2026 Espressif Systems (Shanghai) CO LTD
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+/* Cross-screen interaction thresholds. Component-local animation details stay with their
+ * component; only values that define shared navigation or hardware-key behaviour belong here. */
+
+const GESTURE_CONTRACT=Object.freeze({
+  fallbackDistancePx:60,
+  edgeStartPx:60,
+  clickSwallowMs:300,
+  axisLockPx:8,
+  commitDistancePx:110,
+  commitVelocityPxPerMs:0.45,
+  settleMs:260,
+  maxDurationMs:900,
+  settleEasingCss:'var(--ease-page)'
+});
+
+const PHYSICAL_KEY_CONTRACT=Object.freeze({
+  holdMs:600,
+  /* Hold-to-talk is one gesture wherever it starts — the top key and the input bar share this
+     value, so "long press for voice" has a single body memory. It is deliberately faster than
+     the generic holdMs above: destructive holds (power-off) keep the 600ms guard, while the
+     conversational hold answers sooner. 420ms, not Spec-Modular's 340ms: the input bar sits in
+     a scrollable surface where 340 read scroll-intent as speech. */
+  voiceHoldMs:420,
+  topDoublePressMs:320
+});
+
+const ROUTE_TRANSITION_CONTRACT=Object.freeze({
+  cleanupMs:460
+});
+
+const HOME_INDICATOR_CONTRACT=Object.freeze({
+  edgePx:56,
+  hideDelayMs:200
+});
+
+/* Top-edge pull-down opens Control Center from any unlocked product screen, mirroring the
+ * bottom-edge home swipe. Screens that recognise a downward gesture themselves keep it. */
+const CONTROL_CENTER_PULL_CONTRACT=Object.freeze({
+  edgePx:56
+});
+
+/* Touch-target floor adopted from the product-doc_v1 carrier/wearable UI specs (both agree on
+ * these numbers). Values are design floors for new and reworked screens; legacy screens below
+ * the floor are tracked as debt, and the final values still need small-panel hardware
+ * validation before they become release gates. */
+const TOUCH_TARGET_CONTRACT=Object.freeze({
+  minPx:84,
+  dangerMinPx:96,
+  minGapPx:12,
+  dangerGapPx:24
+});
+
+/* Perceived-responsiveness budgets from the same specs: press acknowledgement within 100ms
+ * (measured input-event to visible change), micro-interactions 150–300ms, full-page
+ * transitions at most 400ms, and any async operation longer than 300ms must show progress.
+ * Safety response times are hardware contracts and are never satisfied by UI animation. */
+const FEEDBACK_TIMING_CONTRACT=Object.freeze({
+  pressAckMs:100,
+  microMinMs:150,
+  microMaxMs:300,
+  transitionMaxMs:400,
+  progressThresholdMs:300
+});
+
+
+/* 合拍 / Echoy: presentation-only localization.
+ * Catalogue keys are the original Chinese UI messages. No locale enters the music,
+ * device identity, session, or transport model. Text and accessible attributes are
+ * translated at explicit rendering boundaries, never through a MutationObserver.
+ * WeakMaps retain source text so switching back is lossless and does not replace inputs.
+ */
+(function(root){'use strict';
+const EN={"合拍 5.0.4 · 把声音摆在一起": "Echoy 5.0.4 · Arrange sounds, make music", "交互原型 5.0.4 · 非固件": "Interactive prototype 5.0.4 · Not firmware", "合拍": "Echoy", "第一次玩合拍": "Getting started with Echoy", "合拍 / Echoy": "Echoy", "5.0.4 · 不连接真实设备 · 建议桌面浏览器体验": "5.0.4 · No hardware connection · Best on desktop", "触摸决定怎么演奏，排列决定回应谁。": "Touch shapes the playing. Placement shapes the reply.", "先独奏，再碰面。": "Start solo. Then connect.", "拖动外壳靠拢，吸合后自动对拍。": "Drag the cases together. Snap to sync their beat.", "向上更丰富，向下更简洁。": "Drag up for Rich, down for Simple.", "玩法指引": "How to play", "拖外壳移动 · 上下拖声形：丰富 / 简洁": "Drag the case to move · Drag the sound up/down: Rich / Simple", "桌上还没有声音。": "No sounds on the table yet.", "把下方的设备拖上来，从独奏开始。": "Drag a tile up from the shelf and start solo.", "松手吸合": "Release to connect", "留一点空地，换一种排列。": "Leave a little room. Try a new arrangement.", "拖动桌面空白处，或使用滚动条查看其它位置。": "Drag an empty area or use the scrollbars to explore the table.", "开机发现不等于同场；首次吸合后才开始对拍。": "Discovering a tile does not join its session. Connect the edges to sync.", "每块屏幕 480 × 480 · 不缩放": "Each screen 480 × 480 · No scaling", "收纳区": "Tile shelf", "拖进来收起 / 关机": "Drag here to put away / power off", "拖上桌重新开机": "Drag onto the table to power on", "设备都在桌上。拖回此处，可模拟关机。": "All tiles are on the table. Drag one here to simulate power-off.", "和声 · 新的说法": "Harmony · A new voice", "在任意一块的「角色」里选和声，默认从「分解」开始。先接到 Voice 右边，保持其他设置不变，再切换「短和弦」和「接句」。": "Choose Harmony in any tile’s Role menu; it starts with Arpeggio. Connect it to the right of Voice, leave the other settings unchanged, then compare Short chords and Answer.", "短和弦在各次落点改变音高，连贯起伏、及时收住；接句在停顿处说一小段，再留出空白。先听几小节，再交换左右比较。": "Short chords move through different pitches with clear endings. Answer adds a small phrase in a pause, then leaves space. Listen for a few bars before swapping sides.", "一块是一种声音。": "One tile, one voice.", "Pulse 敲出节奏，Voice 拉出旋律，Dust 留下颗粒和余韵，Harmony 用和弦参与回应。": "Pulse brings rhythm, Voice brings melody, Dust adds grains and trails, and Harmony answers with chords.", "摆放是一种编曲。": "Arrange the tiles. Arrange the music.", "左边先说，右边回应。换个位置，就换一种对话。": "The left tile leads; the right tile replies. Swap positions to change the conversation.", "你来决定喜欢哪一种。": "Let your ears decide.", "不必找对音或按准拍子，先比较，再留下喜欢的摆法。": "No need to find the right notes or tap in time. Compare arrangements and keep the one you like.", "随时查：怎么玩、听不到声音怎么办": "Quick reference: playing and sound troubleshooting", "先做两个不同的动作": "Two different gestures", "拖上方的外壳握柄：": "Drag the grip above the screen:", "搬动设备，让左右边缘吸合。": "Move the tile and connect its left or right edge.", "上下拖声形或右侧刻度：": "Drag the sound or the right-hand scale vertically:", "向上更丰富，向下更简洁。松手后保留，不是搬动设备，也不是调音量。": "Up is Rich; down is Simple. The setting stays when you release. This changes neither the tile’s position nor its volume.", "首次吸合要等对拍；换乐句和编排要等下一小节。看屏幕里的等待提示，不用反复点击。": "The first connection needs time to sync. Phrase and arrangement changes take effect at the next bar. Watch the on-screen status; repeated taps are not needed.", "为什么拆开了还在响？": "Why does it keep playing after separation?", "拆开只解除回应关系，设备会回到独奏，已建立的共同拍子仍继续。要听“少了这一块会怎样”，点它自己的暂停。": "Separating tiles removes the response relationship. They play solo but keep the shared beat. To hear what one tile contributes, pause that tile instead.", "第三台在收纳区。拖上桌是开机，拖回收纳区才是关机。加入不会自动播放，请点它自己的播放。": "The third tile is on the shelf. Drag it onto the table to power on; return it to power off. Connecting does not start its sound: press its own Play button.", "听不到声音？": "No sound?", "先点设备自己的播放，确认电脑没有静音，再点屏幕内侧的扬声器图标检查本机音量。电池只显示电量，不能点击。": "Press Play on the tile and check that your computer is not muted. Open the speaker icon to check the tile’s volume. The battery is a read-only indicator.", "返回后台后，浏览器预览会暂停，需要重新点各台播放。如果提示输出失败，可点设备上的重试。高级面板的“无声演示”只展示交互，不会发声。": "The preview pauses when this tab goes into the background. Press Play on each tile to resume. Use Retry for an output error. Silent demo in the advanced panel runs the interaction without sound.", "带同事玩，只说这一句": "Invite a colleague to try it", "“这不是考你会不会音乐。把它们当成两个会互相接话的声音，挪一挪，听哪一种更有意思。”": "“No music skills needed. These are two sounds that reply to each other. Move them around and see which conversation you like.”", "让同事亲手换一次左右，再问：“你更喜欢谁先说？”不必问他听出了什么乐理。": "Let them swap the tiles, then ask: “Which one do you like leading?” There is no need to explain any music theory.", "高级模拟与诊断": "Advanced simulation & diagnostics", "故障注入 · 不属于设备界面": "Fault injection · Outside the product screens", "调试对象": "Target tile", "电量": "Battery", "IMU 倾角": "IMU tilt", "磁吸异常": "Contact fault", "正常 · 由实际摆放决定": "Normal · Determined by placement", "该设备接触识别不确定": "Uncertain contact on this tile", "该设备网络": "Tile network", "无线正常": "Wireless online", "Wi-Fi 离线 · 演奏无线正常": "Wi-Fi offline · Peer link online", "演奏无线失联": "Peer link offline", "左侧扩展": "Left expansion", "右侧扩展": "Right expansion", "无模块": "No module", "相机": "Camera", "按键灯": "Buttons & LEDs", "摇杆": "Joystick", "异常注入": "Inject a fault", "素材加载": "Load sounds", "下次换角失败": "Fail next role change", "输出失败": "Output failure", "乐句数据失败": "Phrase data failure", "对拍失败": "Sync failure", "仅保留该设备": "Keep only this tile", "全部缺席": "Remove all tiles", "解除该设备故障": "Clear tile faults", "重置模拟器": "Reset simulator", "稳定身份 / 开机世代": "Stable ID / Boot generation", "发现的无线候选（不自动同场）": "Discovered peers (no automatic joining)", "逻辑会话 / 时间参考": "Logical session / Clock reference", "接触确认 / 已生效邻接": "Contact state / Active connections", "逻辑时间与握手状态为模拟；没有测量真实无线时差。几何坐标只进入接触适配器。": "Clocks and handshakes are simulated; real wireless offsets are not measured. Coordinates are only used by the contact adapter.", "不使用摄像头、麦克风、USB 或真实无线。扩展模块仅模拟识别，IMU 不改变简洁 / 丰富设置。": "No camera, microphone, USB or real wireless access. Expansion detection is simulated. IMU tilt does not change Simple / Rich.", "启用浏览器声音": "Enable browser audio", "无声演示": "Silent demo", "预览输出": "Preview output", "HTML 行为 → 固件基础 → 真机验收": "HTML behavior → Firmware building blocks → Hardware checks", "虚拟设备桌面": "Virtual tile table", "可滚动的摆放桌面": "Scrollable tile table", "试试新角色和声": "Try the Harmony role", "浏览器输出音量": "Browser output volume", "拖动外壳摆放；方向键移动，Shift 加速": "Drag the case to place it; use arrow keys to move, Shift for larger steps", "拖动外壳": "Drag the case", "返回演奏": "Back to playing", "正在开机": "Starting up", "播放中": "Playing", "等待拍点": "Waiting for beat", "已暂停": "Paused", "未能对拍 · 原时间继续": "Sync failed · Keeping original clock", "拍点已约定 · 等待接入": "Beat agreed · Waiting to join", "交换时间信息…": "Exchanging timestamps…", "独立时间 · 无线失联": "Local clock · Peer link lost", "短时保拍 · 无线失联": "Holding beat · Peer link lost", "独立时间": "Local clock", "准备声音": "Preparing sounds", "本机音量": "Tile volume", "调整本机音量": "Adjust tile volume", "音量": "Volume", "请充电": "Low", "丰富": "Rich", "简洁": "Simple", "角色": "Role", "播放": "Play", "暂停": "Pause", "角色与乐句": "Role & phrase", "选择一种表达": "Choose a phrase", "关闭音量": "Close volume", "读取声音素材": "Loading sounds", "原来的演奏继续。": "Your current music continues.", "准备好后，在下一小节切换。": "The new sound enters at the next bar.", "请稍候。": "Please wait.", "取消": "Cancel", "需要处理": "Something needs attention", "新角色没有准备好": "New role not ready", "乐句暂不可用": "Phrase unavailable", "暂时无法发声": "Audio unavailable", "重新准备后，在下一小节恢复。": "Prepare again, then resume at the next bar.", "请重试本机声音输出。": "Retry this tile’s audio output.", "继续原来的演奏": "Keep current sound", "重试": "Retry", "演奏，拖动声形调节简洁与丰富": "Playing style: drag the sound up for Rich, down for Simple", "演奏，纵向刻度调节简洁与丰富": "Playing style: vertical Simple / Rich scale", "脉冲": "Pulse", "声线": "Voice", "微尘": "Dust", "和声": "Harmony", "节奏": "Rhythm", "旋律": "Melody", "纹理": "Texture", "和弦": "Chords", "重音": "Accents", "切分": "Syncopation", "留白": "Space", "短句": "Short phrase", "轻答": "Light reply", "长线": "Long line", "颗粒": "Grains", "点缀": "Touches", "余韵": "Trails", "短和弦": "Short chords", "分解": "Arpeggio", "接句": "Answer", "分别开机，各自计时。将外壳拖到一起，首次吸合后才建立同场。": "Tiles start on separate clocks. Drag their cases together to establish a shared session.", "开机完成，开始发现；使用独立时间": "Started discovering peers; using a local clock", "对拍完成，已在未来边界并入同场": "Synced and joined the session at the agreed boundary", "保拍超时，已退回独立时间": "Beat hold expired; returned to a local clock", "新的邻接编排已生效": "New connection arrangement is active", "声音设置已生效": "Sound settings applied", "本机开始播放": "Tile started playing", "开始对拍；原来的演奏暂时继续": "Sync started; existing music continues", "对拍完成": "In sync", "已生效": "Applied", "这块设备还没有准备好。": "This tile is not ready yet.", "浏览器未能启用声音。可在高级面板使用无声预览。": "Browser audio could not start. You can use Silent demo in the advanced panel.", "素材不可用": "Sounds unavailable", "电量已耗尽。请先在高级面板补电，再拖上桌。": "The battery is empty. Increase it in the advanced panel before dragging the tile onto the table.", "声音已准备 · 下一小节恢复": "Sound ready · Resumes next bar", "准备播放 · 可点暂停取消": "Preparing · Tap Pause to cancel", "暂未对齐 · 继续原来的演奏": "Not synced · Keeping current music", "已约定拍点 · 下一小节接入": "Beat agreed · Joins next bar", "正在对拍 · 原演奏继续": "Syncing · Current music continues", "等待下一拍 · 可点暂停取消": "Next beat · Tap Pause to cancel", "新节奏 · 下一小节生效": "New rhythm · Next bar", "位置确认中 · 保持当前编排": "Checking position · Keeping pattern", "接触待确认": "Confirming contact", "新关系 · 下一小节生效": "New connection · Next bar", "无线失联 · 本地独奏": "Link lost · Playing solo", "同伴失联 · 暂时保持拍子": "Peer lost · Holding the beat", "回应左邻": "Replying to the left", "提出动机": "Leading the phrase", "独奏 · 保留同场拍子": "Solo · Keeping the shared beat", "独奏": "Solo", "回应关系保留": "Response retained", "同场拍子保留": "Shared beat retained", "独奏就绪": "Ready for solo", "浏览器进入后台，声音预览已暂停。返回后点击各台播放。": "Tab moved to the background. Preview paused; press each tile’s Play button to resume.", "该设备下次换角色会模拟失败。": "The next role change on this tile will fail.", "该设备下次对拍会失败；可先收起再放回，或恢复无线连接。": "The next sync will fail. Return this tile to the shelf and bring it back, or reconnect its peer link.", "桌面是空的": "The table is empty", "正在建立共同拍子…": "Establishing a shared beat…", "拆开只改变回应关系；同场的拍子仍继续。": "Separate to change the response. The shared beat continues.", "尚未同场。把两块的左右边缘吸合，开始对拍。": "Separate clocks. Connect left and right edges to sync.", "未开机": "Not started", "已上桌": "On the table", "已收起": "On the shelf", "尚未发现可通信的同伴": "No reachable peers discovered yet", "运行": "Running", "独立启动中 / 尚无时间轴": "Starting independently / No clock yet", "编排已生效": "Arrangement active", "无接触，不依据屏幕位置排序推测邻接": "No contact. Screen order alone does not imply a connection.", "固定 480×480、角色选择与演奏、轻量音量面板": "Fixed 480×480 screens, role selection, playing and volume popover", "gsp_hello 或 hello_world + hmi_demo；上传显示与交互契约": "gsp_hello or hello_world + hmi_demo; supplied display and interaction contracts", "真机字体可读性、84px触控、圆角与音频并发": "Check real-screen text, 84px touch targets, rounded corners and concurrent audio", "独立开机、稳定 UID / 新 boot ID、发现不入场": "Independent boot, stable UID / fresh boot ID, discovery without joining", "复用现有身份需检查；mosaico_peer_link、espnow_chat；新增发现协议": "Verify reusable identity APIs; mosaico_peer_link and espnow_chat; add discovery protocol", "多台同时开机、不误加入旁桌、协议/信道兼容与去重": "Concurrent boot, no accidental nearby-session joins, protocol/channel compatibility and deduplication", "首次吸合协商同场、未来边界接入": "First contact negotiates a session; join at a future boundary", "mosaico_interaction、mosaico_peer_link、mosaico_network；新增演奏会话协议": "mosaico_interaction, mosaico_peer_link, mosaico_network; add a music-session protocol", "接触对应正确无线对端，多接触歧义时不得猜测": "Match contact to the correct wireless peer; do not guess when contacts are ambiguous", "每会话独立时基，拆开保留拍子": "Independent session clocks; separation preserves the beat", "新增时间戳交换、漂移估计、事件预调度与音频时钟校准": "Add timestamp exchange, drift estimation, event look-ahead and audio clock calibration", "真实声学起音偏差、长期漂移、首接入的短收尾；当前仅逻辑模拟": "Measure acoustic onset offsets, long-term drift and first-join release; logical simulation only here", "失联保拍、降级、关机与恢复": "Beat hold, fallback, power-off and recovery", "网络心跳 / 超时 / 会话世代与成员表，新增策略": "Add heartbeat, timeout, session generation and membership policies", "参考成员掉电、短断连、重启旧包、恢复不擅自播放": "Reference tile power loss, brief dropouts, stale boot packets, no automatic play on recovery", "拖外壳吸附，只把接触事件交给产品": "Drag and snap cases; only contact events reach product logic", "HTML专用空间适配；真机来自磁场分类与握手": "HTML-only spatial adapter; hardware uses magnetic classification and handshakes", "不可把页面坐标、距离阈值当成硬件测距能力": "Page coordinates and distance thresholds do not imply hardware ranging", "完整左邻乐句→自身回答；四角色十二乐句": "Complete left-neighbor phrase → own reply; four roles and twelve phrases", "新增完整乐句分析、回应与有界调度；旧三角色词汇保持；gmf_audio_player仅播放参考": "Add whole-phrase analysis, replies and bounded scheduling; preserve original roles; gmf_audio_player is a playback reference only", "重弱音、时长、留白及音高有效传递；右侧不改写左侧；CPU/RAM与扬声器实测": "Preserve accents, durations, space and pitch; no right-to-left rewriting; measure CPU/RAM and speakers", "Harmony 同时1–3音；短和弦 / 分解 / 接句": "Harmony: 1–3 simultaneous notes; Short chords / Arpeggio / Answer", "新增和弦择配、和声音高语义、并行声部混音及短奏/接句有界包络；BSP音频仅提供输出基础": "Add chord selection, harmonic pitch semantics, polyphony and bounded envelopes; BSP audio provides output only", "同音量听测、实际扬声器音域、声部占用/爆音、短音收尾与间隙；非任意音乐自动配和声": "Compare at equal volume; test speaker range, voice usage, clicks, releases and gaps; not universal auto-harmonization", "输出故障不删除有效动机；真实乐句失效/恢复在边界提交": "Output faults retain valid motifs; phrase loss/recovery commits at a boundary", "BSP音频返回值；新增输出状态与已提交乐句可用性隔离": "BSP audio return values; separate output state from committed phrase availability", "只坏扬声器不让右邻跳为独奏；素材/数据故障有界降级与恢复": "Speaker failure does not force the right neighbor solo; bounded fallback for sound/data faults", "加载、失败、低电、IMU、扩展注入": "Simulated loading, faults, low battery, IMU and expansions", "BSP音频/电量计/NAND；mosaico_module_mgr只作识别参考": "BSP audio / fuel gauge / NAND; mosaico_module_mgr as discovery reference only", "模块未启用，资源并发仍需按BSP验证": "Modules are not activated; resource concurrency still requires BSP validation", "HTML 行为": "HTML behavior", "固件组件 / 示例": "Firmware components / examples", "真机验收": "Hardware checks", "普通工程 esp-mosaico-vibe/projects/echoy；ESP-IDF 6.1 或更新。factory 保留，不作应用模板；无需 ESP-Claw。450ms接触确认、1.05s准备、1.8s失联保持均为演示参数，不是实测。": "Application: esp-mosaico-vibe/projects/echoy; ESP-IDF 6.1 or later. factory is reserved, not an app template. No ESP-Claw required. The 450ms contact check, 1.05s preparation and 1.8s beat hold are demo values, not measurements.", "先听两块各自的声音": "Hear each tile on its own", "分别点击两块屏幕底部的「播放」。先不调参数，让它们各自说一会儿。": "Press Play at the bottom of each screen. Leave the settings alone and listen to both for a moment.", "默认的 Pulse 敲出节奏，Voice 拉出旋律。现在还没吸合，不必等它们自己对齐。": "Pulse starts with rhythm and Voice with melody. They are not connected yet, so they will not sync by themselves.", "吸合": "Connect", "把两个声音摆到一起": "Bring the sounds together", "按住上方标着「拖动外壳」的握柄，靠拢两块的左右边缘；出现虚线吸附提示后松手。不要拖屏幕中央。": "Hold the grip marked “Drag the case” above a screen. Bring the left and right edges together, then release when the dashed snap guide appears. Do not drag the center of the screen.", "等对拍完成。现在左边提出动机，右边跟着回应；它们不再只是各播各的。": "Wait for sync. The left tile now leads and the right replies, instead of both playing independently.", "换边": "Swap", "交换左右，听谁先开口": "Swap sides. Hear a new leader.", "先把一块挪到下方空地，再移动另一块，最后换边重新吸合。不要把设备硬推过彼此；可拖空白处或滚动桌面查看空地。": "Move one tile into the free space below, move the other, then reconnect them in reverse order. Do not push tiles through each other. Drag an empty area or scroll for more room.", "还是这两块声音，但先说和回应的关系换了。你更喜欢哪一种？不必说出专业理由。": "The same two sounds now lead and reply in a different order. Which do you prefer? No technical explanation needed.", "调节": "Shape", "试试简洁，或更丰富一些": "Try Simple. Then make it Rich.", "上下拖动屏幕里的声形，或直接拖右侧纵向刻度。向上更丰富，向下更简洁；松手后保留。": "Drag the sound vertically, or use the scale on the right. Up is Rich, down is Simple; release to keep the setting.", "听同一句话怎样变得简洁或丰富，而不只是更响。新节奏等下一小节生效；音量仍由顶部喇叭单独调整。": "Hear the same phrase become simpler or richer, not just louder. Rhythm changes enter at the next bar. Adjust loudness separately with the speaker icon.", "选句": "Phrase", "不换角色，先换一种说法": "Same role. A different phrase.", "点击「角色」，在同一个角色里选一个不同名字的乐句；例如把 Voice 的「短句」换成「轻答」。选好后返回演奏页。": "Open Role and choose another phrase in the same role, such as changing Voice from Short phrase to Light reply. Then return to the playing screen.", "你选的是这块声音怎么回答，不是下一首歌。看到“下一小节生效”时，等它说完再比较。": "You are choosing how this voice replies, not the next song. If the screen says “Next bar”, let the current phrase finish before comparing.", "第三台": "Third tile", "最后，加一位新的成员": "Now bring in a third voice", "可选：把收纳区的第三块拖上桌，贴到其中一侧；等它对拍，再点击它自己的「播放」。如果它已在桌上，就把三块连起来。": "Optional: drag the third tile from the shelf, connect it to one side, wait for sync, then press its Play button. If it is already on the table, connect all three.", "先暂停、再播放第三台，听音乐少了什么又多了什么。也可在「角色」里选 Harmony，先听保留的「分解」，再比较「短和弦」与「接句」的起落和停顿。拆开不等于关闭声音。": "Pause and play the third tile to hear what it adds. You can also choose Harmony under Role: try Arpeggio, then compare the entries and pauses of Short chords and Answer. Separation does not mute a tile.", "有设备正在准备声音；也可以继续查看后面的步骤。": "A tile is preparing its sounds. You can still explore the next steps.", "有设备失联；恢复无线后可以继续，也可先跳过。": "A tile lost its peer link. Restore the link or skip ahead.", "对拍故障已注入；可在高级面板解除，或先跳过。": "A sync fault is active. Clear it in the advanced panel or skip ahead.", "有设备需要处理；可按屏幕提示重试，或先跳过。": "A tile needs attention. Retry on its screen or skip ahead.", "桌上不足两台；先从收纳区拖上来，也可以直接看下一步。": "Fewer than two tiles are on the table. Bring one from the shelf or continue to the next step.", "两块都已开始播放。先听一会儿，再继续。": "Both tiles are playing. Listen for a moment before continuing.", "等待你分别点击两块的播放；指引不会替你发声。": "Press Play on each tile. The guide will not start the sound for you.", "吸合与对拍已完成。留意右边怎样接话。": "Connected and synced. Listen to the right tile’s reply.", "正在对拍；原来的演奏继续，等屏幕提示完成。": "Syncing while the current music continues. Wait for the on-screen confirmation.", "等待左右边缘吸合；靠拢后看到虚线再松手。": "Bring left and right edges together. Release when the dashed guide appears.", "左右关系已反转并生效。你更喜欢哪一种？": "The new order is active. Which arrangement do you prefer?", "等待换边后重新吸合。先借用下方空地，不必挤过另一台。": "Swap and reconnect. Use the empty area below rather than pushing through another tile.", "已经调整了简洁与丰富。看看等待提示，再听新的节奏。": "You changed Simple / Rich. Watch the pending status and listen to the new rhythm.", "向上更丰富，向下更简洁。试着拖声形或右侧刻度，不是调音量。": "Up for Rich, down for Simple. Drag the sound or the scale, not the volume control.", "新的乐句已生效。回到演奏页，再听一轮。": "The new phrase is active. Return to the playing screen and listen again.", "已收到新选择，等待下一小节；可以选回原句取消。": "Selection received; waiting for the next bar. Select the original phrase to cancel.", "等待你在角色页选择另一句；不会盲切，也没有标准答案。": "Choose another phrase in the Role page. You can see exactly what you select; there is no right answer.", "三台已经连成一场。现在试着只暂停其中一台。": "All three share a session. Try pausing just one tile.", "第三台是可选体验。拖上桌、吸合后，还需点它自己的播放。": "The third tile is optional. After bringing it onto the table and connecting it, press its own Play button.", "体验顺序": "Guide steps", "收起指引，保留当前演奏": "Close the guide without changing the music", "开始自由玩": "Play freely", "下一步": "Next", "第一次玩 / 不需要乐理": "FIRST TIME? / NO MUSIC THEORY NEEDED", "先听，再摆。": "Listen first. Then arrange.", "不用会唱，也不用认谱。让两块声音互相接话，换个位置，听哪一种更有意思。": "No singing or score-reading needed. Let two sounds reply to each other, swap them around and hear what you like.", "带我玩一遍": "Show me how", "直接自由玩": "Explore freely", "接下来，按你的耳朵来。": "NOW LET YOUR EARS LEAD.", "没有标准摆法。你喜欢，就是理由。": "No right arrangement. Choose what you like.", "挑一种喜欢的组合，再换左右比较；也可以轮流暂停一台，听清它带来了什么。": "Choose a combination you like, then swap sides to compare. Pause one tile at a time to hear what each contributes.", "“玩法指引”随时可重开，不会重置当前组合。下方还有操作速查与无声排查。": "Reopen How to play anytime without resetting the music. A quick reference and sound troubleshooting are below.", "继续自由玩": "Keep exploring", "再看一遍": "Show me again", "收起": "Close", "这一步，留意什么？": "WHAT TO LISTEN FOR", "找到操作位置": "Show the control", "上一步": "Back", "这里已有设备，请放到空位或兼容的侧边。": "Another tile is here. Use an empty space or a compatible side edge.", "移出桌面不会断网。拖到收纳区才模拟关机。": "Moving off the table does not disconnect the network. Use the shelf to simulate power-off.", "浏览器没有可用的音频输出": "No browser audio output is available", "浏览器尚未允许声音播放": "The browser has not allowed audio playback yet", "语言": "Language", "下一小节生效": "Next bar", "已收到": "Received"};
+const KEY='echoy.locale',HAN=/[\u3400-\u9fff]/;
+const zhLabels={PULSE:'脉冲',VOICE:'声线',DUST:'微尘',HARMONY:'和声',
+ 'SOUND STUDY 01':'声音实验 01','NIGHT CIRCUIT':'夜间电路','96 BPM · D MINOR':'96 BPM · D 小调',
+ 'PERC.':'打击','RUN':'演奏中','READY':'就绪','D / MINOR':'D 小调',RESPONSE:'回应',PHRASE:'乐句',
+ STACCATO:'短和弦',ARPEGGIO:'分解',ANSWER:'接句','PARTICLES / LOCAL':'颗粒 / 本机',AIR:'空气感',
+ LAB:'诊断','CHORDS IN CONVERSATION':'用和弦接话',connected:'已连接',uncertain:'待确认',
+ waiting:'等待接入',preparing:'准备中',failed:'失败',ready:'就绪'};
+let locale='zh-CN';try{const v=root.localStorage?.getItem(KEY);if(v==='en')locale=v;}catch(_){/* local file / storage denied */}
+const records=new WeakMap(),missing=new Set();
+function parts(s,sep){return s.split(sep).map(x=>text(x)).join(sep);}
+function enText(s){
+ if(Object.hasOwn(EN,s))return EN[s];
+ // Source model values and names remain unchanged; render names by lookup.
+ let m;
+ if((m=s.match(/^([ABC]) · 已关机 · 拖上桌$/)))return `${m[1]} · Off · Drag onto table`;
+ if((m=s.match(/^把备用设备 ([ABC]) 拖上桌$/)))return `Drag spare tile ${m[1]} onto the table`;
+ if((m=s.match(/^拖动设备 ([ABC]) 外壳$/)))return `Drag tile ${m[1]} by its case`;
+ if((m=s.match(/^设备 ([ABC]) 产品屏幕$/)))return `Tile ${m[1]} product screen`;
+ if((m=s.match(/^电量 (\d+)%([，· ].*)?$/)))return `Battery ${m[1]}%${m[2]?' · Please charge':''}`;
+ if((m=s.match(/^(\d+)%[，,]向上更丰富，向下更简洁$/)))return `${m[1]} percent; up for Rich, down for Simple`;
+ if((m=s.match(/^同场 · (\d+) 台$/)))return `Shared beat · ${m[1]} tiles`;
+ if((m=s.match(/^(\d+) 台在桌上 · (\d+) 台同场$/)))return `${m[1]} on table · ${m[2]} in session`;
+ if((m=s.match(/^(\d+) 台在桌上 · 各自独奏$/)))return `${m[1]} on table · Playing independently`;
+ if((m=s.match(/^当前：(.+)$/)))return `Now: ${text(m[1])}`;
+ if((m=s.match(/^正在准备 (.+)$/)))return `Preparing ${text(m[1])}`;
+ if((m=s.match(/^已保留 (.+)$/)))return `Kept: ${text(m[1])}`;
+ if((m=s.match(/^(.+) 待生效$/)))return `${text(m[1])} · Pending`;
+ if((m=s.match(/^乐句 (\d+) (.+)$/)))return `Phrase ${m[1]}: ${text(m[2])}`;
+ if((m=s.match(/^一起试一试 · (\d+) \/ (\d+)$/)))return `LET’S TRY · ${m[1]} / ${m[2]}`;
+ if((m=s.match(/^参考：(.+)$/)))return `Reference: ${m[1]}`;
+ if((m=s.match(/^(.+) \/ 第 (\d+) 小节 \/ 成员 (.+)$/)))return `${text(m[1])} / Bar ${m[2]} / Members ${m[3].replaceAll('、',', ')}`;
+ if((m=s.match(/^([ABC]) (本机音量|播放|暂停)$/)))return `${m[1]} ${text(m[2])}`;
+ if((m=s.match(/^([ABC]) 已收起 \/ 模拟关机。再次拖上桌会重新开机。$/)))return `${m[1]} put away / powered off. Drag it back onto the table to restart.`;
+ if((m=s.match(/^([ABC]) 故障已解除，未改变摆放或播放选择。$/)))return `${m[1]} faults cleared. Placement and play choices are unchanged.`;
+ if((m=s.match(/^浏览器音频：(.+)$/)))return `Browser audio: ${text(m[1])}`;
+ if((m=s.match(/^(\d{1,2}:\d{2}:\d{2})\s+(.+)$/s)))return `${m[1]}  ${text(m[2])}`;
+ if(s.includes('\n'))return parts(s,'\n');
+ if(s.includes('：'))return s.split('：').map(x=>text(x)).join(': ');
+ if(s.includes(' · '))return parts(s,' · ');
+ if(s.includes(' / '))return parts(s,' / ');
+ if(HAN.test(s))missing.add(s);
+ return s;
+}
+function text(value){const original=String(value??''),s=original.trim();if(!s)return original;
+ let result;
+ if(locale==='en')result=enText(s);
+ else{result=zhLabels[s]||s;const hits=s.match(/^(\d+) HITS$/);if(hits)result=hits[1]+' 重音';
+ // Keep canonical role identifiers out of the Chinese presentation.
+ result=result.replace(/\b(PULSE|VOICE|DUST|HARMONY|Pulse|Voice|Dust|Harmony)\b/g,n=>zhLabels[n.toUpperCase()]);}
+ return original.slice(0,original.indexOf(s))+result+original.slice(original.indexOf(s)+s.length);
+}
+function update(node,key,value,set){let rec=records.get(node);if(!rec){rec={};records.set(node,rec);}let state=rec[key];
+ if(!state||value!==state.result)state=rec[key]={source:value,result:value};
+ const next=text(state.source);if(value!==next)set(next);state.result=next;
+}
+function setText(node,source){if(!node)return;const next=text(source);if(node.textContent===next)return;node.textContent=String(source);apply(node);}
+function apply(scope){if(!scope||!root.document)return;const visit=el=>{
+ if(el.nodeType===3){if(!el.parentElement?.closest('script,style,[data-i18n-skip]'))update(el,'text',el.nodeValue,v=>el.nodeValue=v);return;}
+ if(el.nodeType!==1)return;if(el.matches('script,style,[data-i18n-skip]'))return;
+ for(const key of ['aria-label','aria-valuetext','title','placeholder'])if(el.hasAttribute(key))update(el,key,el.getAttribute(key),v=>el.setAttribute(key,v));
+ for(const child of el.childNodes)visit(child);
+ };visit(scope);}
+function detail(role){return text({pulse:'节奏',voice:'旋律',dust:'纹理',harmony:'和弦'}[role]);}
+function setLocale(next){if(next!=='en'&&next!=='zh-CN')return false;locale=next;
+ try{root.localStorage?.setItem(KEY,next);}catch(_){}
+ if(root.document){root.document.documentElement.lang=locale;root.document.title=text('合拍 5.0.4 · 把声音摆在一起');}
+ root.dispatchEvent?.(new CustomEvent('echoy:locale',{detail:{locale}}));return true;
+}
+root.EchoyI18n={get locale(){return locale;},text,apply,setText,detail,setLocale,missing,KEY};
+if(root.document){root.document.documentElement.lang=locale;root.document.title=text('合拍 5.0.4 · 把声音摆在一起');}
+})(typeof window!=='undefined'?window:globalThis);
+
+
+/* Complete-phrase response rules, v0.4. Pure, deterministic, bounded to one 16-step bar.
+ * Input is ONLY the direct left neighbour's complete motif, never the chain head,
+ * physical coordinates, right-hand members, output level or device identity.
+ * Event budgets express a role's own syntax, not the number of upstream accents.
+ */
+(function(root){'use strict';
+const clamp=(v,lo,hi)=>Math.min(hi,Math.max(lo,Number.isFinite(v)?v:lo));
+const wrap=n=>(n%16+16)%16;
+const distance=(a,b)=>Math.min(wrap(a-b),wrap(b-a));
+const initials={pulse:.58,voice:.56,dust:.48};
+const palette=[62,64,65,67,69,70,72,74]; // D minor, same musical setting as the baseline.
+const shapes={
+ pulse:[{slots:[0,4,8,12],delay:2},{slots:[0,3,7,10,14],delay:1},{slots:[0,6,11],delay:3}],
+ voice:[{slots:[0,4,8,12],delay:2},{slots:[1,4,6,9,13],delay:3},{slots:[0,6,12],delay:4}],
+ dust:[{slots:[1,6,11,15],delay:1},{slots:[2,9,14],delay:2},{slots:[0,5,10],delay:4}]
+};
+
+function analyze(motif,bpm=96){
+ const stepSeconds=60/bpm/4;
+ const events=motif.filter(n=>Number.isFinite(n.step)&&n.step>=0&&n.step<16&&Number.isFinite(n.dur)&&n.dur>0)
+  .map(n=>({...n,step:Math.round(n.step),vel:clamp(n.vel,.05,1),span:clamp(n.dur/stepSeconds,.25,n.kind==='chord'?16:6)}))
+  .sort((a,b)=>a.step-b.step||String(a.kind).localeCompare(String(b.kind)));
+ if(!events.length)return null;
+ const onset=Array(16).fill(0),release=Array(16).fill(0),held=Array(16).fill(0);
+ for(const n of events){
+  // A weak note remains an input. Accent is a modest weight, never an eligibility gate.
+  const strength=(.30+.70*n.vel)*(n.accent?1.12:1);
+  onset[n.step]+=strength;
+  const end=wrap(n.step+n.span);
+  for(let s=0;s<16;s++){
+   release[s]+=strength*Math.max(0,1-distance(s,end)/1.6);
+   const elapsed=wrap(s-n.step);
+   if(elapsed<n.span)held[s]+=strength*(1-.25*elapsed/n.span);
+  }
+ }
+ // Fixed saturation, not per-motif peak normalization: weak-event dynamics remain useful.
+ const saturate=arr=>arr.map(x=>1-Math.exp(-x));
+ const on=saturate(onset),off=saturate(release),occupied=saturate(held);
+ return{events,onset:on,release:off,held:occupied,space:occupied.map(x=>1-x),
+  first:events[0].step,meanVelocity:events.reduce((v,n)=>v+n.vel,0)/events.length,
+  meanSpan:events.reduce((v,n)=>v+n.span,0)/events.length,
+  pitched:events.filter(n=>(n.kind==='tone'||n.kind==='grain'||n.kind==='chord')&&Number.isFinite(n.note))};
+}
+
+function resizeSlots(slots,count){
+ if(count<=slots.length)return Array.from({length:count},(_,i)=>slots[Math.floor(i*slots.length/count)]);
+ const out=slots.slice();
+ while(out.length<count){out.sort((a,b)=>a-b);let at=0,gap=-1;
+  for(let i=0;i<out.length;i++){const span=wrap(out[(i+1)%out.length]-out[i])||16;if(span>gap){gap=span;at=i;}}
+  out.push(wrap(out[at]+Math.max(1,Math.floor(gap/2))));
+ }
+ return out.sort((a,b)=>a-b);
+}
+
+function pickSteps(q,shape,role,variant,count){
+ const targets=resizeSlots(shape.slots,count).map(s=>wrap(s+q.first+shape.delay));
+ const used=new Set(),steps=[];
+ const profile=s=>{
+  const answer=q.onset[wrap(s-shape.delay)];
+  if(role==='pulse')return answer*.95+q.release[s]*.55+q.space[s]*.20;
+  if(role==='voice')return answer*.70+q.release[s]*.65+q.space[s]*(variant===3?.72:.42);
+  return answer*.45+q.release[s]*.90+(variant===3?q.held[s]*.30:q.space[s]*.45);
+ };
+ for(const target of targets){
+  // Local phrase cells keep a beginning/middle/ending while following upstream detail.
+  let best=null,bestScore=-Infinity;
+  for(let shift=-2;shift<=2;shift++){
+   const s=wrap(target+shift);if(used.has(s))continue;
+   const crowd=steps.reduce((v,n)=>v+(distance(s,n)<2?.40:0),0);
+   const score=profile(s)-Math.abs(shift)*.19-crowd+(shift===0?.025:0);
+   if(score>bestScore){bestScore=score;best=s;}
+  }
+  if(best===null){for(let i=0;i<16;i++)if(!used.has(wrap(target+i))){best=wrap(target+i);break;}}
+  used.add(best);steps.push(best);
+ }
+ return steps.sort((a,b)=>a-b);
+}
+
+function preceding(events,step){
+ return events.reduce((best,n)=>!best||wrap(step-n.step)<wrap(step-best.step)?n:best,null);
+}
+function pitch(q,step,delay,index,variant,duplicate,role,bar){
+ const cue=preceding(q.pitched,wrap(step-delay));
+ let degree;
+ if(cue?.harmony?.length){
+  // New chord metadata is only consumed when present; v0.4 inputs are unchanged.
+  const tones=[...new Set(cue.harmony.filter(Number.isFinite).map(n=>62+((n-62)%12+12)%12))].sort((a,b)=>a-b);
+  if(tones.length)return tones[(index+(variant===2?1:variant===3?2:0))%tones.length]+(role==='dust'?12:duplicate%2?12:0);
+ }
+ if(cue){
+  const folded=62+((cue.note-62)%12+12)%12;
+  degree=palette.reduce((best,n,i)=>Math.abs(n-folded)<Math.abs(palette[best]-folded)?i:best,0);
+  // Preserve contour; variants select an in-scale response interval, not a raw MIDI drum pitch.
+  degree=(degree+(variant===2?2:variant===3?0:1)+(index%3===2?1:0))%palette.length;
+ }else degree=(index*(variant===2?2:1)+(variant===3?4:0)+(bar%4>=2?2:0))%palette.length;
+ return palette[degree]+(role==='dust'?12:duplicate%2?12:0);
+}
+
+function compose(d,source,bar=0,duplicate=0,bpm=96){
+ const role=d.role,v=d.phrase||1,a=clamp(d.committedActivity,0,1),q=analyze(source.motif,bpm);
+ if(!q)return[];
+ const shape=shapes[role][v-1],expression=a-initials[role];
+ const count=clamp(shape.slots.length+Math.round(expression*4),1,7);
+ const steps=pickSteps(q,shape,role,v,count);
+ const events=steps.map((step,i)=>{
+  const cue=preceding(q.events,wrap(step-shape.delay));
+  const next=steps[(i+1)%steps.length],gap=wrap(next-step)||16;
+  const accent=i===0||i===Math.floor(steps.length/2);
+  // Bounded additive expression: do not multiply by upstream gain at every link.
+  const dynamics=(cue.vel-.55)*.10+(q.meanVelocity-.55)*.08+(q.meanSpan-1.2)*.012;
+  if(role==='pulse'){
+   const kick=i===0||(v!==2&&i===Math.floor(steps.length/2));
+   return{step,kind:kick?'kick':'rim',vel:clamp((kick?.78:.60)+dynamics,.30,.95),note:kick?38:50,dur:kick?.22:.09,accent};
+  }
+  const note=pitch(q,step,shape.delay,i,v,duplicate,role,bar);
+  if(role==='voice'){
+   const base=v===2?.16+a*.13:v===3?.45+a*.34:.21+a*.14;
+   const dur=clamp(base+(cue.span-1)*.022+q.space[step]*.035,.12,Math.min(1.05,gap*60/bpm/4+.20));
+   return{step,kind:'tone',vel:clamp(.54+(accent?.10:0)+a*.06+dynamics,.25,.88),note,dur,accent};
+  }
+  const base=v===2?.09+a*.08:v===3?.32+a*.30:.14+a*.20;
+  const dur=clamp(base+(cue.span-1)*.018+q.release[step]*.025,.08,Math.min(.90,gap*60/bpm/4+.12));
+  return{step,kind:'grain',vel:clamp((v===2?.38:v===3?.42:.32+a*.28)+dynamics,.18,.70),note,dur,accent};
+ });
+ if(role==='pulse'&&a>.52){
+  const hats=v===3?(a>.8?1:0):(a>.82?3:1);
+  const free=Array.from({length:16},(_,s)=>s).filter(s=>!events.some(e=>e.step===s))
+   .sort((s,t)=>(q.space[t]+q.release[t]*.35+(t%2?.12:0))-(q.space[s]+q.release[s]*.35+(s%2?.12:0))||s-t);
+  for(const step of free.slice(0,hats))events.push({step,kind:'hat',vel:.20+a*.14,note:84,dur:.05,accent:false});
+ }
+ return events.sort((x,y)=>x.step-y.step).map(e=>({...e,expression,dur:e.dur*(1+expression*.45)}));
+}
+const api=Object.freeze({analyze,compose});root.DuijuResponse=api;
+if(typeof module!=='undefined'&&module.exports)module.exports=api;
+})(typeof window!=='undefined'?window:globalThis);
+
+
+/* Harmony v5.0.2: rhythmic chords / broken chords / a bounded answer phrase.
+ * Direct-left motif only. Limited D-minor vocabulary; never microphone inference.
+ * Broken-chord phrase 2 retains v0.5 event fields and harmonic selection exactly.
+ */
+(function(root){'use strict';
+ const response=root.DuijuResponse||(typeof require==='function'?require('./response.js'):null);
+ const clamp=(n,a,b)=>Math.max(a,Math.min(b,Number.isFinite(n)?n:a));
+ const wrap=n=>(n%16+16)%16,pc=n=>(n%12+12)%12;
+ const distance=(a,b)=>Math.min(wrap(a-b),wrap(b-a));
+ const CHORDS=Object.freeze([
+  {name:'Dm',notes:[50,57,65]}, {name:'F',notes:[53,60,69]},
+  {name:'C',notes:[48,55,64]}, {name:'Gm',notes:[55,62,70]},
+  {name:'Bb',notes:[46,53,62]}, {name:'Am',notes:[45,52,60]}
+ ]);
+ function pitchEvidence(q){
+  const weights=Array(12).fill(0);if(!q)return weights;
+  for(const e of q.events){
+   if(!['tone','grain','chord'].includes(e.kind))continue;
+   const pitches=Array.isArray(e.harmony)?e.harmony:Array.isArray(e.notes)?e.notes:[e.note];
+   const valid=pitches.filter(Number.isFinite);if(!valid.length)continue;
+   const weight=(.3+.7*e.vel)*(e.accent?1.15:1)*Math.sqrt(e.span)/valid.length;
+   for(const n of valid)weights[pc(n)]+=weight;
+  }return weights;
+ }
+ function choose(q){
+  const weights=pitchEvidence(q),total=weights.reduce((s,n)=>s+n,0);
+  if(total===0)return CHORDS[0];
+  const scores=CHORDS.map((c,i)=>{
+   const pcs=c.notes.map(pc);let score=0;
+   for(let n=0;n<12;n++)if(weights[n]){
+    if(pcs.includes(n))score+=weights[n];
+    else if(pcs.some(p=>Math.min(pc(n-p),pc(p-n))===1))score-=weights[n]*.16;
+   }return {c,i,score:score/total};
+  }).sort((a,b)=>b.score-a.score||a.i-b.i);
+  return scores[0].c;
+ }
+ function voicing(notes,duplicate){
+  const ns=notes.slice();if(duplicate%2){ns[0]+=12;ns.sort((a,b)=>a-b);}return ns;
+ }
+ // This path is deliberately the v0.5 phrase-2 rule, including its duration and gain.
+ function brokenPositions(q,activity){
+  const targets=activity<.25?[0,6,12]:activity>.80?[0,2,5,7,10,12,14]:[0,3,6,10,13];
+  if(!q)return targets;
+  const used=new Set();return targets.map((t,i)=>{
+   const target=wrap(t+q.first+1);let best=target,score=-Infinity;
+   for(const delta of [0,-1,1]){const s=wrap(target+delta);if(used.has(s))continue;
+    const v=q.release[s]*.65+q.space[s]*.45+q.onset[wrap(s-1)]*.3-Math.abs(delta)*.16;
+    if(v>score){best=s;score=v;}}
+   used.add(best);return best;
+  }).sort((a,b)=>a-b);
+ }
+ function broken(q,a,tones,selected,stepTime){
+  const slots=brokenPositions(q,a),expression=a-.5;
+  const mean=q?q.meanVelocity:.55,span=q?q.meanSpan:1.7;
+  const center=q?q.events.reduce((s,n)=>s+n.step*n.vel,0)/q.events.reduce((s,n)=>s+n.vel,0)/15:.45;
+  return slots.map((step,i)=>{
+   const next=slots[i+1]??16,deadline=Math.max(.08,(next-step)*stepTime-.05);
+   const grace=.20+.18*a+(span-1)*.014+center*.025;
+   const dur=clamp(grace*(1+expression*.45),.07,deadline);
+   const notes=[tones[[0,1,2,1,0,2,1][i%7]]];
+   const vel=clamp(.57+(mean-.55)*.10+(center-.45)*.022+(i===0?.035:0),.35,.78);
+   return {step,kind:'chord',note:notes[notes.length-1],notes,harmony:tones.slice(),chord:selected.name,
+    articulation:'broken',vel,dur,maxDuration:deadline,
+    accent:i===0||i===Math.floor(slots.length/2),expression};
+  });
+ }
+ function preceding(q,step){
+  return q?.events.reduce((best,e)=>!best||wrap(step-e.step)<wrap(step-best.step)?e:best,null);
+ }
+ function shortPlan(q,a){
+  const cells=a<.25?[1,7,12]:a>.78?[1,4,7,10,13]:[1,5,9,13],steps=[];
+  for(const cell of cells){
+   const target=wrap(cell+(q?.first||0));let best=null,score=-Infinity;
+   for(let delta=-2;delta<=2;delta++){
+    const s=wrap(target+delta);if(steps.some(x=>distance(x,s)<2))continue;
+    const musical=q?q.release[s]*.85+q.space[s]*.5+q.onset[wrap(s-1)]*.55-q.onset[s]*.26:0;
+    const rank=musical-Math.abs(delta)*.16;
+    if(rank>score){best=s;score=rank;}
+   }
+   if(best!==null)steps.push(best);
+  }
+  return steps.sort((a,b)=>a-b).map(step=>({step,closing:true}));
+ }
+ function answerPlan(q,a){
+  // A local answer has an entrance and a closing chord. At low activity it says
+  // one short sentence; normally two, with several empty steps between them.
+  const targets=a<.30?[10]:[4,11],starts=[],long=a>.74,maxStart=long?12:13;
+  for(const target of targets){
+   let best=null,score=-Infinity;
+   for(let s=1;s<=maxStart;s++){
+    if(starts.some(x=>Math.abs(x-s)<6))continue;
+    const space=q?(q.space[s]+q.space[s+1]+q.space[s+2])/3:0;
+    const musical=q?q.release[s]*1.10+space*.78+q.onset[wrap(s-1)]*.18-q.onset[s]*.5:0;
+    const rank=musical-Math.abs(s-target)*.12;
+    if(rank>score){best=s;score=rank;}
+   }
+   if(best!==null)starts.push(best);
+  }
+  return starts.sort((a,b)=>a-b).flatMap(start=>long?
+   [{step:start,closing:false},{step:start+1,closing:false},{step:start+3,closing:true}]:
+   [{step:start,closing:false},{step:start+2,closing:true}]);
+ }
+ // Compact three-part voicings, with one of each chord pitch class. Register
+ // changes change actual MIDI notes, not just array order or metadata.
+ const SHORT_VOICINGS=CHORDS.flatMap(chord=>{
+  const pcs=new Set(chord.notes.map(pc)),out=[];
+  for(let low=45;low<=65;low++)if(pcs.has(pc(low)))
+   for(let mid=low+3;mid<=Math.min(low+12,75);mid++)if(pcs.has(pc(mid))&&pc(mid)!==pc(low))
+    for(let high=Math.max(60,mid+3);high<=Math.min(low+19,81);high++)
+     if(pcs.has(pc(high))&&pc(high)!==pc(low)&&pc(high)!==pc(mid))out.push({chord,notes:[low,mid,high]});
+  return out;
+ });
+ function fitChord(chord,weights){
+  const total=weights.reduce((s,n)=>s+n,0);if(!total)return 0;
+  const pcs=chord.notes.map(pc);let score=0;
+  for(let n=0;n<12;n++)if(weights[n]){
+   if(pcs.includes(n))score+=weights[n];
+   else if(pcs.some(p=>Math.min(pc(n-p),pc(p-n))===1))score-=weights[n]*.16;
+  }
+  return score/total;
+ }
+ function shortVoicings(q,plan,selected,duplicate){
+  const register=duplicate%2?3:0,anchor=voicing(selected.notes,duplicate),baseTop=selected.notes[2]+register;
+  const contours={3:[0,5,0],4:[0,4,7,0],5:[0,4,7,4,0]},contour=contours[plan.length]||[0,4,0];
+  const globalWeights=pitchEvidence(q),out=[];
+  for(let i=0;i<plan.length;i++){
+   const step=plan[i].step;
+   const cue=q?.pitched.reduce((best,e)=>!best||wrap(step-e.step)<wrap(step-best.step)?e:best,null);
+   // Follow the sounding/recent pitched phrase near this entry, not a drum's
+   // MIDI number. Retain global context so weak local notes are not a new key.
+   const local=cue?q.pitched.filter(e=>e===cue||wrap(step-e.step)<e.span):[];
+   const localWeights=pitchEvidence(local.length?{events:local}:null);
+   const fits=new Map(CHORDS.map(c=>[c.name,cue ? .78*fitChord(c,localWeights)+.22*fitChord(c,globalWeights):c===selected?1:-1]));
+   const bestFit=Math.max(...fits.values());
+   const folded=cue?cue.note+12*Math.round((baseTop-cue.note)/12):baseTop;
+   const target=baseTop*.35+folded*.65+contour[i]*.65;
+   const previous=out[i-1],first=out[0];
+   const available=SHORT_VOICINGS.filter(c=>fits.get(c.chord.name)>=bestFit-.18&&c.notes[2]>=60+register&&c.notes[2]<=77+register);
+   const admissible=c=>!previous||(c.notes[2]!==previous.notes[2]&&Math.abs(c.notes[2]-previous.notes[2])<=7);
+   const closing=c=>i!==plan.length-1||!first||Math.abs(c.notes[2]-first.notes[2])<=7;
+   let candidates=available.filter(c=>admissible(c)&&closing(c));
+   // A rare incompatible local chord must not force a melodic jump. Prefer a
+   // smoother compatible contextual chord, still from the same bounded scale.
+   if(!candidates.length)candidates=SHORT_VOICINGS.filter(c=>c.notes[2]>=60+register&&c.notes[2]<=77+register&&admissible(c)&&closing(c));
+   const reference=previous?.notes||anchor;
+   const score=c=>fits.get(c.chord.name)*8-Math.abs(c.notes[2]-target)*.90
+    -c.notes.reduce((s,n,j)=>s+Math.abs(n-reference[j]),0)*.11
+    -Math.abs(c.notes[0]-anchor[0])*.035+(c.chord.name===previous?.chord.name ? .35 : 0);
+   candidates.sort((a,b)=>score(b)-score(a)||a.notes[2]-b.notes[2]||a.notes[0]-b.notes[0]);
+   const pick=candidates[0];out.push({chord:pick.chord,notes:pick.notes.slice()});
+  }
+  return out;
+ }
+ function compose(d,source,bar=0,duplicate=0,bpm=96){
+  const a=clamp(d.committedActivity,0,1),variant=clamp(d.phrase||2,1,3),stepTime=60/clamp(bpm,40,200)/4;
+  const q=source?.motif?.length?response.analyze(source.motif,bpm):null;
+  const selected=choose(q),tones=voicing(selected.notes,duplicate);
+  if(variant===2)return broken(q,a,tones,selected,stepTime);
+  const plan=variant===1?shortPlan(q,a):answerPlan(q,a),expression=a-.5;
+  const motion=variant===1?shortVoicings(q,plan,selected,duplicate):null;
+  const mean=q?.meanVelocity??.55,span=q?.meanSpan??1.7;
+  const center=q?q.events.reduce((s,n)=>s+n.step*n.vel,0)/q.events.reduce((s,n)=>s+n.vel,0)/15:.45;
+  return plan.map((entry,i)=>{
+   const {step,closing}=entry,next=plan[i+1]?.step??16,deadline=Math.max(.045,(next-step)*stepTime-.035);
+   const cue=preceding(q,step),cueSpan=cue?.span??span;
+   const space=q?.space[step]??.7;
+   const base=variant===1?stepTime*(.78+.35*a)+Math.min(cueSpan,4)*.012+space*.014:
+    closing?stepTime*(1.04+.34*a)+Math.min(cueSpan,4)*.015+space*.015:
+    stepTime*(.55+.25*a)+Math.min(cueSpan,4)*.007;
+   const dur=clamp(base+(center-.45)*.018,.035,Math.min(deadline,variant===1?.30:closing?.36:.19));
+   const eventTones=motion?motion[i].notes:tones,eventChord=motion?motion[i].chord:selected;
+   const notes=closing?eventTones.slice():[eventTones[(i+1)%eventTones.length]];
+   const vel=clamp((closing?.56:.47)+(mean-.55)*.10+((cue?.vel??mean)-.55)*.065+(center-.45)*.022,.33,.75);
+   return {step,kind:'chord',note:notes[notes.length-1],notes,harmony:eventTones.slice(),chord:eventChord.name,
+    articulation:variant===1?'short':'answer',vel,dur,maxDuration:deadline,
+    accent:closing,expression};
+  });
+ }
+ const api=Object.freeze({compose,pitchEvidence});root.DuijuHarmony=api;
+ if(typeof module!=='undefined'&&module.exports)module.exports=api;
+})(typeof window!=='undefined'?window:globalThis);
+
+
+/* Product rules: deterministic phrases and committed relationships. No browser APIs. */
+(function(root){'use strict';
+const response=root.DuijuResponse||(typeof require==='function'?require('./response.js'):null);
+const harmony=root.DuijuHarmony||(typeof require==='function'?require('./harmony.js'):null);
+const ROLES=Object.freeze({
+ pulse:{name:'PULSE',cn:'脉冲',color:'#d95535',desc:'敲击 · 重音 · 留白',init:.58,phrases:['重音','切分','留白']},
+ voice:{name:'VOICE',cn:'声线',color:'#496da1',desc:'音高 · 短句 · 回应',init:.56,phrases:['短句','轻答','长线']},
+ dust:{name:'DUST',cn:'微尘',color:'#7b8452',desc:'颗粒 · 空气 · 余韵',init:.48,phrases:['颗粒','点缀','余韵']},
+ harmony:{name:'HARMONY',cn:'和声',color:'#aa7b3d',desc:'短奏 · 分解 · 接句',init:.50,phrases:['短和弦','分解','接句']}
+});
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,Number.isFinite(v)?v:a));
+const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+const edgeKeys=ids=>ids.slice(1).map((id,i)=>ids[i]+'>'+id);
+const pending=()=>({roles:{},phrases:{},topology:null,activity:false});
+const device=(id,role,present)=>({id,role,present,activity:ROLES[role].init,committedActivity:ROLES[role].init,memories:{pulse:.58,voice:.56,dust:.48,harmony:.50},phrase:1,phraseMemories:{pulse:1,voice:1,dust:1,harmony:2},volume:.70,battery:id==='A'?86:id==='B'?72:91,imu:0,wifi:true,moduleL:'none',moduleR:'none',muted:true,transport:'paused',fault:null,error:null,loading:false,rolePreparing:null});
+class DuijuEngine{
+ constructor(){
+  this.devices={A:device('A','pulse',true),B:device('B','voice',true),C:device('C','dust',false)};
+  this.order=['A','B'];this.seams={'A>B':true};this.peerOnline=true;this.clockId='session-clock-01';this.bpm=96;this.bar=0;this.pending=pending();this.revision=0;
+ }
+ get linked(){return Object.values(this.seams).some(Boolean);}
+ queueRole(id,role){
+  const d=this.devices[id];if(!d||!ROLES[role])return false;
+  if(role===d.role){delete this.pending.roles[id];if(this.pending.phrases[id]?.role!==role)delete this.pending.phrases[id];}
+  else {this.pending.roles[id]=role;if(this.pending.phrases[id]?.role!==role)delete this.pending.phrases[id];}
+  d.error=null;return true;
+ }
+ queuePhrase(id,value){
+  const d=this.devices[id];if(!d||!Number.isInteger(value)||value<1||value>3)return false;
+  const role=this.pending.roles[id]||d.role;const base=role===d.role?d.phrase:d.phraseMemories[role];
+  if(value===base)delete this.pending.phrases[id];else this.pending.phrases[id]={role,value};return true;
+ }
+ failRole(id,message){delete this.pending.roles[id];delete this.pending.phrases[id];this.devices[id].rolePreparing=null;this.devices[id].error=message;}
+ invalidateTopology(){this.pending.topology=null;}
+ queueTopology(ids,seams){
+  if(!Array.isArray(ids)||!ids.length||ids.length>3||new Set(ids).size!==ids.length||ids.some(id=>!this.devices[id]))return false;
+  const edges={};for(const key of edgeKeys(ids))edges[key]=seams[key]===true;
+  this.pending.topology=same(ids,this.order)&&same(edges,this.seams)?null:{order:ids.slice(),seams:edges};return true;
+ }
+ queueOrder(ids){const active=this.linked;return this.queueTopology(ids,Object.fromEntries(edgeKeys(ids).map(k=>[k,active])));}
+ queueLinked(value){const ids=this.pending.topology?.order||this.order;return this.queueTopology(ids,Object.fromEntries(edgeKeys(ids).map(k=>[k,!!value])));}
+ setActivity(id,value){const d=this.devices[id];if(!d)return;d.activity=clamp(value);d.memories[d.role]=d.activity;this.pending.activity=Object.values(this.devices).some(x=>Math.abs(x.activity-x.committedActivity)>1e-8);}
+ setVolume(id,value){if(this.devices[id])this.devices[id].volume=clamp(value);}
+ pause(id){const d=this.devices[id];if(d){d.transport='paused';d.resumeAt='beat';d.muted=true;}}
+ requestPlay(id,resumeAt='beat'){const d=this.devices[id];if(d?.present&&!d.fault&&!d.loading&&d.battery>0){d.transport='waiting';d.resumeAt=resumeAt==='bar'?'bar':'beat';d.muted=true;return true;}return false;}
+ activateWaiting(isBar=true){const ids=[];for(const d of Object.values(this.devices))if(d.transport==='waiting'&&(isBar||d.resumeAt!=='bar')&&this.order.includes(d.id)&&d.present&&!d.fault&&!d.loading&&d.battery>0){d.transport='playing';d.muted=false;ids.push(d.id);}return ids;}
+ hasPending(){return !!(Object.keys(this.pending.roles).length||Object.keys(this.pending.phrases).length||this.pending.topology||this.pending.activity);}
+ commit(){
+  const changed=this.hasPending();
+  if(this.pending.topology){this.order=this.pending.topology.order.slice();this.seams={...this.pending.topology.seams};}
+  for(const [id,role] of Object.entries(this.pending.roles)){
+   const d=this.devices[id];d.memories[d.role]=d.activity;d.phraseMemories[d.role]=d.phrase;
+   d.role=role;d.activity=d.memories[role];d.phrase=d.phraseMemories[role];d.rolePreparing=null;
+  }
+  for(const [id,{role,value}] of Object.entries(this.pending.phrases)){const d=this.devices[id];if(d.role===role){d.phrase=value;d.phraseMemories[role]=value;}}
+  Object.values(this.devices).forEach(d=>d.committedActivity=d.activity);
+  this.pending=pending();if(changed)this.revision++;return changed;
+ }
+ compose(bar=0){
+  const result=[];let upstream=null,previous=null,counts={};
+  for(const id of this.order){
+   const d=this.devices[id],connected=this.peerOnline&&this.seams[previous+'>'+id]===true;
+   if(!connected) {upstream=null;counts={};}
+   if(!d.present){upstream=null;counts={};previous=id;continue;}
+   const source=connected&&upstream?upstream:null;
+   if(!source)counts={};const duplicate=counts[d.role]||0;counts[d.role]=duplicate+1;
+   const events=this.phrase(d,source,bar,duplicate);
+   const available=(!d.fault||d.fault==='audio')&&!d.loading&&d.battery>0;
+   const outputAvailable=available&&!d.fault;
+   const entry={id,role:d.role,source:source?source.id:null,events:outputAvailable&&!d.muted?events:[],motif:available?events:[],activity:d.committedActivity,phrase:d.phrase};
+   result.push(entry);upstream=available&&entry.motif.length?entry:null;previous=id;
+  }return result;
+ }
+ phrase(d,source,bar,duplicate){
+  if(d.role==='harmony')return harmony.compose(d,source,bar,duplicate,this.bpm);
+  if(source?.motif?.length)return response.compose(d,source,bar,duplicate,this.bpm);
+  // Exact 0.3 solo vocabulary. Only responses change in 0.4.
+  const a=d.committedActivity,notes=[62,69,65,72,67,74,69,65];let ev=[];
+  if(d.role==='pulse'){
+   ev=[{step:0,kind:'kick',vel:.88,note:38,dur:.24,accent:true},{step:8,kind:'kick',vel:.75,note:38,dur:.22,accent:true},
+       {step:4,kind:'rim',vel:.66,note:50,dur:.10,accent:true},{step:12,kind:'rim',vel:.73,note:50,dur:.1,accent:true}];
+   for(let s=2;s<16;s+=2)if(s%4!==0||a>.65)ev.push({step:s,kind:'hat',vel:.2+a*.22,note:84,dur:.05,accent:false});
+   if(a>.7)ev.push({step:15,kind:'rim',vel:.36,note:53,dur:.08,accent:false});
+  }else if(d.role==='voice'){
+   ev=[0,3,7,10,14].slice(0,3+Math.floor(a*4)).map((step,i)=>({step,kind:'tone',vel:.52+(i%3===0?.15:0)+a*.12,note:notes[(i+(bar%4>=2?2:0))%notes.length]+(duplicate%2?12:0),dur:.32+a*.2,accent:true}));
+   if(a>.82&&!ev.some(e=>e.step===15))ev.push({step:15,kind:'tone',vel:.32,note:77,dur:.13,accent:false});
+  }else{
+   ev=[1,6,11,15].slice(0,3+Math.floor(a*5)).map((step,i)=>({step,kind:'grain',vel:.32+a*.28,note:notes[(i+3+duplicate)%notes.length]+12,dur:.14+a*.2,accent:i%2===0}));
+   if(a>.72)for(const step of [3,9,13])if(!ev.some(e=>e.step===step))ev.push({step,kind:'grain',vel:.25,note:86,dur:.13,accent:false});
+  }
+  if(d.phrase===2||d.phrase===3)ev=this.soloVariant(d,bar,duplicate,notes);
+  const expression=a-ROLES[d.role].init;ev=ev.map(n=>({...n,expression,dur:n.dur*(1+expression*.45)}));
+  if(a<.26)ev=ev.filter((e,i)=>e.accent&&i%2===0);
+  const seen=new Set();return ev.sort((x,y)=>x.step-y.step).filter(e=>{const key=e.step+':'+e.kind;if(seen.has(key))return false;seen.add(key);e.vel=clamp(e.vel,.05,1);return true;}).slice(0,16);
+ }
+ soloVariant(d,bar,duplicate,notes){
+  const a=d.committedActivity,v=d.phrase;let ev=[];
+  if(d.role==='pulse'){
+   ev=(v===2?[0,3,7,10,14]:[0,6,11]).map((step,i)=>({step,kind:i%3===0?'kick':'rim',vel:i%3===0?.78:.59,note:i%3===0?38:50,dur:i%3===0?.23:.09,accent:true}));
+   if(a>.42&&v===2)for(const step of [2,9,15])if(!ev.some(n=>n.step===step))ev.push({step,kind:'hat',vel:.27,note:84,dur:.04,accent:false});
+   if(a>.72&&v===3)ev.push({step:14,kind:'rim',vel:.31,note:53,dur:.08,accent:false});
+  }else if(d.role==='voice'){
+   ev=(v===2?[1,4,6,9,13]:[0,6,12]).slice(0,v===2?4+Math.floor(a*2):3+Math.floor(a*2)).map((step,i)=>({step,kind:'tone',vel:.53+(i===0?.12:0),note:notes[(i*(v===2?2:1)+(v===2?2:4))%notes.length]+(duplicate%2?12:0),dur:v===2?.16+a*.13:.45+a*.34,accent:true}));
+  }else{
+   ev=(v===2?[2,9,14]:[0,5,10]).slice(0,3+Math.floor(a*3)).map((step,i)=>({step,kind:'grain',vel:v===2?.38:.42,note:notes[(i+(v===2?1:4)+duplicate)%notes.length]+12,dur:v===2?.09+a*.08:.32+a*.3,accent:i%2===0}));
+   if(v===2&&a>.76)ev.push({step:15,kind:'grain',vel:.22,note:86,dur:.1,accent:false});
+  }return ev;
+ }
+ snapshot(){return JSON.parse(JSON.stringify({devices:this.devices,order:this.order,seams:this.seams,linked:this.linked,peerOnline:this.peerOnline,pending:this.pending,revision:this.revision,bpm:this.bpm,clockId:this.clockId}));}
+}
+root.DUIJU_ROLES=ROLES;root.DuijuEngine=DuijuEngine;
+})(typeof window!=='undefined'?window:globalThis);
+
+
+/* Product session model. Only IDs, contacts, protocol states and injected monotonic time.
+ * No DOM, AudioContext, global desk coordinates or hardware APIs. Timing values are
+ * explicit simulation assumptions, NOT measured radio/acoustic performance. */
+(function(root){'use strict';
+const R=root.DUIJU_ROLES,clone=x=>JSON.parse(JSON.stringify(x)),edgeKey=(l,r)=>l+'>'+r;
+class DuijuSession extends root.DuijuEngine{
+ constructor(now=0){
+  super();this.time=now;this.order=['A','B','C'];this.seams={};this.clockId=null;this.sessions={};this.contactInput={};this.committedEdges={};this.merges={};this.arrangements={};this.moving={};this.events=[];this.serial=0;this.alignEvents=[];
+  const uids={A:'tile-8f31',B:'tile-b472',C:'tile-d6a9'};
+  for(const d of Object.values(this.devices)){Object.assign(d,{present:false,uid:uids[d.id],bootCount:0,bootId:null,sessionId:null,lifecycle:'off',linkOnline:true,linkLostAt:null,discovered:[],syncFail:false,clockVersion:0,motifAvailable:false});}
+  this.powerOn('A',now);this.powerOn('B',now+.32);
+ }
+ emit(type,data={}){this.events.push({type,time:this.time,...data});if(this.events.length>60)this.events.shift();}
+ freshSession(id,at,epoch=null){
+  const d=this.devices[id],sid=`${d.uid}/${d.bootCount}/${++this.serial}`;
+  const s={id:sid,leader:id,members:[id],epoch:epoch??at+.075,rate:1+({A:28,B:-41,C:63}[id])*1e-6,created:at,lastBar:-1};
+  this.sessions[sid]=s;d.sessionId=sid;d.clockVersion++;return s;
+ }
+ leave(id,at){
+  const d=this.devices[id],s=this.sessions[d.sessionId];if(s){s.members=s.members.filter(x=>x!==id);if(!s.members.length)delete this.sessions[s.id];else if(s.leader===id)s.leader=s.members.slice().sort((a,b)=>this.devices[a].uid.localeCompare(this.devices[b].uid))[0];}d.sessionId=null;
+  for(const k of Object.keys(this.committedEdges))if(k.split('>').includes(id))delete this.committedEdges[k];
+ }
+ powerOn(id,at=this.time){
+  const d=this.devices[id];if(!d||d.present||d.battery===0)return false;
+  d.present=true;d.bootCount++;d.bootId=`${d.uid}/boot-${d.bootCount}`;d.lifecycle='booting';d.motifAvailable=false;d.readyAt=at+.38;d.sessionId=null;d.muted=true;d.transport='paused';d.linkLostAt=null;d.discovered=[];d.fault=null;d.error=null;d.loading=false;d.rolePreparing=null;d.linkOnline=true;this.revision++;this.emit('boot',{id});return true;
+ }
+ powerOff(id,at=this.time){
+  const d=this.devices[id];if(!d)return;this.leave(id,at);d.present=false;d.lifecycle='off';d.muted=true;d.transport='paused';d.discovered=[];d.clockVersion++;delete this.pending.roles[id];delete this.pending.phrases[id];
+  for(const k of Object.keys(this.contactInput))if(k.split('>').includes(id))delete this.contactInput[k];
+  for(const k of Object.keys(this.merges))if(this.merges[k].ids.includes(id))delete this.merges[k];
+  this.arrangements={};this.revision++;this.emit('off',{id});
+ }
+ setLink(id,online,at=this.time){const d=this.devices[id];if(!d)return;d.linkOnline=!!online;d.linkLostAt=online?null:at;this.emit(online?'link-restored':'link-lost',{id});}
+ sessionFor(id){return this.sessions[this.devices[id]?.sessionId]||null;}
+ phase(id,at=this.time){
+  const s=this.sessionFor(id);if(!s)return{step:-1,fraction:0,bar:0,remaining:0,beatRemaining:0,total:0};
+  const stepTime=60/this.bpm/4/s.rate,total=Math.max(0,(at-s.epoch)/stepTime),inBar=total%16;
+  return{step:Math.floor(total)%16,fraction:inBar/16,bar:Math.floor(total/16),remaining:(16-inBar)*stepTime,beatRemaining:(4-total%4)*stepTime,total,stepTime};
+ }
+ nextBoundary(s,at,steps=16){const p=60/this.bpm/4/s.rate;return s.epoch+Math.max(0,Math.ceil((at-s.epoch)/p/steps))*steps*p;}
+ requestPlay(id){const d=this.devices[id],s=this.sessionFor(id);if(!d?.present||!s||d.lifecycle==='booting'||d.loading||d.fault||d.battery===0)return false;d.transport='waiting';d.muted=true;d.playAt=this.nextBoundary(s,this.time+.025,4);d.playSession=s.id;return true;}
+ pause(id){super.pause(id);if(this.devices[id])delete this.devices[id].playAt;}
+ beginMove(id,at=this.time){this.moving[id]=at;this.arrangements={};for(const k of Object.keys(this.merges))if(this.merges[k].ids.includes(id))delete this.merges[k];this.emit('move',{id});}
+ endMove(id){delete this.moving[id];}
+ receiveContacts(list,at=this.time){
+  const next={},leftUsed=new Set(),rightUsed=new Set();
+  for(const e of list){const {left,right}=e;if(!this.devices[left]||!this.devices[right]||left===right||leftUsed.has(left)||rightUsed.has(right))continue;
+   let cursor=right,cycle=false;for(let i=0;i<3;i++){const out=Object.values(next).find(x=>x.left===cursor);if(cursor===left){cycle=true;break;}if(!out)break;cursor=out.right;}if(cycle)continue;
+   const k=edgeKey(left,right),state=e.state==='uncertain'?'uncertain':'connected',old=this.contactInput[k];
+   next[k]={left,right,state,since:old?.state===state?old.since:at};leftUsed.add(left);rightUsed.add(right);
+  }
+  this.contactInput=next;this.arrangements={};
+  // New contact evidence invalidates only candidates no longer justified by it.
+  for(const k of Object.keys(this.merges)){const m=this.merges[k];if(!Object.values(next).some(e=>m.ids.includes(e.left)&&m.ids.includes(e.right)&&e.state==='connected'))delete this.merges[k];}
+  this.revision++;
+ }
+ contactAvailable(c){const a=this.devices[c.left],b=this.devices[c.right];return a?.present&&b?.present&&a.sessionId&&b.sessionId&&a.linkOnline&&b.linkOnline&&a.battery>0&&b.battery>0;}
+ syncFor(id){return Object.values(this.merges).find(m=>m.ids.includes(id))||null;}
+ commitMembers(ids){
+  let changed=false;
+  for(const id of ids){const d=this.devices[id],role=this.pending.roles[id];if(role){d.memories[d.role]=d.activity;d.phraseMemories[d.role]=d.phrase;d.role=role;d.activity=d.memories[role];d.phrase=d.phraseMemories[role];d.rolePreparing=null;delete this.pending.roles[id];changed=true;}
+   const q=this.pending.phrases[id];if(q){if(q.role===d.role){d.phrase=q.value;d.phraseMemories[d.role]=q.value;changed=true;}delete this.pending.phrases[id];}
+   if(Math.abs(d.activity-d.committedActivity)>1e-8){d.committedActivity=d.activity;changed=true;}
+  }
+  this.pending.activity=Object.values(this.devices).some(d=>d.present&&Math.abs(d.activity-d.committedActivity)>1e-8);
+  if(changed){this.revision++;this.emit('parameters',{ids:ids.slice()});}return changed;
+ }
+ commitIdle(id){const s=this.sessionFor(id);if(s&&s.members.every(x=>this.devices[x].transport==='paused'))this.commitMembers(s.members);}
+ tick(at){
+  this.time=Math.max(this.time,at);
+  for(const d of Object.values(this.devices)){
+   if(d.present&&d.lifecycle==='booting'&&this.time>=d.readyAt){this.freshSession(d.id,d.readyAt);d.lifecycle='ready';this.emit('ready',{id:d.id});}
+   if(d.present&&d.battery===0){this.powerOff(d.id,this.time);continue;}
+   if(d.present&&d.sessionId&&!d.linkOnline&&d.linkLostAt!==null&&this.time-d.linkLostAt>=1.8&&!d.lostSplit){const phase=this.phase(d.id),old=this.sessionFor(d.id),period=60/this.bpm/4;const epoch=this.time-phase.total*period;this.leave(d.id,this.time);this.freshSession(d.id,this.time,epoch);d.lostSplit=true;this.emit('split',{id:d.id});}
+   if(d.linkOnline)d.lostSplit=false;
+   d.discovered=d.present&&d.linkOnline&&d.lifecycle!=='booting'?Object.values(this.devices).filter(p=>p.id!==d.id&&p.present&&p.linkOnline&&p.lifecycle==='ready'&&p.battery>0).map(p=>p.id):[];
+  }
+  this.updateMerges();this.updateArrangements();
+  for(const s of Object.values(this.sessions)){
+   const bar=this.phase(s.members[0]).bar;
+   if(bar!==s.lastBar){
+    s.lastBar=bar;
+    // A failed speaker does not erase a valid phrase. Genuine data availability
+    // is latched at the boundary so a follower never changes motif mid-bar.
+    for(const id of s.members){const d=this.devices[id];d.motifAvailable=(!d.fault||d.fault==='audio')&&!d.loading&&d.battery>0;}
+    this.commitMembers(s.members);
+   }
+   for(const id of s.members){const d=this.devices[id];if(d.transport==='waiting'){
+    if(d.playSession!==s.id){d.playAt=this.nextBoundary(s,this.time+.025,4);d.playSession=s.id;}
+    if(this.time>=d.playAt&&!d.fault&&!d.loading&&d.battery>0){d.transport='playing';d.muted=false;this.emit('playing',{id});}
+   }}
+  }
+ }
+ updateMerges(){
+  const adj={};
+  for(const c of Object.values(this.contactInput)){
+   if(c.state!=='connected'||this.time-c.since<.45||!this.contactAvailable(c)||this.moving[c.left]!==undefined||this.moving[c.right]!==undefined)continue;
+   const a=this.devices[c.left].sessionId,b=this.devices[c.right].sessionId;if(a===b)continue;(adj[a]??=new Set()).add(b);(adj[b]??=new Set()).add(a);
+  }
+  const seen=new Set(),active=new Set();
+  for(const sid of Object.keys(adj)){
+   if(seen.has(sid))continue;const group=[],stack=[sid];while(stack.length){const x=stack.pop();if(seen.has(x))continue;seen.add(x);group.push(x);for(const n of adj[x]||[])stack.push(n);}
+   const ss=group.map(x=>this.sessions[x]).filter(Boolean);if(ss.length<2)continue;
+   const key=group.sort().join('|'),ids=ss.flatMap(s=>s.members);active.add(key);
+   let m=this.merges[key];
+   if(!m){ss.sort((a,b)=>b.members.length-a.members.length||this.devices[a.leader].uid.localeCompare(this.devices[b.leader].uid));m=this.merges[key]={key,ids,sessionIds:group,reference:ss[0].id,start:this.time,readyAt:this.time+1.05,stage:'syncing',applyAt:null};this.emit('sync-start',{ids:ids.slice()});}
+   if(ids.some(id=>this.devices[id].syncFail)){m.stage='failed';m.applyAt=null;continue;}
+   if(m.stage==='failed'){m.start=this.time;m.readyAt=this.time+1.05;m.stage='syncing';}
+   if(this.time>=m.readyAt&&m.applyAt===null){m.stage='waiting';m.applyAt=this.nextBoundary(this.sessions[m.reference],this.time+.14,16);}
+   if(m.applyAt!==null&&this.time>=m.applyAt){
+    const ref=this.sessions[m.reference];if(!ref)continue;const moved=[];
+    for(const old of m.sessionIds){const s=this.sessions[old];if(!s||old===ref.id)continue;
+     for(const id of s.members){const d=this.devices[id];d.sessionId=ref.id;d.clockVersion++;moved.push(id);if(!ref.members.includes(id))ref.members.push(id);}
+     delete this.sessions[old];delete this.arrangements[old];
+    }
+    this.alignEvents.push({ids:moved,time:this.time});
+    for(const c of Object.values(this.contactInput))if(this.contactAvailable(c)&&c.state==='connected'&&this.devices[c.left].sessionId===ref.id&&this.devices[c.right].sessionId===ref.id&&this.moving[c.left]===undefined&&this.moving[c.right]===undefined)this.committedEdges[edgeKey(c.left,c.right)]=true;
+    this.revision++;this.emit('joined',{ids:ref.members.slice(),leader:ref.leader});delete this.merges[key];
+   }
+  }
+  for(const key of Object.keys(this.merges))if(!active.has(key))delete this.merges[key];
+ }
+ updateArrangements(){
+  for(const s of Object.values(this.sessions)){
+   const target={};
+   for(const c of Object.values(this.contactInput)){
+    const k=edgeKey(c.left,c.right);if(!s.members.includes(c.left)||!s.members.includes(c.right)||!this.contactAvailable(c))continue;
+    const moving=this.moving[c.left]??this.moving[c.right];
+    if(c.state==='connected'&&this.time-c.since>=.45&&moving===undefined)target[k]=true;
+    else if(this.committedEdges[k]&&this.time-(moving??c.since)<1.8)target[k]=true;
+   }
+   const current=Object.fromEntries(Object.entries(this.committedEdges).filter(([k])=>k.split('>').every(id=>s.members.includes(id))));
+   const signature=JSON.stringify(Object.keys(target).sort());
+   if(signature===JSON.stringify(Object.keys(current).sort())){delete this.arrangements[s.id];continue;}
+   let p=this.arrangements[s.id];
+   if(!p||p.signature!==signature){p=this.arrangements[s.id]={signature,target,applyAt:this.nextBoundary(s,this.time+.04,16),ids:s.members.slice()};}
+   if(this.time>=p.applyAt){for(const k of Object.keys(current))delete this.committedEdges[k];Object.assign(this.committedEdges,target);delete this.arrangements[s.id];this.revision++;this.emit('arranged',{ids:s.members.slice()});}
+  }
+  for(const k of Object.keys(this.committedEdges)){const [a,b]=k.split('>');if(!this.devices[a].present||!this.devices[b].present||this.devices[a].sessionId!==this.devices[b].sessionId)delete this.committedEdges[k];}
+ }
+ composeSession(sid,bar=0){
+  const s=this.sessions[sid];if(!s)return[];const ids=s.members.filter(id=>this.devices[id].present),hasIn=new Set(),next={};
+  for(const k of Object.keys(this.committedEdges)){const [a,b]=k.split('>');if(ids.includes(a)&&ids.includes(b)){next[a]=b;hasIn.add(b);}}
+  const heads=ids.filter(id=>!hasIn.has(id)).sort(),visited=new Set(),result=[];
+  for(const head of [...heads,...ids]){if(visited.has(head))continue;let id=head,source=null,counts={};
+   while(id&&!visited.has(id)){visited.add(id);const d=this.devices[id];if(!source)counts={};const duplicate=counts[d.role]||0;counts[d.role]=duplicate+1;
+    const notes=this.phrase(d,source,bar,duplicate),available=d.motifAvailable&&d.battery>0;
+    const outputAvailable=available&&!d.fault&&!d.loading;
+    const p={id,role:d.role,source:source?.id||null,events:outputAvailable&&!d.muted?notes:[],motif:available?notes:[],activity:d.committedActivity,phrase:d.phrase,sessionId:sid};result.push(p);source=available&&notes.length?p:null;id=next[id];
+   }
+  }return result;
+ }
+ composeAt(at=this.time){return Object.values(this.sessions).flatMap(s=>this.composeSession(s.id,this.phase(s.members[0],at).bar));}
+ compose(bar=0){if(!this.sessions)return super.compose(bar);return Object.values(this.sessions).flatMap(s=>this.composeSession(s.id,bar));}
+ snapshot(){return clone({devices:this.devices,sessions:this.sessions,contacts:this.contactInput,committedEdges:this.committedEdges,merges:this.merges,arrangements:this.arrangements,pending:this.pending,time:this.time,revision:this.revision,bpm:this.bpm});}
+}
+root.DuijuSession=DuijuSession;
+})(typeof window!=='undefined'?window:globalThis);
+
+
+/* Simulator only: positions -> anonymous-to-product contact messages. */
+(function(root){'use strict';
+class DuijuSpatial{
+ constructor(){this.width=508;this.height=566;this.gap=8;this.threshold=44;}
+ collision(id,p,positions){return Object.entries(positions).some(([other,q])=>other!==id&&p.x<q.x+this.width-2&&p.x+this.width-2>q.x&&p.y<q.y+this.height-20&&p.y+this.height-20>q.y);}
+ snap(id,p,positions){
+  const candidates=[];
+  for(const [other,q]of Object.entries(positions)){if(other===id)continue;for(const sign of [-1,1]){const target={x:q.x+sign*(this.width+this.gap),y:q.y};const dx=p.x-target.x,dy=p.y-target.y;if(Math.abs(dx)<=this.threshold&&Math.abs(dy)<=this.threshold&&target.x>=12&&target.y>=12&&!this.collision(id,target,positions))candidates.push({...target,score:dx*dx+dy*dy,other});}}
+  candidates.sort((a,b)=>a.score-b.score);if(candidates.length)return{...candidates[0],snapped:true,collision:false};
+  return{...p,snapped:false,collision:this.collision(id,p,positions)};
+ }
+ edges(positions){const edges=[];for(const [left,a]of Object.entries(positions))for(const [right,b]of Object.entries(positions))if(left!==right&&Math.abs((b.x-a.x)-(this.width+this.gap))<=3&&Math.abs(a.y-b.y)<=6)edges.push({left,right,state:'connected'});return edges;}
+}
+root.DuijuSpatial=DuijuSpatial;
+})(typeof window!=='undefined'?window:globalThis);
+
+
+/* Browser sound adapter only. Each tile has its own gain, expression and wet tail.
+ * The browser clock and final limiter are shared: this is NOT a firmware sync proof. */
+(function(root){'use strict';
+const midi=n=>440*Math.pow(2,(n-69)/12);
+class DuijuSynth{
+ constructor(ctx,destination){
+  this.ctx=ctx;this.nodes=new Set();this.channels={};this.master=ctx.createGain();this.master.gain.value=.55;
+  const limit=ctx.createDynamicsCompressor();limit.threshold.value=-12;limit.knee.value=12;limit.ratio.value=8;limit.attack.value=.003;limit.release.value=.15;
+  this.master.connect(limit);limit.connect(destination||ctx.destination);
+  this.noise=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate);const ar=this.noise.getChannelData(0);let s=1187;
+  for(let i=0;i<ar.length;i++){s=(s*16807)%2147483647;ar[i]=(s/2147483647*2-1);}
+ }
+ channel(id,pan=0){
+  const c=this.ctx;
+  if(!this.channels[id]){
+   const input=c.createGain(),color=c.createBiquadFilter(),dry=c.createGain(),sum=c.createGain(),gain=c.createGain(),p=c.createStereoPanner();
+   color.type='highshelf';color.frequency.value=1000;color.gain.value=0;dry.gain.value=.5;gain.gain.value=1;
+   input.connect(color);color.connect(dry);dry.connect(sum);sum.connect(gain);gain.connect(p);p.connect(this.master);
+   const send=c.createGain(),delay=c.createDelay(1),feedback=c.createGain(),damp=c.createBiquadFilter(),wet=c.createGain();
+   delay.delayTime.value=.3125;feedback.gain.value=.18;wet.gain.value=.2;damp.type='lowpass';damp.frequency.value=2900;
+   send.connect(delay);delay.connect(damp);damp.connect(feedback);feedback.connect(delay);damp.connect(wet);wet.connect(sum);
+   this.channels[id]={input,color,dry,gain,p,send,delay,volume:.70,muted:false};
+  }
+  this.channels[id].p.pan.setTargetAtTime(pan,c.currentTime,.02);return this.channels[id].input;
+ }
+ env(target,t,peak,attack,release){target.gain.setValueAtTime(.00001,t);target.gain.exponentialRampToValueAtTime(Math.max(peak,.0001),t+attack);target.gain.exponentialRampToValueAtTime(.00001,t+attack+release);}
+ note(id,e,t,pan=0){
+  const c=this.ctx,dest=this.channel(id,pan),g=c.createGain(),nodes=[g],sources=[];
+  g.connect(dest);const dur=e.dur||.2,expr=e.expression||0,stretch=1+expr*.45;
+  const node=n=>{nodes.push(n);return n;};
+  const source=(n,end,offset)=>{sources.push(n);n._duijuId=id;this.nodes.add(n);n.start(t,offset);n.stop(end);};
+  if(e.kind==='kick'){
+   const o=node(c.createOscillator());o.type='sine';o.frequency.setValueAtTime(128,t);o.frequency.exponentialRampToValueAtTime(47,t+.095*stretch);this.env(g,t,e.vel*.72,.004,.28*stretch);o.connect(g);source(o,t+.34*stretch);
+  }else if(e.kind==='rim'){
+   this.env(g,t,e.vel*.34,.001,.095*stretch);
+   [238,517,1034].forEach((f,i)=>{const o=node(c.createOscillator()),v=node(c.createGain());o.frequency.value=f;v.gain.value=[.7,.23,.1][i];o.connect(v);v.connect(g);source(o,t+.13*stretch);});
+  }else if(e.kind==='hat'){
+   const n=node(c.createBufferSource());n.buffer=this.noise;const hp=node(c.createBiquadFilter());hp.type='highpass';hp.frequency.value=6500*(1+expr*.22);this.env(g,t,e.vel*.16,.001,.055*stretch);n.connect(hp);hp.connect(g);source(n,t+.08*stretch,.2);
+  }else if(e.kind==='chord'){
+   // Up to three locally synthesised pitches; no network audio and no new global bus.
+   const pitches=(Array.isArray(e.notes)?e.notes:[e.note]).filter(Number.isFinite).slice(0,3);
+   const rhythmic=e.articulation==='short'||e.articulation==='answer';
+   const total=Math.max(rhythmic?.025:.07,Math.min(dur,e.maxDuration||2.45)),broken=e.articulation==='broken';
+   const short=e.articulation==='short',answer=e.articulation==='answer',pickup=answer&&pitches.length===1;
+   const attack=Math.min(total*.25,broken?.015:short?.008:answer?(pickup?.010:.018):e.articulation==='flow'?.13:.075);
+   const release=Math.min(total*(short?.42:answer?.38:.32),broken?.12:short?.075:answer?.10:.23),hold=Math.max(attack+.001,total-release);
+   const filter=node(c.createBiquadFilter());filter.type='lowpass';filter.Q.value=.48;
+   filter.frequency.setValueAtTime((broken?2900:short?2700:answer?2350:1750)*(1+expr*.4),t);
+   filter.frequency.exponentialRampToValueAtTime((broken?1700:short?1050:answer?1250:1100)*(1+expr*.3),t+total);
+   filter.connect(g);g.connect(this.channels[id].send);
+   // The gain is per chord, not per voice. Adding a third pitch does not triple output.
+   const peak=Math.max(.0001,e.vel*(broken||pickup?.26:.32)/Math.sqrt(Math.max(1,pitches.length)));
+   g.gain.setValueAtTime(.00001,t);g.gain.linearRampToValueAtTime(peak,t+attack);
+   g.gain.linearRampToValueAtTime(peak*(broken?.64:short?.46:answer?.60:.82),t+hold);
+   g.gain.exponentialRampToValueAtTime(.00001,t+total);
+   for(const pitch of pitches){
+    const fundamental=node(c.createOscillator()),warmth=node(c.createOscillator()),v=node(c.createGain());
+    fundamental.type='sine';fundamental.frequency.value=midi(pitch);fundamental.connect(filter);
+    warmth.type='triangle';warmth.frequency.value=midi(pitch);v.gain.value=broken?.15:.22;
+    warmth.connect(v);v.connect(filter);source(fundamental,t+total+.01);source(warmth,t+total+.01);
+   }
+  }else if(e.kind==='tone'){
+   const filter=node(c.createBiquadFilter());filter.type='lowpass';filter.frequency.setValueAtTime(2400,t);filter.frequency.exponentialRampToValueAtTime(700,t+.5);filter.Q.value=.45;filter.connect(g);
+   this.env(g,t,e.vel*.29,.012,dur+.38);g.connect(this.channels[id].send);
+   [[1,1],[2,.22],[3,.07]].forEach(([mul,level])=>{const o=node(c.createOscillator()),v=node(c.createGain());o.type='sine';o.frequency.value=midi(e.note)*mul;v.gain.value=level;o.connect(v);v.connect(filter);source(o,t+dur+.46);});
+  }else{
+   this.env(g,t,e.vel*.3,.014,dur+.16);g.connect(this.channels[id].send);
+   const n=node(c.createBufferSource()),band=node(c.createBiquadFilter());n.buffer=this.noise;band.type='bandpass';band.frequency.value=midi(e.note)*1.7;band.Q.value=5.5;n.connect(band);band.connect(g);source(n,t+dur+.23,.65);
+   const o=node(c.createOscillator()),v=node(c.createGain());o.frequency.value=midi(e.note);v.gain.value=.19;o.connect(v);v.connect(g);source(o,t+dur+.23);
+  }
+  let remaining=sources.length;
+  sources.forEach(n=>n.onended=()=>{this.nodes.delete(n);if(--remaining===0)nodes.forEach(x=>{try{x.disconnect();}catch(_){}});});
+ }
+ setVolume(v){this.master.gain.setTargetAtTime(Math.max(0,Math.min(.85,v)),this.ctx.currentTime,.025);}
+ updateGain(id){const ch=this.channels[id];ch.gain.gain.setTargetAtTime(ch.muted?0:ch.volume/.70,this.ctx.currentTime,.018);}
+ setChannelVolume(id,v){if(!this.channels[id])this.channel(id);this.channels[id].volume=Math.max(0,Math.min(1,v));this.updateGain(id);}
+ expression(id,value,reference){if(!this.channels[id])this.channel(id);this.channels[id].color.gain.setTargetAtTime((value-reference)*10,this.ctx.currentTime,.025);}
+ mute(id,value){if(!this.channels[id])this.channel(id);this.channels[id].muted=value;this.updateGain(id);if(value)this.stopDevice(id);}
+ stopDevice(id){for(const n of this.nodes)if(n._duijuId===id){try{n.stop(this.ctx.currentTime+.03);}catch(_){}}}
+ stop(){for(const n of this.nodes){try{n.stop(this.ctx.currentTime+.025);}catch(_){}}}
+}
+root.DuijuSynth=DuijuSynth;
+})(window);
+
+
+/* Browser adapter for independent logical sessions. Shared AudioContext is an output
+ * device only. Explicit session epochs schedule notes; this is NOT wireless clock proof. */
+(function(root){'use strict';
+class DuijuAudio{
+ constructor(engine,callbacks={}){this.engine=engine;this.cb=callbacks;this.ctx=null;this.synth=null;this.playing=false;this.silent=false;this.volume=.55;this.cursors={};this.currentPlan=[];this.pendingTimers=new Set();this.generation=0;this.timer=null;this.monitor=null;}
+ now(){return performance.now()/1000;}
+ async unlock(){if(!this.ctx){const AC=root.AudioContext||root.webkitAudioContext;if(!AC)throw new Error('浏览器没有可用的音频输出');this.ctx=new AC();this.synth=new root.DuijuSynth(this.ctx);}await this.ctx.resume();if(this.ctx.state!=='running')throw new Error('浏览器尚未允许声音播放');}
+ async start(silent=false){if(this.playing&&!this.silent)return;if(this.playing&&this.silent&&!silent)this.stop();this.silent=silent;if(!silent)await this.unlock();this.playing=true;this.generation++;this.cursors={};this.synth?.setVolume(this.volume);Object.keys(this.engine.devices).forEach(id=>this.syncDevice(id));clearInterval(this.timer);this.timer=setInterval(()=>this.pump(),12);this.pump();}
+ syncDevice(id){if(!this.synth)return;const d=this.engine.devices[id];this.synth.setChannelVolume(id,d.volume);this.synth.expression(id,d.activity,root.DUIJU_ROLES[d.role].init);const m=this.engine.syncFor(id),ref=m?this.engine.sessions[m.reference]:null;const beforeAlign=m?.stage==='waiting'&&!ref?.members.includes(id)&&m.applyAt-this.now()<=.055&&m.applyAt>this.now();this.synth.mute(id,d.muted||!!d.fault||d.loading||!d.present||d.battery===0||!!beforeAlign);}
+ pump(){
+  if(!this.playing)return;const now=this.now();this.engine.tick(now);this.currentPlan=this.engine.composeAt(now);
+  for(const align of this.engine.alignEvents.splice(0)){for(const id of align.ids){this.synth?.stopDevice(id);delete this.cursors[id];}}
+  for(const p of this.currentPlan){const d=this.engine.devices[p.id],s=this.engine.sessionFor(p.id),phase=this.engine.phase(p.id,now),key=s.id+'/'+d.clockVersion;
+   this.syncDevice(p.id);if(d.muted||d.fault||d.loading||!d.present){delete this.cursors[p.id];continue;}
+   let cursor=this.cursors[p.id];if(!cursor||cursor.key!==key){cursor=this.cursors[p.id]={key,seq:Math.floor(phase.total)};}
+   if(phase.total-cursor.seq>3)cursor.seq=Math.ceil(phase.total); // Do not replay a backlog after tab suspension.
+   let guard=0;
+   while(guard++<4){const when=s.epoch+cursor.seq*phase.stepTime;if(when>now+.024)break;
+    const seq=cursor.seq++,step=seq%16,bar=Math.floor(seq/16);
+    // Do not speculatively play the next bar before its state transaction is committed.
+    if(bar>phase.bar){cursor.seq--;break;}
+    const plan=p.motif;for(const e of plan.filter(e=>e.step===step)){
+     if(now-when>.07)continue;
+     const expression=d.activity-root.DUIJU_ROLES[d.role].init,ev={...e,expression,dur:e.dur*(1+expression*.45)/(1+(e.expression||0)*.45)};
+     // Stable preview pan is independent from desk coordinates and role ordering.
+     if(!this.silent)this.synth.note(p.id,ev,this.ctx.currentTime+Math.max(.004,when-now),({A:-.14,B:.14,C:0})[p.id]);
+     const gen=this.generation,version=d.clockVersion,h=setTimeout(()=>{this.pendingTimers.delete(h);if(this.playing&&gen===this.generation&&this.engine.devices[p.id].clockVersion===version&&!this.engine.devices[p.id].muted)this.cb.hit?.(p.id,ev);},Math.max(0,(when-now)*1000));this.pendingTimers.add(h);
+    }
+   }
+  }
+ }
+ phase(id='A'){return this.engine.phase(id,this.now());}
+ stop(){this.playing=false;this.generation++;clearInterval(this.timer);this.pendingTimers.forEach(clearTimeout);this.pendingTimers.clear();this.cursors={};if(this.synth){this.synth.setVolume(0);this.synth.stop();}}
+}
+root.DuijuAudio=DuijuAudio;
+})(window);
+
+
+/* Product views. 480×480 only. Desk handles and diagnostic labels are outside screens. */
+(function(root){'use strict';
+const I=root.EchoyI18n,R=root.DUIJU_ROLES,esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),roleIcon=r=>r==='pulse'?'◉':r==='voice'?'≋':r==='harmony'?'≡':'⠿';
+class DuijuView{
+ constructor(app){this.app=app;this.stage=document.getElementById('stage');this.units={};this.hits={};this.drawTime=0;this.reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;this.mount();this.frame=this.frame.bind(this);requestAnimationFrame(this.frame);}
+ mount(){for(const id of ['A','B','C']){
+  const el=document.createElement('article');el.className='unit';el.dataset.id=id;
+  el.innerHTML=`<div class="device-handle" tabindex="0" role="button" aria-label="拖动设备 ${id} 外壳" title="拖动外壳摆放；方向键移动，Shift 加速"><span class="device-id-badge">${id}</span><span class="handle-grip">⠿</span><span class="handle-copy">拖动外壳</span><span class="caption-state"></span></div><div class="unit-shell"><div class="screen" data-device="${id}" aria-label="设备 ${id} 产品屏幕"></div><div class="edge-light edge-left"></div><div class="edge-light edge-right"></div></div><div class="unit-caption"><span class="clock-caption"></span><span class="beat-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>`;
+  el.addEventListener('keydown',ev=>{const sheet=el.querySelector('.volume-sheet');if(!sheet)return;if(ev.key==='Escape'){ev.preventDefault();this.app.action(id,'back');}else if(ev.key==='Tab'){const items=[...sheet.querySelectorAll('button,input')];const first=items[0],last=items[items.length-1];if(ev.shiftKey&&document.activeElement===first){ev.preventDefault();last.focus();}else if(!ev.shiftKey&&document.activeElement===last){ev.preventDefault();first.focus();}}});
+  el.addEventListener('click',ev=>{const b=ev.target.closest('[data-action]');if(b)this.app.action(id,b.dataset.action,b.dataset.value);});
+  this.units[id]={el,screen:el.querySelector('.screen'),key:''};this.stage.appendChild(el);I.apply(el);
+ }}
+ header(title,kicker='',back=true){return`${back?'<button class="page-back" data-action="back" aria-label="返回演奏">←</button>':''}<h2 class="page-title" ${back?'':'style="left:38px"'}>${esc(title)}</h2>${kicker?`<span class="page-kicker" ${back?'':'style="left:39px"'}>${esc(kicker)}</span>`:''}`;}
+ render(){const a=this.app,e=a.engine;for(const [id,unit]of Object.entries(this.units)){
+  const d=e.devices[id],p=a.positions[id];unit.el.hidden=!d.present;unit.el.style.setProperty('--accent',R[d.role].color);
+  if(p&&a.movingUnit!==id){unit.el.style.left=p.x+'px';unit.el.style.top=p.y+'px';}
+  if(!d.present)continue;unit.el.classList.toggle('channel-muted',d.muted);
+  const route=a.routes[id],key=JSON.stringify([I.locale,d.role,d.phrase,d.activity,d.volume,d.battery,d.lifecycle,d.transport,d.fault,d.error,d.loading,d.rolePreparing,d.sessionId,d.motifAvailable,route,!!a.volumeOpen[id],e.pending.roles[id],e.pending.phrases[id],a.audio.playing,!!a.playRequests[id]]);
+  if(key!==unit.key&&a.dragging!==id&&a.volumeDragging!==id){
+   const wasVolume=!!unit.screen.querySelector('.volume-sheet'),active=document.activeElement;let focus=null;if(unit.screen.contains(active)){if(active.dataset.action)focus=`[data-action="${active.dataset.action}"]`+(active.dataset.value?`[data-value="${active.dataset.value}"]`:'');else if(active.hasAttribute('data-volume'))focus='[data-volume]';else if(active.classList.contains('gesture-zone'))focus='.gesture-zone';else if(active.classList.contains('expression-control'))focus='.expression-control';}
+   unit.key=key;unit.screen.innerHTML=this.page(id,route);I.apply(unit.screen);this.bindGesture(id);this.bindVolume(id);const sheet=unit.screen.querySelector('.volume-sheet');if(sheet)unit.screen.querySelector('[data-route=perform]').inert=true;if(sheet&&!wasVolume)sheet.querySelector('[data-volume]').focus({preventScroll:true});else if(!sheet&&wasVolume)unit.screen.querySelector('[data-action=volume]')?.focus({preventScroll:true});else if(focus)unit.screen.querySelector(focus)?.focus({preventScroll:true});
+  }
+  unit.el.querySelector('.caption-state').textContent=d.lifecycle==='booting'?'正在开机':d.transport==='playing'?'播放中':d.transport==='waiting'?'等待拍点':'已暂停';
+  const s=e.sessionFor(id),sync=e.syncFor(id);unit.el.querySelector('.clock-caption').textContent=sync?(sync.stage==='failed'?'未能对拍 · 原时间继续':sync.stage==='waiting'?'拍点已约定 · 等待接入':'交换时间信息…'):!d.linkOnline?(d.lostSplit?'独立时间 · 无线失联':'短时保拍 · 无线失联'):s?.members.length>1?`同场 · ${s.members.length} 台`:'独立时间';
+  for(const side of ['left','right']){const edge=Object.values(e.contactInput).find(c=>side==='left'?c.right===id:c.left===id),light=unit.el.querySelector('.edge-'+side);light.className='edge-light edge-'+side;if(edge){light.classList.add(e.committedEdges[edge.left+'>'+edge.right]&&!sync&&e.contactAvailable(edge)?'connected':'pending');}}
+ I.apply(unit.el.querySelector('.device-handle'));I.apply(unit.el.querySelector('.unit-caption'));}this.drawAll();}
+ page(id,route){const a=this.app,e=a.engine,d=e.devices[id],r=R[d.role];
+  if(d.lifecycle==='booting')return`<section class="product-page" data-route="status"><div class="boot-mark">${roleIcon(d.role)}</div><h2 class="boot-title">准备声音</h2><div class="boot-track"><i></i></div></section>`;
+  if(d.loading||d.rolePreparing||d.fault||d.error)return this.status(id);
+  if(route==='role')return this.role(id);
+  const f=a.feedback(id),playing=d.transport!=='paused'||!!a.playRequests[id];
+  return`<section class="product-page" data-route="perform"><div class="top-status"><button class="volume-trigger" data-action="volume" aria-label="本机音量" title="调整本机音量" aria-haspopup="dialog" aria-expanded="${!!a.volumeOpen[id]}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 5 5.8 9H3v6h2.8l4.7 4V5zm4.2 4c1.8 1.7 1.8 4.3 0 6m3-9c3.4 3.3 3.4 8.7 0 12"/></svg><span class="visually-hidden">音量</span></button><span class="status-divider" aria-hidden="true"></span><div class="battery-readout ${d.battery<15?'low':''}" role="img" aria-label="电量 ${d.battery}%${d.battery<15?'，请充电':''}" title="电量 ${d.battery}%${d.battery<15?' · 请充电':''}"><span class="battery-icon" aria-hidden="true"><i style="width:${d.battery}%"></i></span><span class="battery-value" aria-hidden="true">${d.battery<15?'请充电':d.battery+'%'}</span></div></div><h2 class="role-heading" data-role="${d.role}" style="color:${r.color}">${r.name}</h2><span class="phrase-name">${r.phrases[d.phrase-1]}</span><div class="role-subtitle ${f.pending?'pending':''}"><span class="status-led"></span><span data-feedback>${esc(f.text)}</span></div><div class="commit-track" ${f.pending?'':'hidden'}><i></i></div><canvas class="instrument-canvas" width="684" height="436" aria-hidden="true"></canvas><div class="gesture-zone" role="slider" tabindex="0" aria-label="演奏，拖动声形调节简洁与丰富" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(d.activity*100)}" aria-valuetext="${Math.round(d.activity*100)}%，向上更丰富，向下更简洁"></div><div class="expression-control" role="slider" tabindex="0" aria-label="演奏，纵向刻度调节简洁与丰富" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(d.activity*100)}" aria-valuetext="${Math.round(d.activity*100)}%，向上更丰富，向下更简洁" style="--expression:${d.activity}"><span class="expression-rich" aria-hidden="true">丰富</span><div class="expression-rail" aria-hidden="true"><i class="expression-fill"></i><span class="expression-ticks"></span><i class="expression-marker"></i><output class="expression-value">${Math.round(d.activity*100)}%</output></div><span class="expression-simple" aria-hidden="true">简洁</span></div><nav class="bottom-nav perform-actions"><button class="device-button secondary" data-action="choose"><span class="nav-symbol">${roleIcon(d.role)}</span>角色</button><button class="device-button transport-button ${d.transport==='playing'?'on':d.transport==='waiting'?'waiting':''}" data-action="play" aria-label="${id} ${playing?'暂停':'播放'}"><span class="nav-symbol">${playing?'Ⅱ':'▶'}</span>${playing?'暂停':'播放'}</button></nav></section>${a.volumeOpen[id]?this.volume(id):''}`;
+ }
+ role(id){const a=this.app,e=a.engine,d=e.devices[id],role=e.pending.roles[id]||d.role,r=R[role],selected=e.pending.phrases[id]?.value||(role===d.role?d.phrase:d.phraseMemories[role]);
+  return`<section class="product-page" data-route="role">${this.header('角色与乐句',`当前：${R[d.role].name} · ${R[d.role].phrases[d.phrase-1]}`)}<div class="role-tabs">${Object.keys(R).map(k=>`<button class="role-tab ${role===k?'selected':''}" style="--option-color:${R[k].color}" data-action="role" data-value="${k}" aria-pressed="${role===k}"><span>${roleIcon(k)}</span><strong>${R[k].name}</strong><small>${I.detail(k)}</small></button>`).join('')}</div><div class="phrase-section-title"><span>${r.cn}</span><small>选择一种表达</small></div><div class="phrase-options">${r.phrases.map((name,i)=>`<button class="phrase-option ${selected===i+1?'selected':''}" style="--option-color:${r.color}" data-action="phrase" data-value="${i+1}" aria-label="乐句 ${i+1} ${name}" aria-pressed="${selected===i+1}"><span>0${i+1}</span><strong>${name}</strong>${selected===i+1?'<i>•</i>':''}</button>`).join('')}</div><div class="role-selection-note"><span data-feedback>${esc(a.feedback(id).text)}</span></div></section>`;
+ }
+ volume(id){const d=this.app.engine.devices[id];return`<div class="volume-overlay"><button class="volume-scrim" data-action="dismiss-volume" tabindex="-1" aria-hidden="true"></button><section class="volume-sheet" role="dialog" aria-modal="true" aria-label="本机音量"><h2>音量</h2><button class="volume-close" data-action="back" aria-label="关闭音量">×</button><label class="sheet-volume"><output data-volume-out>${Math.round(d.volume*100)}<small>%</small></output><input data-volume type="range" min="0" max="100" value="${Math.round(d.volume*100)}" aria-label="${id} 本机音量"><span class="sheet-volume-ends"><span>0</span><span>100</span></span></label></section></div>`;}
+ status(id){const d=this.app.engine.devices[id];
+  if(d.loading||d.rolePreparing)return`<section class="product-page" data-route="status">${this.header('准备声音','',false)}<div class="status-symbol loading"></div><h3 class="status-heading">${d.rolePreparing?`正在准备 ${R[d.rolePreparing].name}`:'读取声音素材'}</h3><p class="status-copy">${d.rolePreparing?'原来的演奏继续。<br>准备好后，在下一小节切换。':'请稍候。'}</p><div class="progress-track"><i></i></div><button class="status-action" data-action="cancel-load">取消</button></section>`;
+  return`<section class="product-page" data-route="status">${this.header('需要处理','',false)}<div class="status-symbol error">!</div><h3 class="status-heading">${d.error?'新角色没有准备好':d.fault==='data'?'乐句暂不可用':'暂时无法发声'}</h3><p class="status-copy">${d.error?`已保留 ${R[d.role].name} · ${R[d.role].phrases[d.phrase-1]}`:d.fault==='data'?'重新准备后，在下一小节恢复。':'请重试本机声音输出。'}</p><button class="status-action" data-action="recover">${d.error?'继续原来的演奏':'重试'}</button></section>`;
+ }
+ bindVolume(id){const input=this.units[id].screen.querySelector('[data-volume]');if(!input)return;
+  input.addEventListener('pointerdown',()=>{this.app.volumeDragging=id;});
+  input.addEventListener('input',ev=>this.app.setVolume(id,+ev.target.value/100));
+  const end=()=>{this.app.volumeDragging=null;this.app.render();};input.addEventListener('change',end);input.addEventListener('pointerup',end);input.addEventListener('pointercancel',end);
+ }
+ bindGesture(id){const unit=this.units[id];
+  for(const element of unit.screen.querySelectorAll('.gesture-zone,.expression-control')){
+   let drag=null;const direct=element.classList.contains('expression-control');
+   const update=ev=>{const rail=unit.screen.querySelector('.expression-rail').getBoundingClientRect();const value=direct?(rail.bottom-ev.clientY)/Math.max(1,rail.height):drag.value+(drag.y-ev.clientY)/180;this.app.adjust(id,value);};
+   element.addEventListener('pointerdown',ev=>{if(ev.button!==0||ev.isPrimary===false||drag)return;ev.preventDefault();element.focus({preventScroll:true});element.setPointerCapture(ev.pointerId);drag={pointer:ev.pointerId,y:ev.clientY,value:this.app.engine.devices[id].activity};this.app.dragging=id;if(direct)update(ev);});
+   element.addEventListener('pointermove',ev=>{if(drag&&ev.pointerId===drag.pointer)update(ev);});
+   const end=ev=>{if(!drag||(ev.pointerId!==undefined&&ev.pointerId!==drag.pointer))return;drag=null;this.app.dragging=null;this.app.finishAdjust(id);};
+   element.addEventListener('pointerup',end);element.addEventListener('pointercancel',end);element.addEventListener('lostpointercapture',end);
+   element.addEventListener('keydown',ev=>{if(!['ArrowUp','ArrowDown','Home','End'].includes(ev.key))return;ev.preventDefault();const old=this.app.engine.devices[id].activity;this.app.adjust(id,ev.key==='Home'?0:ev.key==='End'?1:old+(ev.key==='ArrowUp'?.05:-.05));this.app.finishAdjust(id);});
+  }
+ }
+ value(id){const unit=this.units[id],d=this.app.engine.devices[id],value=Math.round(d.activity*100),control=unit.screen.querySelector('.expression-control'),out=unit.screen.querySelector('.expression-value');if(control)control.style.setProperty('--expression',d.activity);if(out)out.textContent=value+'%';for(const slider of unit.screen.querySelectorAll('.gesture-zone,.expression-control')){slider.setAttribute('aria-valuenow',value);slider.setAttribute('aria-valuetext',value+'%，向上更丰富，向下更简洁');I.apply(slider);}}
+ hit(id,event){this.hits[id]={t:performance.now(),event};const link=this.units[id]?.el.querySelector('.link-indicator');if(link&&!link.classList.contains('off')){link.classList.add('active');clearTimeout(link._timer);link._timer=setTimeout(()=>link.classList.remove('active'),125);}}
+ frame(t){if(t-this.drawTime>(this.reduced?85:30)){this.drawTime=t;this.drawAll();this.app.progress();}requestAnimationFrame(this.frame);}
+ drawAll(){for(const id of this.app.physicalOrder)this.draw(id);}
+ draw(id){const canvas=this.units[id].screen.querySelector('canvas');if(!canvas)return;const c=canvas.getContext('2d');if(!c)return;c.setTransform(2,0,0,2,0,0);c.clearRect(0,0,342,218);
+  const a=this.app,e=a.engine,d=e.devices[id],r=R[d.role],p=a.plan().find(p=>p.id===id),events=p?.motif||p?.events||[];
+  const phase=a.audio.phase(id),active=a.audio.playing&&!d.muted&&!d.fault&&!d.loading&&d.motifAvailable!==false;const hit=this.hits[id];const energy=active&&hit?Math.max(0,1-(performance.now()-hit.t)/470):0;
+  const accent=r.color,ink='#363b30',line='#d3d7c9';c.lineCap='round';
+  if(d.role==='pulse'){
+   const x=174,y=88;c.strokeStyle=line;c.lineWidth=1;[39,59,79].forEach(rad=>{c.beginPath();c.arc(x,y,rad,0,Math.PI*2);c.stroke();});
+   for(let i=0;i<16;i++){const theta=i/16*Math.PI*2-Math.PI/2;const ev=events.find(v=>v.step===i&&v.accent);const rr=79;
+    c.beginPath();c.moveTo(x+Math.cos(theta)*(rr-4),y+Math.sin(theta)*(rr-4));c.lineTo(x+Math.cos(theta)*(rr+(ev?9:3)),y+Math.sin(theta)*(rr+(ev?9:3)));c.strokeStyle=ev?accent:'#b9c0ae';c.lineWidth=ev?4:1.5;c.stroke();
+    if(active&&phase.step===i){c.beginPath();c.arc(x+Math.cos(theta)*rr,y+Math.sin(theta)*rr,6,0,Math.PI*2);c.fillStyle=accent;c.fill();}
+   }
+   c.fillStyle=ink;c.beginPath();c.arc(x,y,25+energy*4,0,Math.PI*2);c.fill();c.fillStyle=accent;c.beginPath();c.arc(x,y,6+energy*3,0,Math.PI*2);c.fill();
+   if(energy>0){c.strokeStyle=accent;c.globalAlpha=energy*.4;c.lineWidth=1;c.beginPath();c.arc(x,y,29+(1-energy)*45,0,Math.PI*2);c.stroke();c.globalAlpha=1;}
+   c.fillStyle='#8d9580';c.font='9px monospace';c.textAlign='center';
+   c.font='10px monospace';c.textAlign='left';c.fillStyle='#9ca58e';c.fillText(I.text('PERC.'),16,73);c.fillText('01—16',16,89);c.textAlign='right';c.fillText(I.text(active?'RUN':'READY'),324,73);c.fillText(String(events.filter(x=>x.accent).length).padStart(2,'0')+(I.locale==='en'?' HITS':' 重音'),324,89);
+  }else if(d.role==='voice'){
+   const amps=[.58,.84,1,.9,.76,.5,.36];const note=hit?.event.note||65;const frequency=(note-50)/18;const sway=energy*7;
+   c.lineWidth=1;for(let row=0;row<7;row++){c.beginPath();for(let x=28;x<=316;x+=2){const u=(x-28)/288;const envelope=Math.sin(u*Math.PI)**1.6;const wave=Math.sin(u*Math.PI*(3+frequency)+(row*.22))*envelope*(25+d.activity*20)*amps[row];const y=48+row*12+wave+sway*Math.sin(u*Math.PI*4);if(x===28)c.moveTo(x,y);else c.lineTo(x,y);}c.strokeStyle=row===2||row===3?accent:row<2?'#a8b7bc':'#bec6bd';c.lineWidth=row===2?2:1.1;c.stroke();}
+   const noteEvents=events.filter(v=>v.accent);for(const ev of noteEvents){const x=28+ev.step/15*288;const y=143-((ev.note-60)%14)*1.7;c.strokeStyle='#c0c9be';c.lineWidth=1;c.beginPath();c.moveTo(x,y);c.lineTo(x,162);c.stroke();c.fillStyle=accent;c.beginPath();c.arc(x,y,active&&phase.step===ev.step?5:2.5,0,Math.PI*2);c.fill();}
+   c.fillStyle='#97a08c';c.font='9px monospace';c.textAlign='left';c.fillText(I.text('D / MINOR'),24,9);c.textAlign='right';c.fillText(I.text(p?.source?'RESPONSE':'PHRASE'),320,9);
+  }else if(d.role==='harmony'){
+   // Three harmonic strands. Their spacing follows the sounding voicing;
+   // the lower score shows the actual chord/arpeggio onset and duration.
+   const nowInBar=((phase.total%16)+16)%16,stepSeconds=60/e.bpm/4;
+   const current=events.filter(n=>n.step<=nowInBar&&n.step+n.dur/stepSeconds>nowInBar).at(-1)||events[0];
+   const tones=current?.harmony||[50,57,65],held=active&&events.some(n=>n.step<=nowInBar&&n.step+n.dur/stepSeconds>nowInBar);
+   for(let row=0;row<3;row++){
+    const pitch=tones[row]||tones[0],center=50+row*29,arch=16+(pitch%12)*.5;
+    const breathe=held&&!this.reduced?Math.sin(phase.total*.24+row*.6)*2.5:0;
+    c.beginPath();
+    for(let x=34;x<=308;x+=2){const u=(x-34)/274,curve=Math.sin(Math.PI*u),y=center-curve*(arch+breathe)+Math.sin(u*Math.PI*2+row*.3)*5;
+     if(x===34)c.moveTo(x,y);else c.lineTo(x,y);}
+    for(let x=308;x>=34;x-=2){const u=(x-34)/274,curve=Math.sin(Math.PI*u),y=center+curve*(7+d.activity*5)+Math.sin(u*Math.PI*2+row*.3)*5;c.lineTo(x,y);}
+    c.closePath();c.fillStyle=accent;c.globalAlpha=held?.10:.055;c.fill();c.globalAlpha=1;
+    c.strokeStyle=row===1?accent:'#b7a587';c.lineWidth=held?1.8:1.2;c.stroke();
+    const x=60+row*108,y=center-Math.sin(Math.PI*((x-34)/274))*(arch+breathe)+Math.sin(((x-34)/274)*Math.PI*2+row*.3)*5;
+    c.fillStyle=accent;c.beginPath();c.arc(x,y,held?3.5:2.5,0,Math.PI*2);c.fill();
+   }
+   for(const ev of events){const x=28+ev.step/16*290,len=Math.max(4,Math.min(16-ev.step,ev.dur/stepSeconds)/16*290);
+    const count=ev.notes?.length||1;for(let j=0;j<count;j++){c.strokeStyle=accent;c.globalAlpha=active&&phase.step>=ev.step&&phase.step<ev.step+ev.dur/stepSeconds?.80:.36;c.lineWidth=2;c.beginPath();c.moveTo(x,152+j*5);c.lineTo(x+len,152+j*5);c.stroke();}}
+   c.globalAlpha=1;c.fillStyle='#998d76';c.font='9px monospace';c.textAlign='left';c.fillText(I.text('D / MINOR'),24,9);c.textAlign='right';c.fillText(I.text(['','STACCATO','ARPEGGIO','ANSWER'][d.phrase]),320,9);
+  }else{
+   // Deterministic grain positions, with audible events selecting the active column.
+   const rand=n=>{const v=Math.sin(n*127.1+311.7)*43758.5453;return v-Math.floor(v);};
+   for(let i=0;i<135;i++){const u=rand(i+1),v=rand(i+54),x=28+u*288,center=83+Math.sin(u*7)*13,spread=35*Math.sin(u*Math.PI)+10,y=center+(v-.5)*spread*2,step=Math.floor(u*16);const ev=events.find(x=>x.step===step);const hot=active&&phase.step===step;const radius=(ev?1.7:1)*(hot?1.7:1)+rand(i+8)*.6;c.fillStyle=hot?accent:ev?accent:'#bbc4a8';c.globalAlpha=ev?.6+v*.4:.42+v*.3;c.beginPath();c.arc(x,y,radius,0,Math.PI*2);c.fill();}c.globalAlpha=1;
+   c.strokeStyle='#d8ddce';c.lineWidth=1;c.beginPath();c.moveTo(24,149);c.lineTo(320,149);c.stroke();
+   c.fillStyle='#96a185';c.font='9px monospace';c.textAlign='left';c.fillText(I.text('PARTICLES / LOCAL'),24,9);c.textAlign='right';c.fillText(I.text('AIR'),320,9);
+  }
+  // This score is generated from the same events sent to the sound adapter.
+  const scoreY=210;for(let i=0;i<16;i++){const x=29+i*19;const ev=events.find(v=>v.step===i);c.fillStyle=active&&phase.step===i?accent:ev?ink:'#ccd2c1';c.beginPath();c.arc(x,scoreY,active&&phase.step===i?3.5:ev?2.4:1.5,0,Math.PI*2);c.fill();}
+ }
+}
+root.DuijuView=DuijuView;root.duijuEscape=esc;
+})(window);
+
+
+/* Direct manipulation adapter. Moving a shell never adjusts product parameters. */
+(function(root){'use strict';
+class DuijuDesk{
+ constructor(app){this.app=app;this.viewport=document.getElementById('stage-viewport');this.stage=document.getElementById('stage');this.dock=document.getElementById('reserve-dock');this.drag=null;this.hint=document.getElementById('snap-hint');
+  for(const [id,u]of Object.entries(app.view.units)){u.el.querySelector('.device-handle').addEventListener('pointerdown',ev=>this.start(ev,id,false));u.el.querySelector('.unit-shell').addEventListener('pointerdown',ev=>{if(!ev.target.closest('.screen'))this.start(ev,id,false);});u.el.querySelector('.device-handle').addEventListener('keydown',ev=>this.keyMove(ev,id));}
+  document.querySelectorAll('[data-reserve]').forEach(el=>el.addEventListener('pointerdown',ev=>this.start(ev,el.dataset.reserve,true)));
+  root.addEventListener('pointermove',ev=>this.move(ev));root.addEventListener('pointerup',ev=>this.end(ev,false));root.addEventListener('pointercancel',ev=>this.end(ev,true));
+  let pan=null;this.viewport.addEventListener('pointerdown',ev=>{if(ev.button===0&&(ev.target===this.stage||ev.target===this.viewport||ev.target.classList.contains('desk-note'))){pan={x:ev.clientX,y:ev.clientY,l:this.viewport.scrollLeft,t:this.viewport.scrollTop};this.viewport.setPointerCapture(ev.pointerId);}});
+  this.viewport.addEventListener('pointermove',ev=>{if(pan){this.viewport.scrollLeft=pan.l+pan.x-ev.clientX;this.viewport.scrollTop=pan.t+pan.y-ev.clientY;}});this.viewport.addEventListener('pointerup',()=>pan=null);this.viewport.addEventListener('pointercancel',()=>pan=null);
+ }
+ inside(ev,el){const r=el.getBoundingClientRect();return ev.clientX>=r.left&&ev.clientX<=r.right&&ev.clientY>=r.top&&ev.clientY<=r.bottom;}
+ point(ev){const r=this.viewport.getBoundingClientRect(),d=this.drag;return{x:Math.max(16,Math.min(1426,ev.clientX-r.left+this.viewport.scrollLeft-(d.reserve?254:d.dx))),y:Math.max(16,Math.min(610,ev.clientY-r.top+this.viewport.scrollTop-(d.reserve?18:d.dy)))};}
+ start(ev,id,reserve){if(ev.button!==0||this.drag)return;ev.preventDefault();ev.stopPropagation();const a=this.app,unit=a.view.units[id].el,rect=unit.getBoundingClientRect();
+  this.drag={id,reserve,pointer:ev.pointerId,initial:a.positions[id]?{...a.positions[id]}:null,dx:ev.clientX-rect.left,dy:ev.clientY-rect.top,x:ev.clientX,y:ev.clientY,el:unit};
+  a.movingUnit=id;if(!reserve){a.engine.beginMove(id,performance.now()/1000);unit.style.position='fixed';unit.style.left=rect.left+'px';unit.style.top=rect.top+'px';unit.style.zIndex=500;unit.classList.add('lifted');document.body.appendChild(unit);}else{const ghost=document.createElement('div');ghost.className='reserve-ghost';ghost.textContent=root.EchoyI18n.text(root.DUIJU_ROLES[a.engine.devices[id].role].name);document.body.appendChild(ghost);this.drag.ghost=ghost;}
+  this.dock.classList.add('drag-ready');document.body.classList.add('moving-tile');this.move(ev);this.autoscroll=setInterval(()=>{if(!this.drag)return;const r=this.viewport.getBoundingClientRect(),d=this.drag;if(d.x<r.left||d.x>r.right||d.y<r.top||d.y>r.bottom)return;const x=d.x-r.left,y=d.y-r.top;const dx=x<30?-12:x>r.width-30?12:0,dy=y<28?-10:y>r.height-28?10:0;if(dx||dy){this.viewport.scrollLeft+=dx;this.viewport.scrollTop+=dy;this.preview({clientX:d.x,clientY:d.y});}},24);
+ }
+ preview(ev){if(!this.drag)return;const d=this.drag,a=this.app;this.dock.classList.toggle('drop-ready',this.inside(ev,this.dock));this.hint.hidden=true;if(!this.inside(ev,this.viewport))return;const p=this.point(ev),result=a.spatial.snap(d.id,p,a.positions);if(result.snapped){this.hint.hidden=false;this.hint.style.left=result.x+'px';this.hint.style.top=(result.y+36)+'px';}}
+ move(ev){const d=this.drag;if(!d||ev.pointerId!==undefined&&ev.pointerId!==d.pointer)return;d.x=ev.clientX;d.y=ev.clientY;if(d.ghost){d.ghost.style.left=(ev.clientX-80)+'px';d.ghost.style.top=(ev.clientY-35)+'px';}else{d.el.style.left=(ev.clientX-d.dx)+'px';d.el.style.top=(ev.clientY-d.dy)+'px';}this.preview(ev);}
+ end(ev,cancel){const d=this.drag;if(!d||ev.pointerId!==undefined&&ev.pointerId!==d.pointer)return;const a=this.app;clearInterval(this.autoscroll);this.hint.hidden=true;this.dock.classList.remove('drag-ready','drop-ready');document.body.classList.remove('moving-tile');d.ghost?.remove();
+  if(!d.reserve){this.stage.appendChild(d.el);d.el.style.position='absolute';d.el.style.zIndex='';d.el.classList.remove('lifted');}
+  if(!cancel&&this.inside(ev,this.dock)){if(!d.reserve)a.stow(d.id);}
+  else if(!cancel&&this.inside(ev,this.viewport)){const p=this.point(ev),r=a.spatial.snap(d.id,p,a.positions);if(!r.collision){if(d.reserve)a.bootAt(d.id,{x:r.x,y:r.y});else a.positions[d.id]={x:r.x,y:r.y};}else a.toast('这里已有设备，请放到空位或兼容的侧边。');}
+  else if(!cancel&&!d.reserve)a.toast('移出桌面不会断网。拖到收纳区才模拟关机。');
+  a.engine.endMove(d.id,performance.now()/1000);a.movingUnit=null;this.drag=null;a.publishContacts();a.render();}
+ keyMove(ev,id){if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(ev.key)||this.drag)return;ev.preventDefault();const a=this.app,p=a.positions[id],n=ev.shiftKey?80:20,delta={ArrowLeft:[-n,0],ArrowRight:[n,0],ArrowUp:[0,-n],ArrowDown:[0,n]}[ev.key];const r=a.spatial.snap(id,{x:Math.max(16,Math.min(1426,p.x+delta[0])),y:Math.max(16,Math.min(610,p.y+delta[1]))},a.positions);if(!r.collision){a.positions[id]={x:r.x,y:r.y};a.publishContacts();a.render();}}
+ renderDock(){for(const el of document.querySelectorAll('[data-reserve]')){const d=this.app.engine.devices[el.dataset.reserve];el.hidden=d.present;el.querySelector('strong').textContent=root.DUIJU_ROLES[d.role].name;el.querySelector('.reserve-shape').textContent=({pulse:'◉',voice:'≋',dust:'⠿',harmony:'≡'})[d.role];el.style.setProperty('--accent',root.DUIJU_ROLES[d.role].color);}document.getElementById('dock-empty').hidden=Object.values(this.app.engine.devices).some(d=>!d.present);root.EchoyI18n.apply(this.dock);}
+}
+root.DuijuDesk=DuijuDesk;
+})(window);
+
+
+/* Host owns browser adapters and diagnostics, never supplies coordinates to the product. */
+(function(root){'use strict';
+const $=id=>document.getElementById(id),I=root.EchoyI18n,R=root.DUIJU_ROLES;
+class DuijuApp{
+ constructor(){this.engine=new root.DuijuSession(performance.now()/1000);this.positions={A:{x:72,y:38},B:{x:646,y:56}};this.spatial=new root.DuijuSpatial();this.routes={A:'perform',B:'perform',C:'perform'};this.volumeOpen={};this.failNext={};this.notices={};this.timers=new Map();this.logs=[];this.lastEvent=0;this.dragging=null;this.volumeDragging=null;this.movingUnit=null;this.clockFaults={};this.contactSignature='';this.startPromise=null;this.playRequests={};
+  this.audio=new root.DuijuAudio(this.engine,{hit:(id,ev)=>this.view.hit(id,ev)});this.view=new root.DuijuView(this);this.desk=new root.DuijuDesk(this);this.bind();this.buildMapping();this.syncPanel();this.render();this.timer=setInterval(()=>this.tick(),40);this.log('分别开机，各自计时。将外壳拖到一起，首次吸合后才建立同场。');}
+ get physicalOrder(){return Object.keys(this.positions).filter(id=>this.engine.devices[id].present);}
+ target(){return $('target').value;}
+ plan(){return this.engine.composeAt(performance.now()/1000);}
+ sourceFor(id){return this.plan().find(x=>x.id===id)?.source||null;}
+ later(key,ms,fn){this.cancel(key);this.timers.set(key,setTimeout(()=>{this.timers.delete(key);fn();},ms));}
+ cancel(key){if(this.timers.has(key)){clearTimeout(this.timers.get(key));this.timers.delete(key);}}
+ tick(){this.engine.tick(performance.now()/1000);
+  let changed=false;for(const id of Object.keys(this.positions))if(!this.engine.devices[id].present){delete this.positions[id];this.audio.syncDevice(id);changed=true;}
+  if(changed)this.publishContacts();
+  const entries=this.engine.events.filter(x=>!x._seen);for(const ev of entries){ev._seen=true;const ids=ev.ids||[ev.id];
+   const labels={ready:'开机完成，开始发现；使用独立时间',joined:'对拍完成，已在未来边界并入同场',split:'保拍超时，已退回独立时间',arranged:'新的邻接编排已生效',parameters:'声音设置已生效',playing:'本机开始播放', 'sync-start':'开始对拍；原来的演奏暂时继续'};
+   if(labels[ev.type])this.log(ids.filter(Boolean).join(' / ')+'：'+labels[ev.type]);
+   if(['parameters','arranged','joined'].includes(ev.type))for(const id of ids)this.notices[id]={text:ev.type==='joined'?'对拍完成': '已生效',until:performance.now()+1100};
+  }
+  this.render();}
+ async ensureStart(silent=false){if(this.audio.playing&&(!this.audio.silent||silent))return;if(this.startPromise)return this.startPromise;this.startPromise=this.audio.start(silent);try{await this.startPromise;}finally{this.startPromise=null;this.render();}}
+ async localPlay(id){const d=this.engine.devices[id];if(d.transport!=='paused'||this.playRequests[id]){delete this.playRequests[id];this.engine.pause(id);this.audio.syncDevice(id);this.notices[id]=null;this.render();return;}
+  const request={boot:d.bootId};this.playRequests[id]=request;this.render();
+  try{await this.ensureStart(false);if(this.playRequests[id]!==request||!d.present||d.bootId!==request.boot)return;this.engine.tick(performance.now()/1000);if(!this.engine.requestPlay(id))this.toast('这块设备还没有准备好。');}
+  catch(error){if(this.playRequests[id]===request){this.engine.pause(id);this.toast('浏览器未能启用声音。可在高级面板使用无声预览。');this.log('浏览器音频：'+error.message);}}
+  finally{if(this.playRequests[id]===request)delete this.playRequests[id];this.render();}
+ }
+
+ action(id,action,value){const d=this.engine.devices[id];if(!d.present)return;
+  if(action==='back'||action==='dismiss-volume'){if(this.volumeOpen[id])this.volumeOpen[id]=false;else this.routes[id]='perform';}else if(action==='choose'){this.volumeOpen[id]=false;this.routes[id]='role';}else if(action==='volume')this.volumeOpen[id]=true;
+  else if(action==='play'){this.localPlay(id);return;}
+  else if(action==='role'){this.changeRole(id,value);return;}
+  else if(action==='phrase'){this.engine.queuePhrase(id,+value);this.engine.commitIdle(id);this.notices[id]=null;}
+  else if(action==='cancel-load'){this.cancel('role:'+id);this.cancel('load:'+id);d.loading=false;d.rolePreparing=null;delete this.engine.pending.roles[id];delete this.engine.pending.phrases[id];this.routes[id]='role';this.audio.syncDevice(id);}
+  else if(action==='recover'){d.error=null;d.fault=null;d.loading=false;this.routes[id]='perform';this.audio.syncDevice(id);}
+  this.render();}
+ changeRole(id,role){const d=this.engine.devices[id];if(!R[role])return;this.cancel('role:'+id);d.rolePreparing=null;this.engine.queueRole(id,d.role);d.error=null;
+  if(role===d.role){this.routes[id]='role';this.render();return;}
+  d.rolePreparing=role;this.render();this.later('role:'+id,650,()=>{d.rolePreparing=null;
+   if(!d.present)return;if(this.failNext[id]){delete this.failNext[id];this.engine.failRole(id,'素材不可用');}
+   else{this.engine.queueRole(id,role);this.engine.commitIdle(id);this.routes[id]='role';}
+   this.render();});}
+ setVolume(id,value){this.engine.setVolume(id,value);this.audio.synth?.setChannelVolume(id,this.engine.devices[id].volume);const output=this.view.units[id].screen.querySelector('[data-volume-out]');if(output)output.innerHTML=Math.round(this.engine.devices[id].volume*100)+'<small>%</small>';}
+ adjust(id,value){this.engine.setActivity(id,value);this.audio.synth?.expression(id,this.engine.devices[id].activity,R[this.engine.devices[id].role].init);this.notices[id]=null;this.view.value(id);this.progress();}
+ finishAdjust(id){this.engine.commitIdle(id);this.render();}
+ publishContacts(){const list=this.spatial.edges(this.positions).filter(c=>this.engine.devices[c.left].present&&this.engine.devices[c.right].present).map(c=>({...c,state:this.clockFaults[c.left]||this.clockFaults[c.right]?'uncertain':'connected'}));const signature=JSON.stringify(list);if(signature!==this.contactSignature){this.engine.receiveContacts(list,performance.now()/1000);this.contactSignature=signature;}}
+ bootAt(id,p){if(this.engine.devices[id].battery===0){this.toast('电量已耗尽。请先在高级面板补电，再拖上桌。');return false;}this.positions[id]=p;this.engine.powerOn(id,performance.now()/1000);this.routes[id]='perform';this.volumeOpen[id]=false;this.publishContacts();this.syncPanel();this.render();}
+ stow(id){this.volumeOpen[id]=false;delete this.playRequests[id];this.cancel('role:'+id);this.cancel('load:'+id);this.engine.powerOff(id,performance.now()/1000);this.audio.syncDevice(id);delete this.positions[id];this.publishContacts();this.syncPanel();this.render();this.log(id+' 已收起 / 模拟关机。再次拖上桌会重新开机。');}
+ feedback(id){const e=this.engine,d=e.devices[id],s=e.sessionFor(id),sync=e.syncFor(id),pending=(text,kind='bar',remaining=null)=>({text,pending:true,kind,remaining});
+  if(d.motifAvailable===false&&d.lifecycle==='ready'&&!d.fault&&!d.loading)return pending('声音已准备 · 下一小节恢复');
+  if(this.playRequests[id])return pending('准备播放 · 可点暂停取消','contact');
+  if(sync){if(sync.stage==='failed')return{text:'暂未对齐 · 继续原来的演奏',pending:false};return sync.stage==='waiting'?pending('已约定拍点 · 下一小节接入','sync-wait',sync.applyAt-e.time):pending('正在对拍 · 原演奏继续','contact');}
+  if(d.transport==='waiting')return pending('等待下一拍 · 可点暂停取消','beat');
+  if(e.pending.roles[id]){const r=e.pending.roles[id],q=e.pending.phrases[id]?.value||d.phraseMemories[r];return pending(`${R[r].name} · ${R[r].phrases[q-1]} 待生效`);}
+  if(e.pending.phrases[id])return pending(`${R[d.role].phrases[e.pending.phrases[id].value-1]} · 下一小节生效`);
+  if(Math.abs(d.activity-d.committedActivity)>.00001)return pending('新节奏 · 下一小节生效');
+  const contact=Object.values(e.contactInput).find(c=>c.left===id||c.right===id);
+  if(e.moving[id]!==undefined||contact&&(e.moving[contact.left]!==undefined||e.moving[contact.right]!==undefined))return pending('位置确认中 · 保持当前编排','contact');
+  if(contact&&(contact.state==='uncertain'||e.time-contact.since<.45))return pending('接触待确认','contact');
+  if(s&&e.arrangements[s.id])return pending('新关系 · 下一小节生效');
+  if(this.notices[id]?.until>performance.now())return{text:this.notices[id].text,pending:false};
+  if(!d.linkOnline)return{text:d.lostSplit?'无线失联 · 本地独奏':'同伴失联 · 暂时保持拍子',pending:false};
+  const source=this.sourceFor(id),follower=this.plan().some(p=>p.source===id),normal=source?'回应左邻':follower?'提出动机':s?.members.length>1?'独奏 · 保留同场拍子':'独奏';
+  return{text:d.transport==='paused'?'已暂停 · '+(source?'回应关系保留':s?.members.length>1?'同场拍子保留':'独奏就绪'):normal,pending:false};}
+ bind(){
+  $('target').addEventListener('change',()=>this.syncPanel());
+  $('battery').addEventListener('input',ev=>{const d=this.engine.devices[this.target()];d.battery=+ev.target.value;$('battery-out').textContent=d.battery+'%';this.render();});
+  $('imu').addEventListener('input',ev=>{const d=this.engine.devices[this.target()];d.imu=+ev.target.value;$('imu-out').textContent=d.imu+'°';});
+  $('network').addEventListener('change',ev=>{const id=this.target(),d=this.engine.devices[id];d.wifi=ev.target.value!=='wifi-off';this.engine.setLink(id,ev.target.value!=='peer-off',performance.now()/1000);this.render();});
+  $('magnetic').addEventListener('change',ev=>{this.clockFaults[this.target()]=ev.target.value==='uncertain';this.publishContacts();this.render();});
+  for(const [field,key]of [['module-left','moduleL'],['module-right','moduleR']])$(field).addEventListener('change',ev=>this.engine.devices[this.target()][key]=ev.target.value);
+  document.querySelectorAll('[data-scenario]').forEach(b=>b.addEventListener('click',()=>this.scenario(b.dataset.scenario)));
+  $('master-volume').addEventListener('input',ev=>{this.audio.volume=+ev.target.value/100;$('master-value').textContent=ev.target.value+'%';this.audio.synth?.setVolume(this.audio.volume);});
+  $('preview-audio').addEventListener('click',async()=>{try{await this.ensureStart(false);}catch(error){this.toast(error.message);}});
+  $('silent-start').addEventListener('click',async()=>{await this.ensureStart(true);for(const id of this.physicalOrder)if(this.engine.devices[id].transport==='paused')this.engine.requestPlay(id);this.render();});
+  $('restore').addEventListener('click',()=>this.restore());$('reset').addEventListener('click',()=>location.reload());
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&this.audio.playing){this.audio.stop();for(const id of this.physicalOrder)this.engine.pause(id);this.log('浏览器进入后台，声音预览已暂停。返回后点击各台播放。');this.render();}});root.addEventListener('pagehide',()=>this.audio.stop());
+ }
+ scenario(name){const id=this.target(),d=this.engine.devices[id];
+  if(name==='loading'){d.loading=true;this.audio.syncDevice(id);this.later('load:'+id,2600,()=>{d.loading=false;this.render();});}
+  else if(name==='role-fail'){this.failNext[id]=true;this.toast('该设备下次换角色会模拟失败。');}
+  else if(name==='audio-fail'){this.volumeOpen[id]=false;d.fault='audio';this.audio.syncDevice(id);}
+  else if(name==='data-fail'){this.volumeOpen[id]=false;d.fault='data';this.audio.syncDevice(id);}
+  else if(name==='sync-fail'){d.syncFail=true;this.toast('该设备下次对拍会失败；可先收起再放回，或恢复无线连接。');}
+  else if(name==='no-peer'){for(const other of this.physicalOrder)if(other!==id)this.stow(other);}
+  else if(name==='all-missing'){for(const other of [...this.physicalOrder])this.stow(other);}
+  this.render();}
+ restore(){const id=this.target(),d=this.engine.devices[id];this.cancel('load:'+id);this.cancel('role:'+id);d.fault=null;d.error=null;d.loading=false;d.rolePreparing=null;d.syncFail=false;d.wifi=true;this.engine.setLink(id,true,performance.now()/1000);this.clockFaults[id]=false;delete this.failNext[id];this.audio.syncDevice(id);this.publishContacts();this.syncPanel();this.render();this.log(id+' 故障已解除，未改变摆放或播放选择。');}
+ syncPanel(){const d=this.engine.devices[this.target()];$('battery').value=d.battery;$('battery-out').textContent=d.battery+'%';$('imu').value=d.imu;$('imu-out').textContent=d.imu+'°';$('network').value=!d.linkOnline?'peer-off':d.wifi?'online':'wifi-off';$('magnetic').value=this.clockFaults[d.id]?'uncertain':'normal';$('module-left').value=d.moduleL;$('module-right').value=d.moduleR;}
+ render(){if(!this.view)return;this.view.render();this.desk?.renderDock();$('empty-desk').hidden=this.physicalOrder.length>0;
+  const ss=Object.values(this.engine.sessions),count=this.physicalOrder.length,shared=ss.filter(s=>s.members.length>1);
+  $('desk-state').textContent=count===0?'桌面是空的':shared.length?`${count} 台在桌上 · ${shared[0].members.length} 台同场`:`${count} 台在桌上 · 各自独奏`;
+  $('session-summary').textContent=Object.keys(this.engine.merges).length?'正在建立共同拍子…':shared.length?'拆开只改变回应关系；同场的拍子仍继续。':'尚未同场。把两块的左右边缘吸合，开始对拍。';
+  I.apply($('desk-state'));I.apply($('session-summary'));this.renderReadouts();this.progress();}
+ renderReadouts(){const d=this.engine.devices[this.target()],s=this.engine.sessionFor(d.id),p=this.engine.phase(d.id),m=this.engine.syncFor(d.id);
+  $('identity-readout').textContent=`${d.uid}\n${d.bootId||'未开机'}\n${d.present?'已上桌':'已收起'} / ${R[d.role].name} · ${R[d.role].phrases[d.phrase-1]}`;
+  $('discovery-readout').textContent=d.discovered.length?d.discovered.map(id=>this.engine.devices[id].uid).join(' / '):'尚未发现可通信的同伴';
+  $('clock-readout').textContent=s?`${s.id}\n参考：${this.engine.devices[s.leader].uid}\n${m?m.stage:'运行'} / 第 ${p.bar+1} 小节 / 成员 ${s.members.join('、')}`:'独立启动中 / 尚无时间轴';
+  $('contact-readout').textContent=Object.values(this.engine.contactInput).map(c=>`${c.left} → ${c.right} / ${c.state}${this.engine.committedEdges[c.left+'>'+c.right]?' / 编排已生效':''}`).join('\n')||'无接触，不依据屏幕位置排序推测邻接';for(const key of ['identity-readout','discovery-readout','clock-readout','contact-readout'])I.apply($(key));}
+ progress(){if(!this.view)return;for(const id of this.physicalOrder){const screen=this.view.units[id].screen,f=this.feedback(id),p=this.audio.phase(id),text=screen.querySelector('[data-feedback]'),track=screen.querySelector('.commit-track');
+   if(text)I.setText(text,f.text);if(text)text.parentElement.classList.toggle('pending',f.pending);
+   if(track){track.hidden=!f.pending;track.classList.toggle('indeterminate',f.kind==='contact');const val=f.kind==='contact'?35:f.kind==='beat'?p.beatRemaining/(p.stepTime*4)*100:f.kind==='sync-wait'?Math.max(0,Math.min(100,(f.remaining||0)/2.5*100)):(1-p.fraction)*100;track.firstElementChild.style.width=val+'%';}
+   const dots=this.view.units[id].el.querySelectorAll('.beat-dots i');dots.forEach((el,i)=>el.classList.toggle('active',p.step>=0&&i===Math.floor(p.step/4)));
+  }}
+ log(text){this.logs.unshift(new Date().toLocaleTimeString('zh-CN',{hour12:false})+'  '+text);this.logs=this.logs.slice(0,14);$('event-log').innerHTML=this.logs.map(t=>'<div>'+root.duijuEscape(t)+'</div>').join('');I.apply($('event-log'));}
+ toast(text){I.setText($('toast'),text);$('toast').classList.add('show');this.later('toast',3100,()=>$('toast').classList.remove('show'));}
+ buildMapping(){const rows=[
+ ['固定 480×480、角色选择与演奏、轻量音量面板','gsp_hello 或 hello_world + hmi_demo；上传显示与交互契约','真机字体可读性、84px触控、圆角与音频并发'],
+ ['独立开机、稳定 UID / 新 boot ID、发现不入场','复用现有身份需检查；mosaico_peer_link、espnow_chat；新增发现协议','多台同时开机、不误加入旁桌、协议/信道兼容与去重'],
+ ['首次吸合协商同场、未来边界接入','mosaico_interaction、mosaico_peer_link、mosaico_network；新增演奏会话协议','接触对应正确无线对端，多接触歧义时不得猜测'],
+ ['每会话独立时基，拆开保留拍子','新增时间戳交换、漂移估计、事件预调度与音频时钟校准','真实声学起音偏差、长期漂移、首接入的短收尾；当前仅逻辑模拟'],
+ ['失联保拍、降级、关机与恢复','网络心跳 / 超时 / 会话世代与成员表，新增策略','参考成员掉电、短断连、重启旧包、恢复不擅自播放'],
+ ['拖外壳吸附，只把接触事件交给产品','HTML专用空间适配；真机来自磁场分类与握手','不可把页面坐标、距离阈值当成硬件测距能力'],
+ ['完整左邻乐句→自身回答；四角色十二乐句','新增完整乐句分析、回应与有界调度；旧三角色词汇保持；gmf_audio_player仅播放参考','重弱音、时长、留白及音高有效传递；右侧不改写左侧；CPU/RAM与扬声器实测'],
+ ['Harmony 同时1–3音；短和弦 / 分解 / 接句','新增和弦择配、和声音高语义、并行声部混音及短奏/接句有界包络；BSP音频仅提供输出基础','同音量听测、实际扬声器音域、声部占用/爆音、短音收尾与间隙；非任意音乐自动配和声'],
+ ['输出故障不删除有效动机；真实乐句失效/恢复在边界提交','BSP音频返回值；新增输出状态与已提交乐句可用性隔离','只坏扬声器不让右邻跳为独奏；素材/数据故障有界降级与恢复'],
+ ['加载、失败、低电、IMU、扩展注入','BSP音频/电量计/NAND；mosaico_module_mgr只作识别参考','模块未启用，资源并发仍需按BSP验证']
+ ];$('mapping-content').innerHTML='<table><thead><tr><th>HTML 行为</th><th>固件组件 / 示例</th><th>真机验收</th></tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(x=>'<td>'+root.duijuEscape(x)+'</td>').join('')+'</tr>').join('')+'</tbody></table><p class="preview-warning">普通工程 esp-mosaico-vibe/projects/echoy；ESP-IDF 6.1 或更新。factory 保留，不作应用模板；无需 ESP-Claw。450ms接触确认、1.05s准备、1.8s失联保持均为演示参数，不是实测。</p>';}
+}
+root.DuijuApp=DuijuApp;root.duiju=new DuijuApp();
+})(window);
+
+
+/* HTML-only, optional onboarding. Observes real state but never plays, arranges, or resets it. */
+(function(root){'use strict';
+const KEY='duiju-guide-v041-dismissed';
+const $=id=>document.getElementById(id),I=root.EchoyI18n;
+const STEPS=[
+ {short:'播放',title:'先听两块各自的声音',task:'分别点击两块屏幕底部的「播放」。先不调参数，让它们各自说一会儿。',listen:'默认的 Pulse 敲出节奏，Voice 拉出旋律。现在还没吸合，不必等它们自己对齐。'},
+ {short:'吸合',title:'把两个声音摆到一起',task:'按住上方标着「拖动外壳」的握柄，靠拢两块的左右边缘；出现虚线吸附提示后松手。不要拖屏幕中央。',listen:'等对拍完成。现在左边提出动机，右边跟着回应；它们不再只是各播各的。'},
+ {short:'换边',title:'交换左右，听谁先开口',task:'先把一块挪到下方空地，再移动另一块，最后换边重新吸合。不要把设备硬推过彼此；可拖空白处或滚动桌面查看空地。',listen:'还是这两块声音，但先说和回应的关系换了。你更喜欢哪一种？不必说出专业理由。'},
+ {short:'调节',title:'试试简洁，或更丰富一些',task:'上下拖动屏幕里的声形，或直接拖右侧纵向刻度。向上更丰富，向下更简洁；松手后保留。',listen:'听同一句话怎样变得简洁或丰富，而不只是更响。新节奏等下一小节生效；音量仍由顶部喇叭单独调整。'},
+ {short:'选句',title:'不换角色，先换一种说法',task:'点击「角色」，在同一个角色里选一个不同名字的乐句；例如把 Voice 的「短句」换成「轻答」。选好后返回演奏页。',listen:'你选的是这块声音怎么回答，不是下一首歌。看到“下一小节生效”时，等它说完再比较。'},
+ {short:'第三台',title:'最后，加一位新的成员',task:'可选：把收纳区的第三块拖上桌，贴到其中一侧；等它对拍，再点击它自己的「播放」。如果它已在桌上，就把三块连起来。',listen:'先暂停、再播放第三台，听音乐少了什么又多了什么。也可在「角色」里选 Harmony，先听保留的「分解」，再比较「短和弦」与「接句」的起落和停顿。拆开不等于关闭声音。'}
+];
+class DuijuGuide{
+ constructor(app){this.app=app;this.el=$('play-guide');this.mode='welcome';this.step=0;this.completed=new Set();this.pair=['A','B'];this.orientation=null;this.pollKey='';
+  this.el.addEventListener('click',ev=>{const b=ev.target.closest('[data-guide]');if(!b)return;const action=b.dataset.guide;
+   if(action==='start')this.start();else if(action==='close')this.close();else if(action==='next')this.next();else if(action==='prev')this.enter(Math.max(0,this.step-1));else if(action==='locate')this.locate();});
+  this.el.addEventListener('keydown',ev=>{if(ev.key==='Escape'){ev.preventDefault();this.close();}});
+  $('guide-reopen').addEventListener('click',()=>this.open());
+  let dismissed=false;try{dismissed=localStorage.getItem(KEY)==='1';}catch(_){/* file origins and blocked storage still work */}
+  this.el.hidden=dismissed;this.mode=dismissed?'closed':'welcome';this.draw();
+  this.timer=setInterval(()=>this.refresh(),250);root.addEventListener('pagehide',()=>clearInterval(this.timer));
+ }
+ snapshot(){const out={};for(const [id,d]of Object.entries(this.app.engine.devices))out[id]={activity:d.activity,role:d.role,phrase:d.phrase};return out;}
+ edge(){const e=this.app.engine;return Object.keys(e.committedEdges).find(k=>{const [l,r]=k.split('>');return this.pair.includes(l)&&this.pair.includes(r)&&e.contactInput[k]?.state==='connected';})||Object.values(e.contactInput).map(c=>c.left+'>'+c.right).find(k=>e.committedEdges[k]&&k.split('>').every(id=>this.pair.includes(id)))||null;}
+ open(){this.mode='welcome';this.el.hidden=false;this.clearHighlights();this.draw();this.el.scrollIntoView({block:'nearest',behavior:'auto'});$('guide-start')?.focus({preventScroll:true});}
+ start(){const ids=this.app.physicalOrder;this.pair=ids.length>=2?ids.slice(0,2):['A','B'];this.completed.clear();this.orientation=null;this.enter(0);}
+ close(){this.mode='closed';this.el.hidden=true;this.clearHighlights();$('guide-reopen').setAttribute('aria-expanded','false');try{localStorage.setItem(KEY,'1');}catch(_){}$('guide-reopen').focus({preventScroll:true});}
+ enter(index){this.step=index;this.mode='lesson';this.el.hidden=false;this.initial=this.snapshot();if(index===2)this.orientation=this.orientation||this.edge()||this.pair.join('>');this.draw();this.refresh();}
+ next(){this.refresh();if(this.step<STEPS.length-1)this.enter(this.step+1);else{this.mode='finish';this.clearHighlights();this.draw();}}
+ clearHighlights(){document.querySelectorAll('.guide-attention').forEach(e=>e.classList.remove('guide-attention'));}
+ targets(){const screens=[...document.querySelectorAll('.unit:not([hidden]) .screen')];let targets=[];
+  if(this.step===0)targets=screens.map(s=>s.querySelector('[data-action="play"]'));
+  else if(this.step===1||this.step===2)targets=this.pair.map(id=>this.app.view.units[id].el.hidden?null:this.app.view.units[id].el.querySelector('.device-handle'));
+  else if(this.step===3)targets=screens.map(s=>s.querySelector('.gesture-zone'));
+  else if(this.step===4)targets=screens.map(s=>s.querySelector('[data-action="choose"]')||s.querySelector('.phrase-options'));
+  else if(this.step===5){const reserve=document.querySelector('[data-reserve]:not([hidden])');targets=reserve?[reserve]:screens.map(s=>s.querySelector('[data-action="play"]'));}
+  return targets.filter(Boolean);
+ }
+ locate(){const targets=this.targets(),target=targets[0];if(target){target.scrollIntoView({block:'center',inline:'nearest',behavior:'auto'});target.focus?.({preventScroll:true});}else this.app.desk.dock.scrollIntoView({block:'nearest',behavior:'auto'});}
+ evaluate(){const e=this.app.engine,present=Object.values(e.devices).filter(d=>d.present);const pair=this.pair.map(id=>e.devices[id]);
+  const physical=Object.values(e.contactInput).filter(c=>c.state==='connected');
+  const valid=k=>physical.some(c=>c.left+'>'+c.right===k)&&e.committedEdges[k]&&k.split('>').every(id=>e.devices[id].present&&!e.syncFor(id));
+  const fault=present.find(d=>d.fault||d.error||d.syncFail||d.loading||!d.linkOnline);
+  if(fault){const text=fault.loading?'有设备正在准备声音；也可以继续查看后面的步骤。':!fault.linkOnline?'有设备失联；恢复无线后可以继续，也可先跳过。':fault.syncFail?'对拍故障已注入；可在高级面板解除，或先跳过。':'有设备需要处理；可按屏幕提示重试，或先跳过。';return{done:false,text,warning:true};}
+  if(present.length<2&&this.step<3)return{done:false,text:'桌上不足两台；先从收纳区拖上来，也可以直接看下一步。'};
+  if(this.step===0){const done=pair.every(d=>d.present&&d.transport==='playing')&&this.app.audio.playing;return{done,text:done?'两块都已开始播放。先听一会儿，再继续。':'等待你分别点击两块的播放；指引不会替你发声。'};}
+  if(this.step===1){const edge=Object.keys(e.committedEdges).find(k=>valid(k)&&k.split('>').every(id=>this.pair.includes(id)));if(edge)this.orientation=edge;const syncing=pair.some(d=>e.syncFor(d.id));return{done:!!edge,text:edge?'吸合与对拍已完成。留意右边怎样接话。':syncing?'正在对拍；原来的演奏继续，等屏幕提示完成。':'等待左右边缘吸合；靠拢后看到虚线再松手。'};}
+  if(this.step===2){const desired=this.orientation.split('>').reverse().join('>'),done=!!valid(desired);return{done,text:done?'左右关系已反转并生效。你更喜欢哪一种？':'等待换边后重新吸合。先借用下方空地，不必挤过另一台。'};}
+  if(this.step===3){const done=present.some(d=>Math.abs(d.activity-this.initial[d.id].activity)>=.05);return{done,text:done?'已经调整了简洁与丰富。看看等待提示，再听新的节奏。':'向上更丰富，向下更简洁。试着拖声形或右侧刻度，不是调音量。'};}
+  if(this.step===4){const changed=present.some(d=>d.role===this.initial[d.id].role&&d.phrase!==this.initial[d.id].phrase);const pending=present.some(d=>e.pending.phrases[d.id]);return{done:changed,text:changed?'新的乐句已生效。回到演奏页，再听一轮。':pending?'已收到新选择，等待下一小节；可以选回原句取消。':'等待你在角色页选择另一句；不会盲切，也没有标准答案。'};}
+  const edges=Object.keys(e.committedEdges).filter(valid);const done=present.length===3&&edges.length===2&&present.every(d=>d.transport==='playing');return{done,text:done?'三台已经连成一场。现在试着只暂停其中一台。':'第三台是可选体验。拖上桌、吸合后，还需点它自己的播放。'};
+ }
+ refresh(){if(this.mode!=='lesson'||this.el.hidden)return;const state=this.evaluate();if(state.done)this.completed.add(this.step);
+  const key=JSON.stringify(state);if(key!==this.pollKey){this.pollKey=key;const status=$('guide-status');I.setText(status,state.text);status.dataset.done=String(state.done);status.dataset.warning=String(!!state.warning);}
+  for(const el of this.el.querySelectorAll('[data-step]')){el.classList.toggle('done',this.completed.has(+el.dataset.step));}
+  this.clearHighlights();this.targets().forEach(e=>e.classList.add('guide-attention'));
+ }
+ draw(){this.drawSource();I.apply(this.el);}
+ drawSource(){this.pollKey='';$('guide-reopen').setAttribute('aria-expanded',String(!this.el.hidden));
+  if(this.mode==='closed')return;
+  if(this.mode==='welcome'){this.el.innerHTML=`<div class="guide-welcome"><div><span class="guide-eyebrow">第一次玩 / 不需要乐理</span><h2>先听，再摆。</h2><p>不用会唱，也不用认谱。让两块声音互相接话，换个位置，听哪一种更有意思。</p></div><div class="guide-welcome-actions"><button id="guide-start" class="guide-main" data-guide="start">带我玩一遍 <span aria-hidden="true">→</span></button><button id="guide-skip" class="guide-quiet" data-guide="close">直接自由玩</button></div></div>`;return;}
+  if(this.mode==='finish'){this.el.innerHTML=`<div class="guide-finish"><div><span class="guide-eyebrow">接下来，按你的耳朵来。</span><h2>没有标准摆法。你喜欢，就是理由。</h2><p>挑一种喜欢的组合，再换左右比较；也可以轮流暂停一台，听清它带来了什么。</p><small>“玩法指引”随时可重开，不会重置当前组合。下方还有操作速查与无声排查。</small></div><div class="guide-welcome-actions"><button class="guide-main" data-guide="close">继续自由玩</button><button class="guide-quiet" data-guide="start">再看一遍</button></div></div>`;return;}
+  const s=STEPS[this.step];this.el.innerHTML=`<div class="guide-top"><span class="guide-eyebrow">一起试一试 · ${this.step+1} / ${STEPS.length}</span><ol class="guide-progress" aria-label="体验顺序">${STEPS.map((x,i)=>`<li data-step="${i}" class="${i===this.step?'active':''} ${this.completed.has(i)?'done':''}" ${i===this.step?'aria-current="step"':''}><b>${i+1}</b><span>${x.short}</span></li>`).join('')}</ol><button id="guide-close" class="guide-quiet" data-guide="close" aria-label="收起指引，保留当前演奏">收起</button></div><div class="guide-lesson"><div><h2 id="guide-title">${s.title}</h2><p id="guide-task">${s.task}</p></div><div class="guide-listen-box"><span>这一步，留意什么？</span><p id="guide-listen">${s.listen}</p></div></div><div class="guide-bottom"><p id="guide-status" class="guide-status" role="status" aria-live="polite"></p><div class="guide-buttons"><button id="guide-locate" class="guide-quiet" data-guide="locate">找到操作位置</button><button id="guide-prev" class="guide-secondary" data-guide="prev" ${this.step===0?'disabled':''}>上一步</button><button id="guide-next" class="guide-main" data-guide="next">${this.step===STEPS.length-1?'开始自由玩':'下一步'} <span aria-hidden="true">→</span></button></div></div>`;
+ }
+}
+root.DuijuGuide=DuijuGuide;root.duijuGuide=new DuijuGuide(root.duiju);
+})(window);
+
+
+/* One simulator language preference, shared by every virtual product screen.
+ * No audio start/stop, engine writes, timer reset, topology update or guide reset here.
+ */
+(function(root){'use strict';
+ const I=root.EchoyI18n,app=root.duiju;
+ function paint(){
+  app.render();app.view.drawAll();root.duijuGuide.draw();root.duijuGuide.refresh();
+  I.apply(document.body);
+  document.querySelectorAll('[data-language]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.language===I.locale)));
+ }
+ for(const button of document.querySelectorAll('[data-language]'))button.addEventListener('click',()=>I.setLocale(button.dataset.language));
+ root.addEventListener('echoy:locale',paint);
+ // Public names for the renamed prototype. Keep the old debug alias for regressions.
+ root.echoy=app;root.echoyGuide=root.duijuGuide;
+ paint();
+})(window);
+</script></body></html>

@@ -1,0 +1,402 @@
+{
+  "schemaVersion": 1,
+  "oracleSha256": "d23c51b025b44a0d2d11a3ad5a371abd4a2117adb8e742491e838af6dc4c0bb5",
+  "viewport": {
+    "width": 480,
+    "height": 480,
+    "deviceScaleFactor": 1
+  },
+  "fixedTimeMs": 10000,
+  "animation": "disabled",
+  "fontFaces": [
+    {
+      "family": "Echoy Latin",
+      "style": "normal",
+      "weight": 400,
+      "source": "/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf"
+    },
+    {
+      "family": "Echoy Latin",
+      "style": "normal",
+      "weight": 700,
+      "source": "/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf"
+    },
+    {
+      "family": "Echoy CJK",
+      "style": "normal",
+      "weight": 400,
+      "source": "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+    },
+    {
+      "family": "Echoy CJK",
+      "style": "normal",
+      "weight": 700,
+      "source": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
+    },
+    {
+      "family": "Echoy Mono",
+      "style": "normal",
+      "weight": 400,
+      "source": "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
+    },
+    {
+      "family": "Echoy Mono",
+      "style": "normal",
+      "weight": 700,
+      "source": "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf"
+    }
+  ],
+  "caseCount": 38,
+  "cases": [
+    {
+      "locale": "zh-CN",
+      "id": "perform-pulse",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "paused"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "perform-voice",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "paused"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "perform-dust",
+      "route": "perform",
+      "role": "dust",
+      "phrase": 1,
+      "activity": 0.48,
+      "state": "paused"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "perform-harmony",
+      "route": "perform",
+      "role": "harmony",
+      "phrase": 2,
+      "activity": 0.5,
+      "state": "paused"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "perform-playing",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "perform-waiting",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "waiting"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "perform-pending-activity",
+      "route": "perform",
+      "role": "dust",
+      "phrase": 1,
+      "activity": 0.78,
+      "committedActivity": 0.48,
+      "state": "paused"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "role-pulse",
+      "route": "role",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "paused"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "role-voice",
+      "route": "role",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "paused"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "role-dust",
+      "route": "role",
+      "role": "dust",
+      "phrase": 1,
+      "activity": 0.48,
+      "state": "paused"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "role-harmony",
+      "route": "role",
+      "role": "harmony",
+      "phrase": 2,
+      "activity": 0.5,
+      "state": "paused"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "volume",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "volume": 0.7,
+      "state": "volume"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "boot",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "booting"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "loading-data",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "loading"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "loading-role",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "role-preparing",
+      "preparingRole": "harmony"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "error-role",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "role-error"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "error-data",
+      "route": "perform",
+      "role": "dust",
+      "phrase": 1,
+      "activity": 0.48,
+      "state": "data-error"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "error-audio",
+      "route": "perform",
+      "role": "harmony",
+      "phrase": 2,
+      "activity": 0.5,
+      "state": "audio-error"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "low-battery",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "battery": 12,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "perform-pulse",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "perform-voice",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "perform-dust",
+      "route": "perform",
+      "role": "dust",
+      "phrase": 1,
+      "activity": 0.48,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "perform-harmony",
+      "route": "perform",
+      "role": "harmony",
+      "phrase": 2,
+      "activity": 0.5,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "perform-playing",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing"
+    },
+    {
+      "locale": "en",
+      "id": "perform-waiting",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "waiting"
+    },
+    {
+      "locale": "en",
+      "id": "perform-pending-activity",
+      "route": "perform",
+      "role": "dust",
+      "phrase": 1,
+      "activity": 0.78,
+      "committedActivity": 0.48,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "role-pulse",
+      "route": "role",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "role-voice",
+      "route": "role",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "role-dust",
+      "route": "role",
+      "role": "dust",
+      "phrase": 1,
+      "activity": 0.48,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "role-harmony",
+      "route": "role",
+      "role": "harmony",
+      "phrase": 2,
+      "activity": 0.5,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "volume",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "volume": 0.7,
+      "state": "volume"
+    },
+    {
+      "locale": "en",
+      "id": "boot",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "booting"
+    },
+    {
+      "locale": "en",
+      "id": "loading-data",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "loading"
+    },
+    {
+      "locale": "en",
+      "id": "loading-role",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "role-preparing",
+      "preparingRole": "harmony"
+    },
+    {
+      "locale": "en",
+      "id": "error-role",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "role-error"
+    },
+    {
+      "locale": "en",
+      "id": "error-data",
+      "route": "perform",
+      "role": "dust",
+      "phrase": 1,
+      "activity": 0.48,
+      "state": "data-error"
+    },
+    {
+      "locale": "en",
+      "id": "error-audio",
+      "route": "perform",
+      "role": "harmony",
+      "phrase": 2,
+      "activity": 0.5,
+      "state": "audio-error"
+    },
+    {
+      "locale": "en",
+      "id": "low-battery",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "battery": 12,
+      "state": "paused"
+    }
+  ]
+}

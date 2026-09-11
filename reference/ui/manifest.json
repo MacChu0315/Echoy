@@ -1,0 +1,315 @@
+{
+  "schemaVersion": 1,
+  "oracleSha256": "d23c51b025b44a0d2d11a3ad5a371abd4a2117adb8e742491e838af6dc4c0bb5",
+  "caseCount": 38,
+  "browser": {
+    "path": "/usr/bin/google-chrome",
+    "version": "Google Chrome 151.0.7922.75"
+  },
+  "images": [
+    {
+      "id": "zh-CN/perform-pulse",
+      "path": "reference/ui/zh-CN/perform-pulse.png",
+      "size": 30913,
+      "width": 480,
+      "height": 480,
+      "sha256": "85ee0c9b504030f4626c8a240e94137d3755bd8d4041bc9eb96b6664793d226c"
+    },
+    {
+      "id": "zh-CN/perform-voice",
+      "path": "reference/ui/zh-CN/perform-voice.png",
+      "size": 36794,
+      "width": 480,
+      "height": 480,
+      "sha256": "f211379fce7bcec77286930455d6bee35356403081c241df4b46cb6408918077"
+    },
+    {
+      "id": "zh-CN/perform-dust",
+      "path": "reference/ui/zh-CN/perform-dust.png",
+      "size": 26797,
+      "width": 480,
+      "height": 480,
+      "sha256": "149e53ed525ad41254df5666a91aacf6303c2ab8ae3ea9728a95575dee052bf6"
+    },
+    {
+      "id": "zh-CN/perform-harmony",
+      "path": "reference/ui/zh-CN/perform-harmony.png",
+      "size": 26206,
+      "width": 480,
+      "height": 480,
+      "sha256": "981e66cc941aa2904f439e65dd91bb8481048693d87d60a0284bb891a16e91ff"
+    },
+    {
+      "id": "zh-CN/perform-playing",
+      "path": "reference/ui/zh-CN/perform-playing.png",
+      "size": 29165,
+      "width": 480,
+      "height": 480,
+      "sha256": "195238d6ebe1f8cdff2f8fb5e7d6de2e78b7ccdc4fd10b773015ec585001521b"
+    },
+    {
+      "id": "zh-CN/perform-waiting",
+      "path": "reference/ui/zh-CN/perform-waiting.png",
+      "size": 36624,
+      "width": 480,
+      "height": 480,
+      "sha256": "60ff262d614e5785d1ff51f6ccd5664fbd543ebcf364dc5da5c7d03124eac475"
+    },
+    {
+      "id": "zh-CN/perform-pending-activity",
+      "path": "reference/ui/zh-CN/perform-pending-activity.png",
+      "size": 26629,
+      "width": 480,
+      "height": 480,
+      "sha256": "817880ee4f0a2934931542120478ade266e5287bcce1e15c090490b96459da17"
+    },
+    {
+      "id": "zh-CN/role-pulse",
+      "path": "reference/ui/zh-CN/role-pulse.png",
+      "size": 29424,
+      "width": 480,
+      "height": 480,
+      "sha256": "67fe77fa717ac173857413e1f283f5a2ac9ddf7798d495c932fa2e43cde29d52"
+    },
+    {
+      "id": "zh-CN/role-voice",
+      "path": "reference/ui/zh-CN/role-voice.png",
+      "size": 30701,
+      "width": 480,
+      "height": 480,
+      "sha256": "1ebc1370f5e3f61c5d69df08db2ac6db4963355d038a7a3063aacf2b8ffcb7ab"
+    },
+    {
+      "id": "zh-CN/role-dust",
+      "path": "reference/ui/zh-CN/role-dust.png",
+      "size": 31064,
+      "width": 480,
+      "height": 480,
+      "sha256": "731f6494964eb619b294004feb009197e28eb6ba13545800183dfca8856a6398"
+    },
+    {
+      "id": "zh-CN/role-harmony",
+      "path": "reference/ui/zh-CN/role-harmony.png",
+      "size": 30617,
+      "width": 480,
+      "height": 480,
+      "sha256": "e964ad66ec7ceb2499aa26eb40cca799fea93dfd9e7843f4de5a0f3d5edb3945"
+    },
+    {
+      "id": "zh-CN/volume",
+      "path": "reference/ui/zh-CN/volume.png",
+      "size": 24335,
+      "width": 480,
+      "height": 480,
+      "sha256": "e12c8b4cc16e33497a881befa4443bd5f3ad454f2e2a0dc8ce9f87e5be583ec3"
+    },
+    {
+      "id": "zh-CN/boot",
+      "path": "reference/ui/zh-CN/boot.png",
+      "size": 9327,
+      "width": 480,
+      "height": 480,
+      "sha256": "ec2f150601903a04b5e19fcec5b92e993c4f4d1183f4e022ace2fec2f1565370"
+    },
+    {
+      "id": "zh-CN/loading-data",
+      "path": "reference/ui/zh-CN/loading-data.png",
+      "size": 16242,
+      "width": 480,
+      "height": 480,
+      "sha256": "e9db20af765edf5ca0253f5579ce146b6aab02a100c2e20dd9ffebd2e936bc11"
+    },
+    {
+      "id": "zh-CN/loading-role",
+      "path": "reference/ui/zh-CN/loading-role.png",
+      "size": 20149,
+      "width": 480,
+      "height": 480,
+      "sha256": "318c4447367f5f32087f90896e5a8aeb25723c1be5a7629789b56c69d38ad85d"
+    },
+    {
+      "id": "zh-CN/error-role",
+      "path": "reference/ui/zh-CN/error-role.png",
+      "size": 20852,
+      "width": 480,
+      "height": 480,
+      "sha256": "793550d21734b7bacbac7a62b7fb7253ab456aec8391110c003255a42f6cee47"
+    },
+    {
+      "id": "zh-CN/error-data",
+      "path": "reference/ui/zh-CN/error-data.png",
+      "size": 16471,
+      "width": 480,
+      "height": 480,
+      "sha256": "5a666046a9e565b2554cde34f442d52f2406539e649625359d3cc565c43e8d9d"
+    },
+    {
+      "id": "zh-CN/error-audio",
+      "path": "reference/ui/zh-CN/error-audio.png",
+      "size": 16660,
+      "width": 480,
+      "height": 480,
+      "sha256": "8caa6247f3db9e6ed3831a1ca834a7a73210ee4400387ef5d4d5648736a8fdf6"
+    },
+    {
+      "id": "zh-CN/low-battery",
+      "path": "reference/ui/zh-CN/low-battery.png",
+      "size": 31095,
+      "width": 480,
+      "height": 480,
+      "sha256": "5e6e6704031022f0d6caeef4734af2e2de06461f499f2913bd57942c511188a6"
+    },
+    {
+      "id": "en/perform-pulse",
+      "path": "reference/ui/en/perform-pulse.png",
+      "size": 30533,
+      "width": 480,
+      "height": 480,
+      "sha256": "970b5c02281888c5f360c8f5271f0e2bfa813b96ae1163bd42d37ce9cf45066b"
+    },
+    {
+      "id": "en/perform-voice",
+      "path": "reference/ui/en/perform-voice.png",
+      "size": 37528,
+      "width": 480,
+      "height": 480,
+      "sha256": "7bf336b22c09abb4330c748692801cacf930b301f7b0d970d6b6320cfd691dc4"
+    },
+    {
+      "id": "en/perform-dust",
+      "path": "reference/ui/en/perform-dust.png",
+      "size": 25462,
+      "width": 480,
+      "height": 480,
+      "sha256": "e9a10ccff26b47d76712e608c7459f24d04ece4e1cf748ac87bd10f3f1e24ed0"
+    },
+    {
+      "id": "en/perform-harmony",
+      "path": "reference/ui/en/perform-harmony.png",
+      "size": 27697,
+      "width": 480,
+      "height": 480,
+      "sha256": "c4ba43cc1dbaf3aaada171dae34a465cb9b08e27ed2b1a5fdbebd8a71e94d851"
+    },
+    {
+      "id": "en/perform-playing",
+      "path": "reference/ui/en/perform-playing.png",
+      "size": 29043,
+      "width": 480,
+      "height": 480,
+      "sha256": "303ff022093476beefeccfbea2ef9372976ada551516f65bc86c304140a41c6b"
+    },
+    {
+      "id": "en/perform-waiting",
+      "path": "reference/ui/en/perform-waiting.png",
+      "size": 37896,
+      "width": 480,
+      "height": 480,
+      "sha256": "57378f19ef5936682e171ceaf1ded395312782ef98fe77853eeeaa8632a30f87"
+    },
+    {
+      "id": "en/perform-pending-activity",
+      "path": "reference/ui/en/perform-pending-activity.png",
+      "size": 24994,
+      "width": 480,
+      "height": 480,
+      "sha256": "39f8c0ea3afec88a5fed3b271a3e8d0473af16af33cc02c2699925a38761d124"
+    },
+    {
+      "id": "en/role-pulse",
+      "path": "reference/ui/en/role-pulse.png",
+      "size": 32573,
+      "width": 480,
+      "height": 480,
+      "sha256": "ee4b5cf6c1e1e37556d8361ad28f41d9425fff6ca20b5ad558d3c86130e12b22"
+    },
+    {
+      "id": "en/role-voice",
+      "path": "reference/ui/en/role-voice.png",
+      "size": 32967,
+      "width": 480,
+      "height": 480,
+      "sha256": "7152db4189dcbd1fa66dda419b147ad3c4b57f1a9c477396f7127d184c75b305"
+    },
+    {
+      "id": "en/role-dust",
+      "path": "reference/ui/en/role-dust.png",
+      "size": 30995,
+      "width": 480,
+      "height": 480,
+      "sha256": "eb378586f55253738930357bd2c49c395cc72933cfc3531974667ea3f3fa74e8"
+    },
+    {
+      "id": "en/role-harmony",
+      "path": "reference/ui/en/role-harmony.png",
+      "size": 33710,
+      "width": 480,
+      "height": 480,
+      "sha256": "1621abffa28d1e3226ccd2224814e207cd26ea70aa343405b899ef8bdf29411d"
+    },
+    {
+      "id": "en/volume",
+      "path": "reference/ui/en/volume.png",
+      "size": 25389,
+      "width": 480,
+      "height": 480,
+      "sha256": "7feb5d4c3cc38ff2ebcd096474c7c27ce41285358229a30e4b66d7c250c6791c"
+    },
+    {
+      "id": "en/boot",
+      "path": "reference/ui/en/boot.png",
+      "size": 10275,
+      "width": 480,
+      "height": 480,
+      "sha256": "7a5bc5a32770939ed62c8b137d75bd1450e07c38cfe71d6e9edfef8619a42b58"
+    },
+    {
+      "id": "en/loading-data",
+      "path": "reference/ui/en/loading-data.png",
+      "size": 17664,
+      "width": 480,
+      "height": 480,
+      "sha256": "6abc9e8c8188a8f30f5bc39568266fac8a758d4c2a47db307ed768c24eb1251d"
+    },
+    {
+      "id": "en/loading-role",
+      "path": "reference/ui/en/loading-role.png",
+      "size": 23374,
+      "width": 480,
+      "height": 480,
+      "sha256": "9e7cb7f1b304bfdf468b9b1bb596bca85291a3d579d7e700aa411979e4402132"
+    },
+    {
+      "id": "en/error-role",
+      "path": "reference/ui/en/error-role.png",
+      "size": 21555,
+      "width": 480,
+      "height": 480,
+      "sha256": "1f8ada7426a8360f5e752758a20a11363eca1608f73351f3bfa27c50f2729e17"
+    },
+    {
+      "id": "en/error-data",
+      "path": "reference/ui/en/error-data.png",
+      "size": 20366,
+      "width": 480,
+      "height": 480,
+      "sha256": "3cbd081ee780d91ab5388e1ebae23d6ffe4ef966630a217709ea919853de2ec4"
+    },
+    {
+      "id": "en/error-audio",
+      "path": "reference/ui/en/error-audio.png",
+      "size": 20030,
+      "width": 480,
+      "height": 480,
+      "sha256": "ec8a0212b81c0b1946521a324c9a099d21e9afc84d7a3317370967e3def833fc"
+    },
+    {
+      "id": "en/low-battery",
+      "path": "reference/ui/en/low-battery.png",
+      "size": 30277,
+      "width": 480,
+      "height": 480,
+      "sha256": "175640938e24c4f15d7a3db90f69200e39f645d9d898bb54b44664fb43706ecc"
+    }
+  ]
+}
