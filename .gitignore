@@ -14,3 +14,6 @@ output/sim/
 
 # Local final acceptance logs, builds, audio and device evidence.
 output/task10/
+
+# Final integration regression logs and temporary firmware configs.
+output/final-fix/

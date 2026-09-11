@@ -13,6 +13,7 @@ struct echoy_view {
     echoy_snapshot_t snapshot; int device; bool english;
     echoy_touch_t touch; echoy_route_t requested_route; int interaction_key; bool interaction_valid; echoy_ui_emit_fn emit; void *context;
     echoy_event_t hit; int64_t hit_us,now_us,last_frame; bool has_hit;
+    bool presented; uint64_t hit_boot,hit_session,hit_clock; int64_t presented_us,hit_bar; int hit_device;
 };
 static const uint32_t colors[]={0xd95535,0x496da1,0x7b8452,0xaa7b3d};
 static const char *roles[]={"pulse","voice","dust","harmony"};
@@ -211,7 +212,34 @@ echoy_view_t *echoy_view_create(lv_obj_t *screen,echoy_ui_emit_fn emit,void *con
     v->timer=lv_timer_create(timer_frame,34,v);return v;
 }
 void echoy_view_set_sink(echoy_view_t *v,echoy_ui_emit_fn emit,void *context){v->emit=emit;v->context=context;}
-void echoy_view_update(echoy_view_t *v,const echoy_snapshot_t *s,int id){if(!v||!s||id<0||id>=3)return;v->snapshot=*s;v->snapshot_tick=lv_tick_get();v->device=id;v->now_us=s->time_us;if(!v->touch.capture){v->touch.activity=s->devices[id].activity;v->touch.volume=s->devices[id].volume;}v->touch.modal=s->devices[id].volume_open;render(v);}
+/* The display observes actual events from its immutable plan, using the same
+ * session-to-monotonic mapping as audio. Never synthesize a hit from a motif. */
+static void present_hits(echoy_view_t *v){
+    const echoy_plan_entry_t *p=plan(v);int64_t now=v->snapshot.time_us;
+    const echoy_device_t *d=&v->snapshot.devices[v->device];
+    bool changed=!v->presented||!p||v->hit_device!=v->device||v->hit_boot!=p->boot_id||
+        v->hit_session!=p->session_id||v->hit_clock!=p->clock_version;
+    bool bar_changed=p&&v->presented&&p->bar!=v->hit_bar;
+    int64_t since=v->presented?v->presented_us:now-470000;
+    if(changed||bar_changed)v->has_hit=false;
+    if(changed&&v->presented)since=now-1;
+    if(bar_changed&&p)since=(int64_t)ceill(p->epoch_us+(long double)p->bar*ECHOY_BAR_US*1000000/(1000000+p->rate_ppm))-1;
+    if(since<now-470000)since=now-470000;
+    bool audible=p&&d->lifecycle==ECHOY_READY&&d->transport==ECHOY_PLAYING&&
+        d->volume>0&&!d->output_fault&&!d->loading&&!d->data_fault&&p->motif_available;
+    if(!audible)v->has_hit=false;
+    else for(size_t i=0;i<p->events.count;i++){
+        const echoy_event_t *e=&p->events.events[i];
+        int64_t at=(int64_t)ceill(p->epoch_us+((long double)p->bar*ECHOY_BAR_US+e->step*156250.0L)*1000000/(1000000+p->rate_ppm));
+        if(at>since&&at<=now){echoy_view_hit(v,e,at);since=at;}
+    }
+    v->presented=true;v->presented_us=now;v->hit_device=v->device;
+    if(p){v->hit_boot=p->boot_id;v->hit_session=p->session_id;v->hit_clock=p->clock_version;v->hit_bar=p->bar;}
+}
+void echoy_view_update(echoy_view_t *v,const echoy_snapshot_t *s,int id){if(!v||!s||id<0||id>=3)return;
+    if(v->presented&&id==v->device&&s->devices[id].boot_id==v->snapshot.devices[id].boot_id&&
+       (s->time_us<v->snapshot.time_us||s->devices[id].clock_version<v->snapshot.devices[id].clock_version))return;
+    v->snapshot=*s;v->snapshot_tick=lv_tick_get();v->device=id;v->now_us=s->time_us;if(!v->touch.capture){v->touch.activity=s->devices[id].activity;v->touch.volume=s->devices[id].volume;}v->touch.modal=s->devices[id].volume_open;present_hits(v);render(v);}
 void echoy_view_locale(echoy_view_t *v,bool en){v->english=en;render(v);}
 void echoy_view_route(echoy_view_t *v,echoy_route_t route){v->requested_route=route;render(v);}
 void echoy_view_motion(echoy_view_t *v,bool reduced){v->reduced=reduced;}

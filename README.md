@@ -17,6 +17,15 @@ See [requirements and evidence](docs/echoy/requirements-matrix.md) and
 [hardware acceptance](docs/echoy/hardware-acceptance.md) for the current limits.
 Full three-device physical and calibrated acoustic acceptance is not complete.
 
+The final integration regressions also cover wire data-availability changes,
+last-peer local commits, protocol failure feedback, and live Pulse/Voice event
+presentation. Interactive browser time follows monotonic elapsed time through
+slow responses; 250 ms C PCM publications and a bounded worklet prefill preserve
+playback continuity. The prefill adds PC preview latency; physical sound/display
+alignment remains unmeasured. Current verification: 40 CTest cases, 13 JS
+adapter/guide checks, 29 headless scenarios and 23 Chrome checks pass, with
+40 ASan/UBSan cases passing. Logs are under `output/final-fix/`.
+
 ## Workspace and dependencies
 
 Run all commands below from the **Echoy root**, not a sibling repository:

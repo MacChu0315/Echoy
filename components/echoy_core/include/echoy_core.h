@@ -61,7 +61,8 @@ typedef struct {
     int64_t time_us; uint64_t revision, serial, generation;
     echoy_device_t devices[3]; echoy_session_t sessions[3];
     echoy_contact_t contacts[3][3]; unsigned committed_edges;
-    echoy_sync_t sync; echoy_bar_plan_t plan;
+    /* The wire control owner supplies sync status; core must not auto-merge it. */
+    bool external_sync; echoy_sync_t sync; echoy_bar_plan_t plan;
 } echoy_core_t;
 typedef echoy_core_t echoy_snapshot_t;
 /* Single control-task owner. Callbacks must enqueue inputs for that owner.

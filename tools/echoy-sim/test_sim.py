@@ -89,6 +89,23 @@ class Contracts(unittest.TestCase):
                 self.assertEqual(d['revision'], d['frame_revision'])
                 self.assertEqual(d['revision'], d['audio_revision'])
 
+    def test_live_pulse_onset_expands_the_shared_lvgl_center(self):
+        with sim.Bridge() as bridge:
+            bridge.request({'op':'ui','id':'A','action':3,'value':0})
+            answer = bridge.request({'op':'tick','ms':80})
+            self.assertEqual(answer['devices'][0]['transport'], 'playing')
+            raw = bridge.runners[0].frame.read_bytes().split(b'\n', 3)[3]
+            # Pulse center is (190,242); +27 px is inside the onset-expanded
+            # dark disk, outside the radius-25 disk without a real hit.
+            self.assertEqual(raw[(242*480+217)*3:(242*480+218)*3], bytes.fromhex('363b30'))
+
+    def test_interactive_catchup_retains_the_complete_pcm_chunk(self):
+        with sim.Bridge() as bridge:
+            answer = bridge.request({'op':'tick','ms':250})
+            for device in answer['devices']:
+                self.assertEqual(len(sim.base64.b64decode(device['pcm'])), 12000*4)
+                self.assertEqual(device['frame_revision'], device['audio_revision'])
+
     def test_all_scenarios(self):
         result = sim.scenarios()
         self.assertTrue(result['passed'])

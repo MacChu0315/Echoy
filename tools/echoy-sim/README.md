@@ -33,13 +33,23 @@ snapshot revision and matching `frame_revision` / `audio_revision`, plus a
 monotonic stream generation and per-generation bridge sequence that reject
 stale display/audio publications. Reset increments the stream generation;
 consumers clear old PCM and restart their sequence only for a newer generation. Audio
-is a bounded recent interval ending at the snapshot time. Browser audio must be
+is a bounded recent interval ending at the snapshot time. Interactive ticks
+accumulate `performance.now()` elapsed time while HTTP/frame decoding is busy,
+then catch up with one request of at most 250 ms. The C adapter retains that
+complete 250 ms PCM chunk. A 192 ms AudioWorklet prefill absorbs response jitter;
+its total sample buffer is capped at 750 ms. This adds preview playback latency,
+not a hardware sound/display timing guarantee. Empty snapshots do not fill the
+queue. More than two seconds of unserviceable clock debt disconnects the bridge
+instead of allowing a growing playback burst. Browser audio must be
 unlocked by a user gesture; the silent-preview control is also available. The
 headless suite writes and checks `output/sim/firmware.wav` independently of the
 browser audio device.
 
-The bridge owns an injected monotonic clock, advanced in at most 10 ms steps,
-and a bounded message-delivery queue. JSON is parsed only by Python and then
+The bridge owns an injected monotonic clock, advanced in at most 10 ms steps.
+Headless requests remain deterministic; they never read browser wall time.
+The browser resets accumulated elapsed time at disconnect/reconnect and does
+not catch up time spent offline. The bridge also owns
+a bounded message-delivery queue. JSON is parsed only by Python and then
 converted to fixed, bounded C event lines. Unknown fields, duplicate keys,
 nonfinite/out-of-range values, invalid devices and invalid chains are rejected.
 Integer fields require JSON integers: `0.0` and booleans are rejected before
@@ -80,6 +90,14 @@ python3 tools/echoy-sim/run.py --mode firmware --port 8879
 # In another terminal, with local Google Chrome and Node.js:
 node tools/echoy-sim/browser-check.mjs http://127.0.0.1:8879
 ```
+
+`test-browser-adapters.mjs` runs the shipped `App.start()` with 60/126 ms
+responses for 1200 ms, checks bounded requests, matching frame/PCM publication
+identities, clock progress and offline reset, and feeds the actual worklet at
+126 ms intervals without recurring silence. `test_sim.py` checks the live C
+Pulse onset pixels and complete 250 ms PCM publication. `ui_presentation`
+compares shared LVGL Pulse/Voice onset frames, energy decay, stale clocks,
+output failure, pause and muted output while retaining the motif.
 
 The Chrome check uses real DevTools mouse, keyboard and touch events. It reads
 application observations but does not modify the product state through page

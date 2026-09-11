@@ -28,6 +28,9 @@ void echoy_leave(echoy_core_t *c,int id) {
             s->leader=leader; /* Keep epoch and rate: no phase step on election. */
         }
     }
+    if(s&&s->members&&!(s->members&(s->members-1))){
+        s->wire_managed=false;echoy_commit_idle(c,s->leader);
+    }
     c->devices[id].session_id=0;
     for(int j=0;j<3;j++)c->committed_edges&=~(EDGE(id,j)|EDGE(j,id));
 }
@@ -75,6 +78,7 @@ static bool confirmed(const echoy_core_t *c,int a,int b) {
 }
 static int count(unsigned mask) {int n=0;for(;mask;mask>>=1)n+=(int)(mask&1);return n;}
 static void update_merge(echoy_core_t *c) {
+    if(c->external_sync)return;
     unsigned involved=0;
     for(int a=0;a<3;a++)for(int b=0;b<3;b++)if(confirmed(c,a,b)&&c->devices[a].session_id!=c->devices[b].session_id) {
         involved|=echoy_session_for(c,a)->members|echoy_session_for(c,b)->members;

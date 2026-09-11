@@ -60,6 +60,12 @@ next bar; recovery also waits for that boundary. A follower sees the complete
 committed motif of its direct left neighbor, even when the neighbor is silent.
 If the direct neighbor has no motif, the follower uses its solo vocabulary.
 
+The wire control owner sets `external_sync` and projects protocol preparing,
+commit-waiting, degraded and successful states into the core snapshot. Core
+contact processing cannot independently merge that external transaction. A
+lost final peer leaves the surviving epoch/rate unchanged and restores local
+idle/bar commits; a later admission again requires the standard protocol.
+
 `echoy_feedback_key` exposes UI-independent keys. Boot/loading/error pages precede
 normal feedback, with role-loading before data-loading, and role error before
 data/output error, matching the prototype status view. Normal feedback priority

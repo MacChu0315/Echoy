@@ -37,8 +37,14 @@ Echoy 已初始化 Git，当前本地工作分支为 `feat/echoy-mosaico`。没�
 
 `CONFIG_ECHOY_DEV_INJECTION` 默认关；本轮临时开发镜像仅编译、未安装。方法 5 可在开发版走同一 LVGL 指针处理；显示锁忙时保留取消状态，由控制任务获得锁后先清旧手势，再接收新事件；这不能代替物理触摸传感器测量。普通构建产物在结束前已恢复。后续若安装开发版，验收结束必须恢复普通版并读出 `injection_enabled=false`。
 
+## 最终集成修复
+
+数据故障/loading 及恢复通过标准协议在 apply 小节提交 motif 可用性，左右两端 revision/source/motif 一致；最后邻机失联后的单成员会话保留时钟并恢复本地参数提交；协议 syncing/degraded 与核心快照/UI 提示同步。共享 `echoy_view_update()` 从实际 events 和会话时间调用 `echoy_view_hit()`，覆盖 Pulse 衰减、Voice 音高、旧快照/时钟、暂停和静音。PC 交互时钟改用 `performance.now()` 积累真实 elapsed，单次最多 250ms，PCM 完整保留该区间；工作线程预缓冲 192ms、总缓冲上限 750ms，断连不累积离线时间。这里的 PC 缓冲增加预览延迟，真机声画延迟仍未测量。
+
+最终普通/开发/恢复普通 IDF 构建分别为 3,847,152 / 3,847,792 / 3,847,152 bytes。当前 `build/sdkconfig` 关闭开发注入，普通 ELF 无 `inject_rpc`；factory Recovery 和 `ota_0` 约束保持。新回归及构建证据在 `output/final-fix/`。本次没有重试设备操作。
+
 ## 验证边界
 
-当前 CTest 32/32、JS adapter/guide 10/10、headless 29 项、Chrome 23 项通过；74 张参考截图、真实 LVGL 视觉对照、字体及和弦表生成验证通过。GCC ASan/UBSan 32/32 通过；因既有 ptrace 限制关闭 LeakSanitizer。22 组 C/Chromium 音频再生成与测量成功，未做真实听测。主机墙钟耐久完成 1800.006 秒，1,554 组帧、4,662 个指针事件，三个 C 进程正常退出；内存稳定，P95 三帧生成读取 46.75ms。记录单独位于 `output/task10/host-endurance/`，不能当作 MCU 30 分钟验收。
+当前 CTest 40/40、JS adapter/guide 13/13、headless 29 项、Chrome 23 项通过；74 张参考截图、真实 LVGL 视觉对照、字体及和弦表生成验证通过。GCC ASan/UBSan 40/40 通过；因既有 ptrace 限制关闭 LeakSanitizer。22 组 C/Chromium 音频再生成与测量成功，未做真实听测。主机墙钟耐久完成 1800.006 秒，1,554 组帧、4,662 个指针事件，三个 C 进程正常退出；内存稳定，P95 三帧生成读取 46.75ms。记录单独位于 `output/task10/host-endurance/`，不能当作 MCU 30 分钟验收。
 
 物理屏幕方向/可读性、触摸传感器、实际 ES8311 扬声器、设备堆/任务水位、Iris 镜像争用、磁吸与无线、双/三机同步及校准声学 P95/max 均尚未接受。目标不变：触摸 ≤100ms、UI 约 30fps、声学 P95≤10ms/max≤20ms。只读记录这些限制，不生成虚假录音或硬件数据。

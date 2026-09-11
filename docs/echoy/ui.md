@@ -119,3 +119,15 @@ and exceeds the reserved Recovery `factory` partition (`0x1c0000`), producing
 one IDF size warning. Do not enlarge or overwrite factory to hide this warning.
 Use the approved Recovery-to-application update path; the generic `idf.py flash`
 message targeting `0x20000` is not the project's deployment workflow.
+
+## Live event presentation
+
+Both runtime and PC live rendering call `echoy_view_update()`, which copies the
+immutable core snapshot and presents newly elapsed `plan.events` through
+`echoy_view_hit()`. The session epoch/rate/bar maps event steps to monotonic
+presentation times; the complete event kind/note/velocity belongs to the selected
+device. Pulse energy decays from that onset and Voice uses the actual note.
+Repeated snapshots, old timestamps/clocks and same-bar clock replacement cannot
+replay elapsed hits. Pause, output/data failure, loading and volume zero suppress
+new hits without deleting an available motif. This is shared renderer validation;
+physical codec/display latency and DMA alignment remain unmeasured.

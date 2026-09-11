@@ -13,30 +13,30 @@ test('PCM accepts reset generation at sequence 1 and rejects late old generation
  const context=vm.createContext({AudioWorkletProcessor:class{constructor(){this.port={};}},registerProcessor:(_name,type)=>{Processor=type;},Int16Array});
  vm.runInContext(fs.readFileSync(here+'/pcm-worklet.js','utf8'),context);
  const pcm=new Processor();
- const feed=(generation,sequence,sample)=>pcm.port.onmessage({data:{generation,sequence,pcm:new Int16Array([sample,sample]).buffer}});
+ const feed=(generation,sequence,sample)=>pcm.port.onmessage({data:{generation,sequence,pcm:new Int16Array(19200).fill(sample).buffer}});
  feed(1,100,1111);
  pcm.port.onmessage({data:{clear:true}});
  feed(2,1,2222);
  feed(1,101,3333);
- const output=[new Float32Array(2),new Float32Array(2)];
+ const output=[new Float32Array(9601),new Float32Array(9601)];
  pcm.process([], [output]);
  assert.equal(output[0][0],2222/32768);
- assert.equal(output[0][1],0,'old generation cannot return after reset');
+ assert.equal(output[0][9600],0,'old generation cannot return after reset');
 });
 
-function application(fetch){
+function application(fetch,clock={}){
  const callbacks={};
  const node={addEventListener(){}};
- const root={EchoyI18n:{},DUIJU_ROLES:{},addEventListener:(name,callback)=>{callbacks[name]=callback;}};
+ const root={EchoyI18n:{apply(){}},duijuGuide:{targets(){return [];}},DUIJU_ROLES:{},addEventListener:(name,callback)=>{callbacks[name]=callback;}};
  const document={getElementById:()=>node,querySelectorAll:()=>[],addEventListener:(name,callback)=>{callbacks[name]=callback;},hidden:false};
- const context=vm.createContext({window:root,document,fetch,clearInterval,setTimeout,clearTimeout,AbortController});
+ const context=vm.createContext({window:root,document,fetch,setInterval,clearInterval,setTimeout,clearTimeout,AbortController,performance,...clock});
  let source=fs.readFileSync(here+'/firmware.js','utf8');
  assert.equal(source.split('root.duiju=new App();').length,2);
  source=source.replace('root.duiju=new App();','root.adapterClasses={App,Frames,PCMOutput};');
  vm.runInContext(source,context);
  const app=Object.create(root.adapterClasses.App.prototype),frames=[],audio=[];
  Object.assign(app,{pending:Promise.resolve(),queueSize:0,busy:false,connected:true,connectionGeneration:1,lastSequence:0,lastGeneration:0,
-  view:{frames:async answer=>frames.push(answer)},audio:{feed:answer=>audio.push(answer),stop(){}},toast(){},update(answer){this.answer=answer;}});
+  view:{frames:async answer=>frames.push(answer)},audio:{feed:answer=>audio.push(answer),stop(){}},toast(){},locale(){},update(answer){this.answer=answer;}});
  app.bind();
  return {app,callbacks,document,frames,audio};
 }
@@ -113,4 +113,52 @@ test('Guide third tile requires both edges and all three local play intents; fau
  devices.C.present=true;edge('B','C');assert.equal(guide.evaluate().done,false);
  devices.C.transport='playing';assert.equal(guide.evaluate().done,true);
  devices.B.loading=true;const state=guide.evaluate();assert.equal(state.done,false);assert.equal(state.warning,true);
+});
+
+// Only HTTP latency/time and browser I/O are controlled; execute shipped start,
+// timer, send, publication identity, and disconnect/reconnect logic unchanged.
+for(const latency of [60,126])test(`App.start accounts for elapsed wall time with ${latency} ms responses`,async()=>{
+ let wall=0,simulated=0,sequence=0,inflight=0,maxInflight=0,maxQueue=0,intervals=[],responses=[];
+ const calls=[];
+ const clock={performance:{now:()=>wall},setInterval:(fn,ms)=>{intervals.push({fn,ms,next:wall+ms});return intervals.length;},clearInterval(){}};
+ const state=application((_url,options)=>{
+  const request=JSON.parse(options.body);calls.push(request);inflight++;maxInflight=Math.max(maxInflight,inflight);
+  return new Promise(resolve=>responses.push({at:wall+latency,finish(){
+   if(request.op==='tick')simulated+=request.ms;
+   inflight--;resolve({ok:true,json:async()=>({generation:1,sequence:++sequence,time_us:simulated*1000,devices:[]})});
+  }}));
+ },clock);
+ const {app,frames,audio}=state;
+ async function advance(ms){for(let i=0;i<ms;i++){
+  wall++;for(const t of intervals)if(wall>=t.next){t.next+=t.ms;t.fn();}
+  for(const r of responses.filter(r=>r.at<=wall))r.finish();responses=responses.filter(r=>r.at>wall);
+  await turn();maxQueue=Math.max(maxQueue,app.queueSize);
+ }}
+ const started=app.start();await turn();await advance(latency*2+1);await started;
+ const start=wall;await advance(1200);
+ assert(simulated>=wall-start-latency-50,`advanced ${simulated} ms in ${wall-start} ms`);
+ assert(simulated<=wall-start+1);assert.equal(maxInflight,1);assert(maxQueue<=2);
+ assert(calls.filter(c=>c.op==='tick').every(c=>c.ms>0&&c.ms<=250),'bounded catch-up chunk');
+ assert.deepEqual(frames.map(a=>[a.generation,a.sequence]),audio.map(a=>[a.generation,a.sequence]));
+ app.disconnect();await advance(200);const offlineTime=simulated,offlineCalls=calls.length;
+ await advance(500);assert.equal(simulated,offlineTime);assert.equal(calls.length,offlineCalls);
+ const reconnected=app.reconnect();await advance(latency+1);await reconnected;
+ const before=simulated;await advance(600);
+ assert(simulated-before<=601,'reconnect never replays the offline elapsed time');
+ assert(simulated-before>=600-latency-50);app.disconnect();await advance(200);
+});
+
+test('PCM absorbs 126 ms response spacing without recurring silence and bounds samples',()=>{
+ let Processor;
+ vm.runInNewContext(fs.readFileSync(here+'/pcm-worklet.js','utf8'),{AudioWorkletProcessor:class{constructor(){this.port={};}},registerProcessor:(_name,type)=>{Processor=type;},Int16Array});
+ const pcm=new Processor();let sequence=0,started=false;
+ const feed=ms=>pcm.port.onmessage({data:{generation:1,sequence:++sequence,pcm:new Int16Array(ms*48*2).fill(1000).buffer}});
+ for(let time=0;time<1500;time++){
+  if(time===166)feed(40);else if(time>=292&&(time-292)%126===0)feed(126);
+  const output=[new Float32Array(48),new Float32Array(48)];pcm.process([], [output]);
+  if(output[0].some(x=>x!==0))started=true;
+  if(started)assert(output[0].every(x=>x!==0),`unexpected gap at ${time} ms`);
+ }
+ assert(started);feed(5000);
+ assert(pcm.queue.reduce((n,p)=>n+p.length,0)<=48000*2,'queue bounds samples, including an oversized publication');
 });

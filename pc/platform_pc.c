@@ -18,7 +18,9 @@ static int64_t role_due,load_due,boot_due,now;
 static uint32_t boot=1;
 static uint64_t uid;
 static unsigned rejected;
-static int16_t pcm[4800*2];static size_t pcm_frames;
+/* One interactive catch-up publication is bounded to 250 ms. */
+#define PCM_FRAMES 12000
+static int16_t pcm[PCM_FRAMES*2];static size_t pcm_frames;
 static struct {uint64_t to;size_t n;uint8_t bytes[100];} packets[128];static size_t packet_count;
 static const char *frame_path;
 static echoy_result_t event(echoy_action_t type,double value){
@@ -65,14 +67,19 @@ static void tick(int64_t at){
     if(role_due&&now>=role_due){role_due=0;(void)event(fail_next?ECHOY_ROLE_FAILED:ECHOY_ROLE_READY,0);fail_next=false;}
     if(load_due&&now>=load_due){load_due=0;(void)event(ECHOY_DATA_LOADING,0);}
     if(d->lifecycle==ECHOY_READY)echoy_control_tick(&control,now,output_fault);else echoy_tick(&control.core,now);
-    if(sync_fault&&control.core.sync.stage==ECHOY_SYNC_PREPARING)(void)event(ECHOY_SYNC_FAIL,0);
+    if(sync_fault&&control.core.sync.stage==ECHOY_SYNC_PREPARING){
+        /* Development injection fails the protocol owner too, so diagnostics
+         * and product feedback observe the same failure until renegotiation. */
+        control.protocol.degraded=true;control.protocol.syncing=true;control.protocol.pending.active=false;
+        (void)event(ECHOY_SYNC_FAIL,0);
+    }
     echoy_audio_control(audio,0,d->clock_version,d->activity,d->volume,d->transport!=ECHOY_PLAYING||d->lifecycle!=ECHOY_READY||d->data_fault||d->loading);
     echoy_audio_output_fault(audio,output_fault);
     if(!echoy_audio_plan(audio,&control.core.plan,1))rejected++;
     int64_t cursor=echoy_audio_presentation_us(audio);
     size_t count=now>cursor?(size_t)((now-cursor)*48/1000):0;
     while(count){size_t n=count>256?256:count;int16_t block[512];echoy_audio_pcm(audio,block,n);
-        if(pcm_frames+n>4800){memmove(pcm,pcm+(pcm_frames+n-4800)*2,(4800-n)*4);pcm_frames=4800-n;}
+        if(pcm_frames+n>PCM_FRAMES){memmove(pcm,pcm+(pcm_frames+n-PCM_FRAMES)*2,(PCM_FRAMES-n)*4);pcm_frames=PCM_FRAMES-n;}
         memcpy(pcm+pcm_frames*2,block,n*4);pcm_frames+=n;count-=n;
     }
 }
@@ -82,7 +89,7 @@ static void reply(bool frame){
     if(frame){lv_refr_now(lv_display_get_default());FILE *f=fopen(frame_path,"wb");if(!f)exit(3);fprintf(f,"P6\n480 480\n255\n");if(fwrite(pixels,1,sizeof pixels,f)!=sizeof pixels||fclose(f))exit(3);}
     static const char *roles[]={"pulse","voice","dust","harmony"},*transports[]={"paused","waiting","playing"};
     printf("{\"revision\":%"PRIu64",\"time_us\":%"PRId64",\"uid\":%"PRIu64",\"boot\":%u,\"present\":%s,\"lifecycle\":%d,\"role\":\"%s\",\"phrase\":%d,\"activity\":%.8g,\"committedActivity\":%.8g,\"volume\":%.8g,\"battery\":%d,\"transport\":\"%s\",\"loading\":%s,\"rolePreparing\":%d,\"pendingPhrase\":%d,\"roleError\":%s,\"outputFault\":%s,\"dataFault\":%s,\"motifAvailable\":%s,\"syncFail\":%s,\"syncing\":%s,\"members\":%u,\"feedback\":\"%s\",\"rejected\":%u,\"edges\":[",
-        s.revision,now,uid,boot,d->lifecycle!=ECHOY_OFF?"true":"false",d->lifecycle,roles[d->role],d->phrase,d->activity,d->committed_activity,d->volume,d->battery,transports[d->transport],d->loading?"true":"false",d->preparing_role,d->pending_phrase,d->role_error?"true":"false",d->output_fault?"true":"false",d->data_fault?"true":"false",d->motif_available?"true":"false",sync_fault?"true":"false",control.protocol.pending.active?"true":"false",control.protocol.committed.member_count,echoy_feedback_key(&s,0),rejected);
+        s.revision,now,uid,boot,d->lifecycle!=ECHOY_OFF?"true":"false",d->lifecycle,roles[d->role],d->phrase,d->activity,d->committed_activity,d->volume,d->battery,transports[d->transport],d->loading?"true":"false",d->preparing_role,d->pending_phrase,d->role_error?"true":"false",d->output_fault?"true":"false",d->data_fault?"true":"false",d->motif_available?"true":"false",control.protocol.degraded?"true":"false",control.protocol.syncing?"true":"false",control.protocol.committed.member_count,echoy_feedback_key(&s,0),rejected);
     bool comma=false;for(int a=0;a<3;a++)for(int b=0;b<3;b++)if(s.committed_edges&(1u<<(a*3+b))){printf("%s[%"PRIu64",%"PRIu64"]",comma?",":"",s.devices[a].uid,s.devices[b].uid);comma=true;}
     printf("],\"packets\":[");for(size_t i=0;i<packet_count;i++){printf("%s[%"PRIu64",\"",i?",":"",packets[i].to);for(size_t j=0;j<packets[i].n;j++)printf("%02x",packets[i].bytes[j]);fputs("\"]",stdout);}packet_count=0;
     fputs("],\"pcm\":\"",stdout);if(frame){for(size_t i=0;i<pcm_frames*2;i++)printf("%02x%02x",(unsigned)pcm[i]&255,((uint16_t)pcm[i]>>8)&255);pcm_frames=0;}

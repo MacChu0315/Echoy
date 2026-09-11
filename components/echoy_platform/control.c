@@ -12,7 +12,8 @@ static bool prepare(void *ctx,const echoy_wire_state_t *s){
     echoy_control_t *c=ctx;int local=index_of(s,c->protocol.uid);if(local<0)return false;
     const echoy_device_t *d=&c->core.devices[0];
     /* Output failure suppresses sound, never the generated motif. */
-    return d->lifecycle==ECHOY_READY&&!d->loading&&!d->data_fault&&s->members[local].phrase<=3;
+    return d->lifecycle==ECHOY_READY&&s->members[local].phrase<=3&&
+        (!s->members[local].motif_available||(!d->loading&&!d->data_fault));
 }
 static void installed(void *ctx,const echoy_wire_state_t *s,echoy_session_key_t key,int64_t epoch,int rate,int64_t now){
     echoy_control_t *c=ctx;
@@ -55,7 +56,7 @@ void echoy_control_init(echoy_control_t *c,uint64_t uid,uint32_t boot,uint32_t n
     echoy_input_t e={.type=ECHOY_BOOT,.device=0,.boot_id=boot};(void)echoy_dispatch(&c->core,&e);input(c,0,ECHOY_BOOT_READY,0,0);
     echoy_protocol_init(&c->protocol,uid,boot,nonce,transmit,prepare,installed,c);
     c->protocol.committed.members[0]=device_member(&c->core.devices[0],false);c->protocol.committed.epoch_us=75000;
-    c->installed_key=c->protocol.session;c->session_serial=c->core.devices[0].session_id;c->request_at_us=-ECHOY_HEARTBEAT_US;
+    c->core.external_sync=true;c->installed_key=c->protocol.session;c->session_serial=c->core.devices[0].session_id;c->request_at_us=-ECHOY_HEARTBEAT_US;
 }
 bool echoy_control_enqueue(echoy_control_t *c,echoy_ui_event_t e){
     if(!c||e.action<UI_NONE||e.action>UI_CANCEL_LOAD||!isfinite(e.value))return false;
@@ -66,6 +67,20 @@ void echoy_control_physical(echoy_control_t *c,uint64_t left,uint64_t right,bool
     if(c->physical[0]!=left||c->physical[1]!=right||c->uncertain!=uncertain)c->physical_since_us=now;
     c->physical[0]=left;c->physical[1]=right;c->uncertain=uncertain;
 }
+static void sync_status(echoy_control_t *c){
+    const echoy_protocol_t *p=&c->protocol;echoy_sync_stage_t stage=ECHOY_SYNC_NONE;
+    unsigned members=1;
+    for(int i=0;i<2;i++){const echoy_protocol_peer_t *q=&p->peers[i];int ix=slot(c,q->uid);
+        if(q->authorized&&!q->expired&&ix>=0){members|=1u<<ix;
+            if(!q->member&&!q->lost)stage=ECHOY_SYNC_PREPARING;}}
+    if(p->degraded)stage=ECHOY_SYNC_FAILED;
+    else if(p->syncing)stage=p->pending.active&&p->pending.commit_seen?ECHOY_SYNC_WAITING:ECHOY_SYNC_PREPARING;
+    int64_t apply=stage==ECHOY_SYNC_WAITING?p->pending.apply_us:0;
+    if(c->core.sync.stage!=stage||c->core.sync.members!=members||c->core.sync.apply_at_us!=apply){
+        c->core.sync.stage=stage;c->core.sync.members=members;c->core.sync.apply_at_us=apply;
+        c->core.revision++;c->core.plan.revision=c->core.revision;
+    }
+}
 static bool physical(const echoy_control_t *c,uint64_t uid){return !c->uncertain&&uid&&(uid==c->physical[0]||uid==c->physical[1]);}
 bool echoy_control_receive(echoy_control_t *c,uint64_t uid,uint32_t boot,const uint8_t *bytes,size_t size,int64_t received,int64_t now){
     echoy_packet_t p;if(!c||received<0||now<received||!echoy_wire_decode(bytes,size,&p)||p.sender_boot!=boot||uid==c->protocol.uid)return false;
@@ -73,7 +88,7 @@ bool echoy_control_receive(echoy_control_t *c,uint64_t uid,uint32_t boot,const u
     if(p.kind==ECHOY_HELLO&&physical(c,uid)&&p.body[0]>=1&&p.body[0]<=3&&!p.body[1]&&echoy_get_le(p.body+2,8)&&echoy_get_le(p.body+10,4)&&echoy_get_le(p.body+14,2)==1){
         if(!q||q->boot!=boot||!q->authorized||q->expired){if(!authorize(c,uid,boot,now))return false;q=peer(c,uid);}
     }
-    if(!p.flags)return echoy_protocol_receive(&c->protocol,uid,boot,bytes,size,received,now);
+    if(!p.flags){bool ok=echoy_protocol_receive(&c->protocol,uid,boot,bytes,size,received,now);sync_status(c);return ok;}
     if(!q||!q->authorized||q->lost||q->expired||q->boot!=boot||p.sequence<=q->sequence||!echoy_session_equal(p.session,q->session)){c->rejected++;return false;}
     unsigned ix=(unsigned)(q-c->protocol.peers);echoy_wire_state_t state;
     echoy_wire_result_t result=echoy_wire_assemble(&c->requests[ix],uid,boot,&p,now,&state);
@@ -198,11 +213,11 @@ void echoy_control_tick(echoy_control_t *c,int64_t now,bool fault){
         echoy_session_t *s=local_session(c);if(s){echoy_wire_state_t kept={.revision=1,.reference_uid=c->core.devices[s->leader].uid,.epoch_us=s->epoch_us,.rate_ppm=s->rate_ppm};
             for(int i=0;i<3;i++)if(s->members&(1u<<i))kept.members[kept.member_count++]=device_member(&c->core.devices[i],false);
             c->protocol.pending.active=false;c->protocol.committed=kept;c->protocol.session=(echoy_session_key_t){kept.reference_uid,(uint32_t)c->core.devices[s->leader].boot_id,(uint32_t)++c->core.serial};
-            c->protocol.degraded=true;c->protocol.syncing=true;
+            c->protocol.degraded=kept.member_count>1;c->protocol.syncing=kept.member_count>1;
             for(int i=0;i<2;i++)c->protocol.peers[i].member=index_of(&kept,c->protocol.peers[i].uid)>=0;
         }
     }
-    send_request(c,now);propose(c,now);
+    send_request(c,now);propose(c,now);sync_status(c);
     if(c->publish&&!c->publish(c->publish_ctx,&c->core,&c->core.plan))c->publication_failures++;
 }
 bool echoy_control_forecast(const echoy_control_t *c,int64_t target,echoy_core_t *scratch){

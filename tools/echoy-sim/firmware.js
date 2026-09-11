@@ -45,9 +45,19 @@ class App {
  }
  get physicalOrder(){return ids.filter(id=>this.engine.devices[id].present&&this.positions[id]);}
  target(){return $('target').value;}
- async start(){const guide=root.duijuGuide,targets=guide.targets.bind(guide);guide.targets=()=>{const found=targets();return found.length?found:this.physicalOrder.map(id=>this.view.units[id].screen);};I.apply(document.body);this.locale();await this.send({op:'locale',english:I.locale==='en'});await this.send({op:'snapshot'});this.timer=setInterval(()=>{if(!this.busy&&!document.hidden&&this.connected)this.send({op:'tick',ms:40});},40);}
- disconnect(message){this.connected=false;this.connectionGeneration++;this.inflight?.abort();this.inflight=null;this.audio.stop();$('bridge-reconnect').hidden=false;if(message)this.toast('桥连接中断：'+message);}
- reconnect(){this.disconnect();this.connected=true;$('bridge-reconnect').hidden=true;return this.send({op:'snapshot'});}
+ async start(){const guide=root.duijuGuide,targets=guide.targets.bind(guide);guide.targets=()=>{const found=targets();return found.length?found:this.physicalOrder.map(id=>this.view.units[id].screen);};I.apply(document.body);this.locale();await this.send({op:'locale',english:I.locale==='en'});await this.send({op:'snapshot'});this.resetClock();this.timer=setInterval(()=>this.pumpClock(),40);}
+ resetClock(){this.clockAt=performance.now();this.clockDebt=0;this.clockActive=this.connected;}
+ pumpClock(){
+  if(!this.clockActive||!this.connected||document.hidden)return;
+  const now=performance.now();this.clockDebt+=Math.max(0,now-this.clockAt);this.clockAt=now;
+  // A single bounded tick follows any pending input; elapsed time is retained
+  // during HTTP/decode work. An unserviceable bridge must not build an audio burst.
+  if(this.clockDebt>2000){this.disconnect('本地模拟器响应过慢，请重新连接。');return;}
+  if(this.busy||this.queueSize||this.clockDebt<40)return;
+  const ms=Math.min(250,Math.floor(this.clockDebt));this.clockDebt-=ms;this.send({op:'tick',ms});
+ }
+ disconnect(message){this.clockActive=false;this.clockDebt=0;this.connected=false;this.connectionGeneration++;this.inflight?.abort();this.inflight=null;this.audio.stop();$('bridge-reconnect').hidden=false;if(message)this.toast('桥连接中断：'+message);}
+ reconnect(){this.disconnect();this.connected=true;$('bridge-reconnect').hidden=true;return this.send({op:'snapshot'}).then(answer=>{if(this.connected)this.resetClock();return answer;});}
  send(request){if(!this.connected)return Promise.resolve();if(this.queueSize>=64){this.toast('输入队列已满，请稍后重试。');return Promise.resolve();}this.queueSize++;
   const generation=this.connectionGeneration,current=()=>this.connected&&this.connectionGeneration===generation;
   const task=async()=>{let controller;try{if(!current())return;this.busy=true;controller=new AbortController();this.inflight=controller;
@@ -57,7 +67,7 @@ class App {
     if(!Number.isSafeInteger(answer.generation)||answer.generation<1||!Number.isSafeInteger(answer.sequence)||answer.sequence<1)throw new Error('Invalid publication identity');
     if(answer.generation<this.lastGeneration||(answer.generation===this.lastGeneration&&answer.sequence<=this.lastSequence))return;
     this.lastGeneration=answer.generation;this.lastSequence=answer.sequence;this.update(answer);await this.view.frames(answer,current);if(!current())return;this.audio.feed(answer);return answer;
-   }catch(e){if(current())this.disconnect(e.message);}finally{this.queueSize--;if(this.inflight===controller)this.inflight=null;this.busy=false;}};
+   }catch(e){if(current())this.disconnect(e.message);}finally{this.queueSize--;if(this.inflight===controller)this.inflight=null;this.busy=false;if(current())this.pumpClock();}};
   this.pending=this.pending.then(task,task);return this.pending;
  }
  update(answer){this.answer=answer;for(const d of answer.devices){const prior=this.engine.devices[d.id];this.engine.devices[d.id]={...prior,...d,error:d.roleError,fault:d.dataFault?'data':d.outputFault?'audio':null,bootId:d.boot,rolePreparing:d.rolePreparing<0?null:d.rolePreparing};if(!d.present&&!this.movingUnit)delete this.positions[d.id];}

@@ -358,3 +358,18 @@ reference from the three-node network and verifies two surviving members.
 The existing clock estimator requires a 20-second stable sample window after
 physical authorization; ordinary PREPARE reserves two future bars. These are
 measured software constraints, not a claim of immediate magnetic joining.
+
+## Owner integration guarantees
+
+`control.c` accepts a prepared local `motif_available=false` even while data is
+faulted/loading; advertising an available local motif still requires ready data.
+The normal PREPARE/READY/COMMIT boundary installs availability and the direct
+right follower's source together. Recovery uses another standard transaction
+and never starts a paused transport. Integration tests cover both coordinator
+and follower sources and check old state immediately before the apply boundary.
+
+Protocol syncing/degraded status is projected into the core snapshot and UI
+feedback. Dropped COMMIT retains the follower's old phrase/events and shows
+`sync-failed`; successful renegotiation clears both protocol and UI failure.
+After the final peer's hold expires, the surviving singleton retains its clock
+mapping and resumes local idle/bar commits. Rejoining remains a wire transaction.

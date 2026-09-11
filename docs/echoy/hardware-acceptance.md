@@ -220,6 +220,31 @@ Raw samples and summary: `output/task10/host-endurance/samples.jsonl` and
 Iris contention, real wireless packets and speaker/acoustic output were not
 measured by this test.
 
+## Final integration regression evidence
+
+`output/final-fix/` records 40/40 CTest and 40/40 ASan/UBSan passes,
+13/13 JS adapter checks, 29 headless scenarios and 23 real Chrome checks.
+Wire-owner tests cover both source directions for fault/loading/recovery,
+apply-boundary revision/motif/source consistency, last-peer clock continuity
+and local commits, and visible COMMIT-loss failure followed by recovery.
+Shared LVGL and live C runner tests now verify Pulse onset/decay and Voice notes,
+including clock replacement and silent-output cases. They do not measure actual
+LCD-versus-codec presentation delay.
+
+The browser runs its actual `App.start()` with 60/126 ms responses for 1200 ms
+in regression tests. It retains elapsed time during busy responses, catches up
+with at most one 250 ms request, preserves that PCM interval, and uses a 192 ms
+worklet prefill with 750 ms maximum buffering. Disconnect/reconnect discards
+offline time. This improves the interactive PC preview and adds bounded preview
+latency; it cannot validate a hardware acoustic timing target.
+
+Normal / development / restored-normal IDF builds pass at 3,847,152 / 3,847,792 /
+3,847,152 bytes. `firmware-final.json` records the final ordinary sdkconfig,
+injection disabled, absent `inject_rpc`, retained Recovery and ota_0 capacity.
+The known app/factory warning remains; reconfiguration additionally reports the
+five existing upstream private-include CMake warnings. No board operation was
+retried. All physical checkboxes and the existing Recovery blocker remain open.
+
 ## Required physical checks (still pending)
 
 - Restart after role/phrase/activity/volume/locale changes; verify paused
@@ -237,5 +262,5 @@ measured by this test.
   fails. Healthy marking now waits for a ready owner, a real successful speaker
   status and successful UI startup; starting Iris alone does not mark healthy.
 
-Host CTest and sanitizer results are in the Task 8 report. None of these
+Current host CTest and sanitizer results are under `output/final-fix/`. None of these
 physical checks is claimed by a firmware build or a host simulation.
