@@ -19,7 +19,9 @@ Full three-device physical and calibrated acoustic acceptance is not complete.
 
 The final integration regressions also cover wire data-availability changes,
 last-peer local commits, protocol failure feedback, and live Pulse/Voice event
-presentation. Interactive browser time follows monotonic elapsed time through
+presentation. Each plan retains the audible interval start, so waiting and
+fault/mute recovery cannot display notes from the silent window, even if UI
+refresh skipped that window. Interactive browser time follows monotonic elapsed time through
 slow responses; 250 ms C PCM publications and a bounded worklet prefill preserve
 playback continuity. The prefill adds PC preview latency; physical sound/display
 alignment remains unmeasured. Current verification: 40 CTest cases, 13 JS

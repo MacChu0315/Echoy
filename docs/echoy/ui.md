@@ -127,6 +127,10 @@ immutable core snapshot and presents newly elapsed `plan.events` through
 `echoy_view_hit()`. The session epoch/rate/bar maps event steps to monotonic
 presentation times; the complete event kind/note/velocity belongs to the selected
 device. Pulse energy decays from that onset and Voice uses the actual note.
+The core plan retains `audible_since_us`, the beginning of the current local
+output-eligible interval. Waiting starts at the requested `play_at_us`; mute,
+output/data fault and loading recovery start a fresh interval. The view clamps
+its scan to that start even when display refresh skips the whole silent window.
 Repeated snapshots, old timestamps/clocks and same-bar clock replacement cannot
 replay elapsed hits. Pause, output/data failure, loading and volume zero suppress
 new hits without deleting an available motif. This is shared renderer validation;

@@ -174,7 +174,12 @@ void echoy_tick(echoy_core_t *c,int64_t at) {
             echoy_device_t *d=&c->devices[i];if(d->transport!=ECHOY_WAITING)continue;
             if(d->play_session!=s->id){d->play_session=s->id;d->play_at_us=echoy_next_boundary(s,c->time_us+25000,false);}
             if(c->time_us>=d->play_at_us) {
-                if(!d->output_fault&&!d->data_fault&&!d->loading&&d->battery>0)d->transport=ECHOY_PLAYING;
+                if(!d->output_fault&&!d->data_fault&&!d->loading&&d->battery>0){
+                    d->transport=ECHOY_PLAYING;
+                    /* A sparse owner tick still starts on the requested beat. */
+                    d->audible=d->volume>0&&d->motif_available;
+                    if(d->audible)d->audible_since_us=d->play_at_us;
+                }
                 else d->play_at_us=echoy_next_boundary(s,c->time_us+25000,false);
             }
         }
@@ -183,6 +188,15 @@ void echoy_tick(echoy_core_t *c,int64_t at) {
 }
 void echoy_publish(echoy_core_t *c) {
     echoy_bar_plan_t *p=&c->plan;memset(p,0,sizeof *p);p->revision=c->revision;p->at_us=c->time_us;
+    /* Retain the latest eligibility transition even if UI snapshots coalesce
+     * an entire fault/mute window. Publishing never changes transport intent. */
+    for(int i=0;i<3;i++){
+        echoy_device_t *d=&c->devices[i];
+        bool audible=d->lifecycle==ECHOY_READY&&d->transport==ECHOY_PLAYING&&d->volume>0&&
+            !d->output_fault&&!d->data_fault&&!d->loading&&d->motif_available;
+        if(audible&&!d->audible)d->audible_since_us=c->time_us;
+        d->audible=audible;
+    }
     for(int sidx=0;sidx<3;sidx++) {
         echoy_session_t *s=&c->sessions[sidx];if(!s->id)continue;
         unsigned visited=0;
@@ -197,7 +211,7 @@ void echoy_publish(echoy_core_t *c) {
                 q->boot_id=d->boot_id;q->session_id=s->id;q->clock_version=d->clock_version;
                 q->bar=s->last_bar;q->epoch_us=s->epoch_us;q->rate_ppm=s->rate_ppm;
                 q->role=d->role;q->phrase=d->phrase;q->activity=d->activity;q->committed_activity=d->committed_activity;
-                q->volume=d->volume;q->transport=d->transport;q->motif_available=d->motif_available;
+                q->volume=d->volume;q->transport=d->transport;q->motif_available=d->motif_available;q->audible_since_us=d->audible_since_us;
                 if(source<0)memset(counts,0,sizeof counts);
                 echoy_music_input_t in={.role=d->role,.phrase=d->phrase,.bar=(int)(q->bar%4),.duplicate=counts[d->role]++,
                     .activity=d->committed_activity,.bpm=96,.left=left};

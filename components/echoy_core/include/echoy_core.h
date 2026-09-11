@@ -35,6 +35,8 @@ typedef struct {
     int phrase, phrase_memories[4], pending_role, preparing_role, pending_phrase, phrase_role;
     bool output_fault, data_fault, loading, motif_available, role_error, play_preparing;
     bool link_online, lost_split, moving, volume_open;
+    /* Local event-output eligibility, not measured DAC onset feedback. */
+    bool audible; int64_t audible_since_us;
     int battery; unsigned discovered;
     int64_t link_lost_us, moving_since_us, play_at_us, notice_until_us;
     uint64_t play_session; int clock_ppm;
@@ -53,6 +55,7 @@ typedef struct {
 typedef struct {
     int device, source; uint64_t boot_id, session_id, clock_version; int64_t bar, epoch_us;
     int rate_ppm; echoy_role_t role; int phrase; echoy_transport_t transport;
+    int64_t audible_since_us;
     double activity, committed_activity, volume;
     bool motif_available; echoy_motif_t motif, events;
 } echoy_plan_entry_t;

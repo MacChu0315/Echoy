@@ -85,6 +85,7 @@ static void tick(int64_t at){
 }
 static void reply(bool frame){
     echoy_snapshot_t s;echoy_snapshot(&control.core,&s);echoy_device_t *d=&s.devices[0];
+    /* Full core plans retain audible transitions across multiple T/F inputs. */
     if(frame){echoy_view_update(view,&s,0);echoy_view_locale(view,control.english);echoy_view_frame(view,now);}
     if(frame){lv_refr_now(lv_display_get_default());FILE *f=fopen(frame_path,"wb");if(!f)exit(3);fprintf(f,"P6\n480 480\n255\n");if(fwrite(pixels,1,sizeof pixels,f)!=sizeof pixels||fclose(f))exit(3);}
     static const char *roles[]={"pulse","voice","dust","harmony"},*transports[]={"paused","waiting","playing"};

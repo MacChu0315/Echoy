@@ -228,7 +228,10 @@ Wire-owner tests cover both source directions for fault/loading/recovery,
 apply-boundary revision/motif/source consistency, last-peer clock continuity
 and local commits, and visible COMMIT-loss failure followed by recovery.
 Shared LVGL and live C runner tests now verify Pulse onset/decay and Voice notes,
-including clock replacement and silent-output cases. They do not measure actual
+including clock replacement and silent-output cases. A subsequent scoped fix
+also retains the exact core `audible_since_us` in each plan, preventing waiting
+or fault/mute recovery from replaying notes from a skipped silent window.
+Round-2 regression/build evidence is in `output/final-fix/round2/`. These do not measure actual
 LCD-versus-codec presentation delay.
 
 The browser runs its actual `App.start()` with 60/126 ms responses for 1200 ms
@@ -238,12 +241,15 @@ worklet prefill with 750 ms maximum buffering. Disconnect/reconnect discards
 offline time. This improves the interactive PC preview and adds bounded preview
 latency; it cannot validate a hardware acoustic timing target.
 
-Normal / development / restored-normal IDF builds pass at 3,847,152 / 3,847,792 /
+The first integration wave normal / development / restored-normal IDF builds
+passed at 3,847,152 / 3,847,792 /
 3,847,152 bytes. `firmware-final.json` records the final ordinary sdkconfig,
 injection disabled, absent `inject_rpc`, retained Recovery and ota_0 capacity.
 The known app/factory warning remains; reconfiguration additionally reports the
 five existing upstream private-include CMake warnings. No board operation was
-retried. All physical checkboxes and the existing Recovery blocker remain open.
+retried. The final audible-window normal build is 3,847,792 bytes, with injection
+off and no `inject_rpc`; see `round2/firmware-final.json`. All physical checkboxes
+and the existing Recovery blocker remain open.
 
 ## Required physical checks (still pending)
 

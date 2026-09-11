@@ -41,7 +41,7 @@ Echoy 已初始化 Git，当前本地工作分支为 `feat/echoy-mosaico`。没�
 
 数据故障/loading 及恢复通过标准协议在 apply 小节提交 motif 可用性，左右两端 revision/source/motif 一致；最后邻机失联后的单成员会话保留时钟并恢复本地参数提交；协议 syncing/degraded 与核心快照/UI 提示同步。共享 `echoy_view_update()` 从实际 events 和会话时间调用 `echoy_view_hit()`，覆盖 Pulse 衰减、Voice 音高、旧快照/时钟、暂停和静音。PC 交互时钟改用 `performance.now()` 积累真实 elapsed，单次最多 250ms，PCM 完整保留该区间；工作线程预缓冲 192ms、总缓冲上限 750ms，断连不累积离线时间。这里的 PC 缓冲增加预览延迟，真机声画延迟仍未测量。
 
-最终普通/开发/恢复普通 IDF 构建分别为 3,847,152 / 3,847,792 / 3,847,152 bytes。当前 `build/sdkconfig` 关闭开发注入，普通 ELF 无 `inject_rpc`；factory Recovery 和 `ota_0` 约束保持。新回归及构建证据在 `output/final-fix/`。本次没有重试设备操作。
+首轮普通/开发/恢复普通 IDF 构建分别为 3,847,152 / 3,847,792 / 3,847,152 bytes。当前 `build/sdkconfig` 关闭开发注入，普通 ELF 无 `inject_rpc`；factory Recovery 和 `ota_0` 约束保持。新回归及构建证据在 `output/final-fix/`。随后针对等待/故障恢复补旧hit的审查残留，core计划增加 `audible_since_us`，即使两帧间完整发生静音窗口，view也只能选择恢复后真实起音。该修复的普通固件为 3,847,792 bytes，注入仍关闭，证据在 `output/final-fix/round2/`。本次没有重试设备操作。
 
 ## 验证边界
 

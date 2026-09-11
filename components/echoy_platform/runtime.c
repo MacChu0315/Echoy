@@ -110,6 +110,8 @@ static bool publish(void *ctx,const echoy_snapshot_t *s,const echoy_bar_plan_t *
         const echoy_bar_plan_t *audio_plan=&r->forecast.plan;
         if(echoy_speaker_publish(audio_plan)!=ESP_OK){r->diag.audio_queue_failures++;ok=false;}
     }
+    /* The copied plan retains audible_since_us even if this nonblocking lock
+     * skips every snapshot in a brief mute/fault window. */
     if(!r->diag.ui_error&&s->time_us-r->ui_at_us>=33000&&bsp_display_lock(0)){
         r->ui_at_us=s->time_us;echoy_view_t *v=echoy_ui_view();if(v){echoy_view_update(v,s,0);echoy_view_locale(v,r->control.english);r->diag.ui_updates++;}bsp_display_unlock();
     }

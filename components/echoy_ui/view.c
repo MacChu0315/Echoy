@@ -13,7 +13,7 @@ struct echoy_view {
     echoy_snapshot_t snapshot; int device; bool english;
     echoy_touch_t touch; echoy_route_t requested_route; int interaction_key; bool interaction_valid; echoy_ui_emit_fn emit; void *context;
     echoy_event_t hit; int64_t hit_us,now_us,last_frame; bool has_hit;
-    bool presented; uint64_t hit_boot,hit_session,hit_clock; int64_t presented_us,hit_bar; int hit_device;
+    bool presented,was_audible; int64_t audible_since_us; uint64_t hit_boot,hit_session,hit_clock; int64_t presented_us,hit_bar; int hit_device;
 };
 static const uint32_t colors[]={0xd95535,0x496da1,0x7b8452,0xaa7b3d};
 static const char *roles[]={"pulse","voice","dust","harmony"};
@@ -227,12 +227,18 @@ static void present_hits(echoy_view_t *v){
     if(since<now-470000)since=now-470000;
     bool audible=p&&d->lifecycle==ECHOY_READY&&d->transport==ECHOY_PLAYING&&
         d->volume>0&&!d->output_fault&&!d->loading&&!d->data_fault&&p->motif_available;
-    if(!audible)v->has_hit=false;
-    else for(size_t i=0;i<p->events.count;i++){
+    int64_t audible_since=p?p->audible_since_us:now;
+    if(d->play_at_us>audible_since)audible_since=d->play_at_us;
+    if(!audible||!v->was_audible||audible_since!=v->audible_since_us)v->has_hit=false;
+    /* Events earlier in this bar may belong to WAITING or a mute/fault window.
+     * The core transition survives snapshots skipped by the display lock. */
+    if(since<audible_since-1)since=audible_since-1;
+    if(audible)for(size_t i=0;i<p->events.count;i++){
         const echoy_event_t *e=&p->events.events[i];
         int64_t at=(int64_t)ceill(p->epoch_us+((long double)p->bar*ECHOY_BAR_US+e->step*156250.0L)*1000000/(1000000+p->rate_ppm));
         if(at>since&&at<=now){echoy_view_hit(v,e,at);since=at;}
     }
+    v->was_audible=audible;v->audible_since_us=audible_since;
     v->presented=true;v->presented_us=now;v->hit_device=v->device;
     if(p){v->hit_boot=p->boot_id;v->hit_session=p->session_id;v->hit_clock=p->clock_version;v->hit_bar=p->bar;}
 }

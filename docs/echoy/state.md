@@ -54,6 +54,12 @@ volume/activity and committed activity. The audio adapter can immediately apply
 live volume/expression to newly scheduled output using the copied controls;
 composition continues to use committed activity. Task 5 supplies that DSP path.
 
+Plans also copy `audible_since_us`: a local presentation lower bound updated
+on transitions back to output eligibility, with waiting-to-playing anchored to
+`play_at_us`. This survives skipped UI snapshots and prevents recovered output
+from displaying notes that occurred while waiting or silent. It does not change
+transport, composition, the wire format, or claim measured DAC onset.
+
 Output faults, pause and zero volume preserve motifs. A data fault or loading
 suppresses local events immediately but changes motif availability only on the
 next bar; recovery also waits for that boundary. A follower sees the complete
