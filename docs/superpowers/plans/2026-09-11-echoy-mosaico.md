@@ -288,17 +288,17 @@ A data_recovered：在下一边界恢复来源，不在小节中间重新编曲�
 
 **Consumes:** Task 1 基准、Task 4 快照和事件、Task 5 hit/sample 时间。**Produces:** MCU 与 PC 共用 LVGL 页面及真实触控事件。
 
-- [ ] 固定中英文字体和许可证，从原型所有显示路径提取字形（含动态反馈、Canvas 小字和数字）。字体由源文件生成，不能手改生成 C。缺字检查必须覆盖中文粗体、和声标题及英文长提示。
-- [ ] 先实现 perform 布局和四种图形：Pulse 同心圆/重音刻度、Voice 七条曲线/音符、Dust 135 个确定性颗粒、Harmony 三条声部带/实际音符时长条；底部 16 步谱点来自 bar_plan。
-- [ ] 相对拖动公式 `clamp(start + (start_y-current_y)/180, 0, 1)`；直接刻度公式 `clamp((338-current_y)/150, 0, 1)`。pointer cancel/end 必须结束拖动态，不把手指离开控件视为音量变化。
-- [ ] 写 role 页四选项×三个乐句、返回、当前/候选选中态；写 status 页全部状态和取消/重试；写 volume 弹层遮罩与焦点/触摸隔离。
-- [ ] 立即触摸反馈与延迟提交分开：100ms 内改变按压/等待反馈；真正音乐切换等拍点/小节。图形频率优先 30fps；暂停保留淡化静态乐句，不清空成占位图。
-- [ ] UI 不在每次调度 tick 重建所有对象；拖动时更新已有控件。LVGL 锁只在 UI 线程路径使用，文件/NVS/无线和 codec 操作不得位于锁内。
-- [ ] 把 `EchoyI18n` 的产品字符串及动态拼接逐条转为 key/参数；英文布局按原覆盖规则，切语言不能重置角色、播放或会话。
-- [ ] PC renderer 对每个 ui_case 输出 480×480 PPM；冻结 clock、activity、motif、hit、locale；转为 PNG 后与浏览器截图对齐，比较 RGB565 量化与字形抗锯齿的预期误差。仅动画/硬件不可视角落可预先定义 mask，不能把不一致的整个页面遮掉。
-- [ ] 逐个测试控件命中边缘、快速返回、拖动超出屏幕、弹层关闭、低电文字和长英文；核心布局边界偏差 <=2px、无裁切/缺字/触摸穿透。截图差分给出数值和差异图，并人工核对，不只写“相似”。
-- [ ] 验证：CTest `-R ui`；`python3 tests/visual_compare.py --cases tests/ui_cases.json --renderer build-host/echoy_ui_runner`；真机 UI 性能留到 Task 10。
-- [ ] 建议提交 `feat: reproduce Echoy product screens and touch interactions`。
+- [x] 固定中英文字体和许可证，从原型所有显示路径提取字形（含动态反馈、Canvas 小字和数字）。字体由源文件生成，不能手改生成 C。缺字检查必须覆盖中文粗体、和声标题及英文长提示。
+- [x] 先实现 perform 布局和四种图形：Pulse 同心圆/重音刻度、Voice 七条曲线/音符、Dust 135 个确定性颗粒、Harmony 三条声部带/实际音符时长条；底部 16 步谱点来自 bar_plan。
+- [x] 相对拖动公式 `clamp(start + (start_y-current_y)/180, 0, 1)`；直接刻度公式 `clamp((338-current_y)/150, 0, 1)`。pointer cancel/end 必须结束拖动态，不把手指离开控件视为音量变化。
+- [x] 写 role 页四选项×三个乐句、返回、当前/候选选中态；写 status 页全部状态和取消/重试；写 volume 弹层遮罩与焦点/触摸隔离。
+- [x] 立即触摸反馈与延迟提交分开：100ms 内改变按压/等待反馈；真正音乐切换等拍点/小节。图形频率优先 30fps；暂停保留淡化静态乐句，不清空成占位图。
+- [x] UI 不在每次调度 tick 重建所有对象；拖动时更新已有控件。LVGL 锁只在 UI 线程路径使用，文件/NVS/无线和 codec 操作不得位于锁内。
+- [x] 把 `EchoyI18n` 的产品字符串及动态拼接逐条转为 key/参数；英文布局按原覆盖规则，切语言不能重置角色、播放或会话。
+- [x] PC renderer 对每个 ui_case 输出 480×480 PPM；冻结 clock、activity、motif、hit、locale；转为 PNG 后与浏览器截图对齐，比较 RGB565 量化与字形抗锯齿的预期误差。仅动画/硬件不可视角落可预先定义 mask，不能把不一致的整个页面遮掉。
+- [x] 逐个测试控件命中边缘、快速返回、拖动超出屏幕、弹层关闭、低电文字和长英文；核心布局边界偏差 <=2px、无裁切/缺字/触摸穿透。截图差分给出数值和差异图，并人工核对，不只写“相似”。
+- [x] 验证：CTest `-R ui`；`python3 tests/visual_compare.py --cases tests/ui_cases.json --renderer build-host/echoy_ui_runner`；真机 UI 性能留到 Task 10。
+- [x] 建议提交 `feat: reproduce Echoy product screens and touch interactions`。
 
 ## Task 7: 物理接触、演奏协议和真实时钟
 
