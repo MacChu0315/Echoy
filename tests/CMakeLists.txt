@@ -17,6 +17,8 @@ find_package(Python3 REQUIRED COMPONENTS Interpreter)
 add_test(NAME music_oracle COMMAND "${Python3_EXECUTABLE}"
     "${CMAKE_CURRENT_LIST_DIR}/compare_oracle.py"
     --runner $<TARGET_FILE:echoy_core_runner>)
+add_test(NAME music_comparison_validation COMMAND "${Python3_EXECUTABLE}"
+    "${CMAKE_CURRENT_LIST_DIR}/test_oracle_comparison.py")
 add_test(NAME music_voicings COMMAND "${Python3_EXECUTABLE}"
     "${CMAKE_CURRENT_LIST_DIR}/../tools/generate_voicings.py" --check)
 add_test(NAME music_runner_validation COMMAND "${Python3_EXECUTABLE}"

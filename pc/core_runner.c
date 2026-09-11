@@ -11,6 +11,7 @@
 typedef struct { const char *start; size_t length, next; char type; } token_t;
 typedef struct { const char *p; token_t tokens[2048]; size_t count; } parser_t;
 static void whitespace(parser_t *p) { while(isspace((unsigned char)*p->p))p->p++; }
+static bool number(const parser_t *p,int i,double *out);
 static int parse(parser_t *p, int depth)
 {
     whitespace(p); if(depth>8 || p->count>=2048)return -1;
@@ -31,6 +32,11 @@ static int parse(parser_t *p, int depth)
         const char *start=p->p;
         while(*p->p && !isspace((unsigned char)*p->p) && *p->p!=',' && *p->p!=']' && *p->p!='}')p->p++;
         if(start==p->p)return -1;
+        t->length=(size_t)(p->p-start);
+        bool literal=(t->length==4&&(!strncmp(start,"null",4)||!strncmp(start,"true",4)))||
+            (t->length==5&&!strncmp(start,"false",5));
+        double ignored;
+        if(!literal&&!number(p,(int)id,&ignored))return -1;
     }
     t->length=(size_t)(p->p-t->start);t->next=p->count;return (int)id;
 }

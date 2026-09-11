@@ -87,6 +87,19 @@ is called and no token is accepted by the diagnostic formatter.
 - Method 3: one byte, locale 0 (Chinese) or 1 (English).
 - Method 4: four bytes: diagnostic type 0 battery / 1 IMU / 2 module, value
   0..100, error code, slot selector. These are local test observations.
+- Method 5: five bytes: pointer phase 0 down / 1 move / 2 up / 3 cancel,
+  little-endian uint16 x and y, both 0..479. Validation precedes the bounded
+  command queue. The owner takes the display lock without waiting and calls
+  the same `echoy_view_pointer()` as the product renderer. Unavailable display
+  or a busy lock increments `touch_dropped`; accepted RPC queueing alone is
+  not proof that a touch was processed. This bypasses the physical touch
+  sensor and therefore cannot measure that sensor's latency or calibration.
+
+Final acceptance instrumentation additionally exports DSP `started`/`active`,
+PSRAM free bytes, owner UI snapshot updates, development touch processed/drop
+counts, rejected audio plans and maximum render/write duration. `ui_updates`
+counts successful owner publications, not LCD refreshes. `audio.gaps` counts
+software presentation catch-ups, not measured hardware DMA underruns.
 
 `CONFIG_ECHOY_DEFAULT_ENGLISH` is a local build-time default only before saved
 settings exist. The normal product still defaults to Chinese and Pulse.
@@ -112,7 +125,85 @@ idempotent, frees retained storage and resets traversal tracking; the inspected
 Iris service invokes it on completion, stop and disconnect. Capture does not take an audio lock. Its
 CPU/PSRAM impact and exact display appearance remain hardware tests.
 
-## Required physical checks (not yet performed)
+## Recorded Task 10 attempt — 2026-09-12
+
+The local host environment and tooling were exercised. An initial sandbox
+`mosaico.py list` could not create its pinned host environment in the user's
+state directory. The approved host-permission invocation prepared that
+environment and started the tool-managed local Gateway. A successful Iris
+list returned no devices. A sandbox `/dev/ttyACM0` check was initially absent;
+that was **not** evidence of physical absence. The host-permission check found
+the authorized `/dev/ttyACM0`, a unique registered ESP32-S31 ROM interface.
+
+`mosaico.py recover --dry-run` with the checked explicit `IDF_PATH` verified
+the reviewed **2.8.5-recovery** bundle and one ROM candidate. On the authorized
+board, the subsequent `mosaico.py recover` wrote and hash-verified the reviewed
+images and performed its reset. It reached Gateway identity validation after
+104.8 seconds, but the final request failed with:
+
+```text
+HTTP 409: Recovery endpoint reattached but identity verification did not complete
+```
+
+The command exited **4** (`device_unavailable`). A later host-permission check
+showed that `/dev/ttyACM0` and its ESP32-S31 by-id entry were no longer present;
+the two unrelated USB/UART adapters were not selected or opened. Subsequent
+Iris lists remained empty. No real Iris Device ID/Boot ID, Recovery ready
+response, application health or on-device Echoy diagnostic was obtained.
+**Recovery transmission passed; Recovery startup/identity did not pass.**
+
+No `install` was attempted against an unverified endpoint. No Echoy normal or
+development application was installed during this attempt, so no actual
+ES8311 playback, hardware screenshot, physical touch, board endurance,
+normal→Recovery→normal cycle or speaker recording is claimed. The board needs
+onsite power/USB/reset inspection; once it returns, use a fresh `mosaico.py
+list` and complete retained-Recovery verification before any further write.
+Do not repeat the flash blindly or switch to the unrelated serial adapters.
+
+Local evidence:
+
+- `output/task10/device-list-initial.json`,
+  `device-list-before-recover.json`, `recover-preflight.json`;
+- `output/task10/host-device-nodes.log`,
+  `host-device-after-recover.log`, `device-list-after-recover.json`;
+- `output/task10/device-recover.stderr` (the CLI emits its error JSON on
+  stderr; `device-recover.json` is consequently empty);
+- `.codex-runs/mosaico/20260911T182730Z-recover/raw.log`, including the reviewed
+  bundle validation, write/hash/reset and failed maintenance verification.
+
+Normal and temporary development builds were compiled successfully. Method 5
+and instrumentation have host validation and IDF compile evidence, **not
+hardware execution evidence**. The project build is restored to the normal
+default-off injection configuration for handoff; the development binary is a
+local ignored artifact only. The exact build evidence, complete requirement
+coverage and remaining physical rows are linked in
+[requirements-matrix.md](requirements-matrix.md).
+
+## Completed PC endurance — not hardware acceptance
+
+`python3 tools/echoy-sim/endurance.py --seconds 1800 --output
+output/task10/host-endurance` exited 0 after **1800.006 seconds**. Three real
+C simulator processes produced **1,554** three-frame publications, processed
+**4,662** LVGL pointer events and supplied **4,185** nonzero PCM publications.
+All three exited normally, remained playing during every observation and ended
+with zero runner-rejected inputs. At most four radio packets remained queued
+at a publication for the next delivery pass (capacity 4,096); no queue overflow
+occurred.
+
+Initial process RSS was 6,196 / 6,048 / 6,216 KiB. Final and peak RSS was
+6,196 / 6,108 / 6,276 KiB: B/C gained 60 KiB at startup, then stayed stable.
+The three-frame publication time was P50 **33.53 ms**, P95 **46.75 ms**, maximum
+**126.12 ms**. These are PC frame-generation/read times, not physical input
+latency, LCD refresh rate or acoustic onset. PCM came from the shared C DSP,
+not a browser synthesizer. The independently paced simulated clock ended at
+1,800.213 seconds, including its explicit startup preparation.
+
+Raw samples and summary: `output/task10/host-endurance/samples.jsonl` and
+`summary.json`. MCU heap/stack/CPU, hardware underruns, touch sensor response,
+Iris contention, real wireless packets and speaker/acoustic output were not
+measured by this test.
+
+## Required physical checks (still pending)
 
 - Restart after role/phrase/activity/volume/locale changes; verify paused
   restoration and retained Recovery/system identity across bad app settings.

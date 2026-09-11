@@ -3,10 +3,22 @@
 // Real Chrome keyboard, mouse and touch input. No browser product-state writes.
 import fs from 'node:fs';
 import path from 'node:path';
-import {spawn} from 'node:child_process';
+import {spawn,spawnSync} from 'node:child_process';
 import assert from 'node:assert/strict';
 const root=path.resolve(import.meta.dirname,'../..'), out=path.join(root,'output/sim');
 const url=process.argv[2]||'http://127.0.0.1:8879';
+// The title pixels isolate the locale request from animation. The independent
+// visual suite checks this same native fixture against the pinned HTML.
+const titleExpected={};
+for(const locale of ['zh-CN','en']){
+ const file=path.join(out,'browser-title-'+locale+'.ppm');
+ const result=spawnSync(path.join(root,'build-host/echoy_ui_runner'),[locale+'/perform-harmony',file]);
+ assert.equal(result.status,0,result.stderr?.toString());
+ const ppm=fs.readFileSync(file),header=Buffer.from('P6\n480 480\n255\n');assert(ppm.subarray(0,header.length).equals(header));
+ const data=[];for(let y=35;y<91;y++)for(let x=35;x<245;x++){const at=header.length+(y*480+x)*3;data.push(ppm[at],ppm[at+1],ppm[at+2],255);}
+ titleExpected[locale]=Buffer.from(data).toString('base64');
+}
+const titleExpression=`(async()=>{const img=document.querySelector('.screen[data-device=A] img');await img.decode();const canvas=document.createElement('canvas');canvas.width=210;canvas.height=56;const ctx=canvas.getContext('2d');ctx.drawImage(img,35,35,210,56,0,0,210,56);const bytes=ctx.getImageData(0,0,210,56).data;let text='';for(let i=0;i<bytes.length;i+=8192)text+=String.fromCharCode(...bytes.subarray(i,i+8192));return btoa(text);})()`;
 const profile=fs.mkdtempSync(path.join(out,'chrome-'));
 const browser=spawn('/usr/bin/google-chrome',['--headless=new','--password-store=basic','--use-mock-keychain','--disable-background-networking','--no-proxy-server','--no-sandbox','--disable-dev-shm-usage','--disable-gpu','--autoplay-policy=no-user-gesture-required','--remote-debugging-port=0',`--user-data-dir=${profile}`,'about:blank'],{stdio:'ignore'});
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -44,7 +56,7 @@ try{
  await send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await sleep(500);
  record('Real touch changes C activity',await evaluate(`Math.abs(echoy.engine.devices.A.activity-${before})>.1`));
  await send('Emulation.setTouchEmulationEnabled',{enabled:false});
- await click('[data-language="en"]');await waitFor('EchoyI18n.locale==="en"');record('English locale reaches renderer',true);await click('[data-language="zh-CN"]');
+ for(const locale of ['en','zh-CN']){await click(`[data-language="${locale}"]`);await waitFor(`(async()=>await ${titleExpression}===${JSON.stringify(titleExpected[locale])})()`);record(locale+' locale reaches rendered LVGL title pixels',true);}
  for(let i=0;i<35&&!await evaluate(`document.activeElement.matches('[data-id="A"] .device-handle')`);i++){await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});}const old=await evaluate('echoy.positions.A.x');await send('Input.dispatchKeyEvent',{type:'keyDown',key:'ArrowLeft',code:'ArrowLeft',windowsVirtualKeyCode:37});await send('Input.dispatchKeyEvent',{type:'keyUp',key:'ArrowLeft',code:'ArrowLeft',windowsVirtualKeyCode:37});await sleep(200);record('Keyboard shell movement',await evaluate(`echoy.positions.A.x===${old}-20`));
 
  const drag=async(from,to)=>{await send('Input.dispatchMouseEvent',{type:'mousePressed',...from,button:'left',clickCount:1});await send('Input.dispatchMouseEvent',{type:'mouseMoved',...to,button:'left',buttons:1});await sleep(100);};
@@ -52,7 +64,7 @@ try{
  const shellTarget=async(x,y)=>evaluate(`(()=>{const r=document.querySelector('#stage-viewport').getBoundingClientRect(),v=document.querySelector('#stage-viewport');return{x:r.x+${x}+254-v.scrollLeft,y:r.y+${y}+18-v.scrollTop}})()`);
  let from=await center('[data-id="A"] .device-handle'),to=await shellTarget(130,56);await drag(from,to);
  record('Shell snap preview visible before drop',await evaluate('!document.querySelector("#snap-hint").hidden'));await drop(to);
- record('Shell snap publishes contact only',await evaluate('echoy.answer.contacts.some(e=>e[0]==="A"&&e[1]==="B")'));
+ await waitFor('echoy.answer.contacts.some(e=>e[0]==="A"&&e[1]==="B")');record('Shell snap publishes contact only',true);
  const arranged=await evaluate('JSON.stringify(echoy.positions)');from=await center('[data-id="A"] .device-handle');to=await shellTarget(646,56);await drag(from,to);await drop(to);
  record('Collision cancels shell placement',await evaluate(`JSON.stringify(echoy.positions)===${JSON.stringify(arranged)}`));
  from=await center('[data-id="A"] .device-handle');await send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
@@ -66,4 +78,4 @@ try{
  await evaluate('window.scrollTo(0,0)');const screenshot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});fs.writeFileSync(path.join(out,'firmware-browser.png'),Buffer.from(screenshot.data,'base64'));
  record('No runtime exceptions',errors.length===0);fs.writeFileSync(path.join(out,'browser.json'),JSON.stringify({passed:true,checks,errors},null,2));console.log(JSON.stringify({passed:true,checks},null,2));
 }catch(error){fs.writeFileSync(path.join(out,'browser-error.json'),JSON.stringify({error:String(error),errors},null,2));throw error;}
-finally{socket?.close();browser.kill('SIGTERM');await new Promise(r=>browser.once('exit',r));fs.rmSync(profile,{recursive:true,force:true});}
+finally{socket?.close();browser.kill('SIGTERM');await new Promise(r=>browser.once('exit',r));fs.rmSync(profile,{recursive:true,force:true,maxRetries:5,retryDelay:100});}

@@ -1,60 +1,44 @@
 # Echoy：后续 agent 交接
 
-更新日期：2026-09-12。用户已将工程位置确定为独立的 `Echoy/`。Tasks 1–9 已完成：完整固件源码/运行时、原型 oracle，以及三 C 实例的电脑参考/固件验收工具均已建立。Task 10 继续最终全量验证、单机安装/验收和交接；双/三机与声学项目受当前硬件数量限制。
+更新日期：2026-09-12。唯一工程根目录为 `/home/zhuzhengming/esp/ts/Mosaico/Echoy`。Tasks 1–9 已实现；Task 10 的完整主机验证、固件构建与文档已完成，真机安装/闭环仍受 Recovery 身份验证失败阻塞。不要把主机结果或烧录成功写成完整真机复刻。
 
-## 工作位置与阅读顺序
+## 先读
 
-唯一工程根目录：`/home/zhuzhengming/esp/ts/Mosaico/Echoy`。
+1. 当前任务及作用域内 `AGENTS.md`（若存在）。
+2. [README](README.md)：当前环境、构建、PC 运行、设备安装及三台演示。
+3. [逐项需求与证据](docs/echoy/requirements-matrix.md)。
+4. [真机验收与当前阻塞](docs/echoy/hardware-acceptance.md)。
+5. 原始[规格](docs/superpowers/specs/2026-09-11-echoy-mosaico-design.md)和[实施计划](docs/superpowers/plans/2026-09-11-echoy-mosaico.md)；其中“尚无源码/未初始化/未找到 SDK”等是规划时的历史记录，以本文件和 README 当前记录为准。
 
-1. 阅读当前任务要求及实际作用于 Echoy 的 `AGENTS.md`（若存在）。
-2. 阅读 [复刻规格](docs/superpowers/specs/2026-09-11-echoy-mosaico-design.md)。
-3. 按 [实施计划](docs/superpowers/plans/2026-09-11-echoy-mosaico.md) 的 10 个任务实施；A 节定义新目录下的依赖与命令位置。
+## 固定约束
 
-用户要求实施时持续推进到适用验证完成；若当前请求仅为分析/交接维护，则完成该请求后停止，不把本文件视为新增实施授权。
+- 源 HTML 为 `/home/zhuzhengming/esp/Sync/Echoy_v5.0.3.html`，SHA-256 `d23c51b025b44a0d2d11a3ad5a371abd4a2117adb8e742491e838af6dc4c0bb5`；页面内容版本 5.0.4。
+- 480×480、中英文、四角色十二乐句、96 BPM、D 小调、16 步/小节、最多三台。
+- 默认 Pulse/中文/暂停，音量 .70。保存已提交设置，不保存 playing、会话、启动身份、待提交事务。
+- 发现不入场，入场不自动播放；只回应直接左邻完整 motif；拆开解除回应但保拍；暂停、音量 0、输出失败不删除有效 motif。
+- `echoy_control` 单任务写核心/协议/设置；UI/无线回调入有界队列；DSP/codec 有独立 owner；截图不取音频锁。
+- 源码、测试、工具、文档和输出都在 Echoy；三个同级仓库只提供参考和固定依赖，不改其源码，不引入 ESP-Claw runtime。
 
-```text
-/home/zhuzhengming/esp/ts/Mosaico/
-  Echoy/                    本工程；源码、测试、工具、文档和输出都在这里
-    HANDOFF.md              本文件
-    docs/superpowers/       已有规格和计划
-    output/playwright/      已有 6 张原型参考截图
-  esp-mosaico-bsp/           同级 BSP 依赖及硬件示例
-  esp-mosaico-vibe/          hello_world、Recovery 组件、mosaico.py 与 utils
-  esp-mosaico-claw/          工厂固件经验参考，不导入其运行时
-```
+## 已准备的环境
 
-`CMakeLists.txt`、`main/`、`components/`、`tests/`、`tools/`、`pc/` 后续直接建在 Echoy 根目录内；不要再套一层应用目录。保留用户已移动的文档及截图。Vibe 的 AGENTS 不跨目录作用于 Echoy；使用其工具时参考环境、Recovery 和设备操作要求，但不能用其中的应用目录约定覆盖用户的明确位置要求。
+兼容 SDK 已安装在 `/home/zhuzhengming/esp/esp-idf/esp-idf-echoy-v6.2-dev`，固定提交 `c712a0dde385d659a1470a136251980d31a70bc1`，实际版本 6.2.0/esp32s31。低噪声 doctor 的 Git describe 报 6.1-dev 属已记录的版本识别差异；实际 clean/build 和依赖解析成功。Vibe utils 子模块已按 `d832e6623225bd94af67610e2a49d362ade4f000` 初始化；BSP 使用同级 `esp-mosaico-bsp`，不使用第二份副本。
 
-## 原型与实现要求
+Echoy 已初始化 Git，当前本地工作分支为 `feat/echoy-mosaico`。没有远程写入授权，不 push、不建 PR。不要再把规划文档里的“初始化前询问”当作尚未完成的前置条件。
 
-- 源 HTML：`/home/zhuzhengming/esp/Sync/Echoy_v5.0.3.html`。
-- SHA-256：`d23c51b025b44a0d2d11a3ad5a371abd4a2117adb8e742491e838af6dc4c0bb5`。
-- 文件名是 v5.0.3，实际内容标注 5.0.4；以该文件内容和哈希为准。
-- 480×480、中英文、4 角色×3 乐句、96 BPM、D 小调、16 步/小节、1–3 台。
-- 推荐方案：Vibe hello_world 模板思想 + LVGL 9 + 可移植 C 核心 + 本地 DSP + BSP 适配；真实声音由各台 Mosaico 输出。
-- 完整保留演奏页、角色/乐句页、状态/错误页、音量弹层以及四角色动态图形与触摸逻辑。
-- 发现不入场，吸合后才对拍；加入不自动播放；拆开解除回应但保留共同拍子；只回应直接左邻的完整 motif。暂停、音量 0 或输出故障不得删除有效 motif。
-- 原 HTML 的桌面、外壳拖拽、收纳区、玩法指引和故障面板保留在电脑端工具，不缩进设备产品屏幕。
+## 真机当前状态
 
-## 依赖、构建与设备操作
+本轮用户已授权 `/dev/ttyACM0` 恢复/烧录。所有固件写入和 Gateway 生命周期只通过 `python ../esp-mosaico-vibe/mosaico.py`；同一 Gateway 可做只读诊断/镜像及已授权开发验收 RPC，不能直接开 USB/串口或读取 pairing token。
 
-从 Echoy 根目录读取 `../esp-mosaico-bsp` 和 `../esp-mosaico-vibe/projects/hello_world`。不要复制原模板的相对路径后直接构建；计划 A 节列出了 manifest、Recovery 组件及 CMake include 的具体新路径。
+`recover --dry-run` 验证唯一 ESP32-S31 ROM 接口和 reviewed 2.8.5-recovery。随后 `recover` 写入及哈希校验成功，reset 后的 Gateway 身份验证却报 `Recovery endpoint reattached but identity verification did not complete`，最终 exit 4。主机权限下 `/dev/ttyACM0` 随后消失；未取得 Device ID、Boot ID 或 Recovery ready。**没有执行 Echoy install，也没有声称实际发声。** 详细原始证据在 `output/task10/` 和验收文档所列 `.codex-runs/mosaico/.../raw.log`。
 
-- BSP 使用同级仓库，核对固定版本；不要同时依赖 Vibe 子模块内第二份 BSP。
-- ESP-Iris/utils 位于 `../esp-mosaico-vibe/submodule/esp-mosaico-utils`；目前尚未初始化。实施时只准备所需的固定版本依赖，不更新参考仓库版本来掩盖问题。
-- 依赖要求 ESP-IDF >=6.2 / ESP32-S31。前期检查未找到兼容环境，实施时重查实际环境；本次未安装 SDK。
-- 新应用创建后，在 Echoy 根目录运行 `idf.py build`；PC 构建使用 `cmake -S pc -B build-host`。这些是后续命令，当前缺少应用代码，不能视为已经运行通过。
-- 设备工具入口为 `python ../esp-mosaico-vibe/mosaico.py`，并非 Echoy 内自带脚本。先准备 utils、读取 CLI 源码及 `--help`，确认它支持 Echoy 的外部绝对路径；当前尚未核实这一点。
-- 必须保留 Recovery 分区、`esp_mosaico_app_recovery`、`CONFIG_ESP_IRIS_OTA_DEFAULT_VIA_RECOVERY=y` 和 `iris_ota_support_start()`。不绕过正常工具直接 flash，不为了工具路径限制把项目搬回 Vibe。
+下一步是现场确认同一块板的电源、USB 与 RESET，然后实时 `mosaico.py list`。在恢复身份与 ready 前不得盲目再次刷写或向无关串口安装。受限环境会隐藏设备节点：sandbox 的 `ls` 无设备不是主机无设备的充分证据，须通过指定工具和必要的主机权限核实。
 
-## 当前证据与尚未验证部分
+保留 factory Recovery 分区与 `CONFIG_ESP_IRIS_OTA_DEFAULT_VIA_RECOVERY=y`。约 3.85 MB 的普通 Echoy 仅能由 Recovery 写入 `ota_0`；通用 `idf.py flash` 给出的 factory 地址不可使用。只有实际完成相同 Device ID 的 normal→Recovery→normal、Boot ID 更新、Recovery ready、Echoy healthy 才能接受设备闭环。
 
-前期已检查原 JS 的 1,200 个音乐组合及独立开机/吸合/拆开保拍/无自动播放路径，并通过 Playwright 查看 UI 和保存截图。截图是现场参考图，含时间状态和截图取整误差；正式视觉测试需重新生成冻结状态的 480×480 基准。详细记录见规格及计划末尾。
+`CONFIG_ECHOY_DEV_INJECTION` 默认关；本轮临时开发镜像仅编译、未安装。方法 5 可在开发版走同一 LVGL 指针处理；这不能代替物理触摸传感器测量。普通构建产物在结束前已恢复。后续若安装开发版，验收结束必须恢复普通版并读出 `injection_enabled=false`。
 
-当前已实现完整设备运行时和电脑验收工具。Task 9 Python 7/7、JS adapter 4/4、headless 29 项、真实 Chrome 22 项、全套 CTest 30/30 通过；固件模式显示同一 LVGL 帧并播放 C DSP PCM，reference 模式提供固定哈希 HTML，服务仅绑定 127.0.0.1。Task 8 平台与 sanitizer 验证继续通过。真实电源动作、镜像与音频争用、三机无线/起音仍待 Task 10。当前 normal app 只能经 Recovery 安装到 `ota_0`，factory 尺寸 warning 保留。
+## 验证边界
 
-结构更新时 Echoy 与外层 Mosaico 均未初始化 Git，三个参考仓库工作区干净。初始化 Echoy Git 前按用户规则取得许可；没有 Git 不阻止已授权的本地实现/验证。不要在参考仓库建立 Echoy 工作分支或提交 Echoy 文件。任何建议的 commit 都以 Echoy 已获准初始化为前提。
+当前 CTest 31/31、JS adapter/guide 10/10、headless 29 项、Chrome 23 项通过；74 张参考截图、真实 LVGL 视觉对照、字体及和弦表生成验证通过。GCC ASan/UBSan 31/31 通过；因既有 ptrace 限制关闭 LeakSanitizer。22 组 C/Chromium 音频再生成与测量成功，未做真实听测。主机墙钟耐久完成 1800.006 秒，1,554 组帧、4,662 个指针事件，三个 C 进程正常退出；内存稳定，P95 三帧生成读取 46.75ms。记录单独位于 `output/task10/host-endurance/`，不能当作 MCU 30 分钟验收。
 
-## 可直接交给后续 agent 的提示词
-
-> 请在 `/home/zhuzhengming/esp/ts/Mosaico/Echoy` 实施 Echoy，先阅读该目录的 `HANDOFF.md`、`docs/superpowers/specs/2026-09-11-echoy-mosaico-design.md` 和 `docs/superpowers/plans/2026-09-11-echoy-mosaico.md`。以指定 HTML 及其哈希为复刻基准，按 10 个任务完成真实固件、完整 UI、音乐逻辑和验证。工程根目录已经由用户确定，源码、测试、工具、文档及输出全部放在 Echoy；同级三个仓库只作为参考和依赖。遵循 Echoy 作用域规则，参考 Vibe 的环境和 Recovery 工作流，但不要把工程移回 Vibe。先适配 CMake/manifest 相对路径，并核实 mosaico.py 对外部工程路径的支持。保留 Recovery；不导入 ESP-Claw runtime；不能用静态 UI 或浏览器发声替代真机实现。特别验证四角色十二乐句、直接左邻 motif、拆开保拍以及暂停/输出故障仍保留 motif。硬件条件不足时继续不受影响的本地工作，明确报告未验证部分。初始化 Git 前按用户规则取得许可，其余已授权本地实现可继续；不 push/创建 PR，设备写入依据当前会话授权执行。
+物理屏幕方向/可读性、触摸传感器、实际 ES8311 扬声器、设备堆/任务水位、Iris 镜像争用、磁吸与无线、双/三机同步及校准声学 P95/max 均尚未接受。目标不变：触摸 ≤100ms、UI 约 30fps、声学 P95≤10ms/max≤20ms。只读记录这些限制，不生成虚假录音或硬件数据。

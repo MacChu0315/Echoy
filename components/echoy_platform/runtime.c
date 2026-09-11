@@ -18,7 +18,7 @@
 #include <string.h>
 #define SERVICE 0xec01
 #define FRAME_BYTES (480u*480u*2u)
-typedef struct {uint8_t kind;echoy_ui_event_t ui;uint8_t bytes[4];} command_t;
+typedef struct {uint8_t kind;echoy_ui_event_t ui;uint8_t bytes[5];} command_t;
 typedef struct {
     echoy_control_t control;echoy_core_t forecast;echoy_radio_t radio;echoy_contact_adapter_t contact;
     echoy_storage_t storage;echoy_battery_t battery;echoy_diagnostics_t diag;
@@ -55,6 +55,7 @@ static esp_err_t inject_rpc(const esp_iris_rpc_request_t *req,uint8_t *out,size_
     (void)out;(void)cap;runtime_t *r=ctx;command_t cmd={0};if(!req||!n)return ESP_ERR_INVALID_ARG;*n=0;
     if(req->method_id==2){if(!echoy_diagnostics_injection(req->payload,req->payload_size,true,&cmd.ui))return ESP_ERR_INVALID_ARG;}
     else if(req->method_id==3){if(req->payload_size!=1||req->payload[0]>1)return ESP_ERR_INVALID_ARG;cmd.kind=1;cmd.bytes[0]=req->payload[0];}
+    else if(req->method_id==5){echoy_pointer_t phase;int x,y;if(!echoy_diagnostics_touch(req->payload,req->payload_size,true,&phase,&x,&y))return ESP_ERR_INVALID_ARG;cmd.kind=3;memcpy(cmd.bytes,req->payload,5);}
     else {if(req->payload_size!=4||req->payload[0]>2||req->payload[1]>100)return ESP_ERR_INVALID_ARG;cmd.kind=2;memcpy(cmd.bytes,req->payload,4);}
     return enqueue(r,&cmd)?ESP_OK:ESP_ERR_TIMEOUT;
 }
@@ -99,19 +100,19 @@ static bool publish(void *ctx,const echoy_snapshot_t *s,const echoy_bar_plan_t *
         if(echoy_speaker_publish(audio_plan)!=ESP_OK){r->diag.audio_queue_failures++;ok=false;}
     }
     if(!r->diag.ui_error&&s->time_us-r->ui_at_us>=33000&&bsp_display_lock(0)){
-        r->ui_at_us=s->time_us;echoy_view_t *v=echoy_ui_view();if(v){echoy_view_update(v,s,0);echoy_view_locale(v,r->control.english);}bsp_display_unlock();
+        r->ui_at_us=s->time_us;echoy_view_t *v=echoy_ui_view();if(v){echoy_view_update(v,s,0);echoy_view_locale(v,r->control.english);r->diag.ui_updates++;}bsp_display_unlock();
     }
     (void)plan;return ok;
 }
 static void refresh_diagnostics(runtime_t *r){
     esp_iris_status_t iris;if(esp_iris_get_status(&iris)==ESP_OK)r->diag.iris_boot=iris.boot_id;
     (void)esp_iris_format_device_id(r->diag.iris_id);
-    r->diag.heap_free=heap_caps_get_free_size(MALLOC_CAP_INTERNAL);r->diag.stack_free=uxTaskGetStackHighWaterMark(NULL);
+    r->diag.heap_free=heap_caps_get_free_size(MALLOC_CAP_INTERNAL);r->diag.psram_free=heap_caps_get_free_size(MALLOC_CAP_SPIRAM);r->diag.stack_free=uxTaskGetStackHighWaterMark(NULL);
     r->diag.radio_dropped=__atomic_load_n(&r->radio.dropped,__ATOMIC_RELAXED);r->diag.contact_errors=r->contact.errors;
     r->diag.settings_error=r->storage.last_error;r->diag.settings_failures=r->storage.failures;
     r->diag.battery_error=r->battery.last_error;r->diag.battery_failures=r->battery.failures;
     r->control.dropped+=__atomic_exchange_n(&r->input_dropped,0,__ATOMIC_RELAXED);
-    if(echoy_speaker_status(&r->speaker)){r->diag.audio=r->speaker.dsp;r->diag.audio_error=r->speaker.codec_error;r->diag.output_gaps=r->speaker.output_gaps;}
+    if(echoy_speaker_status(&r->speaker)){r->diag.audio=r->speaker.dsp;r->diag.audio_error=r->speaker.codec_error;r->diag.output_gaps=r->speaker.output_gaps;r->diag.plan_rejections=r->speaker.plan_rejections;r->diag.max_render_write_us=r->speaker.max_render_write_us;}
     size_t n;if(echoy_diagnostics_format(&r->control,&r->diag,r->json_work,sizeof r->json_work,&n)&&xSemaphoreTake(r->json_lock,0)==pdTRUE){memcpy(r->json,r->json_work,n);r->json_size=n;xSemaphoreGive(r->json_lock);}
 }
 static void observe_battery(runtime_t *r,int err,unsigned charge,int64_t now,bool real){
@@ -153,6 +154,12 @@ static void owner_task(void *ctx){
             command_t *cmd=&r->command;
             if(cmd->kind==1)r->control.english=cmd->bytes[0];
             else if(cmd->kind==2){if(cmd->bytes[0]==0)observe_battery(r,cmd->bytes[2],cmd->bytes[1],now,false);else if(cmd->bytes[0]==1)r->diag.imu_error=cmd->bytes[2];else{unsigned ix=cmd->bytes[3]&1;r->diag.module_type[ix]=cmd->bytes[1];r->diag.module_error[ix]=cmd->bytes[2];}}
+            else if(cmd->kind==3){
+                if(!r->diag.ui_error&&bsp_display_lock(0)){
+                    echoy_view_t *v=echoy_ui_view();if(v){echoy_view_pointer(v,(echoy_pointer_t)cmd->bytes[0],cmd->bytes[1]|(cmd->bytes[2]<<8),cmd->bytes[3]|(cmd->bytes[4]<<8));r->diag.touch_processed++;}else r->diag.touch_dropped++;
+                    bsp_display_unlock();
+                }else r->diag.touch_dropped++;
+            }
             else if(cmd->ui.action==UI_RECOVER){if(r->speaker_started)r->diag.audio_error=echoy_speaker_retry();else{r->diag.audio_error=echoy_speaker_start(0);r->speaker_started=r->diag.audio_error==ESP_OK;}}
             else if(r->ready)(void)echoy_control_enqueue(&r->control,cmd->ui);
         }
@@ -198,7 +205,7 @@ esp_err_t echoy_runtime_start(esp_err_t ui_error){
     esp_err_t err=esp_iris_rpc_register(SERVICE,1,snapshot_rpc,r);
     if(err!=ESP_OK)return err;
 #if CONFIG_ECHOY_DEV_INJECTION
-    for(int method=2;method<=4;method++){
+    for(int method=2;method<=5;method++){
         err=esp_iris_rpc_register(SERVICE,method,inject_rpc,r);
         if(err!=ESP_OK)return err;
     }

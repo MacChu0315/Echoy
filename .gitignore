@@ -11,3 +11,6 @@ output/ui/**/*.hits.bin
 
 # Local simulator frames, PCM, browser profiles and validation artifacts.
 output/sim/
+
+# Local final acceptance logs, builds, audio and device evidence.
+output/task10/

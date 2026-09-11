@@ -21,11 +21,23 @@ try {
  for(let i=0;i<200;i++){if(fs.existsSync(path.join(profile,'DevToolsActivePort'))){port=fs.readFileSync(path.join(profile,'DevToolsActivePort'),'utf8').split('\n')[0];break;}if(chrome.exitCode!==null)throw Error(stderr);await sleep(50);}
  if(!port)throw Error('Chrome CDP timeout: '+stderr);
  const tabs=await(await fetch(`http://127.0.0.1:${port}/json/list`)).json();
- socket=new WebSocket(tabs[0].webSocketDebuggerUrl);await new Promise((r,j)=>{socket.onopen=r;socket.onerror=j;});
+ socket=new WebSocket(tabs.find(tab=>tab.type==='page').webSocketDebuggerUrl);await new Promise((r,j)=>{socket.onopen=r;socket.onerror=j;});
  let serial=0;const pending=new Map();socket.onmessage=e=>{const m=JSON.parse(e.data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);m.error?p.reject(m.error):p.resolve(m.result);}};
  const call=(method,params={})=>new Promise((resolve,reject)=>{const id=++serial;pending.set(id,{resolve,reject});socket.send(JSON.stringify({id,method,params}));});
  const evalJS=async expression=>{const r=await call('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;};
+ // Pin a fully committed document before installing the synth. Chrome's
+ // initial about:blank navigation can otherwise clear the injected class.
+ await call('Page.enable');
+ await call('Page.navigate',{url:'data:text/html,<title>echoy-audio-reference</title>'});
+ let ready=false;
+ for(let i=0;i<200;i++){
+  ready=await evalJS("document.title==='echoy-audio-reference'&&document.readyState==='complete'");
+  if(ready)break;
+  await sleep(50);
+ }
+ if(!ready)throw Error('Chrome audio document readiness timeout');
  await evalJS(source);
+ if(!await evalJS("typeof window.DuijuSynth==='function'"))throw Error('Synth installation failed');
  const version=await call('Browser.getVersion');
  const records=[];
  for(const name of fs.readdirSync(dir).filter(x=>x.endsWith('.json')&&!x.startsWith('reference-')).sort()){
@@ -39,4 +51,4 @@ try {
   console.log(name);
  }
  fs.writeFileSync(path.join(dir,'reference-provenance.json'),JSON.stringify({sourceSha256:hash,browser:version,rate:48000,channel:'left; centered identical stereo',originalCompressor:true,additionalBypassedCompressor:true,files:records},null,2)+'\n');
-} finally {socket?.close();chrome.kill();await new Promise(r=>{if(chrome.exitCode!==null||chrome.signalCode!==null)r();else chrome.once('exit',r);});fs.rmSync(profile,{recursive:true,force:true});}
+} finally {socket?.close();chrome.kill();await new Promise(r=>{if(chrome.exitCode!==null||chrome.signalCode!==null)r();else chrome.once('exit',r);});fs.rmSync(profile,{recursive:true,force:true,maxRetries:5,retryDelay:100});}

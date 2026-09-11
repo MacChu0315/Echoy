@@ -13,6 +13,8 @@ invalid = [valid.replace('"bpm":96', '"bpm":+96'), valid.replace('"bpm":96', '"b
            valid+' garbage', valid+'{}', '['*20+']'*20, '"'+'x'*16380,
            json.dumps(dict(base, motif=[{}]*17)), json.dumps(dict(base, phrase=4)),
            json.dumps(dict(base, bpm=0)), json.dumps(dict(base, duplicate=3))]
+invalid += [valid[:-1] + ',"unused":' + primitive + '}'
+            for primitive in ['wat', 'NaN', '+1', '01', '1.', '1e', 'nul', 'TRUE', '[false,wat]', '{"x":NaN}']]
 for value in invalid:
     result = subprocess.run([runner], input=value+'\n', text=True, capture_output=True)
     assert result.returncode == 2, f'expected rejection: {value[:120]!r}; code={result.returncode}; stderr={result.stderr}'

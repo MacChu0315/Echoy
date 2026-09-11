@@ -64,3 +64,53 @@ for(const reason of ['pagehide','hidden','network failure'])test(`${reason} inva
  await app.send({op:'tick',ms:40});assert.equal(calls.length,3);
  assert.equal(app.queueSize,0);
 });
+
+// Exercise the shipped, unchanged observing guide with literal device
+// observations. Advancing the guide is allowed even when a step is not done.
+const html=fs.readFileSync(here+'/../../reference/Echoy_v5.0.3.html','utf8');
+const guideStart=html.indexOf('class DuijuGuide{');
+const guideEnd=html.indexOf('root.DuijuGuide=DuijuGuide;',guideStart);
+assert(guideStart>0&&guideEnd>guideStart);
+const Guide=vm.runInNewContext('('+html.slice(guideStart,guideEnd).trim()+')');
+function observingGuide(step){
+ const devices={A:{id:'A',present:true,transport:'paused',linkOnline:true,activity:.58,role:'pulse',phrase:1},
+  B:{id:'B',present:true,transport:'paused',linkOnline:true,activity:.56,role:'voice',phrase:1},
+  C:{id:'C',present:false,transport:'paused',linkOnline:true,activity:.48,role:'dust',phrase:1}};
+ const syncing=new Set();const engine={devices,committedEdges:{},contactInput:{},pending:{phrases:{}},syncFor:id=>syncing.has(id)};
+ const guide=Object.create(Guide.prototype);Object.assign(guide,{app:{engine,audio:{playing:true}},step,pair:['A','B'],orientation:'A>B'});guide.initial=guide.snapshot();
+ const edge=(left,right)=>{engine.committedEdges[left+'>'+right]=true;engine.contactInput[left+'>'+right]={left,right,state:'connected'};};
+ return {guide,engine,devices,syncing,edge};
+}
+test('Guide first step requires both local play intents and unlocked audio',()=>{
+ const {guide,devices}=observingGuide(0);assert.equal(guide.evaluate().done,false);
+ devices.A.transport='playing';assert.equal(guide.evaluate().done,false);
+ devices.B.transport='playing';assert.equal(guide.evaluate().done,true);
+ guide.app.audio.playing=false;assert.equal(guide.evaluate().done,false);
+});
+test('Guide connection waits for the committed, present, synchronized edge',()=>{
+ const {guide,engine,syncing,edge}=observingGuide(1);assert.equal(guide.evaluate().done,false);
+ engine.contactInput['A>B']={left:'A',right:'B',state:'connected'};assert.equal(guide.evaluate().done,false);
+ edge('A','B');syncing.add('B');assert.equal(guide.evaluate().done,false);
+ syncing.clear();assert.equal(guide.evaluate().done,true);assert.equal(guide.orientation,'A>B');
+});
+test('Guide swap observes reversed committed direction, not shell movement alone',()=>{
+ const {guide,engine,edge}=observingGuide(2);edge('A','B');assert.equal(guide.evaluate().done,false);
+ engine.contactInput={'B>A':{left:'B',right:'A',state:'connected'}};assert.equal(guide.evaluate().done,false);
+ edge('B','A');assert.equal(guide.evaluate().done,true);
+});
+test('Guide shaping observes activity independently of volume',()=>{
+ const {guide,devices}=observingGuide(3);devices.A.volume=1;assert.equal(guide.evaluate().done,false);
+ devices.A.activity=.60;assert.equal(guide.evaluate().done,false);
+ devices.A.activity=.64;assert.equal(guide.evaluate().done,true);
+});
+test('Guide phrase requires a committed phrase in the same role',()=>{
+ const {guide,engine,devices}=observingGuide(4);engine.pending.phrases.A={value:2};assert.equal(guide.evaluate().done,false);
+ devices.A.role='harmony';devices.A.phrase=2;assert.equal(guide.evaluate().done,false);
+ devices.A.role='pulse';assert.equal(guide.evaluate().done,true);
+});
+test('Guide third tile requires both edges and all three local play intents; faults block completion',()=>{
+ const {guide,devices,edge}=observingGuide(5);devices.A.transport=devices.B.transport='playing';edge('A','B');assert.equal(guide.evaluate().done,false);
+ devices.C.present=true;edge('B','C');assert.equal(guide.evaluate().done,false);
+ devices.C.transport='playing';assert.equal(guide.evaluate().done,true);
+ devices.B.loading=true;const state=guide.evaluate();assert.equal(state.done,false);assert.equal(state.warning,true);
+});

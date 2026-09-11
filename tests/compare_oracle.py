@@ -14,7 +14,7 @@ def compare_events(expected, actual, fields, context):
     for event_index, (want, got) in enumerate(zip(expected, actual)):
         assert len(got) == len(fields), f'{context}; event={event_index}: field count'
         for field, a, b in zip(fields, want, got):
-            equal = (isinstance(b, (int, float)) and math.isfinite(b) and abs(a-b) <= 1e-6) if field in FLOAT_FIELDS and a is not None else type(a) is type(b) and a == b
+            equal = (type(b) in (int, float) and math.isfinite(b) and abs(a-b) <= 1e-6) if field in FLOAT_FIELDS and a is not None else type(a) is type(b) and a == b
             assert equal, f'{context}; event={event_index} field={field} expected={a!r} actual={b!r}'
 
 def run_cases(runner, inputs):
