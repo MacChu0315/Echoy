@@ -91,6 +91,10 @@ python3 ../esp-mosaico-vibe/submodule/esp-mosaico-utils/esp-mosaico-recovery/ski
 The normal image is about 3.85 MB. It exceeds the reserved 1,835,008-byte
 factory Recovery slot and fits the 14,614,528-byte `ota_0` slot at `0x210000`.
 The corresponding IDF size warning is expected for this preserved layout.
+The low-noise runner reports that one size warning; raw reconfiguration logs
+also contain five upstream SDK CMake warnings about private include directories
+shared by SDK components. They are preserved in the logs and have not been
+hidden by changing the SDK or sibling sources.
 **Never use the generic `idf.py flash` suggestion, overwrite factory with
 Echoy, enlarge the Recovery slot, or use a system update to bypass this check.**
 Ordinary `clean` and incremental rebuilds are sufficient; `fullclean` needs

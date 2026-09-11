@@ -91,9 +91,26 @@ is called and no token is accepted by the diagnostic formatter.
   little-endian uint16 x and y, both 0..479. Validation precedes the bounded
   command queue. The owner takes the display lock without waiting and calls
   the same `echoy_view_pointer()` as the product renderer. Unavailable display
-  or a busy lock increments `touch_dropped`; accepted RPC queueing alone is
-  not proof that a touch was processed. This bypasses the physical touch
-  sensor and therefore cannot measure that sensor's latency or calibration.
+  or a busy lock increments `touch_dropped` and retains a pending gesture
+  cancellation. Every control-task iteration retries that cancellation even
+  without new input. Once the lock is available it calls `UI_CANCEL` exactly
+  once; a newly accepted pointer event follows that cancellation under the
+  same lock. Repeated busy locks cannot clear the pending flag. This prevents
+  a dropped UP/CANCEL from trapping the old capture and swallowing the next
+  Play gesture. `touch_processed` excludes synthesized cancellations;
+  `touch_cleanups` counts them, and `touch_cancel_pending` exposes pending work.
+  Accepted RPC queueing alone is not proof that a touch was processed. This
+  bypasses the physical sensor and cannot measure its latency or calibration.
+
+The pinned BSP registers physical input through
+`esp_lv_adapter_register_touch()` in `onboard/display.c`. It goes directly to
+the LVGL input path, not through development RPC method 5 or its command queue.
+The shared view maps `LV_EVENT_RELEASED` to `UI_UP` and `LV_EVENT_PRESS_LOST` to
+`UI_CANCEL`. This change retains cancellation for the owner-delivered RPC path;
+it does not replace the BSP input driver or claim physical release-loss testing.
+The delivery state and counters have one control-task owner; RPC callbacks
+only enqueue copied bytes. View cancellation and input both use the same BSP
+display lock that serializes access against LVGL/native input processing.
 
 Final acceptance instrumentation additionally exports DSP `started`/`active`,
 PSRAM free bytes, owner UI snapshot updates, development touch processed/drop

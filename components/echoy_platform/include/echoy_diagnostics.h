@@ -3,9 +3,9 @@
 #include "echoy_control.h"
 #include "echoy_audio.h"
 typedef struct {
-    char iris_id[33];uint64_t iris_boot;unsigned radio_dropped,contact_errors,heap_free,stack_free,psram_free,ui_updates,touch_processed,touch_dropped;
+    char iris_id[33];uint64_t iris_boot;unsigned radio_dropped,contact_errors,heap_free,stack_free,psram_free,ui_updates,touch_processed,touch_dropped,touch_cleanups;
     int ui_error,audio_error,settings_error,battery_error,imu_error,module_error[2],module_type[2],module_state[2];
-    unsigned battery_failures,settings_failures,audio_queue_failures;uint64_t output_gaps,plan_rejections;int64_t max_render_write_us;bool injection_enabled;
+    unsigned battery_failures,settings_failures,audio_queue_failures;uint64_t output_gaps,plan_rejections;int64_t max_render_write_us;bool injection_enabled,touch_cancel_pending;
     echoy_audio_stats_t audio;
 } echoy_diagnostics_t;
 /* Bounded JSON, no pairing API or credential-bearing input. */

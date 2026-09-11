@@ -119,3 +119,11 @@ target_compile_options(test_diagnostics PRIVATE -Wall -Wextra -Werror -UNDEBUG)
 add_test(NAME platform_diagnostics COMMAND test_diagnostics)
 
 add_test(NAME platform_radio_drain COMMAND test_control queued)
+
+add_library(echoy_touch_delivery STATIC ../components/echoy_platform/touch_delivery.c)
+target_include_directories(echoy_touch_delivery PUBLIC ../components/echoy_platform/include ../components/echoy_ui/include)
+target_compile_options(echoy_touch_delivery PRIVATE -Wall -Wextra -Werror)
+add_executable(test_touch_delivery test_touch_delivery.c)
+target_link_libraries(test_touch_delivery PRIVATE echoy_touch_delivery echoy_control echoy_ui)
+target_compile_options(test_touch_delivery PRIVATE -Wall -Wextra -Werror -UNDEBUG)
+add_test(NAME platform_touch_delivery COMMAND test_touch_delivery)

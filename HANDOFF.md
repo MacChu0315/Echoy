@@ -35,10 +35,10 @@ Echoy 已初始化 Git，当前本地工作分支为 `feat/echoy-mosaico`。没�
 
 保留 factory Recovery 分区与 `CONFIG_ESP_IRIS_OTA_DEFAULT_VIA_RECOVERY=y`。约 3.85 MB 的普通 Echoy 仅能由 Recovery 写入 `ota_0`；通用 `idf.py flash` 给出的 factory 地址不可使用。只有实际完成相同 Device ID 的 normal→Recovery→normal、Boot ID 更新、Recovery ready、Echoy healthy 才能接受设备闭环。
 
-`CONFIG_ECHOY_DEV_INJECTION` 默认关；本轮临时开发镜像仅编译、未安装。方法 5 可在开发版走同一 LVGL 指针处理；这不能代替物理触摸传感器测量。普通构建产物在结束前已恢复。后续若安装开发版，验收结束必须恢复普通版并读出 `injection_enabled=false`。
+`CONFIG_ECHOY_DEV_INJECTION` 默认关；本轮临时开发镜像仅编译、未安装。方法 5 可在开发版走同一 LVGL 指针处理；显示锁忙时保留取消状态，由控制任务获得锁后先清旧手势，再接收新事件；这不能代替物理触摸传感器测量。普通构建产物在结束前已恢复。后续若安装开发版，验收结束必须恢复普通版并读出 `injection_enabled=false`。
 
 ## 验证边界
 
-当前 CTest 31/31、JS adapter/guide 10/10、headless 29 项、Chrome 23 项通过；74 张参考截图、真实 LVGL 视觉对照、字体及和弦表生成验证通过。GCC ASan/UBSan 31/31 通过；因既有 ptrace 限制关闭 LeakSanitizer。22 组 C/Chromium 音频再生成与测量成功，未做真实听测。主机墙钟耐久完成 1800.006 秒，1,554 组帧、4,662 个指针事件，三个 C 进程正常退出；内存稳定，P95 三帧生成读取 46.75ms。记录单独位于 `output/task10/host-endurance/`，不能当作 MCU 30 分钟验收。
+当前 CTest 32/32、JS adapter/guide 10/10、headless 29 项、Chrome 23 项通过；74 张参考截图、真实 LVGL 视觉对照、字体及和弦表生成验证通过。GCC ASan/UBSan 32/32 通过；因既有 ptrace 限制关闭 LeakSanitizer。22 组 C/Chromium 音频再生成与测量成功，未做真实听测。主机墙钟耐久完成 1800.006 秒，1,554 组帧、4,662 个指针事件，三个 C 进程正常退出；内存稳定，P95 三帧生成读取 46.75ms。记录单独位于 `output/task10/host-endurance/`，不能当作 MCU 30 分钟验收。
 
 物理屏幕方向/可读性、触摸传感器、实际 ES8311 扬声器、设备堆/任务水位、Iris 镜像争用、磁吸与无线、双/三机同步及校准声学 P95/max 均尚未接受。目标不变：触摸 ≤100ms、UI 约 30fps、声学 P95≤10ms/max≤20ms。只读记录这些限制，不生成虚假录音或硬件数据。

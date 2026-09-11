@@ -5,6 +5,7 @@
 #include "echoy_diagnostics.h"
 #include "echoy_speaker.h"
 #include "echoy_ui.h"
+#include "echoy_touch_delivery.h"
 #include "esp_iris.h"
 #include "esp_heap_caps.h"
 #include "esp_timer.h"
@@ -27,9 +28,19 @@ typedef struct {
     echoy_mirror_t mirror;bool speaker_started,ready,healthy;int64_t ui_at_us,diag_at_us,battery_at_us,contact_at_us;
     uint64_t audio_clock,audio_boot,audio_session,audio_source_clock;int64_t audio_epoch;int audio_rate;
     echoy_speaker_status_t speaker;echoy_radio_event_t event;command_t command;
+    echoy_touch_delivery_t touch_delivery;echoy_view_t *locked_view;
 } runtime_t;
 static runtime_t *runtime;
 static const char *TAG="echoy_platform";
+static bool touch_lock(void *ctx){
+    runtime_t *r=ctx;
+    if(r->diag.ui_error||!bsp_display_lock(0))return false;
+    r->locked_view=echoy_ui_view();
+    if(r->locked_view)return true;
+    bsp_display_unlock();return false;
+}
+static void touch_unlock(void *ctx){runtime_t *r=ctx;r->locked_view=NULL;bsp_display_unlock();}
+static void touch_pointer(void *ctx,echoy_pointer_t phase,int x,int y){runtime_t *r=ctx;echoy_view_pointer(r->locked_view,phase,x,y);}
 static int store_read(void *ctx,uint8_t *out,size_t *n){
     (void)ctx;nvs_handle_t h;esp_err_t err=nvs_open("echoy",NVS_READONLY,&h);if(err!=ESP_OK)return err;
     err=nvs_get_blob(h,"settings",out,n);nvs_close(h);return err;
@@ -112,6 +123,8 @@ static void refresh_diagnostics(runtime_t *r){
     r->diag.settings_error=r->storage.last_error;r->diag.settings_failures=r->storage.failures;
     r->diag.battery_error=r->battery.last_error;r->diag.battery_failures=r->battery.failures;
     r->control.dropped+=__atomic_exchange_n(&r->input_dropped,0,__ATOMIC_RELAXED);
+    r->diag.touch_processed=r->touch_delivery.processed;r->diag.touch_dropped=r->touch_delivery.dropped;
+    r->diag.touch_cleanups=r->touch_delivery.cleanups;r->diag.touch_cancel_pending=r->touch_delivery.cancel_pending;
     if(echoy_speaker_status(&r->speaker)){r->diag.audio=r->speaker.dsp;r->diag.audio_error=r->speaker.codec_error;r->diag.output_gaps=r->speaker.output_gaps;r->diag.plan_rejections=r->speaker.plan_rejections;r->diag.max_render_write_us=r->speaker.max_render_write_us;}
     size_t n;if(echoy_diagnostics_format(&r->control,&r->diag,r->json_work,sizeof r->json_work,&n)&&xSemaphoreTake(r->json_lock,0)==pdTRUE){memcpy(r->json,r->json_work,n);r->json_size=n;xSemaphoreGive(r->json_lock);}
 }
@@ -148,17 +161,18 @@ static void owner_task(void *ctx){
     for(int i=0;i<2;i++){mosaico_module_mgr_info_t info;r->diag.module_error[i]=mosaico_module_mgr_get_info((mosaico_module_mgr_slot_t)i,&info);
         if(r->diag.module_error[i]==ESP_OK){r->diag.module_type[i]=info.eeprom.board_type;r->diag.module_state[i]=info.state;}}
     TickType_t wake=xTaskGetTickCount();
+    const echoy_touch_delivery_ops_t touch_ops={touch_lock,touch_unlock,touch_pointer,r};
     for(;;){
         int64_t now=esp_timer_get_time();
+        /* Retry a lost gesture's cancellation even if no new RPC arrives.
+         * Only this owner accesses delivery state; UI access stays locked. */
+        echoy_touch_delivery_flush(&r->touch_delivery,&touch_ops);
         unsigned drained=0;while(drained++<ECHOY_CONTROL_DEPTH&&xQueueReceive(r->commands,&r->command,0)==pdTRUE){
             command_t *cmd=&r->command;
             if(cmd->kind==1)r->control.english=cmd->bytes[0];
             else if(cmd->kind==2){if(cmd->bytes[0]==0)observe_battery(r,cmd->bytes[2],cmd->bytes[1],now,false);else if(cmd->bytes[0]==1)r->diag.imu_error=cmd->bytes[2];else{unsigned ix=cmd->bytes[3]&1;r->diag.module_type[ix]=cmd->bytes[1];r->diag.module_error[ix]=cmd->bytes[2];}}
             else if(cmd->kind==3){
-                if(!r->diag.ui_error&&bsp_display_lock(0)){
-                    echoy_view_t *v=echoy_ui_view();if(v){echoy_view_pointer(v,(echoy_pointer_t)cmd->bytes[0],cmd->bytes[1]|(cmd->bytes[2]<<8),cmd->bytes[3]|(cmd->bytes[4]<<8));r->diag.touch_processed++;}else r->diag.touch_dropped++;
-                    bsp_display_unlock();
-                }else r->diag.touch_dropped++;
+                echoy_touch_delivery_send(&r->touch_delivery,&touch_ops,(echoy_pointer_t)cmd->bytes[0],cmd->bytes[1]|(cmd->bytes[2]<<8),cmd->bytes[3]|(cmd->bytes[4]<<8));
             }
             else if(cmd->ui.action==UI_RECOVER){if(r->speaker_started)r->diag.audio_error=echoy_speaker_retry();else{r->diag.audio_error=echoy_speaker_start(0);r->speaker_started=r->diag.audio_error==ESP_OK;}}
             else if(r->ready)(void)echoy_control_enqueue(&r->control,cmd->ui);
