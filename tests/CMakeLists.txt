@@ -31,3 +31,19 @@ target_link_libraries(state_runner PRIVATE echoy_core)
 target_compile_options(state_runner PRIVATE -Wall -Wextra -Werror -UNDEBUG)
 add_test(NAME state_oracle COMMAND "${Python3_EXECUTABLE}"
     "${CMAKE_CURRENT_LIST_DIR}/compare_state.py" $<TARGET_FILE:state_runner>)
+
+add_executable(test_dsp test_dsp.c)
+target_link_libraries(test_dsp PRIVATE echoy_audio)
+target_compile_options(test_dsp PRIVATE -Wall -Wextra -Werror -UNDEBUG)
+add_test(NAME dsp_unit COMMAND test_dsp)
+
+add_executable(test_dsp_output test_dsp_output.c)
+target_link_libraries(test_dsp_output PRIVATE echoy_audio)
+target_compile_options(test_dsp_output PRIVATE -Wall -Wextra -Werror -UNDEBUG)
+add_test(NAME dsp_output COMMAND test_dsp_output)
+add_test(NAME dsp_artifacts COMMAND "${Python3_EXECUTABLE}"
+    "${CMAKE_CURRENT_LIST_DIR}/test_dsp_artifacts.py" $<TARGET_FILE:echoy_audio_render>)
+add_executable(test_dsp_density test_dsp_density.c)
+target_link_libraries(test_dsp_density PRIVATE echoy_audio)
+target_compile_options(test_dsp_density PRIVATE -Wall -Wextra -Werror -UNDEBUG)
+add_test(NAME dsp_density COMMAND test_dsp_density)

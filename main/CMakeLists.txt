@@ -4,6 +4,7 @@ idf_component_register(
     INCLUDE_DIRS "."
     REQUIRES
         echoy_ui
+        echoy_audio
         esp_mosaico_app_recovery
         esp_iris
         freertos
