@@ -30,7 +30,9 @@ focus a handle before using arrow keys, as in the reference.
 AudioWorklet plays bounded 48 kHz stereo signed-16 PCM produced by the C DSP.
 It performs no composition or synthesis. Each publication contains the C
 snapshot revision and matching `frame_revision` / `audio_revision`, plus a
-monotonic bridge sequence that rejects stale display/audio publications. Audio
+monotonic stream generation and per-generation bridge sequence that reject
+stale display/audio publications. Reset increments the stream generation;
+consumers clear old PCM and restart their sequence only for a newer generation. Audio
 is a bounded recent interval ending at the snapshot time. Browser audio must be
 unlocked by a user gesture; the silent-preview control is also available. The
 headless suite writes and checks `output/sim/firmware.wav` independently of the
@@ -40,6 +42,8 @@ The bridge owns an injected monotonic clock, advanced in at most 10 ms steps,
 and a bounded message-delivery queue. JSON is parsed only by Python and then
 converted to fixed, bounded C event lines. Unknown fields, duplicate keys,
 nonfinite/out-of-range values, invalid devices and invalid chains are rejected.
+Integer fields require JSON integers: `0.0` and booleans are rejected before
+anything reaches the C runner.
 The request limit is 8 KiB, each C command 511 bytes, each C response 128 KiB,
 packet delivery 4,096 entries and stdout response deadline 5 seconds. C packets
 contain the existing wire protocol, not a Python implementation of sessions.
@@ -52,9 +56,13 @@ credentials, C runner paths or generated output paths are served. API writes
 require the exact local Host and Origin and JSON content type. There is no
 hardware transport or hardware injection option in this tool.
 
-Closing or hiding the firmware page stops new clock/input requests and suspends
-browser output; it does not enqueue pause, shutdown or reset into a device.
-An already accepted bounded request may finish. Actual firmware owns its clock,
+Closing or hiding the firmware page invalidates its connection generation,
+rejects unsent queued requests and suspends browser output; it does not enqueue pause, shutdown or reset into a device.
+An already accepted bounded request may finish, but a late response cannot
+restore the connection or publish frames/audio. Return to the page and press
+**Reconnect local simulator** (or refresh) to explicitly start a new connection.
+The same rule applies after a fetch failure; pending input is never replayed.
+Actual firmware owns its clock,
 radio and audio independently and has no dependency on this bridge. The pinned
 reference page keeps its original background-pause behavior. Fault restoration
 clears only the selected device's injected conditions and does not re-place or
@@ -67,6 +75,7 @@ cmake -S pc -B build-host
 cmake --build build-host -j8
 ctest --test-dir build-host --output-on-failure
 python3 tools/echoy-sim/test_sim.py
+node tools/echoy-sim/test-browser-adapters.mjs
 python3 tools/echoy-sim/run.py --mode firmware --port 8879
 # In another terminal, with local Google Chrome and Node.js:
 node tools/echoy-sim/browser-check.mjs http://127.0.0.1:8879

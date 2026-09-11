@@ -2,6 +2,9 @@
 """Host acceptance contracts; run with Python's standard unittest runner."""
 import importlib.util
 import json
+import io
+from email.message import Message
+from types import SimpleNamespace
 from pathlib import Path
 import unittest
 
@@ -41,6 +44,50 @@ class Contracts(unittest.TestCase):
             self.assertEqual(answer['devices'][0]['transport'], 'paused')
             self.assertFalse(answer['devices'][2]['present'])
         self.assertTrue(all(p.process.poll() is not None for p in bridge.runners))
+
+    def test_integer_fields_reject_float_and_bool(self):
+        requests = [({'op':'tick','ms':0}, 'ms'),
+                    ({'op':'touch','id':'A','phase':0,'x':1,'y':1}, 'phase'),
+                    ({'op':'touch','id':'A','phase':0,'x':1,'y':1}, 'x'),
+                    ({'op':'touch','id':'A','phase':0,'x':1,'y':1}, 'y'),
+                    ({'op':'ui','id':'A','action':3,'value':0}, 'action')]
+        for request, key in requests:
+            self.assertEqual(sim.parse_request(json.dumps(request).encode()), request)
+            for value in (float(request[key]), False):
+                with self.subTest(key=key, value=value), self.assertRaises(ValueError):
+                    sim.parse_request(json.dumps(dict(request, **{key:value})).encode())
+
+    def test_float_touch_is_http_400_and_does_not_kill_runner(self):
+        with sim.Bridge() as bridge:
+            pids = [runner.process.pid for runner in bridge.runners]
+            handler = sim.Handler.__new__(sim.Handler)
+            handler.server = SimpleNamespace(bridge=bridge, server_port=8765)
+            handler.path = '/api'
+            responses = []
+            handler.respond = lambda status, *args: responses.append(status)
+            for phase, expected in [(0.0, 400), (0, 200), (2, 200)]:
+                body = json.dumps({'op':'touch','id':'A','phase':phase,'x':330,'y':425}).encode()
+                handler.headers = Message()
+                for key,value in {'Host':'127.0.0.1:8765','Content-Type':'application/json','Content-Length':str(len(body))}.items():
+                    handler.headers[key] = value
+                handler.rfile = io.BytesIO(body)
+                handler.do_POST()
+                self.assertEqual(responses[-1], expected)
+                self.assertTrue(all(r.process.poll() is None for r in bridge.runners))
+            self.assertEqual([r.process.pid for r in bridge.runners], pids)
+            self.assertEqual(bridge.states[0]['transport'], 'waiting')
+
+    def test_reset_changes_stream_generation(self):
+        with sim.Bridge() as bridge:
+            bridge.sequence = 99
+            before = bridge.request({'op':'snapshot'})
+            after = bridge.request({'op':'reset'})
+            self.assertEqual(before['sequence'], 100)
+            self.assertEqual(after['sequence'], 1)
+            self.assertGreater(after['generation'], before['generation'])
+            for d in after['devices']:
+                self.assertEqual(d['revision'], d['frame_revision'])
+                self.assertEqual(d['revision'], d['audio_revision'])
 
     def test_all_scenarios(self):
         result = sim.scenarios()

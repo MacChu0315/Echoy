@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 // A bounded PCM output queue only; synthesis stays in echoy_audio on the PC.
 class EchoyPCM extends AudioWorkletProcessor {
-  constructor(){super();this.queue=[];this.offset=0;this.last=0;this.port.onmessage=({data})=>{
+  constructor(){super();this.queue=[];this.offset=0;this.last=0;this.generation=0;this.port.onmessage=({data})=>{
     if(data.clear){this.queue=[];this.offset=0;return;}
+    if(!Number.isSafeInteger(data.generation)||data.generation<1||!Number.isSafeInteger(data.sequence)||data.sequence<1)return;
+    if(data.generation<this.generation)return;
+    if(data.generation>this.generation){this.generation=data.generation;this.queue=[];this.offset=0;this.last=0;}
     if(data.sequence<=this.last)return;this.last=data.sequence;
     if(this.queue.length>=8){this.queue.shift();this.offset=0;}
     this.queue.push(new Int16Array(data.pcm));

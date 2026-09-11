@@ -54,3 +54,5 @@ add_test(NAME simulator_contract COMMAND "${Python3_EXECUTABLE}"
     "${CMAKE_CURRENT_LIST_DIR}/../tools/echoy-sim/test_sim.py")
 
 set_tests_properties(simulator_contract PROPERTIES ENVIRONMENT "ECHOY_SIM_RUNNER=$<TARGET_FILE:echoy_sim_runner>")
+add_test(NAME simulator_browser_adapters COMMAND node
+    "${CMAKE_CURRENT_LIST_DIR}/../tools/echoy-sim/test-browser-adapters.mjs")

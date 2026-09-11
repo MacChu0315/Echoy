@@ -100,3 +100,71 @@ send pause/shutdown to firmware, and actual MCU execution is independent.
 
 The report is explicitly added alongside the existing tracked Task 6–8
 `.superpowers` reports. Reproducible tool instructions are committed in `tools/echoy-sim/README.md`; generated logs/screenshots/PCM are not committed.
+
+## Review fix round 1 — integer transport, stream reset and disconnect
+
+The three Important findings were reproduced before implementation:
+
+- `r1-python-red.log`: all integral floats passed integer validation; a real
+  `phase: 0.0` POST returned 503 after the C runner exited, instead of rejecting
+  the request; reset had no stream generation.
+- `r1-js-red.log`: executing the shipped Worklet showed that sequence 1 after
+  reset was rejected and an old-generation late sample was played. Controlled
+  delayed fetches showed all three queued commands were sent after pagehide,
+  visibility loss or network failure instead of only the accepted first one.
+
+Changes:
+
+1. Every integer field (`tick.ms`, touch phase/x/y, UI action) requires Python
+   `type(value) is int`. JSON floats, including integral floats, and booleans
+   are rejected before C serialization. The new test invokes the actual HTTP
+   handler with the same Bridge, checks 400 followed by integer down/up 200,
+   confirms all three PIDs remain alive and observes the resulting waiting
+   transport. Actual loopback HTTP repeated this path successfully.
+2. Bridge publications now include a monotonic stream `generation`. Reset
+   advances the generation while sequence restarts at 1. Worklet and frame
+   consumers accept the newer generation, clear old queued PCM/sequence state,
+   and reject late older-generation publications. Frame decoding checks both
+   generation and sequence. Empty PCM publications also carry the generation
+   so reset clears an old audible queue immediately. The Worklet test consumes
+   generation 1 / sequence 100, generation 2 / sequence 1 and a late generation
+   1 / sequence 101, verifying that only the new PCM reaches output.
+3. Browser connections have a separate generation and an AbortController.
+   Every queued request validates its captured connection generation before
+   fetch and after each asynchronous response/decoding step. Hide/pagehide or
+   failure invalidates unsent work, aborts local pending I/O, suppresses late
+   frames/audio and never restores `connected` from a successful late response.
+   A dedicated **Reconnect local simulator** button or a page refresh explicitly
+   starts a new connection; queued input is not replayed. Fake time stops while
+   disconnected. Actual firmware remains independent.
+
+The JS regression file executes the shipped App and Worklet adapters in isolated
+VM contexts with controlled fetch completion. It covers pagehide, hidden-page
+and network-failure paths, zero fetches from unsent commands, no late rendering
+or audio, no implicit reconnect, and a subsequent explicit reconnect followed
+by successful new input. It is included in CTest as `simulator_browser_adapters`.
+The README documents the stricter JSON and reconnect/publication contracts.
+
+Final validation:
+
+- Targeted Python regressions: **3/3 PASS** (`r1-python-green.log`).
+- Shipped browser-adapter regressions: **4/4 PASS** (`r1-js-green.log`).
+- `python3 tools/echoy-sim/test_sim.py`: **7/7 PASS**, 9.787 s.
+- `python3 tools/echoy-sim/run.py --headless --scenario all`: **29 PASS**.
+- CMake configure/build and `ctest --test-dir build-host --output-on-failure`:
+  **30/30 PASS**, 39.12 s, including every previous test.
+- `node tools/echoy-sim/browser-check.mjs http://127.0.0.1:8882`: **22 PASS**,
+  final process exit 0. A preceding run passed all checks but its existing
+  Chrome-profile cleanup hit ENOTEMPTY after Chrome exited; rerunning the
+  unchanged harness completed normally. No product timeout was relaxed.
+- Actual HTTP float/integer path, reset generation/sequence/revisions, reference
+  SHA-256, both asset allowlists and cross-origin 403: **PASS**, `r1-http.json`.
+- Existing ESP-IDF 6.2 development environment, ordinary `idf.py build`: **PASS**.
+- `git diff --check`: **PASS**; no sibling, hardware or remote changes.
+
+Minor coverage ledger retained for later work: the browser guide test traverses
+all six pages and verifies that the guide does not start playback, but does not
+individually satisfy and assert each lesson's observation condition. The locale
+browser assertion checks JS locale selection; its existing renderer-oriented
+check label must not be taken as proof that the C-rendered text changed. These
+are coverage limits, not additional claims of completed acceptance.

@@ -90,7 +90,7 @@ def parse_request(raw):
         raise ValueError('Unexpected or missing fields')
     def number(key, low, high, integer=False):
         value = request[key]
-        if type(value) not in (int, float) or not low <= value <= high or (integer and int(value) != value):
+        if type(value) not in (int, float) or not low <= value <= high or (integer and type(value) is not int):
             raise ValueError('Invalid ' + key)
     if 'id' in request and request['id'] not in list(IDS):
         raise ValueError('Unknown device')
@@ -172,7 +172,8 @@ class Bridge:
     Disconnect sends no pause/power/transport command. Without a request the
     fake clock and injections stop; the actual MCU runtime owns its own clock.
     """
-    def __init__(self):
+    def __init__(self, generation=None):
+        self.generation = time.monotonic_ns() // 1000 if generation is None else generation
         (ROOT/'output/sim').mkdir(parents=True, exist_ok=True)
         self.directory = tempfile.TemporaryDirectory(prefix='live-', dir=ROOT/'output/sim')
         self.runners = []
@@ -241,7 +242,7 @@ class Bridge:
                      pcm=base64.b64encode(bytes.fromhex(d['pcm'])).decode(), wifi=self.wifi[i], linkOnline=not self.offline[i])
             devices.append(d)
         self.sequence += 1
-        return {'mode':'firmware-development', 'sequence':self.sequence, 'time_us':self.time_us, 'devices':devices,
+        return {'mode':'firmware-development', 'generation':self.generation, 'sequence':self.sequence, 'time_us':self.time_us, 'devices':devices,
                 'contacts':self.edges, 'uncertain':self.uncertain, 'log':list(self.logs)}
 
     def request(self, request):
@@ -268,7 +269,8 @@ class Bridge:
                     self.uncertain = [x for x in self.uncertain if x != IDS[i]]
                     self.contacts()
         elif op == 'reset':
-            self.close(); self.__init__()
+            generation = self.generation + 1
+            self.close(); self.__init__(generation=generation)
         self.deliver()
         if op not in ('snapshot', 'tick'):
             self.logs.append(f"{self.time_us/1e6:.3f}s {json.dumps(r, ensure_ascii=False)}")

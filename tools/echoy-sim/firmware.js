@@ -12,7 +12,7 @@ class PCMOutput {
    for(let i=0;i<3;i++){const node=new AudioWorkletNode(this.ctx,'echoy-pcm',{outputChannelCount:[2]});node.connect(this.gain);this.nodes.push(node);}}
   await this.ctx.resume();
  }
- feed(answer){if(!this.ctx||this.silent)return;answer.devices.forEach((d,i)=>{const bytes=Uint8Array.from(atob(d.pcm),c=>c.charCodeAt(0));if(bytes.length)this.nodes[i].port.postMessage({sequence:answer.sequence,pcm:bytes.buffer},[bytes.buffer]);});}
+ feed(answer){if(!this.ctx||this.nodes.length!==3||this.silent)return;answer.devices.forEach((d,i)=>{const bytes=Uint8Array.from(atob(d.pcm),c=>c.charCodeAt(0));this.nodes[i].port.postMessage({generation:answer.generation,sequence:answer.sequence,pcm:bytes.buffer},[bytes.buffer]);});}
  stop(){this.nodes.forEach(n=>n.port.postMessage({clear:true}));this.ctx?.suspend();this.playing=false;}
 }
 class Frames {
@@ -31,22 +31,33 @@ class Frames {
   el.querySelector('.caption-state').textContent=d.transport;screen.setAttribute('aria-label',`${id} LVGL · ${R[d.role].name} · ${d.transport}`);
   el.querySelector('.clock-caption').textContent=`C / LVGL · r${d.revision||0}`;
  }}
- async frames(answer){await Promise.all(answer.devices.map(async d=>{const u=this.units[d.id];const image=new Image();image.src=d.frame;await image.decode();if(this.app.lastSequence!==answer.sequence)return;u.img.src=d.frame;u.screen.dataset.revision=d.revision;u.screen.dataset.audioRevision=d.audio_revision;}));}
+ async frames(answer,current=()=>true){await Promise.all(answer.devices.map(async d=>{const u=this.units[d.id];const image=new Image();image.src=d.frame;await image.decode();if(!current()||this.app.lastGeneration!==answer.generation||this.app.lastSequence!==answer.sequence)return;u.img.src=d.frame;u.screen.dataset.generation=answer.generation;u.screen.dataset.revision=d.revision;u.screen.dataset.audioRevision=d.audio_revision;}));}
  drawAll(){}
 }
 class App {
- constructor(){this.positions={A:{x:72,y:38},B:{x:646,y:56}};this.spatial=new root.DuijuSpatial();this.clockFaults={};this.movingUnit=null;this.lastSequence=0;this.pending=Promise.resolve();this.queueSize=0;this.busy=false;this.connected=true;this.diagnostics={};
+ constructor(){this.positions={A:{x:72,y:38},B:{x:646,y:56}};this.spatial=new root.DuijuSpatial();this.clockFaults={};this.movingUnit=null;this.lastSequence=0;this.lastGeneration=0;this.connectionGeneration=1;this.pending=Promise.resolve();this.queueSize=0;this.busy=false;this.connected=true;this.diagnostics={};
   const initial=(id,i)=>({id,present:i<2,role:['pulse','voice','dust'][i],phrase:1,activity:[.58,.56,.48][i],transport:'paused',linkOnline:true,battery:86,loading:false,wifi:true,discovered:[]});
   this.engine={devices:Object.fromEntries(ids.map((id,i)=>[id,initial(id,i)])),committedEdges:{},contactInput:{},pending:{phrases:{}},
    beginMove:id=>this.send({op:'fault',id,name:'moving',value:1}),endMove:id=>this.send({op:'fault',id,name:'moving',value:0}),syncFor:id=>this.engine.devices[id].syncing?{stage:'preparing'}:null};
   this.audio=new PCMOutput();this.view=new Frames(this);this.desk=new root.DuijuDesk(this);this.bind();this.mapping();this.render();
   const banner=document.createElement('p');banner.id='firmware-mode';banner.className='preview-warning';banner.textContent='固件行为模式 · 本地开发注入 · 3 × C core/control · LVGL 屏幕帧 · C DSP 声音。桌面接触为模拟，不能证明真实磁吸或声学同步。';document.querySelector('main').prepend(banner);
+  const reconnect=document.createElement('button');reconnect.id='bridge-reconnect';reconnect.hidden=true;reconnect.addEventListener('click',()=>this.reconnect());banner.after(reconnect);
  }
  get physicalOrder(){return ids.filter(id=>this.engine.devices[id].present&&this.positions[id]);}
  target(){return $('target').value;}
  async start(){const guide=root.duijuGuide,targets=guide.targets.bind(guide);guide.targets=()=>{const found=targets();return found.length?found:this.physicalOrder.map(id=>this.view.units[id].screen);};I.apply(document.body);this.locale();await this.send({op:'locale',english:I.locale==='en'});await this.send({op:'snapshot'});this.timer=setInterval(()=>{if(!this.busy&&!document.hidden&&this.connected)this.send({op:'tick',ms:40});},40);}
- send(request){if(this.queueSize>=64){this.toast('输入队列已满，请稍后重试。');return Promise.resolve();}this.queueSize++;
-  const task=async()=>{this.busy=true;try{const response=await fetch('/api',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(request)});if(!response.ok)throw new Error((await response.json()).error||`HTTP ${response.status}`);const answer=await response.json();this.lastSequence=answer.sequence;this.update(answer);await this.view.frames(answer);this.audio.feed(answer);this.connected=true;return answer;}catch(e){this.connected=false;this.toast('桥连接中断：'+e.message);this.audio.stop();}finally{this.queueSize--;this.busy=false;}};
+ disconnect(message){this.connected=false;this.connectionGeneration++;this.inflight?.abort();this.inflight=null;this.audio.stop();$('bridge-reconnect').hidden=false;if(message)this.toast('桥连接中断：'+message);}
+ reconnect(){this.disconnect();this.connected=true;$('bridge-reconnect').hidden=true;return this.send({op:'snapshot'});}
+ send(request){if(!this.connected)return Promise.resolve();if(this.queueSize>=64){this.toast('输入队列已满，请稍后重试。');return Promise.resolve();}this.queueSize++;
+  const generation=this.connectionGeneration,current=()=>this.connected&&this.connectionGeneration===generation;
+  const task=async()=>{let controller;try{if(!current())return;this.busy=true;controller=new AbortController();this.inflight=controller;
+    const response=await fetch('/api',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(request),signal:controller.signal});
+    if(!current())return;if(!response.ok)throw new Error((await response.json()).error||`HTTP ${response.status}`);
+    const answer=await response.json();if(!current())return;
+    if(!Number.isSafeInteger(answer.generation)||answer.generation<1||!Number.isSafeInteger(answer.sequence)||answer.sequence<1)throw new Error('Invalid publication identity');
+    if(answer.generation<this.lastGeneration||(answer.generation===this.lastGeneration&&answer.sequence<=this.lastSequence))return;
+    this.lastGeneration=answer.generation;this.lastSequence=answer.sequence;this.update(answer);await this.view.frames(answer,current);if(!current())return;this.audio.feed(answer);return answer;
+   }catch(e){if(current())this.disconnect(e.message);}finally{this.queueSize--;if(this.inflight===controller)this.inflight=null;this.busy=false;}};
   this.pending=this.pending.then(task,task);return this.pending;
  }
  update(answer){this.answer=answer;for(const d of answer.devices){const prior=this.engine.devices[d.id];this.engine.devices[d.id]={...prior,...d,error:d.roleError,fault:d.dataFault?'data':d.outputFault?'audio':null,bootId:d.boot,rolePreparing:d.rolePreparing<0?null:d.rolePreparing};if(!d.present&&!this.movingUnit)delete this.positions[d.id];}
@@ -72,10 +83,11 @@ class App {
   $('master-volume').addEventListener('input',ev=>{this.audio.volume=+ev.target.value/100;if(this.audio.gain)this.audio.gain.gain.value=this.audio.volume;$('master-value').textContent=ev.target.value+'%';});
   document.querySelectorAll('[data-language]').forEach(b=>b.addEventListener('click',()=>I.setLocale(b.dataset.language)));
   root.addEventListener('echoy:locale',()=>{this.locale();this.send({op:'locale',english:I.locale==='en'});I.apply(document.body);root.duijuGuide?.draw();root.duijuGuide?.refresh();document.querySelectorAll('[data-language]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.language===I.locale)));});
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)this.audio.stop();});root.addEventListener('pagehide',()=>{clearInterval(this.timer);this.audio.stop();this.connected=false;});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)this.disconnect();});root.addEventListener('pagehide',()=>this.disconnect());
  }
  syncPanel(){const d=this.engine.devices[this.target()];$('battery').value=d.battery;$('battery-out').textContent=d.battery+'%';$('network').value=!d.linkOnline?'peer-off':d.wifi?'online':'wifi-off';$('magnetic').value=this.clockFaults[d.id]?'uncertain':'normal';}
  locale(){
+  $('bridge-reconnect').textContent=tr('重新连接本地模拟器','Reconnect local simulator');
   $('firmware-mode').textContent=tr('固件行为模式 · 本地开发注入 · 3 × C core/control · LVGL 屏幕帧 · C DSP 声音。桌面接触为模拟，不能证明真实磁吸或声学同步。','Firmware behavior · Local development injection · 3 × C core/control · LVGL frames · C DSP audio. Simulated contact is not physical or acoustic evidence.');
   document.querySelector('.edition').textContent=tr('固件行为 · PC 开发模式','Firmware behavior · PC development');
   for(const [i,option]of [...$('target').options].entries())option.textContent=ids[i]+' · UID '+(100+i);
