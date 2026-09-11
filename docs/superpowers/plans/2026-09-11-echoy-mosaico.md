@@ -169,9 +169,9 @@ void echoy_dsp_render(echoy_dsp_t *, int16_t *stereo, size_t frames,
 
 **Consumes:** 原 HTML 和规格中的哈希。**Produces:** 可复现的 JS 期望事件、状态轨迹、完整页面/动作清单。
 
-- [ ] 校验哈希，把原文件作为只读参考保存；manifest 记录输入路径、哈希、内嵌版本与三个参考仓库提交。
-- [ ] 按模块注释边界提取 `DuijuResponse`、`DuijuHarmony`、`DuijuEngine`、`DuijuSession`，保留原文。提取失败/重复匹配必须报错，不用脆弱的固定行号静默截断。
-- [ ] 建立 Node VM 对照。下面代码展示确实可用的原型入口；持久工具应加输入哈希验证和机器可读输出。
+- [x] 校验哈希，把原文件作为只读参考保存；manifest 记录输入路径、哈希、内嵌版本与三个参考仓库提交。
+- [x] 按模块注释边界提取 `DuijuResponse`、`DuijuHarmony`、`DuijuEngine`、`DuijuSession`，保留原文。提取失败/重复匹配必须报错，不用脆弱的固定行号静默截断。
+- [x] 建立 Node VM 对照。下面代码展示确实可用的原型入口；持久工具应加输入哈希验证和机器可读输出。
 
 ```js
 import fs from 'node:fs';
@@ -191,10 +191,10 @@ session.tick(1);
 assert.notEqual(session.devices.A.sessionId, session.devices.B.sessionId);
 ```
 
-- [ ] 对角色×乐句×活动量×小节×左邻建立 fixtures。活动量覆盖 0、1、默认值和 .25/.26/.30/.42/.52/.65/.70/.72/.74/.75/.76/.78/.80/.82 的左右邻近值；重复角色 duplicate=0/1/2。覆盖空 motif、全弱音、长音、和弦、多音相同落点。
-- [ ] 固定注入时钟、字体和动画，采集全部产品状态的中英文基准；记录界面动作和真实计算样式。动态谱点必须与该帧 motif 相符。
-- [ ] 验证命令：`node tests/oracle.mjs --self-test`。预期哈希匹配、原型 self-test 通过、生成 fixture 数量明确；生成两次输出应相同。
-- [ ] 本任务只保存原型与测试基础；建议提交 `test: capture Echoy reference behavior and UI baselines`。
+- [x] 对角色×乐句×活动量×小节×左邻建立 fixtures。活动量覆盖 0、1、默认值和 .25/.26/.30/.42/.52/.65/.70/.72/.74/.75/.76/.78/.80/.82 的左右邻近值；重复角色 duplicate=0/1/2。覆盖空 motif、全弱音、长音、和弦、多音相同落点。
+- [x] 固定注入时钟、字体和动画，采集全部产品状态的中英文基准；记录界面动作和真实计算样式。动态谱点必须与该帧 motif 相符。
+- [x] 验证命令：`node tests/oracle.mjs --self-test`。预期哈希匹配、原型 self-test 通过、生成 fixture 数量明确；生成两次输出应相同。
+- [x] 本任务只保存原型与测试基础；建议提交 `test: capture Echoy reference behavior and UI baselines`。
 
 ## Task 2: 应用模板、显示和恢复入口
 
