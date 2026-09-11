@@ -1,6 +1,6 @@
 # Echoy：后续 agent 交接
 
-更新日期：2026-09-11。用户已将工程位置确定为独立的 `Echoy/`。Task 1 已完成：唯一 HTML 基准、逐字规则模块、48,600 个音乐 fixtures、6 条会话轨迹和 74 个双语冻结 UI 场景已生成并通过确定性检查；固件实现从 Task 2 起继续。
+更新日期：2026-09-11。用户已将工程位置确定为独立的 `Echoy/`。Tasks 1–2 已完成：原型基准/oracle 已固定；独立 ESP-IDF/LVGL/Recovery 骨架和 PC CTest 已建立，ESP32-S31 固件构建通过。Task 3 起继续移植音乐核心。
 
 ## 工作位置与阅读顺序
 
@@ -51,7 +51,7 @@
 
 前期已检查原 JS 的 1,200 个音乐组合及独立开机/吸合/拆开保拍/无自动播放路径，并通过 Playwright 查看 UI 和保存截图。截图是现场参考图，含时间状态和截图取整误差；正式视觉测试需重新生成冻结状态的 480×480 基准。详细记录见规格及计划末尾。
 
-当前没有 C 固件实现、固件构建结果或真机验证记录。无线对时、DSP 听测、三机同步和 Recovery 往返都需要后续实现/验证。`mosaico.py install --project` 的源码已确认接受外部绝对 ESP-IDF 工程路径；Echoy 仍需提供本地 workspace 配置。不要把 JS oracle 检查当作固件验收结果。
+当前只有启动/显示 C 骨架，没有音乐、状态、DSP、协议或完整 UI 实现，也没有真机验证记录。Task 2 使用 IDF 6.2.0 开发线构建 `esp32s31` 成功，`echoy.bin` 为 1,202,160 bytes、0 warning、最小应用分区余 34%；PC CTest 2/2 通过。无线对时、DSP 听测、三机同步和 Recovery 往返仍需后续实现/验证。`mosaico.py install --project` 的源码已确认接受外部绝对 ESP-IDF 工程路径，Echoy 已提供本地 `.mosaico.json`。不要把 JS oracle 或构建通过当作固件验收结果。
 
 结构更新时 Echoy 与外层 Mosaico 均未初始化 Git，三个参考仓库工作区干净。初始化 Echoy Git 前按用户规则取得许可；没有 Git 不阻止已授权的本地实现/验证。不要在参考仓库建立 Echoy 工作分支或提交 Echoy 文件。任何建议的 commit 都以 Echoy 已获准初始化为前提。
 

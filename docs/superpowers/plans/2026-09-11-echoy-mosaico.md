@@ -202,9 +202,9 @@ assert.notEqual(session.devices.A.sessionId, session.devices.B.sessionId);
 
 **Consumes:** 固定版本 BSP/utils、hello_world。**Produces:** 正常应用启动、480×480 显示和 ESP-Iris 恢复入口；PC 可编译测试目标。
 
-- [ ] 参考 `../esp-mosaico-vibe/projects/hello_world`，在当前 Echoy 根目录创建应用文件，保留现有 docs/output/HANDOFF.md；逐项对照 partitions.csv、sdkconfig.application.defaults、system_update.cmake 和 main/CMakeLists.txt，不直接把 GSP/claw 分区复制过来。
-- [ ] 新 manifest 使用 `idf: ">=6.2"`、`lvgl/lvgl: ">=9,<10"` 和 A 节独立工程依赖路径；不能照抄 hello_world 原有相对子模块路径。记录实际解析版本。组件依赖使用已有 BSP 组件，禁止新增一个 ESP-NOW 管理器与 BSP 争用无线。
-- [ ] 检查 utils 提供的恢复和屏幕后端接口。确保 ESP-Iris 在 UI/音频初始化失败时仍可进入 Recovery；参考调用骨架如下，不凭空设计 ESP-Iris API：
+- [x] 参考 `../esp-mosaico-vibe/projects/hello_world`，在当前 Echoy 根目录创建应用文件，保留现有 docs/output/HANDOFF.md；逐项对照 partitions.csv、sdkconfig.application.defaults、system_update.cmake 和 main/CMakeLists.txt，不直接把 GSP/claw 分区复制过来。
+- [x] 新 manifest 使用 `idf: ">=6.2"`、`lvgl/lvgl: ">=9,<10"` 和 A 节独立工程依赖路径；不能照抄 hello_world 原有相对子模块路径。记录实际解析版本。组件依赖使用已有 BSP 组件，禁止新增一个 ESP-NOW 管理器与 BSP 争用无线。
+- [x] 检查 utils 提供的恢复和屏幕后端接口。确保 ESP-Iris 在 UI/音频初始化失败时仍可进入 Recovery；参考调用骨架如下，不凭空设计 ESP-Iris API：
 
 ```c
 ESP_ERROR_CHECK_WITHOUT_ABORT(esp_iris_boot_probe());
@@ -214,10 +214,10 @@ lv_display_t *display = bsp_display_start();
 /* display == NULL 时记录错误并保留已启动的恢复服务。 */
 ```
 
-- [ ] 对照 hello_world 实际启动顺序与 utils 初始化前提调整以上顺序；任何错误都必须在诊断中可见。不要将错误全转成日志后仍报告应用健康。
-- [ ] 在 Echoy 根目录激活已确认环境后执行 `idf.py --preview set-target esp32s31`、`idf.py build`；按低噪声构建技能保留日志。检查镜像大小与 ota_0 容量。
-- [ ] PC 先编译 `core_runner` 和测试框架，使用项目 CMake/CTest，不引入新的生产测试框架。
-- [ ] 预期：构建通过、分区契约未变、应用启动入口不依赖 claw。此时尚不能声称 UI 或音乐完成。建议提交 `feat: add Echoy application with retained recovery support`。
+- [x] 对照 hello_world 实际启动顺序与 utils 初始化前提调整以上顺序；任何错误都必须在诊断中可见。不要将错误全转成日志后仍报告应用健康。
+- [x] 在 Echoy 根目录激活已确认环境后执行 `idf.py --preview set-target esp32s31`、`idf.py build`；按低噪声构建技能保留日志。检查镜像大小与 ota_0 容量。
+- [x] PC 先编译 `core_runner` 和测试框架，使用项目 CMake/CTest，不引入新的生产测试框架。
+- [x] 预期：构建通过、分区契约未变、应用启动入口不依赖 claw。此时尚不能声称 UI 或音乐完成。建议提交 `feat: add Echoy application with retained recovery support`。
 
 ## Task 3: 四角色十二乐句的 C 实现
 
