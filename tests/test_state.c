@@ -159,4 +159,76 @@ static void test_old_boot_fault_callback(void) {
     send(0,ECHOY_POWER_OFF,0);boot(0);assert(echoy_dispatch(&c,&old)==ECHOY_STALE);
     assert(!c.devices[0].loading);
 }
-int main(void) {test_old_boot_fault_callback();test_monotonic_limits();test_sync_generation_changes_during_tick();test_chain_and_swap();test_merge_reversal();test_stale_sync_and_play();test_missed_play_boundary();test_feedback_and_hold();test_transport();test_role();test_boundary_parameters();test_faults();test_sessions();test_rejections();puts("state unit passed");}
+
+static void test_repeated_contacts_preserve_boundary(void) {
+    for(int reverse=0;reverse<2;reverse++) {
+        reset();join();uint64_t sid=c.devices[0].session_id;
+        echoy_input_t report={.type=ECHOY_CONTACTS,.at_us=c.time_us,
+            .edge_count=reverse?1:0,.edges={{1,0,false}}};
+        assert(echoy_dispatch(&c,&report)==ECHOY_OK);
+        /* A reversed edge becomes the target only after reliable confirmation. */
+        if(reverse)for(int n=0;n<45;n++) {
+            report.at_us+=10000;assert(echoy_dispatch(&c,&report)==ECHOY_OK);
+        }
+        assert(session(0)->arrangement_pending);
+        int64_t apply=session(0)->arrangement_at_us;
+        int64_t end=c.time_us+2*ECHOY_BAR_US;
+        while(report.at_us<end) {
+            report.at_us+=10000;
+            /* Dispatch is the only clock driver, as with repeated BSP reports. */
+            assert(echoy_dispatch(&c,&report)==ECHOY_OK);
+            if(c.time_us<apply) {
+                assert(session(0)->arrangement_pending&&session(0)->arrangement_at_us==apply);
+                assert(plan(1)->source==0);
+            } else {
+                assert(!session(0)->arrangement_pending);
+                assert(plan(1)->source==-1&&plan(0)->source==(reverse?1:-1));
+            }
+            assert(c.devices[0].session_id==sid&&c.devices[1].session_id==sid);
+        }
+    }
+}
+
+static void test_link_split_preserves_bar_commit(void) {
+    for(int change_role=0;change_role<2;change_role++) {
+        reset();join();send(0,ECHOY_PLAY_TOGGLE,0);echoy_tick(&c,c.devices[0].play_at_us);
+        send(0,ECHOY_DATA_FAULT,1);nextbar(0);
+        assert(!c.devices[0].motif_available&&plan(0)->events.count==0);
+        echoy_tick(&c,c.time_us+100000);send(0,ECHOY_LINK,0);
+        int64_t split=c.time_us+ECHOY_HOLD_US;
+        send(0,ECHOY_DATA_FAULT,0);
+        if(change_role){send(0,ECHOY_ROLE_REQUEST,ECHOY_HARMONY);send(0,ECHOY_ROLE_READY,0);}
+        send(0,ECHOY_PHRASE,3);send(0,ECHOY_ACTIVITY,.9);send(0,ECHOY_FINISH_ACTIVITY,0);
+        echoy_tick(&c,split-1);
+        echoy_device_t before=c.devices[0];echoy_motif_t motif=plan(0)->motif,events=plan(0)->events;
+        int64_t bar=session(0)->last_bar;
+        assert(before.pending_phrase==3&&before.activity!=before.committed_activity);
+        echoy_tick(&c,split);
+        assert(c.devices[0].session_id!=before.session_id&&c.devices[0].lost_split);
+        assert(session(0)->last_bar==bar);
+        assert(c.devices[0].motif_available==before.motif_available);
+        assert(c.devices[0].role==before.role&&c.devices[0].phrase==before.phrase);
+        assert(c.devices[0].activity==before.activity&&c.devices[0].committed_activity==before.committed_activity);
+        assert(c.devices[0].pending_role==before.pending_role&&c.devices[0].pending_phrase==before.pending_phrase);
+        assert(!memcmp(&motif,&plan(0)->motif,sizeof motif)&&!memcmp(&events,&plan(0)->events,sizeof events));
+        assert(c.devices[0].transport==ECHOY_PLAYING);
+        int64_t boundary=echoy_next_boundary(session(0),c.time_us+1,true);
+        echoy_tick(&c,boundary-1);assert(!c.devices[0].motif_available&&c.devices[0].pending_phrase==3);
+        echoy_tick(&c,boundary);
+        assert(c.devices[0].motif_available&&c.devices[0].pending_phrase==0&&c.devices[0].pending_role<0);
+        assert(c.devices[0].role==(change_role?ECHOY_HARMONY:ECHOY_PULSE)&&c.devices[0].phrase==3);
+        assert(c.devices[0].committed_activity==(change_role?.5:.9));
+        assert(plan(0)->motif.count>0&&plan(0)->events.count>0);
+    }
+    /* A hold expiry exactly on a real boundary must still perform its commit,
+     * including when no intermediate tick processed that boundary. */
+    reset();join();send(0,ECHOY_PLAY_TOGGLE,0);echoy_tick(&c,c.devices[0].play_at_us);
+    send(0,ECHOY_DATA_FAULT,1);nextbar(0);
+    echoy_tick(&c,c.time_us+ECHOY_BAR_US-ECHOY_HOLD_US);send(0,ECHOY_LINK,0);
+    int64_t split=c.time_us+ECHOY_HOLD_US;
+    send(0,ECHOY_DATA_FAULT,0);send(0,ECHOY_ACTIVITY,.9);send(0,ECHOY_PHRASE,3);
+    echoy_tick(&c,split);
+    assert(c.devices[0].lost_split&&c.devices[0].motif_available);
+    assert(c.devices[0].committed_activity==.9&&c.devices[0].phrase==3&&plan(0)->events.count>0);
+}
+int main(void) {test_link_split_preserves_bar_commit();test_repeated_contacts_preserve_boundary();test_old_boot_fault_callback();test_monotonic_limits();test_sync_generation_changes_during_tick();test_chain_and_swap();test_merge_reversal();test_stale_sync_and_play();test_missed_play_boundary();test_feedback_and_hold();test_transport();test_role();test_boundary_parameters();test_faults();test_sessions();test_rejections();puts("state unit passed");}

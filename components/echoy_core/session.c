@@ -61,7 +61,8 @@ echoy_result_t echoy_receive_contacts(echoy_core_t *c,const echoy_input_t *e) {
         if(found&&(!old->present||old->uncertain!=uncertain))old->since_us=at;
         old->present=found;old->uncertain=uncertain;
     }
-    for(int j=0;j<3;j++)c->sessions[j].arrangement_pending=false;
+    /* update_arrangements compares effective targets; repeated evidence must
+     * preserve an already agreed boundary instead of restarting its deadline. */
     c->revision++;return ECHOY_OK;
 }
 static bool available(const echoy_core_t *c,int a,int b) {
@@ -142,11 +143,16 @@ void echoy_session_tick(echoy_core_t *c) {
         if(d->lifecycle!=ECHOY_READY)continue;
         if(!d->link_online&&!d->lost_split&&c->time_us-d->link_lost_us>=ECHOY_HOLD_US) {
             echoy_session_t *old=echoy_session_for(c,i);
+            int64_t committed_bar=old->last_bar;
             long double phase=echoy_phase_steps(old,c->time_us);
             /* Round epoch down: sub-microsecond quantization cannot move time backwards. */
             long double duration=phase*156250000000.0L/(1000000+d->clock_ppm);
             int64_t epoch=(int64_t)floorl(c->time_us-duration);
-            echoy_leave(c,i);echoy_fresh_session(c,i,c->time_us,epoch);d->lost_split=true;
+            echoy_leave(c,i);echoy_fresh_session(c,i,c->time_us,epoch);
+            /* A continuous clock handover is not a musical boundary. Retain
+             * the last committed bar; core tick still commits if a real bar
+             * boundary was crossed since that commit (including sparse ticks). */
+            echoy_session_for(c,i)->last_bar=committed_bar;d->lost_split=true;
         }
         if(d->link_online)for(int j=0;j<3;j++)if(j!=i&&c->devices[j].lifecycle==ECHOY_READY&&c->devices[j].link_online)d->discovered|=MEMBER(j);
     }
