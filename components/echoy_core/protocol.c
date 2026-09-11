@@ -147,7 +147,7 @@ static bool matches(const echoy_protocol_t *p,const echoy_packet_t *m) {
 bool echoy_protocol_receive(echoy_protocol_t *p,uint64_t source,uint32_t boot,const uint8_t *data,
     size_t size,int64_t received,int64_t now) {
     echoy_packet_t m;
-    if(!p||source==p->uid||!source||received<0||now<received||!echoy_wire_decode(data,size,&m)||m.sender_boot!=boot)return false;
+    if(!p||source==p->uid||!source||received<0||now<received||!echoy_wire_decode(data,size,&m)||m.sender_boot!=boot||m.flags)return false;
     echoy_protocol_peer_t *q=peer(p,source);
     if(m.kind>=ECHOY_READY_MSG&&q&&!(member_mask(p)&(1u<<(unsigned)(q-p->peers))))return false;
     if(m.kind==ECHOY_HELLO) {

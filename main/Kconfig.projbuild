@@ -1,0 +1,11 @@
+menu "Echoy"
+    config ECHOY_DEV_INJECTION
+        bool "Enable development-only Echoy event injection RPCs"
+        default n
+        help
+            Enables service 0xec01 methods 2-4 for local testing. Ordinary
+            application builds register only the read-only snapshot method.
+    config ECHOY_DEFAULT_ENGLISH
+        bool "Use English before application settings have been saved"
+        default n
+endmenu

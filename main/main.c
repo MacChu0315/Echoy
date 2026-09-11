@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "echoy_ui.h"
+#include "echoy_runtime.h"
 #include "esp_iris.h"
 #include "esp_log.h"
 #include "iris_ota_support.h"
@@ -17,30 +18,25 @@ void app_main(void)
                  esp_err_to_name(probe_err));
     }
 
+    /* Recovery uses its retained sysmeta partition, independently of app NVS. */
+    iris_ota_support_start();
+
     const esp_err_t nvs_err = nvs_flash_init();
     if (nvs_err != ESP_OK) {
         ESP_LOGE(TAG,
                  "NVS initialization failed without erasing retained data: %s",
                  esp_err_to_name(nvs_err));
-        return;
     }
-
-    /* Keep the enter-Recovery RPC alive even if product initialization fails. */
-    iris_ota_support_start();
 
     const esp_err_t ui_err = echoy_ui_start();
     if (ui_err != ESP_OK) {
         ESP_LOGE(TAG, "Echoy display failed; Recovery remains available: %s",
                  esp_err_to_name(ui_err));
-        return;
+    }
+    const esp_err_t runtime_err = echoy_runtime_start(ui_err);
+    if (runtime_err != ESP_OK) {
+        ESP_LOGE(TAG, "Echoy control failed; Recovery remains available: %s", esp_err_to_name(runtime_err));
     }
 
-    const esp_err_t healthy_err = esp_iris_mark_healthy();
-    if (healthy_err != ESP_OK) {
-        ESP_LOGE(TAG, "Echoy started but health confirmation failed: %s",
-                 esp_err_to_name(healthy_err));
-        return;
-    }
-
-    ESP_LOGI(TAG, "Echoy application ready");
+    ESP_LOGI(TAG, "Echoy services started; product health is checked by control");
 }

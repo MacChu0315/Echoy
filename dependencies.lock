@@ -464,6 +464,6 @@ direct_dependencies:
 - lvgl/lvgl
 - mosaico_interaction
 - mosaico_peer_link
-manifest_hash: 337c0f1e4d82f68c86f86becec0ef9e2f5b16f842c3e0cd17a20cfc66d516849
+manifest_hash: 67285c8338538d2916e88922a5eec09c4973fd2fcd30face0ee29a67d965457e
 target: esp32s31
 version: 3.0.0

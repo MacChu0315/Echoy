@@ -5,6 +5,7 @@ idf_component_register(
     REQUIRES
         echoy_ui
         echoy_audio
+        echoy_platform
         esp_mosaico_app_recovery
         esp_iris
         freertos

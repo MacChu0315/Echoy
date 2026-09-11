@@ -16,7 +16,7 @@ uint32_t echoy_wire_digest(const uint8_t *p,size_t n) {
 }
 static bool packet_valid(const echoy_packet_t *p) {
     static const uint8_t sizes[]={0,16,8,24,8,0,8,8,8,8};
-    if(!p||p->kind<1||p->kind>9||!p->sender_boot||!p->sequence||p->flags||
+    if(!p||p->kind<1||p->kind>9||!p->sender_boot||!p->sequence||(p->flags && (p->kind!=ECHOY_PREPARE||p->flags!=1))||
        !p->session.creator_uid||!p->session.creator_boot||!p->session.nonce||
        !p->fragment_count||p->fragment_count>16||p->fragment_index>=p->fragment_count||
        !p->body_length||p->body_length>60)return false;
@@ -115,7 +115,7 @@ echoy_wire_result_t echoy_wire_assemble(echoy_reassembler_t *r,uint64_t source,u
         a=free_slot;memset(a,0,sizeof *a);a->used=true;a->first=*p;a->started_us=now;
     }
     if(p->fragment_index!=a->next||p->fragment_count!=a->first.fragment_count||
-       p->apply_bar!=a->first.apply_bar||!echoy_session_equal(p->session,a->first.session)||
+       p->apply_bar!=a->first.apply_bar||p->flags!=a->first.flags||!echoy_session_equal(p->session,a->first.session)||
        a->size+p->body_length>960)return ECHOY_WIRE_BAD;
     r->sequence=p->sequence;memcpy(a->data+a->size,p->body,p->body_length);a->size+=p->body_length;a->next++;
     if(a->next<p->fragment_count)return ECHOY_WIRE_MORE;

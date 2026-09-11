@@ -307,3 +307,54 @@ with continuing GAME_EVENT traffic; reference power-off/restart and partitions;
 and acoustic onset skew at the DAC/speaker output. Host clocks and successful
 IDF compilation do not substitute for those measurements. Task 8 connects these
 owner APIs to lifecycle, UI/audio and actual product control flow.
+
+## Control-owner requests (Task 8)
+
+The nine message kinds remain unchanged. `PREPARE` now accepts exactly two
+flag values: `0` is the existing coordinator transaction, `1` is a bounded
+owner request. Other flags, or nonzero flags on any other kind, are rejected.
+Older Echoy builds reject flag 1; all members need this application revision
+for autonomous joining and parameter requests. Algorithm version remains 1;
+this does not change the music algorithm or the flags=0 state encoding.
+
+A flag-1 request uses the existing checksummed `echoy_wire_state_t` encoding,
+its exact lengths, reserved bytes and fragment ordering. `apply_bar` is exactly
+1 (a discriminator, not a scheduled boundary), and both `reference_uid` and
+`transport_request_uid` equal the outer source UID. Sender boot must agree in
+the outer radio header, wire header and sender member entry. Session must
+match that peer's latest valid HELLO. Sequence numbers share the sender's
+ordinary monotonically increasing wire sequence; request transaction IDs have
+an independent monotonic reassembler. Mixed-flag fragments, duplicates, wrong
+boot, unknown sources, unknown flags and stale transactions are rejected.
+The protocol commit state machine explicitly rejects flag 1. It cannot install
+state, satisfy READY, or acknowledge COMMIT.
+
+The local control owner authorizes a UID/boot only after a validated BSP
+left/right neighbor has physically identified that UID and a valid HELLO for
+that same UID supplies its current boot. HELLO by itself never authorizes.
+A physical witness or an already committed member can vouch for another
+member's UID/boot in a request. The sender emits only its existing committed
+members and currently verified physical neighbors; it never relays an
+uncommitted binding learned solely through someone else's request. Existing
+boot bindings cannot be changed by indirect handoff. A request can report only
+edges incident to its own UID. This is trust in physically admitted application
+members, not cryptographic protection against a compromised admitted device.
+No pairing token is part of this protocol or diagnostics.
+
+The coordinator combines each sender's own requested role/phrase/activity
+with the directed edges, checks the complete state through the existing codec,
+and begins an ordinary flag-0 transaction. Joining requires a complete chain.
+The three-owner host test exercises physical 2+1 admission without installing
+all UID/boot bindings in advance, then changes a non-coordinator's role.
+Requests are sent every 250 ms; parameter requests do not themselves mutate a
+committed remote motif. Local activity, volume and play/pause remain local.
+
+On heartbeat expiry the owner dispatches `ECHOY_LINK`; after the core's hold
+split it replaces stale protocol membership with the surviving local session,
+retaining that session's epoch/rate. Old expired entries cannot be revived by
+HELLO without current physical authorization. The host test removes the
+reference from the three-node network and verifies two surviving members.
+
+The existing clock estimator requires a 20-second stable sample window after
+physical authorization; ordinary PREPARE reserves two future bars. These are
+measured software constraints, not a claim of immediate magnetic joining.

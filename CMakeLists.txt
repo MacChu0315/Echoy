@@ -12,6 +12,7 @@ endif()
 
 set(EXTRA_COMPONENT_DIRS
     "${CMAKE_CURRENT_LIST_DIR}/../esp-mosaico-vibe/components/esp_mosaico_app_recovery"
+    "${CMAKE_CURRENT_LIST_DIR}/../esp-mosaico-bsp/components/mosaico_module_mgr"
     "${CMAKE_CURRENT_LIST_DIR}/../esp-mosaico-bsp/components/mosaico_network"
     "${CMAKE_CURRENT_LIST_DIR}/../esp-mosaico-bsp/components/mosaico_peer_link"
     "${CMAKE_CURRENT_LIST_DIR}/../esp-mosaico-bsp/components/mosaico_interaction")
