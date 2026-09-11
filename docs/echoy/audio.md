@@ -4,7 +4,7 @@
 C11 and has no heap allocation, I/O, OS, UI, or core mutation after initialization.
 Allocate `echoy_audio_size()` bytes once, with malloc-compatible alignment, then
 call `echoy_audio_init(storage, size, output_epoch_us)`. The host currently uses
-702688 bytes, including 64 logical voices, 192 pending events, three independent
+702696 bytes, including 64 logical voices, 192 pending events, three independent
 15000-sample delays, the two-second deterministic noise buffer and wave tables.
 One logical chord voice contains up to three pitches and their triangle partials.
 Firmware allocates this once in PSRAM and reports allocation failure to its caller.
@@ -49,7 +49,10 @@ The audio owner alone calls DSP methods. Control/UI/network owners send value
 copies and never hold a UI lock in rendering. `echoy_audio_plan` uses `events` for
 sound and leaves `motif` untouched. It schedules each device/bar once, validates
 input, and rejects an older clock version from the same boot. A new clock version
-cancels that device's pending events. A rest does not truncate an earlier tail.
+cancels that device's pending events. A rest does not truncate an earlier tail. A device missing from a fully validated
+plan has its pending notes cancelled and its own sources smoothly stopped/muted;
+other devices retain their tails. Slots expiring on the current sample are
+available immediately to new notes on that same sample.
 Expression at onset scales duration by
 `(1 + live_expression*.45)/(1 + planned_expression*.45)`; active envelopes remain
 fixed, while the channel color/volume continue to move smoothly.
@@ -65,7 +68,10 @@ cursor's mapped output time, not callback time.
 `echoy_output_*` separates the backend and owns four preallocated rotating 256-frame
 PCM buffers, checked open/write/close calls, and an explicit retry state. It writes
 48 kHz, 16-bit, stereo blocks of 1024 bytes. A write failure stops further writes;
-reopen/close failure preserves the error and retry requirement. It has no pointer
+reopen/close failure preserves the error and retry requirement. Every failed open
+is followed by checked close, including partially opened codecs. Cleanup failure
+blocks another open until close succeeds, so a stale backend opened flag cannot
+make a retry falsely appear initialized. It has no pointer
 to core state and cannot change valid motif/data into a data fault.
 
 `echoy_speaker_start(local_device)` creates the firmware audio worker. Its four-message

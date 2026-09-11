@@ -34,6 +34,7 @@ struct echoy_audio {
     channel_t channels[ECHOY_MAX_DEVICES];float noise[NOISE_LENGTH],sine[TABLE_LENGTH+1];
     float triangle[5][TABLE_LENGTH+1];
     float master,target_master;
+    unsigned plan_mask;
 };
 static float clampf(float x,float lo,float hi){return fmaxf(lo,fminf(hi,x));}
 static bool valid_device(int d){return d>=0&&d<ECHOY_MAX_DEVICES;}
@@ -144,6 +145,13 @@ bool echoy_audio_plan(echoy_audio_t *a,const echoy_bar_plan_t *plan,unsigned mas
         seen|=1u<<p->device;
         for(size_t j=0;j<p->events.count;j++)if(!valid_event(&p->events.events[j])||!isfinite(p->events.events[j].step)||p->events.events[j].step<0||p->events.events[j].step>=16)return false;
     }
+    /* A plan is a complete snapshot. Removed devices must not keep their old
+     * sources or future notes just because there is no entry to visit. */
+    unsigned present=seen&mask,removed=a->plan_mask&~present;
+    for(int d=0;d<ECHOY_MAX_DEVICES;d++)if(removed&(1u<<d)){
+        channel_t *c=&a->channels[d];cancel(a,d);c->muted=true;c->seen=false;
+    }
+    a->plan_mask=present;
     bool ok=true;
     for(size_t i=0;i<plan->count;i++){
         const echoy_plan_entry_t *p=&plan->devices[i];int d=p->device;if(!(mask&(1u<<d)))continue;
@@ -164,7 +172,14 @@ bool echoy_audio_plan(echoy_audio_t *a,const echoy_bar_plan_t *plan,unsigned mas
 static unsigned samples(float sec){return (unsigned)lroundf(sec*ECHOY_AUDIO_RATE);}
 static void start(echoy_audio_t *a,const pending_t *p)
 {
-    voice_t *v=NULL;for(unsigned i=0;i<ECHOY_AUDIO_VOICES;i++)if(!a->voices[i].used){v=&a->voices[i];break;}
+    voice_t *v=NULL;
+    for(unsigned i=0;i<ECHOY_AUDIO_VOICES;i++){
+        voice_t *candidate=&a->voices[i];
+        /* Sources ending on this sample no longer consume a slot, even though
+         * this sample's mixing pass has not visited them yet. */
+        if(candidate->used&&candidate->age>=candidate->stop){candidate->used=false;a->stats.active--;}
+        if(!candidate->used){v=candidate;break;}
+    }
     if(!v){a->stats.capacity_errors++;return;}
     memset(v,0,sizeof *v);v->used=true;v->device=p->device;v->kind=p->event.kind;
     const echoy_event_t *e=&p->event;float expr=a->channels[p->device].expression,stretch=1+expr*.45f;

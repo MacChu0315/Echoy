@@ -97,6 +97,35 @@ static void immutable_plan_and_empty_bar(void) {
     double energy=0;for(int i=0;i<512;i++)energy+=x[i]*x[i];assert(energy>0);
     free(a);
 }
+static void removed_plan_device_stops_only_its_audio(void) {
+    echoy_audio_t *a=make();echoy_bar_plan_t p=plan();float x[512],y[512];
+    p.devices[0].events.events[0].step=4;p.devices[0].motif=p.devices[0].events;
+    assert(echoy_audio_plan(a,&p,1));echoy_audio_render(a,x,256);
+    echoy_bar_plan_t invalid=plan();invalid.devices[0].device=1;invalid.devices[0].events.events[0].dur=NAN;
+    assert(!echoy_audio_plan(a,&invalid,3));assert(echoy_audio_stats(a).pending==1);
+    echoy_bar_plan_t empty={0};assert(echoy_audio_plan(a,&empty,1));
+    assert(echoy_audio_stats(a).cancelled==1&&echoy_audio_stats(a).pending==0);
+    for(int i=0;i<200;i++){echoy_audio_render(a,x,256);for(int j=0;j<512;j++)assert(x[j]==0);}
+    assert(echoy_audio_stats(a).started==0&&echoy_audio_stats(a).missed==0);
+    assert(echoy_audio_plan(a,&empty,1));assert(echoy_audio_stats(a).cancelled==1);free(a);
+
+    a=make();echoy_audio_t *b=make();p=plan();p.count=2;p.devices[1]=p.devices[0];p.devices[1].device=1;
+    p.devices[0].events.events[0]=note(ECHOY_TONE);p.devices[0].events.events[0].dur=2;
+    p.devices[1].events.events[0]=note(ECHOY_TONE);
+    echoy_bar_plan_t only_b={.count=1};only_b.devices[0]=p.devices[1];
+    assert(echoy_audio_plan(a,&p,3));assert(echoy_audio_plan(b,&only_b,2));
+    echoy_audio_render(a,x,256);echoy_audio_render(b,y,256);
+    assert(echoy_audio_stats(a).active==2);assert(echoy_audio_plan(a,&only_b,3));
+    for(int i=0;i<12;i++){echoy_audio_render(a,x,256);echoy_audio_render(b,y,256);}
+    assert(echoy_audio_stats(a).active==1); /* Removed A stops within 30 ms. */
+    while(echoy_audio_stats(a).cursor<48000){echoy_audio_render(a,x,256);echoy_audio_render(b,y,256);}
+    double tail=0;
+    for(int i=0;i<40;i++){
+        echoy_audio_render(a,x,256);echoy_audio_render(b,y,256);
+        assert(memcmp(x,y,sizeof x)==0);for(int j=0;j<512;j++)tail+=x[j]*x[j];
+    }
+    assert(tail>1e-12);free(a);free(b);
+}
 static void rejects_old_plan_and_rounds_clock_mapping(void) {
     echoy_audio_t *a=make();echoy_bar_plan_t p=plan();float x[512];
     p.devices[0].clock_version=2;p.devices[0].rate_ppm=1000;p.devices[0].events.events[0].step=1;
@@ -136,6 +165,23 @@ static void chord_normalization(void) {
     }
     assert(energy[1]/energy[0]>2.98&&energy[1]/energy[0]<3.02);
 }
+static void expired_voices_are_reused_on_the_same_sample(void) {
+    echoy_audio_t *a=make();echoy_event_t e=note(ECHOY_KICK);float x[512];
+    for(int i=0;i<64;i++){
+        assert(echoy_audio_schedule(a,0,0,1000000,&e));
+        assert(echoy_audio_schedule(a,0,0,1340000,&e));
+    }
+    while(echoy_audio_stats(a).cursor<16320){
+        unsigned n=16320-(unsigned)echoy_audio_stats(a).cursor;if(n>256)n=256;
+        echoy_audio_render(a,x,n);
+    }
+    assert(echoy_audio_stats(a).started==64);
+    echoy_audio_render(a,x,1);
+    echoy_audio_stats_t stats=echoy_audio_stats(a);
+    assert(stats.started==128&&stats.capacity_errors==0&&stats.active==64&&stats.peak_voices<=64);
+    assert(stats.pending==0&&stats.missed==0);
+    free(a);
+}
 static void capacity_and_noise(void) {
     echoy_audio_t *a=make(),*b=make();echoy_event_t e=note(ECHOY_GRAIN);float x[512],y[512];
     assert(echoy_audio_schedule(a,0,0,1000000,&e));assert(echoy_audio_schedule(b,0,0,1000000,&e));
@@ -149,6 +195,6 @@ static void capacity_and_noise(void) {
 }
 int main(void) {
     single_events();boundary_and_clock();control_and_independent_tails();
-    immutable_plan_and_empty_bar();rejects_old_plan_and_rounds_clock_mapping();reference_noise_and_gain_smoothing();chord_normalization();capacity_and_noise();
+    immutable_plan_and_empty_bar();removed_plan_device_stops_only_its_audio();rejects_old_plan_and_rounds_clock_mapping();reference_noise_and_gain_smoothing();chord_normalization();expired_voices_are_reused_on_the_same_sample();capacity_and_noise();
     puts("PASS DSP events, sample scheduling, expression, tail isolation, immutable plans, 64 voices");return 0;
 }

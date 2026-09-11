@@ -3,6 +3,8 @@
 #define ECHOY_AUDIO_OUTPUT_H
 #include "echoy_audio.h"
 typedef struct {
+    /* Failed open may leave partial state; close must accept that state and
+     * return success only when another open can safely initialize afresh. */
     int (*open)(void *ctx, unsigned rate, unsigned bits, unsigned channels);
     int (*write)(void *ctx, const void *pcm, size_t bytes);
     int (*close)(void *ctx);

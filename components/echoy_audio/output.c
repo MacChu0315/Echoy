@@ -19,7 +19,15 @@ bool echoy_output_open(echoy_audio_output_t *o,int64_t us)
     if(!o)return false;
     if(o->opened&&!echoy_output_close(o))return false;
     o->last_error=o->ops.open(o->ops.ctx,ECHOY_AUDIO_RATE,16,2);
-    if(o->last_error){o->open_errors++;o->retry_required=true;echoy_audio_output_fault(o->audio,true);return false;}
+    if(o->last_error){
+        int open_error=o->last_error;
+        /* A backend can set its opened flag before failing set_fs/enable.
+         * Treat it as needing close until cleanup has actually succeeded. */
+        o->close_error=o->ops.close(o->ops.ctx);
+        o->opened=o->close_error!=0;
+        o->last_error=open_error;o->open_errors++;o->retry_required=true;
+        echoy_audio_output_fault(o->audio,true);return false;
+    }
     o->opened=true;o->retry_required=false;o->close_error=0;
     echoy_audio_skip_to(o->audio,us);echoy_audio_output_fault(o->audio,false);return true;
 }

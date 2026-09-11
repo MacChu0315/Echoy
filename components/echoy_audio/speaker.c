@@ -31,19 +31,20 @@ static int codec_open(void *ctx,unsigned rate,unsigned bits,unsigned channels)
     int err=esp_codec_dev_open(s->codec,&format);
     if(err)return err;
     err=esp_codec_dev_set_out_vol(s->codec,100);
-    if(err){int close_err=esp_codec_dev_close(s->codec);if(close_err){s->status.close_error=close_err;ESP_LOGE(TAG,"codec close after volume failure: %d",close_err);}return err;}
-    return 0;
+    /* echoy_output_open owns checked cleanup for every error, including a
+     * partially opened esp_codec_dev and a later volume setup failure. */
+    return err;
 }
 static int codec_write(void *ctx,const void *pcm,size_t bytes)
 {
     speaker_t *s=ctx;return esp_codec_dev_write(s->codec,(void *)pcm,(int)bytes);
 }
-static int codec_close(void *ctx){speaker_t *s=ctx;return esp_codec_dev_close(s->codec);}
+static int codec_close(void *ctx){speaker_t *s=ctx;return s->codec?esp_codec_dev_close(s->codec):0;}
 static void publish_status(speaker_t *s)
 {
     s->status.dsp=echoy_audio_stats(s->audio);s->status.output_fault=s->status.dsp.output_fault;
     s->status.retry_required=s->output.retry_required;s->status.codec_error=s->output.last_error;
-    if(s->output.close_error)s->status.close_error=s->output.close_error;
+    s->status.close_error=s->output.close_error;
     (void)xQueueOverwrite(s->status_queue,&s->status);
 }
 static void reopen(speaker_t *s)
