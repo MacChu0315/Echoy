@@ -96,11 +96,20 @@ roles from MAC suffixes or replace real UIDs.
 Screen begin allocates one full 460800-byte RGB565 surface in aligned PSRAM,
 then uses `lv_snapshot_take_to_draw_buf()` on the complete 480x480 active LVGL
 screen under the display lock. No GSP types or partial flush buffers are used.
-Read returns bounded chunks from that immutable frame. All reads within one begin/end session return the same immutable frame,
-including arbitrary offsets and repeats after reading the final byte. Only an
-explicit end followed by begin captures a new frame. End is idempotent and frees
-the surface; the inspected Iris service invokes end
-on completion, stop and disconnect. Capture does not take an audio lock. Its
+Read returns bounded chunks from that immutable frame. Random-access reads retain one immutable frame, including tail-first and repeated
+chunks. The backend tracks a contiguous traversal starting at offset zero. Only
+when that traversal has covered all 460800 bytes may the next offset-zero read
+capture a fresh frame. A gap, repeat, post-completion nonzero read or invalid
+request resets traversal tracking without replacing the frame. This matches
+Iris `prepare_pull_screen()`, which increments its offset by each read size and
+resets offset to zero at frame completion without calling end/begin again.
+
+A refresh captures into a temporary second frame before replacing the old one;
+the retained allocation is one frame and the refresh peak is two frames. Failed
+capture or a changed size releases the temporary allocation, preserves the old
+frame and completed traversal, and allows another offset-zero retry. End is
+idempotent, frees retained storage and resets traversal tracking; the inspected
+Iris service invokes it on completion, stop and disconnect. Capture does not take an audio lock. Its
 CPU/PSRAM impact and exact display appearance remain hardware tests.
 
 ## Required physical checks (not yet performed)

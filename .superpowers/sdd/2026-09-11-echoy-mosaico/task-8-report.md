@@ -195,3 +195,64 @@ Validation:
 Logs: `/tmp/echoy-task8-r1-test.log`, `/tmp/echoy-task8-r1-asan-test.log`,
 `/tmp/echoy-task8-r1-idf-dev.log`, `/tmp/echoy-task8-r1-idf-release.log`,
 `/tmp/echoy-task8-r1-dev-symbol.log`.
+
+## Fix round 2/5 — continuous Iris pull frames with random-access safety
+
+Status: DONE. Base: `556c988`.
+
+Inspected the actual utils `esp_iris_services.c:prepare_pull_screen()`: it reads
+at `slot->offset`, advances by the returned size, and resets offset to zero at
+`total_size` while incrementing `pull_frame_id`. It does not call end/begin
+between those frames. The round-1 session-wide immutability therefore prevented
+continuous pull updates. Its blanket “only explicit end/begin refreshes” statement
+is superseded by the complete-traversal contract below.
+
+RED: added a begin-once test that reads two complete sequential frames using
+multiple chunks and a short final chunk. The second frame failed the expected
+capture-count assertion because it repeated the first captured frame.
+
+GREEN: track `expected_offset` and `full_pass_complete`. A new frame is captured
+only when the previous traversal started at zero and covered the whole frame
+contiguously, and the next read is offset zero. Tail-first reads cannot mark a
+pass complete; gaps, repeats, post-completion nonzero reads and invalid requests
+reset sequential tracking without replacing pixels. A new offset-zero read
+can then start a fresh traversal of the retained frame. Explicit end frees
+storage and resets the tracking state.
+
+Refresh is transactional: retain the current frame until a new capture succeeds
+with the same size originally reported to Iris. Allocation failure, failure
+after partial allocation or size mismatch frees only the candidate frame,
+retains the old pixels and completed-pass marker, and permits retry at offset
+zero. Successful refresh frees the previous frame. The steady allocation is
+one frame; the refresh peak is two frames. This peak is documented for physical
+memory/audio-contention acceptance instead of claiming a one-frame peak.
+
+Coverage includes two visibly different sequential frames after one begin,
+100 sessions of tail/head/middle/repeated reads, accidental gap/repeat/invalid
+sequences that must not refresh, nonzero access after completion, refresh
+retry after all three failure modes, and idempotent disconnect/end after a
+failed refresh. Allocation counts return to zero on end, including partial
+capture failure. No runtime clock, protocol, diagnostics or sensor behavior was
+changed in this round.
+
+Validation:
+
+- `cmake --build build-host -j8`: PASS.
+- `ctest --test-dir build-host -R platform_ --output-on-failure`: **4/4 PASS**.
+- `ctest --test-dir build-host --output-on-failure`: **28/28 PASS**, 30.56 s.
+- Rebuilt the existing sanitizer tree, then
+  `ASAN_OPTIONS=detect_leaks=0 UBSAN_OPTIONS=halt_on_error=1 ctest
+  --test-dir /tmp/echoy-task8-asan --output-on-failure`: **28/28 PASS**, 58.91 s.
+  ASan and UBSan reported no errors; the previously documented LeakSanitizer
+  ptrace limitation is unchanged.
+- Built actual IDF development configuration: PASS; nm confirms `inject_rpc`
+  exists. Restored and rebuilt ordinary `build/sdkconfig`: PASS; injection is
+  disabled and nm confirms no `inject_rpc`. Both final logs have no compiler
+  warning/error diagnostics.
+- `git diff --check`: PASS. No hardware flash, sibling changes or remote writes.
+  Actual repeated live pull appearance and PSRAM/audio contention remain the
+  existing hardware-acceptance measurements.
+
+Logs: `/tmp/echoy-task8-r2-platform.log`, `/tmp/echoy-task8-r2-test.log`,
+`/tmp/echoy-task8-r2-asan-test.log`, `/tmp/echoy-task8-r2-idf-dev.log`,
+`/tmp/echoy-task8-r2-idf-release.log`, `/tmp/echoy-task8-r2-dev-symbol.log`.

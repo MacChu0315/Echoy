@@ -20,8 +20,10 @@ bool echoy_storage_stage(echoy_storage_t *,const echoy_settings_t *,int64_t now)
 bool echoy_storage_flush(echoy_storage_t *,int64_t now);
 typedef struct { int percent,last_error; unsigned failures; bool valid,low,shutdown_requested; } echoy_battery_t;
 bool echoy_battery_observe(echoy_battery_t *,int error,unsigned state_of_charge);
-/* A whole RGB565 capture is immutable until end. Backend serializes calls. */
-typedef struct { uint8_t *pixels; size_t size; void *ctx;
+/* Each frame is immutable. A complete contiguous zero-to-size traversal allows
+ * the next offset-zero read to refresh it; random access never refreshes it.
+ * Backend serializes calls, and end releases all retained capture storage. */
+typedef struct { uint8_t *pixels; size_t size,expected_offset; bool full_pass_complete; void *ctx;
     bool (*capture)(void *,uint8_t **,size_t *); void (*release)(void *,uint8_t *);
 } echoy_mirror_t;
 bool echoy_mirror_begin(echoy_mirror_t *);
