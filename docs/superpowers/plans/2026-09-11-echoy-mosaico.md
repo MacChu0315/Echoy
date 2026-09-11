@@ -248,11 +248,11 @@ static double js_round(double x) { return floor(x + 0.5); }
 
 **Consumes:** Task 3，规格第 6–7 节。**Produces:** dispatch/tick/snapshot/bar_plan，以及可重放的状态轨迹。
 
-- [ ] 用纯 C 假时钟测试事件：play 后 waiting、625ms 拍边界开始、连续点击取消 waiting；pause 不改 motif；关机清除 pending、boot generation 改变后拒绝旧 ready 回调。
-- [ ] 将角色准备与角色提交分开；ready/failed 携操作 generation，取消后迟到 ready 不得生效。换角失败只清除该操作，旧角色、乐句和演奏不变。
-- [ ] 原型时间对照使用微秒整数：450000 接触确认、1050000 模拟同步准备、1800000 保持。实际硬件将 SYNC_READY/ROLE_READY 作为事件，不能 sleep 固定时间直接成功。
-- [ ] 实现“会话全暂停立即提交”与“部分暂停等下一小节”的区别。音量立即生效；表达立即反馈/着色，committedActivity 到边界才更新。
-- [ ] 将 output fault 与 motif availability 拆开；给下列轨迹写断言：
+- [x] 用纯 C 假时钟测试事件：play 后 waiting、625ms 拍边界开始、连续点击取消 waiting；pause 不改 motif；关机清除 pending、boot generation 改变后拒绝旧 ready 回调。
+- [x] 将角色准备与角色提交分开；ready/failed 携操作 generation，取消后迟到 ready 不得生效。换角失败只清除该操作，旧角色、乐句和演奏不变。
+- [x] 原型时间对照使用微秒整数：450000 接触确认、1050000 模拟同步准备、1800000 保持。实际硬件将 SYNC_READY/ROLE_READY 作为事件，不能 sleep 固定时间直接成功。
+- [x] 实现“会话全暂停立即提交”与“部分暂停等下一小节”的区别。音量立即生效；表达立即反馈/着色，committedActivity 到边界才更新。
+- [x] 将 output fault 与 motif availability 拆开；给下列轨迹写断言：
 
 ```text
 A→B 正在演奏；A output_fault：B.source 仍为 A，B.motif 不变。
@@ -261,10 +261,10 @@ A data_recovered：在下一边界恢复来源，不在小节中间重新编曲�
 暂停 A：A 输出为空，但 B 仍回应 A；暂停 B 不影响 A。
 ```
 
-- [ ] 逻辑会话测试：独立启动发现不入场；A>B 确认才合并；加入 C 不自动播放；拆边后 session 仍相同；交换左右边在小节生效；失联保持后回到连续本地时间；原参考掉电后幸存成员换参考；拒绝环/重复边/第四成员。
-- [ ] 移植 `DuijuApp.feedback()` 的状态优先级到 UI 无关的消息 key；加载/错误优先于正常演奏页，音量关闭不清 pending。
-- [ ] 验证：CTest `-R state` 和 JS/C 状态轨迹对照。真机差异（真实准备完成、心跳、设备身份）用显式适配事件测试，不修改 JS 来掩盖差异。
-- [ ] 建议提交 `feat: implement Echoy state and performance sessions`。
+- [x] 逻辑会话测试：独立启动发现不入场；A>B 确认才合并；加入 C 不自动播放；拆边后 session 仍相同；交换左右边在小节生效；失联保持后回到连续本地时间；原参考掉电后幸存成员换参考；拒绝环/重复边/第四成员。
+- [x] 移植 `DuijuApp.feedback()` 的状态优先级到 UI 无关的消息 key；加载/错误优先于正常演奏页，音量关闭不清 pending。
+- [x] 验证：CTest `-R state` 和 JS/C 状态轨迹对照。真机差异（真实准备完成、心跳、设备身份）用显式适配事件测试，不修改 JS 来掩盖差异。
+- [x] 建议提交 `feat: implement Echoy state and performance sessions`。
 
 ## Task 5: 本地音频合成和按样本调度
 
