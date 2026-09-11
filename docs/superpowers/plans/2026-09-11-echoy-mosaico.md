@@ -279,7 +279,7 @@ A data_recovered：在下一边界恢复来源，不在小节中间重新编曲�
 - [x] 调度目标样本由 `round((target_session_time - output_epoch) * sample_rate)` 推导；精确到音频块内。初始块 256 frames，队列 4 块，记录实际 DMA 深度。同步误差评估要扣除已排队音频的延迟，不能用 callback 时间当起音时间。
 - [x] 实时 activity 按原 DuijuAudio 的持续时长比例修正，只影响未开始音符；volume/mute 平滑更新，取消已排队旧 clockVersion 事件；错过事件丢弃并计数，不回放积压。
 - [x] 接 ES8311，打开 48kHz/16-bit/2ch；检查每次 codec 返回值。短暂输出故障只进入输出故障状态，重新打开失败要保留重试提示；不把扬声器故障上报成数据丢失。
-- [x] 验证：CTest `-R dsp`、12 乐句离线 WAV、Web Audio 单台参考 A/B 对比；记录 onset、包络、RMS/峰值、频谱差异与听测。不得以压缩器/采样率不同导致的波形差异声称所有音色等价。
+- [ ] 验证：CTest `-R dsp`、12 乐句离线 WAV、Web Audio 单台参考 A/B 对比；记录 onset、包络、RMS/峰值、频谱差异与听测。不得以压缩器/采样率不同导致的波形差异声称所有音色等价。（主机 DSP/WAV/Web Audio 指标已通过；真实扬声器听测留 Task 10。）
 - [x] 建议提交 `feat: synthesize Echoy voices on the local audio output`。
 
 ## Task 6: 产品 UI、触摸与语言完整复刻
@@ -306,9 +306,9 @@ A data_recovered：在下一边界恢复来源，不在小节中间重新编曲�
 
 **Consumes:** Task 4、BSP magnetic_interaction_demo 与网络实现。**Produces:** 正确的无线对端、独立于物理边的逻辑成员通信、可测量时间映射。
 
-- [ ] 先核对 `mosaico_network_start`、`mosaico_network_set_contact`、`mosaico_peer_link_get_device_id/get_boot_id` 和 raw callback；只初始化一次无线。GAME_EVENT payload 采用 Echoy magic/version，回调复制消息与收到时刻，不阻塞处理。
-- [ ] 磁场路径复用示例中 `bsp_magnetometer_read` → `mosaico_mag_classifier_process` → presence tracker。明确 invalid/saturated/calibration failure 对应 uncertain，不当成“已确认接触”。使用实际 local_edge/peer_edge 与 UID，拒绝不支持的方向/环/多新邻居歧义。
-- [ ] 新协议采用显式小端序编码，不直接发送 C struct。建议固定 40-byte 应用头，body<=60，总长<=100，头字段如下：
+- [x] 先核对 `mosaico_network_start`、`mosaico_network_set_contact`、`mosaico_peer_link_get_device_id/get_boot_id` 和 raw callback；只初始化一次无线。GAME_EVENT payload 采用 Echoy magic/version，回调复制消息与收到时刻，不阻塞处理。
+- [x] 磁场路径复用示例中 `bsp_magnetometer_read` → `mosaico_mag_classifier_process` → presence tracker。明确 invalid/saturated/calibration failure 对应 uncertain，不当成“已确认接触”。使用实际 local_edge/peer_edge 与 UID，拒绝不支持的方向/环/多新邻居歧义。
+- [x] 新协议采用显式小端序编码，不直接发送 C struct。建议固定 40-byte 应用头，body<=60，总长<=100，头字段如下：
 
 | Offset | 字节 | 字段 |
 | --- | --- | --- |
@@ -327,16 +327,16 @@ A data_recovered：在下一边界恢复来源，不在小节中间重新编曲�
 | 38 | 1 | body_length |
 | 39 | 1 | flags |
 
-- [ ] `source_id` 来自外层 BSP 消息并与预期成员匹配。定义 HELLO/TIME_REQ/TIME_RESP/HEARTBEAT/PREPARE/READY/COMMIT/ACK/ABORT；每种 body 编解码、长度与允许状态在 protocol.md 写全并测试。发现消息不授予 membership。
-- [ ] 状态事务包含 member UID/boot、role/phrase/committedActivity、motifAvailable、transport（只传播观测/本机请求）、有向边、epoch/rate、algorithm version、state revision 和内容摘要；音量不影响其他台编曲。最多 16 片/事务、总数据<=960 bytes、每来源最多 2 个重组事务，超额拒绝并报告，不无限分配。
-- [ ] 初版先同步参数/状态并在每台计算完整链；不要把 JSON 乐句直接塞入 64-byte network 应用消息。重复/乱序/长度错误/不认识版本/旧 boot/旧事务/截断/摘要错误用 parser 测试拒绝。
-- [ ] 用四时间戳交换，A 发 t1，B 收 t2/发 t3，A 收 t4：offset=((t2-t1)+(t3-t4))/2，RTT=(t4-t1)-(t3-t2)。至少 8 轮有效交换后，从低 RTT 样本估计偏移；持续采样拟合漂移。记录 timestamp 所在软件层及估计不确定度，不能称其为硬件 PHY 时间戳。
-- [ ] 先在 20s 窗口用偏移随时间的线性拟合估计 rate；拒绝倒退/异常 RTT 样本。未满足偏移稳定性和计划提前量时留在 syncing；真机同步预算以起音实测决定，不用演示 1.05s 替代。
-- [ ] 合并按最大成员数/UID 决定时间参考。PREPARE/READY 后约定至少两个小节后的 commit 边界，并重复发送 COMMIT 收 ACK；报文携 state revision，心跳暴露已提交 revision。任何晚于边界的准备不能临时追赶提交。
-- [ ] 最终 COMMIT 丢失/参考在边界前掉电必须有测试：未收到完整提交的成员维持旧状态，检测版本分歧后提示/降级/重新协商；不宣称在任意分区下仍能保证所有节点原子提交。
-- [ ] 应用层心跳初值 250ms，连续 3 次缺失判定失联，之后按 1.8s 保持窗口处理；这些是待真机验证的协议默认值，写入配置和诊断，区别于 BSP 的 2.5s 接触会话 stale timeout。
-- [ ] 测试移除物理边但保留无线后，Echoy GAME_EVENT 仍能同步；只广播 HELLO 的陌生设备不能加入；两个独立演奏组靠近不误并场。真实无线失联、参考重启、旧包重放都不能自动播放设备。
-- [ ] 验证：CTest `-R 'wire|clock|session'`；三实例假无线注入延迟、丢包、重排、重复、分区及重启；然后双机/三机测量。建议提交 `feat: synchronize Echoy sessions over Mosaico peer links`。
+- [x] `source_id` 来自外层 BSP 消息并与预期成员匹配。定义 HELLO/TIME_REQ/TIME_RESP/HEARTBEAT/PREPARE/READY/COMMIT/ACK/ABORT；每种 body 编解码、长度与允许状态在 protocol.md 写全并测试。发现消息不授予 membership。
+- [x] 状态事务包含 member UID/boot、role/phrase/committedActivity、motifAvailable、transport（只传播观测/本机请求）、有向边、epoch/rate、algorithm version、state revision 和内容摘要；音量不影响其他台编曲。最多 16 片/事务、总数据<=960 bytes、每来源最多 2 个重组事务，超额拒绝并报告，不无限分配。
+- [x] 初版先同步参数/状态并在每台计算完整链；不要把 JSON 乐句直接塞入 64-byte network 应用消息。重复/乱序/长度错误/不认识版本/旧 boot/旧事务/截断/摘要错误用 parser 测试拒绝。
+- [x] 用四时间戳交换，A 发 t1，B 收 t2/发 t3，A 收 t4：offset=((t2-t1)+(t3-t4))/2，RTT=(t4-t1)-(t3-t2)。至少 8 轮有效交换后，从低 RTT 样本估计偏移；持续采样拟合漂移。记录 timestamp 所在软件层及估计不确定度，不能称其为硬件 PHY 时间戳。
+- [x] 先在 20s 窗口用偏移随时间的线性拟合估计 rate；拒绝倒退/异常 RTT 样本。未满足偏移稳定性和计划提前量时留在 syncing；真机同步预算以起音实测决定，不用演示 1.05s 替代。
+- [x] 合并按最大成员数/UID 决定时间参考。PREPARE/READY 后约定至少两个小节后的 commit 边界，并重复发送 COMMIT 收 ACK；报文携 state revision，心跳暴露已提交 revision。任何晚于边界的准备不能临时追赶提交。
+- [x] 最终 COMMIT 丢失/参考在边界前掉电必须有测试：未收到完整提交的成员维持旧状态，检测版本分歧后提示/降级/重新协商；不宣称在任意分区下仍能保证所有节点原子提交。
+- [x] 应用层心跳初值 250ms，连续 3 次缺失判定失联，之后按 1.8s 保持窗口处理；这些是待真机验证的协议默认值，写入配置和诊断，区别于 BSP 的 2.5s 接触会话 stale timeout。
+- [x] 测试移除物理边但保留无线后，Echoy GAME_EVENT 仍能同步；只广播 HELLO 的陌生设备不能加入；两个独立演奏组靠近不误并场。真实无线失联、参考重启、旧包重放都不能自动播放设备。
+- [ ] 验证：CTest `-R 'wire|clock|session'`；三实例假无线注入延迟、丢包、重排、重复、分区及重启；然后双机/三机测量。建议提交 `feat: synchronize Echoy sessions over Mosaico peer links`。（主机与三实例验证已通过；当前只有一台设备，双机/三机测量留 Task 10。）
 
 ## Task 8: 设备设置、电量和可观测性
 
