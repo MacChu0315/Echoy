@@ -111,7 +111,7 @@ static void update_merge(echoy_core_t *c) {
 }
 static void update_arrangements(echoy_core_t *c) {
     for(int j=0;j<3;j++) {
-        echoy_session_t *s=&c->sessions[j];if(!s->id)continue;
+        echoy_session_t *s=&c->sessions[j];if(!s->id||s->wire_managed)continue;
         unsigned target=0,current=0;
         for(int a=0;a<3;a++)for(int b=0;b<3;b++) {
             if(!(s->members&MEMBER(a))||!(s->members&MEMBER(b)))continue;

@@ -38,7 +38,7 @@ void echoy_commit_members(echoy_core_t *c,unsigned members) {
     }
 }
 void echoy_commit_idle(echoy_core_t *c,int id) {
-    echoy_session_t *s=echoy_session_for(c,id);if(!s)return;
+    echoy_session_t *s=echoy_session_for(c,id);if(!s||s->wire_managed)return;
     for(int i=0;i<3;i++)if((s->members&MEMBER(i))&&c->devices[i].transport!=ECHOY_PAUSED)return;
     echoy_commit_members(c,s->members);
 }
@@ -164,10 +164,11 @@ void echoy_tick(echoy_core_t *c,int64_t at) {
         int64_t bar=(int64_t)(echoy_phase_steps(s,c->time_us)/16);
         if(bar!=s->last_bar) {
             s->last_bar=bar;
-            for(int i=0;i<3;i++)if(s->members&MEMBER(i)) {
+            for(int i=0;i<3;i++)if(!s->wire_managed&&(s->members&MEMBER(i))) {
                 echoy_device_t *d=&c->devices[i];d->motif_available=!d->data_fault&&!d->loading&&d->battery>0;
             }
-            echoy_commit_members(c,s->members);c->revision++;
+            if(!s->wire_managed)echoy_commit_members(c,s->members);
+            c->revision++;
         }
         for(int i=0;i<3;i++)if(s->members&MEMBER(i)) {
             echoy_device_t *d=&c->devices[i];if(d->transport!=ECHOY_WAITING)continue;

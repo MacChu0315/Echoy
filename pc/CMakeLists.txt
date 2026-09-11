@@ -10,7 +10,10 @@ add_library(echoy_core STATIC
     ../components/echoy_core/response.c
     ../components/echoy_core/harmony.c
     ../components/echoy_core/core.c
-    ../components/echoy_core/session.c)
+    ../components/echoy_core/session.c
+    ../components/echoy_core/wire.c
+    ../components/echoy_core/clock.c
+    ../components/echoy_core/protocol.c)
 target_include_directories(echoy_core PUBLIC ../components/echoy_core/include)
 target_compile_options(echoy_core PRIVATE -Wall -Wextra -Werror)
 target_link_libraries(echoy_core PUBLIC m)

@@ -431,6 +431,18 @@ dependencies:
       registry_url: https://components.espressif.com/
       type: service
     version: 9.5.0
+  mosaico_interaction:
+    dependencies: []
+    source:
+      path: ../esp-mosaico-bsp/components/mosaico_interaction
+      type: local
+    version: 0.3.0
+  mosaico_peer_link:
+    dependencies: []
+    source:
+      path: ../esp-mosaico-bsp/components/mosaico_peer_link
+      type: local
+    version: 0.4.0
   tangyumei3535/bmm150_sensorapi:
     component_hash: fe12d09c0ff06fabe9f4ae8fcc54b8b0ee59b936650bd26e8a3742e282fa4465
     dependencies:
@@ -450,6 +462,8 @@ direct_dependencies:
 - esp_iris
 - idf
 - lvgl/lvgl
-manifest_hash: eae832e14d2154482fa3d7f2bfd1fa35834357f3b52ee35909a84ca838ab4f0d
+- mosaico_interaction
+- mosaico_peer_link
+manifest_hash: 337c0f1e4d82f68c86f86becec0ef9e2f5b16f842c3e0cd17a20cfc66d516849
 target: esp32s31
 version: 3.0.0

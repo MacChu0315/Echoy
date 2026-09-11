@@ -41,7 +41,7 @@ typedef struct {
 } echoy_device_t;
 typedef struct {
     uint64_t id; unsigned members; int leader; int64_t epoch_us, created_us, last_bar;
-    int rate_ppm; bool arrangement_pending; unsigned target_edges;
+    int rate_ppm; bool wire_managed, arrangement_pending; unsigned target_edges;
     int64_t arrangement_at_us;
 } echoy_session_t;
 typedef struct { bool present, uncertain; int64_t since_us; } echoy_contact_t;

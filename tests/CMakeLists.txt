@@ -61,3 +61,32 @@ add_test(NAME ui_visual COMMAND "${Python3_EXECUTABLE}"
     "${CMAKE_CURRENT_LIST_DIR}/visual_compare.py"
     --cases "${CMAKE_CURRENT_LIST_DIR}/ui_cases.json"
     --renderer $<TARGET_FILE:echoy_ui_runner>)
+
+foreach(name wire clock session)
+    add_executable(test_${name} test_${name}.c)
+    target_link_libraries(test_${name} PRIVATE echoy_core)
+    target_compile_options(test_${name} PRIVATE -Wall -Wextra -Werror -UNDEBUG)
+    add_test(NAME ${name}_unit COMMAND test_${name})
+endforeach()
+
+set(ECHOY_BSP_COMPONENTS "${CMAKE_CURRENT_LIST_DIR}/../../esp-mosaico-bsp/components")
+add_executable(test_contact test_contact.c ../components/echoy_platform/contact.c
+    "${ECHOY_BSP_COMPONENTS}/mosaico_interaction/mosaico_mag_classifier.c")
+target_include_directories(test_contact PRIVATE platform_stubs
+    ../components/echoy_platform/include
+    "${ECHOY_BSP_COMPONENTS}/mosaico_network/include"
+    "${ECHOY_BSP_COMPONENTS}/mosaico_peer_link/include"
+    "${ECHOY_BSP_COMPONENTS}/mosaico_interaction/include"
+    "${ECHOY_BSP_COMPONENTS}/esp-mosaico-bsp/include"
+    ../managed_components/tangyumei3535__bmm150_sensorapi)
+target_link_libraries(test_contact PRIVATE echoy_core)
+target_compile_options(test_contact PRIVATE -Wall -Wextra -Werror -UNDEBUG)
+add_test(NAME session_contact COMMAND test_contact)
+add_executable(test_radio test_radio.c ../components/echoy_platform/radio.c)
+target_include_directories(test_radio PRIVATE platform_stubs ../components/echoy_platform/include
+    "${ECHOY_BSP_COMPONENTS}/mosaico_network/include"
+    "${ECHOY_BSP_COMPONENTS}/mosaico_peer_link/include"
+    "${ECHOY_BSP_COMPONENTS}/mosaico_interaction/include")
+target_link_libraries(test_radio PRIVATE echoy_core)
+target_compile_options(test_radio PRIVATE -Wall -Wextra -Werror -UNDEBUG)
+add_test(NAME wire_radio COMMAND test_radio)
