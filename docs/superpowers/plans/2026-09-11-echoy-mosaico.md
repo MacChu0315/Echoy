@@ -272,15 +272,15 @@ A data_recovered：在下一边界恢复来源，不在小节中间重新编曲�
 
 **Consumes:** 不可变 bar_plan 与实时 activity/volume。**Produces:** PCM/WAV 和真实 codec 输出，不通过浏览器代真机发声。
 
-- [ ] DSP 先在 PC 渲染单事件 WAV，测试所有采样有限、输出有界、预计时刻前静音、包络结束后有界收尾；随机噪声用原种子 1187 / Park–Miller 生成器。
-- [ ] 逐项移植 `DuijuSynth.note()` 的 kick/rim/hat/tone/grain/chord；保留多谐波、滤波器频率变化、和弦音数归一化、short/broken/answer 区别。声音事件 kind 不能统一映射为正弦波。
-- [ ] 实现 0.3125s delay、.18 feedback、低通阻尼及各台独立尾音/音量；禁止暂停一台时清空其他台的 DSP。浏览器总 limiter 的跨台作用不能逐样本重现于分布式扬声器；用单台参考及实际听测判断差异。
-- [ ] 以固定 voice pool 和预分配音频缓冲运行，初始池 64 个逻辑音符声部；每个声部可含多个振荡器。用最大密度长音/延迟场景测峰值，不允许靠无声丢音满足实时性；容量不足先定位并调整有界资源。
-- [ ] 调度目标样本由 `round((target_session_time - output_epoch) * sample_rate)` 推导；精确到音频块内。初始块 256 frames，队列 4 块，记录实际 DMA 深度。同步误差评估要扣除已排队音频的延迟，不能用 callback 时间当起音时间。
-- [ ] 实时 activity 按原 DuijuAudio 的持续时长比例修正，只影响未开始音符；volume/mute 平滑更新，取消已排队旧 clockVersion 事件；错过事件丢弃并计数，不回放积压。
-- [ ] 接 ES8311，打开 48kHz/16-bit/2ch；检查每次 codec 返回值。短暂输出故障只进入输出故障状态，重新打开失败要保留重试提示；不把扬声器故障上报成数据丢失。
-- [ ] 验证：CTest `-R dsp`、12 乐句离线 WAV、Web Audio 单台参考 A/B 对比；记录 onset、包络、RMS/峰值、频谱差异与听测。不得以压缩器/采样率不同导致的波形差异声称所有音色等价。
-- [ ] 建议提交 `feat: synthesize Echoy voices on the local audio output`。
+- [x] DSP 先在 PC 渲染单事件 WAV，测试所有采样有限、输出有界、预计时刻前静音、包络结束后有界收尾；随机噪声用原种子 1187 / Park–Miller 生成器。
+- [x] 逐项移植 `DuijuSynth.note()` 的 kick/rim/hat/tone/grain/chord；保留多谐波、滤波器频率变化、和弦音数归一化、short/broken/answer 区别。声音事件 kind 不能统一映射为正弦波。
+- [x] 实现 0.3125s delay、.18 feedback、低通阻尼及各台独立尾音/音量；禁止暂停一台时清空其他台的 DSP。浏览器总 limiter 的跨台作用不能逐样本重现于分布式扬声器；用单台参考及实际听测判断差异。
+- [x] 以固定 voice pool 和预分配音频缓冲运行，初始池 64 个逻辑音符声部；每个声部可含多个振荡器。用最大密度长音/延迟场景测峰值，不允许靠无声丢音满足实时性；容量不足先定位并调整有界资源。
+- [x] 调度目标样本由 `round((target_session_time - output_epoch) * sample_rate)` 推导；精确到音频块内。初始块 256 frames，队列 4 块，记录实际 DMA 深度。同步误差评估要扣除已排队音频的延迟，不能用 callback 时间当起音时间。
+- [x] 实时 activity 按原 DuijuAudio 的持续时长比例修正，只影响未开始音符；volume/mute 平滑更新，取消已排队旧 clockVersion 事件；错过事件丢弃并计数，不回放积压。
+- [x] 接 ES8311，打开 48kHz/16-bit/2ch；检查每次 codec 返回值。短暂输出故障只进入输出故障状态，重新打开失败要保留重试提示；不把扬声器故障上报成数据丢失。
+- [x] 验证：CTest `-R dsp`、12 乐句离线 WAV、Web Audio 单台参考 A/B 对比；记录 onset、包络、RMS/峰值、频谱差异与听测。不得以压缩器/采样率不同导致的波形差异声称所有音色等价。
+- [x] 建议提交 `feat: synthesize Echoy voices on the local audio output`。
 
 ## Task 6: 产品 UI、触摸与语言完整复刻
 
