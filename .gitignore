@@ -5,3 +5,6 @@ managed_components/
 output/generated/
 __pycache__/
 *.pyc
+
+output/ui/**/*.ppm
+output/ui/**/*.hits.bin

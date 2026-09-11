@@ -149,7 +149,10 @@ const actions=[...screen.querySelectorAll('[data-action]')].map(element=>{const 
 const plan=app.plan().find(entry=>entry.id==='A'),motif=JSON.parse(JSON.stringify(plan?.motif||[])),canvas=screen.querySelector('canvas');let pixelHash=null,renderedEventSteps=[];if(canvas){const audioPlaying=app.audio.playing;window.__ECHOY_SCORE_ARCS__=[];window.__ECHOY_SCORE_CAPTURE_ACTIVE=true;app.audio.playing=false;app.view.draw('A');window.__ECHOY_SCORE_CAPTURE_ACTIVE=false;renderedEventSteps=window.__ECHOY_SCORE_ARCS__.filter(dot=>dot.r>2).map(dot=>Math.round((dot.x-29)/19));app.audio.playing=audioPlaying;app.view.draw('A');const bytes=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;let value=2166136261;for(const byte of bytes){value^=byte;value=Math.imul(value,16777619);}pixelHash=(value>>>0).toString(16).padStart(8,'0');}
 const feedbackElement=screen.querySelector('[data-feedback]');
 const result={id:item.locale+'/'+item.id,locale:item.locale,state:item.state,route:screen.querySelector('.product-page')?.dataset.route??null,screen:{width:round(screenRect.width),height:round(screenRect.height),text:screen.innerText.replace(/[ \\t]+/g,' ').replace(/\\n{2,}/g,'\\n').trim()},feedback:{branch:item.feedbackBranch??null,text:feedbackElement?.textContent.trim()??null},actions,styles,motif,canvas:{width:canvas?.width??0,height:canvas?.height??0,pixelHash,observation:canvas?'CanvasRenderingContext2D.arc calls at score y=210':null,renderedEventSteps}};
-document.body.replaceChildren(screen);screen.style.position='absolute';screen.style.inset='0';screen.style.margin='0';window.__ECHOY_CAPTURE__=result;return result;})();
+const beforeAccent=getComputedStyle(screen).getPropertyValue('--accent').trim();
+// Preserve the live product's inherited palette when removing its desktop shell.
+screen.style.setProperty('--accent',beforeAccent);
+document.body.replaceChildren(screen);result.paintContext={beforeAccent,afterAccent:getComputedStyle(screen).getPropertyValue('--accent').trim()};screen.style.position='absolute';screen.style.inset='0';screen.style.margin='0';window.__ECHOY_CAPTURE__=result;return result;})();
 </script>`;
   return html.replace('</head>', `${head}</head>`).replace('</body>', `${tail}</body>`);
 }
@@ -202,6 +205,8 @@ async function captureAll(uiCases, writeImages) {
       if (evaluated.exceptionDetails) throw new Error(`capture ${item.locale}/${item.id}: ${evaluated.exceptionDetails.text}`);
       const capture = evaluated.result.value;
       assert(capture, `capture ${item.locale}/${item.id} returned no metadata`);
+      assert(capture.paintContext.beforeAccent, 'product accent was not inherited before detach');
+      assert.equal(capture.paintContext.afterAccent, capture.paintContext.beforeAccent, `${item.locale}/${item.id}: detaching screen lost --accent and makes product controls transparent`);
       const screenshot = await cdp.send('Page.captureScreenshot', {
         format: 'png',
         fromSurface: true,

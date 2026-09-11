@@ -1,0 +1,814 @@
+{
+  "schemaVersion": 1,
+  "oracleSha256": "d23c51b025b44a0d2d11a3ad5a371abd4a2117adb8e742491e838af6dc4c0bb5",
+  "viewport": {
+    "width": 480,
+    "height": 480,
+    "deviceScaleFactor": 1
+  },
+  "fixedTimeMs": 10000,
+  "animation": "disabled",
+  "fontFaces": [
+    {
+      "family": "Echoy Latin",
+      "style": "normal",
+      "weight": 400,
+      "source": "/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf"
+    },
+    {
+      "family": "Echoy Latin",
+      "style": "normal",
+      "weight": 700,
+      "source": "/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf"
+    },
+    {
+      "family": "Echoy CJK",
+      "style": "normal",
+      "weight": 400,
+      "source": "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+    },
+    {
+      "family": "Echoy CJK",
+      "style": "normal",
+      "weight": 700,
+      "source": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
+    },
+    {
+      "family": "Echoy Mono",
+      "style": "normal",
+      "weight": 400,
+      "source": "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
+    },
+    {
+      "family": "Echoy Mono",
+      "style": "normal",
+      "weight": 700,
+      "source": "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf"
+    }
+  ],
+  "caseCount": 74,
+  "cases": [
+    {
+      "locale": "zh-CN",
+      "id": "perform-pulse",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "paused",
+      "feedbackBranch": "paused-independent",
+      "expectedFeedback": "已暂停 · 独奏就绪"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "perform-voice",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "paused"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "perform-dust",
+      "route": "perform",
+      "role": "dust",
+      "phrase": 1,
+      "activity": 0.48,
+      "state": "paused"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "perform-harmony",
+      "route": "perform",
+      "role": "harmony",
+      "phrase": 2,
+      "activity": 0.5,
+      "state": "paused"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "perform-playing",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "normal-independent",
+      "expectedFeedback": "独奏"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "perform-waiting",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "waiting",
+      "feedbackBranch": "waiting-beat",
+      "expectedFeedback": "等待下一拍 · 可点暂停取消"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "perform-pending-activity",
+      "route": "perform",
+      "role": "dust",
+      "phrase": 1,
+      "activity": 0.78,
+      "committedActivity": 0.48,
+      "state": "paused",
+      "feedbackBranch": "pending-activity",
+      "expectedFeedback": "新节奏 · 下一小节生效"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-motif-recovery",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "paused",
+      "feedbackBranch": "motif-recovery",
+      "expectedFeedback": "声音已准备 · 下一小节恢复"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-play-preparing",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "paused",
+      "feedbackBranch": "play-preparing",
+      "expectedFeedback": "准备播放 · 可点暂停取消"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-sync-failed",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "playing",
+      "feedbackBranch": "sync-failed",
+      "expectedFeedback": "暂未对齐 · 继续原来的演奏"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-syncing",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "playing",
+      "feedbackBranch": "syncing",
+      "expectedFeedback": "正在对拍 · 原演奏继续"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-sync-waiting",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "playing",
+      "feedbackBranch": "sync-waiting",
+      "expectedFeedback": "已约定拍点 · 下一小节接入"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-pending-role",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "paused",
+      "feedbackBranch": "pending-role",
+      "expectedFeedback": "和声 · 分解 待生效"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-pending-phrase",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "paused",
+      "feedbackBranch": "pending-phrase",
+      "expectedFeedback": "轻答 · 下一小节生效"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-moving",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "moving",
+      "expectedFeedback": "位置确认中 · 保持当前编排"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-contact-confirming",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "contact-confirming",
+      "expectedFeedback": "接触待确认"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-arrangement-pending",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "arrangement-pending",
+      "expectedFeedback": "新关系 · 下一小节生效"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-notice",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "notice",
+      "expectedFeedback": "已生效"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-link-split",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "link-split",
+      "expectedFeedback": "无线失联 · 本地独奏"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-link-hold",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "link-hold",
+      "expectedFeedback": "同伴失联 · 暂时保持拍子"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-normal-source",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "playing",
+      "feedbackBranch": "normal-source",
+      "expectedFeedback": "回应左邻"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-normal-leader",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "normal-leader",
+      "expectedFeedback": "提出动机"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-normal-shared-solo",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "normal-shared-solo",
+      "expectedFeedback": "独奏 · 保留同场拍子"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-paused-source",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "paused",
+      "feedbackBranch": "paused-source",
+      "expectedFeedback": "已暂停 · 回应关系保留"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "feedback-paused-shared",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "paused",
+      "feedbackBranch": "paused-shared",
+      "expectedFeedback": "已暂停 · 同场拍子保留"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "role-pulse",
+      "route": "role",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "paused"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "role-voice",
+      "route": "role",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "paused"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "role-dust",
+      "route": "role",
+      "role": "dust",
+      "phrase": 1,
+      "activity": 0.48,
+      "state": "paused"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "role-harmony",
+      "route": "role",
+      "role": "harmony",
+      "phrase": 2,
+      "activity": 0.5,
+      "state": "paused"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "volume",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "volume": 0.7,
+      "state": "volume"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "boot",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "booting"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "loading-data",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "loading"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "loading-role",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "role-preparing",
+      "preparingRole": "harmony"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "error-role",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "role-error"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "error-data",
+      "route": "perform",
+      "role": "dust",
+      "phrase": 1,
+      "activity": 0.48,
+      "state": "data-error"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "error-audio",
+      "route": "perform",
+      "role": "harmony",
+      "phrase": 2,
+      "activity": 0.5,
+      "state": "audio-error"
+    },
+    {
+      "locale": "zh-CN",
+      "id": "low-battery",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "battery": 12,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "perform-pulse",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "paused",
+      "feedbackBranch": "paused-independent",
+      "expectedFeedback": "Paused · Ready for solo"
+    },
+    {
+      "locale": "en",
+      "id": "perform-voice",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "perform-dust",
+      "route": "perform",
+      "role": "dust",
+      "phrase": 1,
+      "activity": 0.48,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "perform-harmony",
+      "route": "perform",
+      "role": "harmony",
+      "phrase": 2,
+      "activity": 0.5,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "perform-playing",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "normal-independent",
+      "expectedFeedback": "Solo"
+    },
+    {
+      "locale": "en",
+      "id": "perform-waiting",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "waiting",
+      "feedbackBranch": "waiting-beat",
+      "expectedFeedback": "Next beat · Tap Pause to cancel"
+    },
+    {
+      "locale": "en",
+      "id": "perform-pending-activity",
+      "route": "perform",
+      "role": "dust",
+      "phrase": 1,
+      "activity": 0.78,
+      "committedActivity": 0.48,
+      "state": "paused",
+      "feedbackBranch": "pending-activity",
+      "expectedFeedback": "New rhythm · Next bar"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-motif-recovery",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "paused",
+      "feedbackBranch": "motif-recovery",
+      "expectedFeedback": "Sound ready · Resumes next bar"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-play-preparing",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "paused",
+      "feedbackBranch": "play-preparing",
+      "expectedFeedback": "Preparing · Tap Pause to cancel"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-sync-failed",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "playing",
+      "feedbackBranch": "sync-failed",
+      "expectedFeedback": "Not synced · Keeping current music"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-syncing",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "playing",
+      "feedbackBranch": "syncing",
+      "expectedFeedback": "Syncing · Current music continues"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-sync-waiting",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "playing",
+      "feedbackBranch": "sync-waiting",
+      "expectedFeedback": "Beat agreed · Joins next bar"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-pending-role",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "paused",
+      "feedbackBranch": "pending-role",
+      "expectedFeedback": "HARMONY · Arpeggio · Pending"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-pending-phrase",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "paused",
+      "feedbackBranch": "pending-phrase",
+      "expectedFeedback": "Light reply · Next bar"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-moving",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "moving",
+      "expectedFeedback": "Checking position · Keeping pattern"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-contact-confirming",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "contact-confirming",
+      "expectedFeedback": "Confirming contact"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-arrangement-pending",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "arrangement-pending",
+      "expectedFeedback": "New connection · Next bar"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-notice",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "notice",
+      "expectedFeedback": "Applied"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-link-split",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "link-split",
+      "expectedFeedback": "Link lost · Playing solo"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-link-hold",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "link-hold",
+      "expectedFeedback": "Peer lost · Holding the beat"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-normal-source",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "playing",
+      "feedbackBranch": "normal-source",
+      "expectedFeedback": "Replying to the left"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-normal-leader",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "normal-leader",
+      "expectedFeedback": "Leading the phrase"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-normal-shared-solo",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "playing",
+      "feedbackBranch": "normal-shared-solo",
+      "expectedFeedback": "Solo · Keeping the shared beat"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-paused-source",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "paused",
+      "feedbackBranch": "paused-source",
+      "expectedFeedback": "Paused · Response retained"
+    },
+    {
+      "locale": "en",
+      "id": "feedback-paused-shared",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "paused",
+      "feedbackBranch": "paused-shared",
+      "expectedFeedback": "Paused · Shared beat retained"
+    },
+    {
+      "locale": "en",
+      "id": "role-pulse",
+      "route": "role",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "role-voice",
+      "route": "role",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "role-dust",
+      "route": "role",
+      "role": "dust",
+      "phrase": 1,
+      "activity": 0.48,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "role-harmony",
+      "route": "role",
+      "role": "harmony",
+      "phrase": 2,
+      "activity": 0.5,
+      "state": "paused"
+    },
+    {
+      "locale": "en",
+      "id": "volume",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "volume": 0.7,
+      "state": "volume"
+    },
+    {
+      "locale": "en",
+      "id": "boot",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "booting"
+    },
+    {
+      "locale": "en",
+      "id": "loading-data",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "loading"
+    },
+    {
+      "locale": "en",
+      "id": "loading-role",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "state": "role-preparing",
+      "preparingRole": "harmony"
+    },
+    {
+      "locale": "en",
+      "id": "error-role",
+      "route": "perform",
+      "role": "voice",
+      "phrase": 1,
+      "activity": 0.56,
+      "state": "role-error"
+    },
+    {
+      "locale": "en",
+      "id": "error-data",
+      "route": "perform",
+      "role": "dust",
+      "phrase": 1,
+      "activity": 0.48,
+      "state": "data-error"
+    },
+    {
+      "locale": "en",
+      "id": "error-audio",
+      "route": "perform",
+      "role": "harmony",
+      "phrase": 2,
+      "activity": 0.5,
+      "state": "audio-error"
+    },
+    {
+      "locale": "en",
+      "id": "low-battery",
+      "route": "perform",
+      "role": "pulse",
+      "phrase": 1,
+      "activity": 0.58,
+      "battery": 12,
+      "state": "paused"
+    }
+  ]
+}

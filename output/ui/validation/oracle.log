@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "sha256": "d23c51b025b44a0d2d11a3ad5a371abd4a2117adb8e742491e838af6dc4c0bb5",
+  "fixtureCases": 48600,
+  "fixtureEvents": 216510,
+  "trajectories": 6,
+  "checkpoints": 21,
+  "uiCases": 74,
+  "deterministicSha256": "0f4cb863249cbc338e98ec634e03b6fa53ecc1c582b51bfba5a3d714be8aa8bc"
+}

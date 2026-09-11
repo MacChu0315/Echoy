@@ -573,6 +573,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -1061,6 +1065,10 @@
           10,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -1539,6 +1547,10 @@
           11,
           15
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#7b8452",
+        "afterAccent": "#7b8452"
       }
     },
     {
@@ -2082,6 +2094,10 @@
           10,
           13
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#aa7b3d",
+        "afterAccent": "#aa7b3d"
       }
     },
     {
@@ -2600,6 +2616,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -3088,6 +3108,10 @@
           10,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -3566,6 +3590,10 @@
           11,
           15
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#7b8452",
+        "afterAccent": "#7b8452"
       }
     },
     {
@@ -4002,6 +4030,10 @@
         "pixelHash": "e532bc8f",
         "observation": "CanvasRenderingContext2D.arc calls at score y=210",
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -4520,6 +4552,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -5008,6 +5044,10 @@
           10,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -5496,6 +5536,10 @@
           10,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -5984,6 +6028,10 @@
           10,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -6502,6 +6550,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -6990,6 +7042,10 @@
           10,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -7508,6 +7564,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -8026,6 +8086,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -8544,6 +8608,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -9062,6 +9130,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -9580,6 +9652,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -10098,6 +10174,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -10576,6 +10656,10 @@
           9,
           13
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -11094,6 +11178,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -11612,6 +11700,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -12090,6 +12182,10 @@
           9,
           13
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -12608,6 +12704,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -13106,6 +13206,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -13577,6 +13681,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -14039,6 +14147,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#7b8452",
+        "afterAccent": "#7b8452"
       }
     },
     {
@@ -14565,6 +14677,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#aa7b3d",
+        "afterAccent": "#aa7b3d"
       }
     },
     {
@@ -15153,6 +15269,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -15211,6 +15331,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -15417,6 +15541,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -15696,6 +15824,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -15948,6 +16080,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -16154,6 +16290,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#7b8452",
+        "afterAccent": "#7b8452"
       }
     },
     {
@@ -16461,6 +16601,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#aa7b3d",
+        "afterAccent": "#aa7b3d"
       }
     },
     {
@@ -16979,6 +17123,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -17497,6 +17645,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -17985,6 +18137,10 @@
           10,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -18463,6 +18619,10 @@
           11,
           15
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#7b8452",
+        "afterAccent": "#7b8452"
       }
     },
     {
@@ -19006,6 +19166,10 @@
           10,
           13
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#aa7b3d",
+        "afterAccent": "#aa7b3d"
       }
     },
     {
@@ -19524,6 +19688,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -20012,6 +20180,10 @@
           10,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -20490,6 +20662,10 @@
           11,
           15
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#7b8452",
+        "afterAccent": "#7b8452"
       }
     },
     {
@@ -20926,6 +21102,10 @@
         "pixelHash": "97fa23c1",
         "observation": "CanvasRenderingContext2D.arc calls at score y=210",
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -21444,6 +21624,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -21932,6 +22116,10 @@
           10,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -22420,6 +22608,10 @@
           10,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -22908,6 +23100,10 @@
           10,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -23426,6 +23622,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -23914,6 +24114,10 @@
           10,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -24432,6 +24636,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -24950,6 +25158,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -25468,6 +25680,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -25986,6 +26202,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -26504,6 +26724,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -27022,6 +27246,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -27500,6 +27728,10 @@
           9,
           13
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -28018,6 +28250,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -28536,6 +28772,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -29014,6 +29254,10 @@
           9,
           13
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -29532,6 +29776,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -30030,6 +30278,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -30501,6 +30753,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -30963,6 +31219,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#7b8452",
+        "afterAccent": "#7b8452"
       }
     },
     {
@@ -31489,6 +31749,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#aa7b3d",
+        "afterAccent": "#aa7b3d"
       }
     },
     {
@@ -32077,6 +32341,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -32135,6 +32403,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -32341,6 +32613,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -32620,6 +32896,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     },
     {
@@ -32872,6 +33152,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#496da1",
+        "afterAccent": "#496da1"
       }
     },
     {
@@ -33078,6 +33362,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#7b8452",
+        "afterAccent": "#7b8452"
       }
     },
     {
@@ -33385,6 +33673,10 @@
         "pixelHash": null,
         "observation": null,
         "renderedEventSteps": []
+      },
+      "paintContext": {
+        "beforeAccent": "#aa7b3d",
+        "afterAccent": "#aa7b3d"
       }
     },
     {
@@ -33903,6 +34195,10 @@
           12,
           14
         ]
+      },
+      "paintContext": {
+        "beforeAccent": "#d95535",
+        "afterAccent": "#d95535"
       }
     }
   ]

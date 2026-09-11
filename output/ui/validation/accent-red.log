@@ -1,0 +1,20 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: zh-CN/perform-pulse: detaching screen lost --accent and makes product controls transparent
+
+'' !== '#d95535'
+
+    at captureAll (file:///home/zhuzhengming/esp/ts/Mosaico/Echoy/tools/capture_reference.mjs:207:14)
+    at async main (file:///home/zhuzhengming/esp/ts/Mosaico/Echoy/tools/capture_reference.mjs:242:21)
+    at async file:///home/zhuzhengming/esp/ts/Mosaico/Echoy/tools/capture_reference.mjs:260:1 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '',
+  expected: '#d95535',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.11.1

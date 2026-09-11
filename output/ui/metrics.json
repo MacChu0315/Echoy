@@ -1,0 +1,668 @@
+[
+  {
+    "id": "zh-CN/perform-pulse",
+    "mae": 1.9827271412037037,
+    "rgb565AdjustedMae": 1.7325419560185185,
+    "fractionOver24": 0.0185546875,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/perform-voice",
+    "mae": 2.345779803240741,
+    "rgb565AdjustedMae": 2.039945023148148,
+    "fractionOver24": 0.030473090277777778,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/perform-dust",
+    "mae": 1.8686979166666666,
+    "rgb565AdjustedMae": 1.6451244212962963,
+    "fractionOver24": 0.018407118055555557,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/perform-harmony",
+    "mae": 2.3241377314814815,
+    "rgb565AdjustedMae": 2.0317881944444443,
+    "fractionOver24": 0.0282421875,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/perform-playing",
+    "mae": 1.916361400462963,
+    "rgb565AdjustedMae": 1.6785185185185185,
+    "fractionOver24": 0.01775173611111111,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/perform-waiting",
+    "mae": 2.2737037037037036,
+    "rgb565AdjustedMae": 1.9350607638888888,
+    "fractionOver24": 0.031219618055555554,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/perform-pending-activity",
+    "mae": 1.8717679398148148,
+    "rgb565AdjustedMae": 1.6467042824074074,
+    "fractionOver24": 0.018971354166666666,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-motif-recovery",
+    "mae": 1.9703862847222222,
+    "rgb565AdjustedMae": 1.718169849537037,
+    "fractionOver24": 0.018875868055555557,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-play-preparing",
+    "mae": 2.070765335648148,
+    "rgb565AdjustedMae": 1.808543113425926,
+    "fractionOver24": 0.021419270833333334,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-sync-failed",
+    "mae": 2.341009837962963,
+    "rgb565AdjustedMae": 2.026521990740741,
+    "fractionOver24": 0.030685763888888887,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-syncing",
+    "mae": 2.4837543402777778,
+    "rgb565AdjustedMae": 2.160993923611111,
+    "fractionOver24": 0.033220486111111114,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-sync-waiting",
+    "mae": 2.372683738425926,
+    "rgb565AdjustedMae": 2.0594907407407406,
+    "fractionOver24": 0.031401909722222225,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-pending-role",
+    "mae": 2.0231105324074075,
+    "rgb565AdjustedMae": 1.7691550925925925,
+    "fractionOver24": 0.019578993055555556,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-pending-phrase",
+    "mae": 2.3555338541666666,
+    "rgb565AdjustedMae": 2.0483000578703705,
+    "fractionOver24": 0.03109809027777778,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-moving",
+    "mae": 2.2295703125,
+    "rgb565AdjustedMae": 1.9430844907407407,
+    "fractionOver24": 0.02572482638888889,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-contact-confirming",
+    "mae": 1.9236154513888888,
+    "rgb565AdjustedMae": 1.6807277199074073,
+    "fractionOver24": 0.017764756944444446,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-arrangement-pending",
+    "mae": 1.9653718171296297,
+    "rgb565AdjustedMae": 1.7116377314814815,
+    "fractionOver24": 0.01884982638888889,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-notice",
+    "mae": 1.9182581018518519,
+    "rgb565AdjustedMae": 1.679949363425926,
+    "fractionOver24": 0.01775173611111111,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-link-split",
+    "mae": 1.9541695601851852,
+    "rgb565AdjustedMae": 1.7028920717592593,
+    "fractionOver24": 0.01825954861111111,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-link-hold",
+    "mae": 1.966796875,
+    "rgb565AdjustedMae": 1.7131004050925926,
+    "fractionOver24": 0.01873263888888889,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-normal-source",
+    "mae": 2.252384259259259,
+    "rgb565AdjustedMae": 1.9634678819444444,
+    "fractionOver24": 0.0289453125,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-normal-leader",
+    "mae": 1.9196903935185186,
+    "rgb565AdjustedMae": 1.6793735532407408,
+    "fractionOver24": 0.01775173611111111,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-normal-shared-solo",
+    "mae": 1.965044849537037,
+    "rgb565AdjustedMae": 1.7126663773148147,
+    "fractionOver24": 0.018697916666666668,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-paused-source",
+    "mae": 2.328103298611111,
+    "rgb565AdjustedMae": 2.024146412037037,
+    "fractionOver24": 0.03012152777777778,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/feedback-paused-shared",
+    "mae": 1.9979788773148148,
+    "rgb565AdjustedMae": 1.744793113425926,
+    "fractionOver24": 0.019019097222222222,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "zh-CN/role-pulse",
+    "mae": 2.418252314814815,
+    "rgb565AdjustedMae": 2.1629195601851854,
+    "fractionOver24": 0.027764756944444444,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 8
+  },
+  {
+    "id": "zh-CN/role-voice",
+    "mae": 2.513033854166667,
+    "rgb565AdjustedMae": 2.250083912037037,
+    "fractionOver24": 0.028836805555555556,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 8
+  },
+  {
+    "id": "zh-CN/role-dust",
+    "mae": 2.4801924189814817,
+    "rgb565AdjustedMae": 2.2152387152777777,
+    "fractionOver24": 0.028645833333333332,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 8
+  },
+  {
+    "id": "zh-CN/role-harmony",
+    "mae": 2.5364872685185187,
+    "rgb565AdjustedMae": 2.271423611111111,
+    "fractionOver24": 0.029027777777777777,
+    "max": 211,
+    "masks": [],
+    "verifiedControlBoundaries": 8
+  },
+  {
+    "id": "zh-CN/volume",
+    "mae": 2.2825318287037035,
+    "rgb565AdjustedMae": 1.3746831597222222,
+    "fractionOver24": 0.01612847222222222,
+    "max": 173,
+    "masks": [],
+    "verifiedControlBoundaries": 1
+  },
+  {
+    "id": "zh-CN/boot",
+    "mae": 1.125953414351852,
+    "rgb565AdjustedMae": 1.0179152199074073,
+    "fractionOver24": 0.0120703125,
+    "max": 179,
+    "masks": [],
+    "verifiedControlBoundaries": 0
+  },
+  {
+    "id": "zh-CN/loading-data",
+    "mae": 0.49713252314814815,
+    "rgb565AdjustedMae": 0.3946325231481482,
+    "fractionOver24": 0.004505208333333333,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 1
+  },
+  {
+    "id": "zh-CN/loading-role",
+    "mae": 0.6003052662037037,
+    "rgb565AdjustedMae": 0.4757016782407407,
+    "fractionOver24": 0.005646701388888889,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 1
+  },
+  {
+    "id": "zh-CN/error-role",
+    "mae": 1.1509693287037037,
+    "rgb565AdjustedMae": 0.9976128472222222,
+    "fractionOver24": 0.011857638888888888,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 1
+  },
+  {
+    "id": "zh-CN/error-data",
+    "mae": 0.6403342013888889,
+    "rgb565AdjustedMae": 0.529771412037037,
+    "fractionOver24": 0.005620659722222222,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 1
+  },
+  {
+    "id": "zh-CN/error-audio",
+    "mae": 0.639777199074074,
+    "rgb565AdjustedMae": 0.5294560185185185,
+    "fractionOver24": 0.005633680555555556,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 1
+  },
+  {
+    "id": "zh-CN/low-battery",
+    "mae": 1.9665494791666667,
+    "rgb565AdjustedMae": 1.7170529513888888,
+    "fractionOver24": 0.018203125,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/perform-pulse",
+    "mae": 1.8661588541666667,
+    "rgb565AdjustedMae": 1.6176186342592593,
+    "fractionOver24": 0.01918402777777778,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/perform-voice",
+    "mae": 2.314921875,
+    "rgb565AdjustedMae": 1.9993330439814814,
+    "fractionOver24": 0.032452256944444445,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/perform-dust",
+    "mae": 1.7674985532407408,
+    "rgb565AdjustedMae": 1.548447627314815,
+    "fractionOver24": 0.019453125,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/perform-harmony",
+    "mae": 2.3025245949074074,
+    "rgb565AdjustedMae": 2.0013498263888887,
+    "fractionOver24": 0.030069444444444444,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/perform-playing",
+    "mae": 1.6775202546296297,
+    "rgb565AdjustedMae": 1.4485908564814816,
+    "fractionOver24": 0.016510416666666666,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/perform-waiting",
+    "mae": 2.394809027777778,
+    "rgb565AdjustedMae": 2.0414438657407405,
+    "fractionOver24": 0.03373697916666667,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/perform-pending-activity",
+    "mae": 1.6889771412037038,
+    "rgb565AdjustedMae": 1.4751576967592592,
+    "fractionOver24": 0.018641493055555555,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-motif-recovery",
+    "mae": 2.0533376736111113,
+    "rgb565AdjustedMae": 1.7915364583333333,
+    "fractionOver24": 0.021050347222222224,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-play-preparing",
+    "mae": 2.1618142361111112,
+    "rgb565AdjustedMae": 1.8938252314814814,
+    "fractionOver24": 0.023203125,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-sync-failed",
+    "mae": 2.439000289351852,
+    "rgb565AdjustedMae": 2.107818287037037,
+    "fractionOver24": 0.034192708333333335,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-syncing",
+    "mae": 2.671785300925926,
+    "rgb565AdjustedMae": 2.32834056712963,
+    "fractionOver24": 0.03710069444444444,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-sync-waiting",
+    "mae": 2.520685763888889,
+    "rgb565AdjustedMae": 2.1897294560185183,
+    "fractionOver24": 0.03470486111111111,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-pending-role",
+    "mae": 2.0034375,
+    "rgb565AdjustedMae": 1.7428544560185186,
+    "fractionOver24": 0.02080295138888889,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-pending-phrase",
+    "mae": 2.3687123842592595,
+    "rgb565AdjustedMae": 2.0516059027777778,
+    "fractionOver24": 0.03266927083333333,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-moving",
+    "mae": 2.258855613425926,
+    "rgb565AdjustedMae": 1.972337962962963,
+    "fractionOver24": 0.026102430555555556,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-contact-confirming",
+    "mae": 1.8951446759259258,
+    "rgb565AdjustedMae": 1.6481394675925927,
+    "fractionOver24": 0.019175347222222222,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-arrangement-pending",
+    "mae": 1.9506553819444445,
+    "rgb565AdjustedMae": 1.6959780092592593,
+    "fractionOver24": 0.01982204861111111,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-notice",
+    "mae": 1.7208854166666667,
+    "rgb565AdjustedMae": 1.4877473958333334,
+    "fractionOver24": 0.01705295138888889,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-link-split",
+    "mae": 1.8904094328703704,
+    "rgb565AdjustedMae": 1.6412109375,
+    "fractionOver24": 0.01931857638888889,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-link-hold",
+    "mae": 1.947310474537037,
+    "rgb565AdjustedMae": 1.6917954282407408,
+    "fractionOver24": 0.020099826388888888,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-normal-source",
+    "mae": 2.2688816550925925,
+    "rgb565AdjustedMae": 1.959933449074074,
+    "fractionOver24": 0.031401909722222225,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-normal-leader",
+    "mae": 1.8747902199074074,
+    "rgb565AdjustedMae": 1.6272005208333333,
+    "fractionOver24": 0.019092881944444445,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-normal-shared-solo",
+    "mae": 1.988951099537037,
+    "rgb565AdjustedMae": 1.7281278935185185,
+    "fractionOver24": 0.020815972222222222,
+    "max": 208,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-paused-source",
+    "mae": 2.3428327546296295,
+    "rgb565AdjustedMae": 2.0266536458333335,
+    "fractionOver24": 0.03264756944444445,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/feedback-paused-shared",
+    "mae": 1.9486053240740742,
+    "rgb565AdjustedMae": 1.6914612268518519,
+    "fractionOver24": 0.020416666666666666,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  },
+  {
+    "id": "en/role-pulse",
+    "mae": 3.7432783564814813,
+    "rgb565AdjustedMae": 3.4279673032407407,
+    "fractionOver24": 0.03854166666666667,
+    "max": 211,
+    "masks": [],
+    "verifiedControlBoundaries": 8
+  },
+  {
+    "id": "en/role-voice",
+    "mae": 3.835768229166667,
+    "rgb565AdjustedMae": 3.508353587962963,
+    "fractionOver24": 0.03985677083333333,
+    "max": 211,
+    "masks": [],
+    "verifiedControlBoundaries": 8
+  },
+  {
+    "id": "en/role-dust",
+    "mae": 3.5921296296296297,
+    "rgb565AdjustedMae": 3.289794560185185,
+    "fractionOver24": 0.03626736111111111,
+    "max": 211,
+    "masks": [],
+    "verifiedControlBoundaries": 8
+  },
+  {
+    "id": "en/role-harmony",
+    "mae": 3.827855902777778,
+    "rgb565AdjustedMae": 3.500970775462963,
+    "fractionOver24": 0.03966579861111111,
+    "max": 211,
+    "masks": [],
+    "verifiedControlBoundaries": 8
+  },
+  {
+    "id": "en/volume",
+    "mae": 2.230938946759259,
+    "rgb565AdjustedMae": 1.3165755208333334,
+    "fractionOver24": 0.017821180555555555,
+    "max": 173,
+    "masks": [],
+    "verifiedControlBoundaries": 1
+  },
+  {
+    "id": "en/boot",
+    "mae": 1.1284968171296297,
+    "rgb565AdjustedMae": 1.0141276041666667,
+    "fractionOver24": 0.012877604166666667,
+    "max": 179,
+    "masks": [],
+    "verifiedControlBoundaries": 0
+  },
+  {
+    "id": "en/loading-data",
+    "mae": 2.578208912037037,
+    "rgb565AdjustedMae": 2.4008883101851852,
+    "fractionOver24": 0.02080729166666667,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 1
+  },
+  {
+    "id": "en/loading-role",
+    "mae": 3.271394675925926,
+    "rgb565AdjustedMae": 3.0168214699074074,
+    "fractionOver24": 0.031410590277777775,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 1
+  },
+  {
+    "id": "en/error-role",
+    "mae": 3.787970196759259,
+    "rgb565AdjustedMae": 3.541529224537037,
+    "fractionOver24": 0.03203125,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 1
+  },
+  {
+    "id": "en/error-data",
+    "mae": 3.876412037037037,
+    "rgb565AdjustedMae": 3.6200911458333334,
+    "fractionOver24": 0.03317274305555556,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 1
+  },
+  {
+    "id": "en/error-audio",
+    "mae": 3.811238425925926,
+    "rgb565AdjustedMae": 3.575578703703704,
+    "fractionOver24": 0.0311328125,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 1
+  },
+  {
+    "id": "en/low-battery",
+    "mae": 1.8582826967592592,
+    "rgb565AdjustedMae": 1.611451099537037,
+    "fractionOver24": 0.01916232638888889,
+    "max": 205,
+    "masks": [],
+    "verifiedControlBoundaries": 3
+  }
+]
