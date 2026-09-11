@@ -90,3 +90,7 @@ target_include_directories(test_radio PRIVATE platform_stubs ../components/echoy
 target_link_libraries(test_radio PRIVATE echoy_core)
 target_compile_options(test_radio PRIVATE -Wall -Wextra -Werror -UNDEBUG)
 add_test(NAME wire_radio COMMAND test_radio)
+
+add_test(NAME session_clock_freshness COMMAND test_session freshness)
+add_test(NAME session_clock_unstable COMMAND test_session unstable)
+add_test(NAME session_clock_long COMMAND test_session long)

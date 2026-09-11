@@ -72,9 +72,44 @@ static bool map_state(echoy_protocol_t *p,uint64_t source,const echoy_wire_state
     *rate=s->rate_ppm;
     if(source==p->uid){*epoch=s->epoch_us;*apply=(int64_t)ceill(remote);return true;}
     echoy_protocol_peer_t *q=peer(p,source);
-    if(!q||p->now_us-q->clock.last_t4>750000||!echoy_clock_remote_to_local(&q->clock,s->epoch_us,epoch)||
+    if(!q||p->now_us-q->clock.last_t4>750000||
        !echoy_clock_remote_to_local(&q->clock,(int64_t)ceill(remote),apply))return false;
-    *rate=(int)llround((1+q->clock.rate)*(1000000+s->rate_ppm)-1000000);return *rate>=-1000&&*rate<=1000;
+    *rate=(int)llround((1+q->clock.rate)*(1000000+s->rate_ppm)-1000000);
+    if(*rate < -1000||*rate>1000)return false;
+    /* The core stores integer ppm. Preserve the agreed boundary with that exact
+     * stored rate instead of applying a rounded rate to a far-away old epoch.
+     * Rounding epoch down gives at most 1 us forward phase quantization. */
+    long double anchored=(long double)*apply-(long double)bar*ECHOY_BAR_US*1000000/(1000000+*rate);
+    if(anchored<INT64_MIN||anchored>INT64_MAX)return false;
+    *epoch=(int64_t)floorl(anchored);return true;
+}
+static bool clocks_ready(echoy_protocol_t *p,const echoy_wire_state_t *s,int64_t now) {
+    for(unsigned i=0;i<s->member_count;i++) {
+        if(s->members[i].uid==p->uid)continue;
+        echoy_protocol_peer_t *q=peer(p,s->members[i].uid);
+        if(!q||!q->authorized||q->boot!=s->members[i].boot||q->lost||q->expired||
+           !q->clock.stable||q->clock.last_t4<=0||now<q->clock.last_t4||
+           now-q->clock.last_t4>750000||!isfinite(q->clock.uncertainty_us)||
+           q->clock.uncertainty_us>ECHOY_CLOCK_MAX_UNCERTAINTY_US)return false;
+    }
+    return true;
+}
+/* READY is only a promise while every participant's measured clock remains
+ * usable. A rejected promise is never revived by later samples of the same txn. */
+static bool pending_ready(echoy_protocol_t *p,int64_t now) {
+    if(!p->pending.active)return false;
+    int64_t epoch,apply;int rate;
+    bool valid=clocks_ready(p,&p->pending.state,now)&&
+        map_state(p,p->pending.state.reference_uid,&p->pending.state,p->pending.apply_bar,&epoch,&apply,&rate)&&
+        fabsl((long double)apply-p->pending.apply_us)<=ECHOY_CLOCK_MAX_UNCERTAINTY_US;
+    /* Before the first COMMIT, reserve 40 ms plus mapping uncertainty for the
+     * already prepared scheduler. An accepted COMMIT may then approach its bar. */
+    if(!p->pending.commit_seen&&p->pending.apply_us-now<42000)valid=false;
+    if(valid)return true;
+    for(unsigned i=0;i<p->pending.state.member_count;i++) {
+        uint64_t uid=p->pending.state.members[i].uid;if(uid!=p->uid)control(p,uid,ECHOY_ABORT);
+    }
+    degrade(p);return false;
 }
 static unsigned member_mask(const echoy_protocol_t *p) {
     unsigned mask=0;for(unsigned i=0;i<2;i++)for(unsigned j=0;j<p->pending.state.member_count;j++)
@@ -85,7 +120,7 @@ bool echoy_protocol_begin(echoy_protocol_t *p,const echoy_wire_state_t *s,int64_
     uint8_t data[960];size_t n;
     if(!p||!s||now<p->now_us||p->pending.active||!echoy_wire_state_encode(s,data,&n)||
        s->reference_uid!=p->uid||echoy_protocol_reference(p)!=p->uid||!state_allowed(p,s))return false;
-    for(unsigned i=0;i<2;i++)if(p->peers[i].authorized&&!p->peers[i].clock.stable){p->syncing=true;return false;}
+    if(!clocks_ready(p,s,now)){p->syncing=true;return false;}
     if(p->next_transaction==UINT32_MAX)return false;
     long double bar=ceill(((long double)now+2*ECHOY_BAR_US+40000-s->epoch_us)*(1000000+s->rate_ppm)/
         ((long double)ECHOY_BAR_US*1000000));
@@ -129,6 +164,7 @@ bool echoy_protocol_receive(echoy_protocol_t *p,uint64_t source,uint32_t boot,co
      * cannot resurrect a group after the application hold window. */
     if(q->expired)return false;
     p->now_us=now>p->now_us?now:p->now_us;
+    if(p->pending.active)(void)pending_ready(p,p->now_us);
     switch(m.kind) {
     case ECHOY_HELLO:
         q->advertised_members=m.body[0];q->advertised_reference=echoy_get_le(m.body+2,8);q->session=m.session;return true;
@@ -141,7 +177,9 @@ bool echoy_protocol_receive(echoy_protocol_t *p,uint64_t source,uint32_t boot,co
     case ECHOY_TIME_RESP: {
         uint64_t t1=echoy_get_le(m.body,8),t2=echoy_get_le(m.body+8,8),t3=echoy_get_le(m.body+16,8);
         if(t1!=(uint64_t)q->time_request_us||t1>INT64_MAX||t2>INT64_MAX||t3>INT64_MAX)return false;
-        return echoy_clock_observe(&q->clock,(int64_t)t1,(int64_t)t2,(int64_t)t3,received);
+        bool accepted=echoy_clock_observe(&q->clock,(int64_t)t1,(int64_t)t2,(int64_t)t3,received);
+        if(p->pending.active)(void)pending_ready(p,p->now_us);
+        return accepted;
     }
     case ECHOY_HEARTBEAT: {
         if(echoy_get_le(m.body+4,4)>1||!echoy_get_le(m.body,4))return false;
@@ -163,7 +201,7 @@ bool echoy_protocol_receive(echoy_protocol_t *p,uint64_t source,uint32_t boot,co
         echoy_protocol_pending_t pending={.active=true,.state=s,.session=m.session,.transaction=m.transaction,.apply_bar=m.apply_bar,.last_send_us=now};
         uint8_t bytes[960];size_t n;if(!echoy_wire_state_encode(&s,bytes,&n))return false;
         pending.digest=(uint32_t)echoy_get_le(bytes+n-4,4);
-        if(!map_state(p,source,&s,m.apply_bar,&pending.epoch_us,&pending.apply_us,&pending.rate_ppm)||
+        if(!clocks_ready(p,&s,now)||!map_state(p,source,&s,m.apply_bar,&pending.epoch_us,&pending.apply_us,&pending.rate_ppm)||
            pending.apply_us-now<2*ECHOY_BAR_US){p->syncing=true;return false;}
         p->pending=pending;p->syncing=true;control(p,source,ECHOY_READY_MSG);return true;
     }
@@ -199,6 +237,7 @@ void echoy_protocol_tick(echoy_protocol_t *p,int64_t now) {
         }
         if(q->lost&&now-q->lost_us>=ECHOY_PROTOCOL_HOLD_US)q->expired=true;
     }
+    if(p->pending.active)(void)pending_ready(p,now);
     if(p->pending.active&&now>=p->pending.apply_us) {
         if(!p->pending.commit_seen)degrade(p);
         else {
@@ -219,7 +258,9 @@ void echoy_protocol_tick(echoy_protocol_t *p,int64_t now) {
         echoy_put_le(heart.body+4,p->degraded?1:0,4);(void)emit(p,q->uid,&heart);
         echoy_packet_t request=message(p,ECHOY_TIME_REQ,8);q->time_request_us=now;
         echoy_put_le(request.body,(uint64_t)now,8);(void)emit(p,q->uid,&request);
-        if(p->pending.coordinator&&p->pending.commit_seen&&now<=p->pending.apply_us+750000&&
+        if(p->pending.coordinator&&p->pending.commit_seen&&
+           (p->pending.active||p->committed.revision==p->pending.state.revision)&&
+           now<=p->pending.apply_us+750000&&
            !(p->pending.ack_mask&(1u<<i))&&(member_mask(p)&(1u<<i)))control(p,q->uid,ECHOY_COMMIT);
         else if(p->pending.active&&!p->pending.coordinator&&!p->pending.commit_seen&&
                 q->uid==p->pending.state.reference_uid)control(p,q->uid,ECHOY_READY_MSG);

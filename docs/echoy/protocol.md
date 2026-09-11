@@ -198,10 +198,23 @@ receive, negative RTT and RTT above 100 ms. Retain at most 96 measurements over
 local midpoint time using measurements within 1 ms of the minimum RTT. Require
 at least eight selected measurements **and a full 20-second span**. Rate is the
 linear-fit slope, limited to ±500 ppm. Estimated uncertainty is minimum RTT/2
-plus maximum selected residual; readiness requires at most 2 ms. Mapping also
-requires a valid exchange in the last 750 ms at proposal validation. Epoch
+plus maximum selected residual; readiness requires at most 2 ms. Every participating peer must have a stable fit, uncertainty at most 2 ms, and
+a valid exchange in the last 750 ms when proposing, receiving PREPARE, throughout
+the waiting period, and immediately before installation. Tick and incoming packet
+processing both recheck this condition; a newly unstable TIME_RESP triggers an
+immediate check as well. Failure sends ABORT to all proposed members and leaves
+the old committed state degraded. Later good samples cannot revive that
+transaction; the owner must begin a new proposal. Epoch
 mapping may legitimately be negative in the local time domain. Rate conversion
-combines reference timeline rate with measured local/reference drift.
+combines reference timeline rate with measured local/reference drift. Because the
+core stores integer ppm, the mapped **apply boundary** is anchored first, then
+local epoch is recalculated using that exact stored integer rate and apply bar.
+Epoch is rounded down, producing less than 1 us forward phase quantization at the
+agreed boundary even after a long reference uptime. Mapping the old epoch with
+the unrounded rate would instead accumulate ppm-rounding error over that entire
+uptime. The stored integer rate still has quantization error after installation;
+subsequent negotiated anchors, rather than a claim of perfect free-running rate,
+are required to keep that error bounded over continued performance.
 
 These thresholds and the 250 ms sampling interval are diagnostic defaults awaiting
 hardware validation. They are not an acoustic onset guarantee. Unstable offset,
@@ -220,7 +233,11 @@ there are no additional resources to prepare; it never bypasses clock checks.
 The coordinator chooses a reference bar at least two bars plus 40 ms in the
 future. A follower requires at least two full local bars of lead time on complete
 PREPARE receipt. All included peers must READY before the coordinator starts
-COMMIT. Followers repeat READY at 250 ms until COMMIT arrives. The coordinator
+COMMIT. Before the first COMMIT, at least 42 ms must remain (40 ms scheduler lead
+plus the 2 ms uncertainty budget). Once scheduled, clocks continue to be checked
+up to installation; current measured mapping must remain within 2 ms of the
+agreed local apply time. A lost/unstable clock or missed first-COMMIT lead aborts
+the transaction instead of installing from the earlier READY promise. Followers repeat READY at 250 ms until COMMIT arrives. The coordinator
 repeats COMMIT at 250 ms for missing ACKs until 750 ms after the boundary.
 Followers ACK each matching COMMIT, including retransmissions after their own
 commit. At the agreed boundary only a node with a complete COMMIT installs the
@@ -266,7 +283,17 @@ CRC/topology, source/boot/sequence/transaction checks, ordered bounded reassembl
 and complete core installation without local transport/volume changes.
 `clock_unit` covers known drift, stability window and malformed exchanges.
 `session_unit` runs three real portable protocol instances over a queued fake
-radio with delay, drop, reorder, duplication, partition and reboot. It tests
+radio with delay, drop, reorder, duplication, partition and reboot. Each instance
+has its own startup offset and rate (0, +100.4, -37.6 ppm); shared simulation time
+only schedules physical deliveries and is never passed to a node as its local
+clock. Commit callbacks check session, epoch/rate and mapped apply times against
+independent physical-clock equations. `session_clock_freshness` drops TIME_RESP
+to one member while heartbeat continues; `session_clock_unstable` injects offset
+instability into one member's responses. Both require all participants to abort,
+retain old state, stay degraded after clock recovery, then accept a fresh
+negotiation. `session_clock_long` exchanges timestamps for 12 simulated hours and
+verifies the committed integer-rate mapping through `echoy_core_install()` and
+`echoy_phase_steps()`, including nondecreasing phase. It tests
 final COMMIT loss, reference loss before the boundary, revision degradation,
 unauthorized HELLO isolation and heartbeat-specific loss. `session_contact`
 runs the actual sibling BSP classifier with fake sensor reads and checks adapter

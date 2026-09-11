@@ -120,3 +120,79 @@ contact sampling from `app_main()`.
 No sibling repository was edited, no remote state was written, and no hardware
 was flashed. The task report is tracked alongside the prior task reports in `.superpowers`;
 the durable protocol contract is in `docs/echoy/protocol.md`.
+
+## Fix round 1 — revalidate waiting clocks and anchor integer rate
+
+Review requests 1–3 were reproduced before changing production code.
+
+- RED `session_clock_freshness`: after READY/COMMIT, dropping TIME_RESP while
+  continuing HEARTBEAT did not cancel the pending transaction.
+- RED `session_clock_unstable`: new offset-unstable samples likewise did not
+  invalidate the earlier READY promise.
+- RED `session_clock_long`: three independent software clocks with startup
+  offsets 1,000,000 / 2,500,000 / 250,000 us and rates 0 / +100.4 / -37.6 ppm,
+  exchanging timestamps for 12 simulated hours, exposed **16,913.882 us** of
+  installed boundary error at node 1. Mapping the old epoch at full precision
+  and then rounding only the stored rate caused that accumulated error.
+
+Changes:
+
+- Pending synchronization now checks every proposed member's current boot,
+  authorization, link state, stable clock fit, <=2 ms uncertainty and <=750 ms
+  measurement age on owner ticks and incoming messages. TIME_RESP checks again
+  immediately after fitting its new sample. The final installation path performs
+  the same check. The latest mapping must remain within 2 ms of the agreed apply
+  time. Before the first COMMIT, at least 42 ms of lead must remain (40 ms for the
+  prepared scheduler plus the uncertainty budget).
+- A failed check sends matching ABORT to all proposal members, retains old
+  committed state and enters degraded/syncing. The coordinator cannot keep
+  retransmitting COMMIT for an aborted uninstalled revision. Fresh measurements
+  alone do not clear the failure or revive the old transaction; both new failure
+  tests verify a subsequent fresh negotiation succeeds after clock recovery.
+- `map_state()` maps the agreed apply time, computes the final integer rate, then
+  recalculates epoch using **that stored rate and apply bar**. Rounding epoch down
+  introduces less than 1 us of forward phase quantization at the agreed boundary,
+  independent of the age of the reference epoch.
+- The three-instance fake radio now uses shared physical simulation time only
+  for packet scheduling. Every node receives its own independently offset/rated
+  local timestamps. Commit callbacks assert the session key and independently
+  calculated physical apply time and retain epoch/rate/apply fields for phase
+  checks. Long-run testing calls actual `echoy_core_install()` and
+  `echoy_phase_steps()` and checks the installed boundary and monotonic phase.
+- The clock-drop/unstable injection targets just **one** member; the other
+  members must abort through the protocol, rather than independently seeing the
+  same injected fault. Heartbeats continue, confirming this is clock-readiness
+  handling rather than ordinary heartbeat loss.
+
+Final measured host results after the 12-hour timestamp-exchange run:
+
+| Node | Stored boundary error | Error against independent physical clock |
+| --- | --- | --- |
+| 0 | 0.000 us | 0.000 us |
+| 1 | 0.882 us | 0.400 us |
+| 2 | 0.611 us | 0.400 us |
+
+Validation on the final code:
+
+- `cmake -S pc -B build-host`; `cmake --build build-host -j8`: PASS.
+- `ctest --test-dir build-host -R 'wire|clock|session|state' --output-on-failure`:
+  **10/10 PASS**.
+- `ctest --test-dir build-host --output-on-failure`: **24/24 PASS**, 20.85 s.
+- Reconfigured/rebuilt `/tmp/echoy-task7-asan` with the existing
+  `-fsanitize=address,undefined -fno-omit-frame-pointer -fno-pie` flags, then
+  `ASAN_OPTIONS=detect_leaks=0 UBSAN_OPTIONS=halt_on_error=1 ctest
+  --test-dir /tmp/echoy-task7-asan --output-on-failure`: **24/24 PASS**, 42.91 s;
+  no sanitizer diagnostics. LeakSanitizer remains subject to the previously
+  documented ptrace limitation; neither ASan nor UBSan was disabled.
+- Activated the existing ESP-IDF export and ran `idf.py build`: PASS;
+  **3,154,848 bytes**. The changed protocol object compiled; the Task 8 firmware
+  runtime still has not been connected, so the application image size is unchanged.
+  Final incremental log has no compiler warnings/errors.
+- `git diff --check`: PASS.
+
+These are software simulation results, not hardware onset measurements. Integer
+rate still has post-installation quantization error; subsequent negotiated
+anchors are required to bound that error during continued performance. The
+reviewed fix prevents *prior uptime* from magnifying epoch/rate inconsistency at
+installation. The existing 2+1 trusted-member handoff and actual magnetic/acoustic
+measurements remain with Tasks 8/10 as requested.
