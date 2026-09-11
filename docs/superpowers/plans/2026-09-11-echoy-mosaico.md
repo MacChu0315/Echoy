@@ -225,11 +225,11 @@ lv_display_t *display = bsp_display_start();
 
 **Consumes:** Task 1 fixtures。**Produces:** `echoy_music_compose()`，与 JS 同输入同输出。
 
-- [ ] 先实现输入/输出 runner，给 12 个默认独奏 fixture 写失败用例。runner 读取固定格式 case，输出标准化 JSON；不要让脚本自己重算期望结果。
-- [ ] 对照原 `DuijuEngine.phrase/soloVariant` 移植独奏；保持原排序和去重后截断顺序。使用 double 先保证语义，DSP 再用 float；不要在规则移植时一并定点化。
-- [ ] 再移植 `DuijuResponse.analyze/compose`：onset/release/held/space、preceding、slot resize、弱音权重、pitch 与事件数量上限逐项对应。
-- [ ] 移植 `DuijuHarmony`：六个 CHORDS、pitchEvidence、brokenPositions、shortPlan、answerPlan、shortVoicings、时长 deadline。预计算有界 voicing 候选表，生成器和输入一起版本化；不得手选几个和弦替代搜索评分。
-- [ ] JS 数学语义显式实现并测试，例如：
+- [x] 先实现输入/输出 runner，给 12 个默认独奏 fixture 写失败用例。runner 读取固定格式 case，输出标准化 JSON；不要让脚本自己重算期望结果。
+- [x] 对照原 `DuijuEngine.phrase/soloVariant` 移植独奏；保持原排序和去重后截断顺序。使用 double 先保证语义，DSP 再用 float；不要在规则移植时一并定点化。
+- [x] 再移植 `DuijuResponse.analyze/compose`：onset/release/held/space、preceding、slot resize、弱音权重、pitch 与事件数量上限逐项对应。
+- [x] 移植 `DuijuHarmony`：六个 CHORDS、pitchEvidence、brokenPositions、shortPlan、answerPlan、shortVoicings、时长 deadline。预计算有界 voicing 候选表，生成器和输入一起版本化；不得手选几个和弦替代搜索评分。
+- [x] JS 数学语义显式实现并测试，例如：
 
 ```c
 static int wrap16(int n) { return ((n % 16) + 16) % 16; }
@@ -237,10 +237,10 @@ static double js_round(double x) { return floor(x + 0.5); }
 /* 返回有限数值前先检查输入，避免 NaN 越过数组边界。 */
 ```
 
-- [ ] 扩大到 Task 1 全矩阵，并测试脉冲→声线→和声、和声→微尘→脉冲、三台相同角色、调换左右。只改右邻时左邻 motif 必须逐字段不变；音量不进入 compose 输入。
-- [ ] 比较字段：step/kind/note/notes/harmony/chord/articulation/accent 完全相等；vel/dur/expression/maxDuration 绝对误差 <=1e-6。诊断打印首个差异对应的输入、角色、小节和事件序号。
-- [ ] 验证：`cmake -S pc -B build-host`；`cmake --build build-host`；`ctest --test-dir build-host --output-on-failure -R music`；`python3 tests/compare_oracle.py --runner build-host/echoy_core_runner`。
-- [ ] 差异未清零不能继续把该核心当基准。建议提交 `feat: port Echoy phrase and harmony composition rules`。
+- [x] 扩大到 Task 1 全矩阵，并测试脉冲→声线→和声、和声→微尘→脉冲、三台相同角色、调换左右。只改右邻时左邻 motif 必须逐字段不变；音量不进入 compose 输入。
+- [x] 比较字段：step/kind/note/notes/harmony/chord/articulation/accent 完全相等；vel/dur/expression/maxDuration 绝对误差 <=1e-6。诊断打印首个差异对应的输入、角色、小节和事件序号。
+- [x] 验证：`cmake -S pc -B build-host`；`cmake --build build-host`；`ctest --test-dir build-host --output-on-failure -R music`；`python3 tests/compare_oracle.py --runner build-host/echoy_core_runner`。
+- [x] 差异未清零不能继续把该核心当基准。建议提交 `feat: port Echoy phrase and harmony composition rules`。
 
 ## Task 4: 本机状态与三台逻辑会话
 
