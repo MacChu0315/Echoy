@@ -8,7 +8,9 @@ set(CMAKE_C_EXTENSIONS OFF)
 add_library(echoy_core STATIC
     ../components/echoy_core/phrase.c
     ../components/echoy_core/response.c
-    ../components/echoy_core/harmony.c)
+    ../components/echoy_core/harmony.c
+    ../components/echoy_core/core.c
+    ../components/echoy_core/session.c)
 target_include_directories(echoy_core PUBLIC ../components/echoy_core/include)
 target_compile_options(echoy_core PRIVATE -Wall -Wextra -Werror)
 target_link_libraries(echoy_core PUBLIC m)

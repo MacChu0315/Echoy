@@ -21,3 +21,13 @@ add_test(NAME music_voicings COMMAND "${Python3_EXECUTABLE}"
     "${CMAKE_CURRENT_LIST_DIR}/../tools/generate_voicings.py" --check)
 add_test(NAME music_runner_validation COMMAND "${Python3_EXECUTABLE}"
     "${CMAKE_CURRENT_LIST_DIR}/test_music_runner.py" $<TARGET_FILE:echoy_core_runner>)
+
+add_executable(test_state test_state.c)
+target_link_libraries(test_state PRIVATE echoy_core)
+target_compile_options(test_state PRIVATE -Wall -Wextra -Werror -UNDEBUG)
+add_test(NAME state_unit COMMAND test_state)
+add_executable(state_runner state_runner.c)
+target_link_libraries(state_runner PRIVATE echoy_core)
+target_compile_options(state_runner PRIVATE -Wall -Wextra -Werror -UNDEBUG)
+add_test(NAME state_oracle COMMAND "${Python3_EXECUTABLE}"
+    "${CMAKE_CURRENT_LIST_DIR}/compare_state.py" $<TARGET_FILE:state_runner>)
