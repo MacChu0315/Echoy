@@ -1,7 +1,7 @@
 build/
 build-host/
+managed_components/
 .codex-runs/
 output/generated/
 __pycache__/
 *.pyc
-
