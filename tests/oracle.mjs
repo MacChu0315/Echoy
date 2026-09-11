@@ -20,9 +20,17 @@ const uiManifestPath = path.join(root, 'reference', 'ui', 'manifest.json');
 const roles = ['pulse', 'voice', 'dust', 'harmony'];
 const defaults = { pulse: .58, voice: .56, dust: .48, harmony: .50 };
 const thresholdSamples = [.25, .26, .30, .42, .52, .65, .70, .72, .74, .75, .76, .78, .80, .82];
+const thresholdOffsets = [-.001, 0, .001];
 const bars = [0, 1, 2, 3, 4];
 const duplicates = [0, 1, 2];
 const eventFields = ['step', 'kind', 'vel', 'note', 'dur', 'accent', 'expression', 'notes', 'harmony', 'chord', 'articulation', 'maxDuration'];
+const requiredFeedbackBranches = [
+  'motif-recovery', 'play-preparing', 'sync-failed', 'sync-waiting', 'syncing',
+  'waiting-beat', 'pending-role', 'pending-phrase', 'pending-activity', 'moving',
+  'contact-confirming', 'arrangement-pending', 'notice', 'link-split', 'link-hold',
+  'normal-source', 'normal-leader', 'normal-shared-solo', 'normal-independent',
+  'paused-source', 'paused-shared', 'paused-independent',
+];
 
 const sourceMotifs = [
   { id: 'solo', source: null },
@@ -88,13 +96,19 @@ function encodeEvent(event) {
   return eventFields.map(field => event[field] ?? null);
 }
 
+function activitySamples(role) {
+  const aroundThresholds = thresholdSamples.flatMap(threshold =>
+    thresholdOffsets.map(offset => Number((threshold + offset).toFixed(3))));
+  return [...new Set([0, ...aroundThresholds, defaults[role], 1])].sort((a, b) => a - b);
+}
+
 function generateMusic(sandbox) {
   const engine = new sandbox.DuijuEngine();
   const cases = [];
   let eventCount = 0;
   for (const role of roles) {
-    const activities = [0, ...thresholdSamples, defaults[role], 1].sort((a, b) => a - b);
-    assert.equal(new Set(activities).size, 17, `${role} activity samples must be unique`);
+    const activities = activitySamples(role);
+    assert.equal(activities.length, 45, `${role} activity samples must include every threshold neighbor`);
     for (let phrase = 1; phrase <= 3; phrase++) {
       for (const activity of activities) {
         for (const bar of bars) {
@@ -123,7 +137,13 @@ function generateMusic(sandbox) {
     dimensions: {
       roles,
       phrases: [1, 2, 3],
-      activitySamples: { thresholds: thresholdSamples, defaults, endpoints: [0, 1] },
+      activitySamples: {
+        thresholds: thresholdSamples,
+        defaults,
+        endpoints: [0, 1],
+        neighborRule: { epsilon: .001, offsets: thresholdOffsets, rounding: 'three decimal places' },
+        expandedByRole: Object.fromEntries(roles.map(role => [role, activitySamples(role)])),
+      },
       bars,
       leftMotifs: sourceMotifs.map(({ id, source }) => ({ id, motif: source?.motif ?? null })),
       duplicates,
@@ -292,11 +312,53 @@ function generateTrajectories(sandbox) {
 }
 
 function generateUiCases() {
+  const feedbackText = {
+    'motif-recovery': { 'zh-CN': '声音已准备 · 下一小节恢复', en: 'Sound ready · Resumes next bar' },
+    'play-preparing': { 'zh-CN': '准备播放 · 可点暂停取消', en: 'Preparing · Tap Pause to cancel' },
+    'sync-failed': { 'zh-CN': '暂未对齐 · 继续原来的演奏', en: 'Not synced · Keeping current music' },
+    'sync-waiting': { 'zh-CN': '已约定拍点 · 下一小节接入', en: 'Beat agreed · Joins next bar' },
+    syncing: { 'zh-CN': '正在对拍 · 原演奏继续', en: 'Syncing · Current music continues' },
+    'waiting-beat': { 'zh-CN': '等待下一拍 · 可点暂停取消', en: 'Next beat · Tap Pause to cancel' },
+    'pending-role': { 'zh-CN': '和声 · 分解 待生效', en: 'HARMONY · Arpeggio · Pending' },
+    'pending-phrase': { 'zh-CN': '轻答 · 下一小节生效', en: 'Light reply · Next bar' },
+    'pending-activity': { 'zh-CN': '新节奏 · 下一小节生效', en: 'New rhythm · Next bar' },
+    moving: { 'zh-CN': '位置确认中 · 保持当前编排', en: 'Checking position · Keeping pattern' },
+    'contact-confirming': { 'zh-CN': '接触待确认', en: 'Confirming contact' },
+    'arrangement-pending': { 'zh-CN': '新关系 · 下一小节生效', en: 'New connection · Next bar' },
+    notice: { 'zh-CN': '已生效', en: 'Applied' },
+    'link-split': { 'zh-CN': '无线失联 · 本地独奏', en: 'Link lost · Playing solo' },
+    'link-hold': { 'zh-CN': '同伴失联 · 暂时保持拍子', en: 'Peer lost · Holding the beat' },
+    'normal-source': { 'zh-CN': '回应左邻', en: 'Replying to the left' },
+    'normal-leader': { 'zh-CN': '提出动机', en: 'Leading the phrase' },
+    'normal-shared-solo': { 'zh-CN': '独奏 · 保留同场拍子', en: 'Solo · Keeping the shared beat' },
+    'normal-independent': { 'zh-CN': '独奏', en: 'Solo' },
+    'paused-source': { 'zh-CN': '已暂停 · 回应关系保留', en: 'Paused · Response retained' },
+    'paused-shared': { 'zh-CN': '已暂停 · 同场拍子保留', en: 'Paused · Shared beat retained' },
+    'paused-independent': { 'zh-CN': '已暂停 · 独奏就绪', en: 'Paused · Ready for solo' },
+  };
   const states = [
-    ...roles.map(role => ({ id: `perform-${role}`, route: 'perform', role, phrase: role === 'harmony' ? 2 : 1, activity: defaults[role], state: 'paused' })),
-    { id: 'perform-playing', route: 'perform', role: 'pulse', phrase: 1, activity: .58, state: 'playing' },
-    { id: 'perform-waiting', route: 'perform', role: 'voice', phrase: 1, activity: .56, state: 'waiting' },
-    { id: 'perform-pending-activity', route: 'perform', role: 'dust', phrase: 1, activity: .78, committedActivity: .48, state: 'paused' },
+    ...roles.map(role => ({ id: `perform-${role}`, route: 'perform', role, phrase: role === 'harmony' ? 2 : 1, activity: defaults[role], state: 'paused', ...(role === 'pulse' ? { feedbackBranch: 'paused-independent' } : {}) })),
+    { id: 'perform-playing', route: 'perform', role: 'pulse', phrase: 1, activity: .58, state: 'playing', feedbackBranch: 'normal-independent' },
+    { id: 'perform-waiting', route: 'perform', role: 'voice', phrase: 1, activity: .56, state: 'waiting', feedbackBranch: 'waiting-beat' },
+    { id: 'perform-pending-activity', route: 'perform', role: 'dust', phrase: 1, activity: .78, committedActivity: .48, state: 'paused', feedbackBranch: 'pending-activity' },
+    { id: 'feedback-motif-recovery', route: 'perform', role: 'pulse', phrase: 1, activity: .58, state: 'paused', feedbackBranch: 'motif-recovery' },
+    { id: 'feedback-play-preparing', route: 'perform', role: 'pulse', phrase: 1, activity: .58, state: 'paused', feedbackBranch: 'play-preparing' },
+    { id: 'feedback-sync-failed', route: 'perform', role: 'voice', phrase: 1, activity: .56, state: 'playing', feedbackBranch: 'sync-failed' },
+    { id: 'feedback-syncing', route: 'perform', role: 'voice', phrase: 1, activity: .56, state: 'playing', feedbackBranch: 'syncing' },
+    { id: 'feedback-sync-waiting', route: 'perform', role: 'voice', phrase: 1, activity: .56, state: 'playing', feedbackBranch: 'sync-waiting' },
+    { id: 'feedback-pending-role', route: 'perform', role: 'pulse', phrase: 1, activity: .58, state: 'paused', feedbackBranch: 'pending-role' },
+    { id: 'feedback-pending-phrase', route: 'perform', role: 'voice', phrase: 1, activity: .56, state: 'paused', feedbackBranch: 'pending-phrase' },
+    { id: 'feedback-moving', route: 'perform', role: 'pulse', phrase: 1, activity: .58, state: 'playing', feedbackBranch: 'moving' },
+    { id: 'feedback-contact-confirming', route: 'perform', role: 'pulse', phrase: 1, activity: .58, state: 'playing', feedbackBranch: 'contact-confirming' },
+    { id: 'feedback-arrangement-pending', route: 'perform', role: 'pulse', phrase: 1, activity: .58, state: 'playing', feedbackBranch: 'arrangement-pending' },
+    { id: 'feedback-notice', route: 'perform', role: 'pulse', phrase: 1, activity: .58, state: 'playing', feedbackBranch: 'notice' },
+    { id: 'feedback-link-split', route: 'perform', role: 'pulse', phrase: 1, activity: .58, state: 'playing', feedbackBranch: 'link-split' },
+    { id: 'feedback-link-hold', route: 'perform', role: 'pulse', phrase: 1, activity: .58, state: 'playing', feedbackBranch: 'link-hold' },
+    { id: 'feedback-normal-source', route: 'perform', role: 'voice', phrase: 1, activity: .56, state: 'playing', feedbackBranch: 'normal-source' },
+    { id: 'feedback-normal-leader', route: 'perform', role: 'pulse', phrase: 1, activity: .58, state: 'playing', feedbackBranch: 'normal-leader' },
+    { id: 'feedback-normal-shared-solo', route: 'perform', role: 'pulse', phrase: 1, activity: .58, state: 'playing', feedbackBranch: 'normal-shared-solo' },
+    { id: 'feedback-paused-source', route: 'perform', role: 'voice', phrase: 1, activity: .56, state: 'paused', feedbackBranch: 'paused-source' },
+    { id: 'feedback-paused-shared', route: 'perform', role: 'pulse', phrase: 1, activity: .58, state: 'paused', feedbackBranch: 'paused-shared' },
     ...roles.map(role => ({ id: `role-${role}`, route: 'role', role, phrase: role === 'harmony' ? 2 : 1, activity: defaults[role], state: 'paused' })),
     { id: 'volume', route: 'perform', role: 'pulse', phrase: 1, activity: .58, volume: .70, state: 'volume' },
     { id: 'boot', route: 'perform', role: 'pulse', phrase: 1, activity: .58, state: 'booting' },
@@ -307,7 +369,11 @@ function generateUiCases() {
     { id: 'error-audio', route: 'perform', role: 'harmony', phrase: 2, activity: .50, state: 'audio-error' },
     { id: 'low-battery', route: 'perform', role: 'pulse', phrase: 1, activity: .58, battery: 12, state: 'paused' },
   ];
-  const cases = ['zh-CN', 'en'].flatMap(locale => states.map(state => ({ locale, ...state })));
+  const cases = ['zh-CN', 'en'].flatMap(locale => states.map(state => ({
+    locale,
+    ...state,
+    ...(state.feedbackBranch ? { expectedFeedback: feedbackText[state.feedbackBranch][locale] } : {}),
+  })));
   return {
     schemaVersion: 1,
     oracleSha256: expectedHash,
@@ -353,6 +419,7 @@ function verifyUiCapture(uiCases) {
   const expectedIds = uiCases.cases.map(item => `${item.locale}/${item.id}`);
   assert.deepEqual(capture.cases.map(item => item.id), expectedIds);
   assert.deepEqual(manifest.images.map(item => item.id), expectedIds);
+  const uiCaseById = new Map(uiCases.cases.map(item => [`${item.locale}/${item.id}`, item]));
   for (const image of manifest.images) {
     const file = path.join(root, image.path);
     assert(fs.existsSync(file), `missing UI baseline: ${image.path}`);
@@ -366,7 +433,16 @@ function verifyUiCapture(uiCases) {
     assert.equal(hash(fs.readFileSync(font.source)), font.sha256, `frozen font changed: ${font.source}`);
   }
   for (const item of capture.cases) {
-    assert.deepEqual(item.canvas.motifSteps, item.motif.map(event => event.step), `${item.id} score does not describe the captured motif`);
+    const uiCase = uiCaseById.get(item.id);
+    if (uiCase.feedbackBranch) {
+      assert.equal(item.feedback.branch, uiCase.feedbackBranch, `${item.id} feedback branch was not captured`);
+      assert.equal(item.feedback.text, uiCase.expectedFeedback, `${item.id} visible feedback changed`);
+    }
+    if (item.canvas.width) {
+      const expectedSteps = [...new Set(item.motif.map(event => event.step))];
+      assert.equal(item.canvas.observation, 'CanvasRenderingContext2D.arc calls at score y=210');
+      assert.deepEqual(item.canvas.renderedEventSteps, expectedSteps, `${item.id} rendered score dots do not match its motif`);
+    }
     assert.equal(item.screen.width, 480);
     assert.equal(item.screen.height, 480);
   }
@@ -388,7 +464,7 @@ function selfTest() {
     assert.equal(html.split(module.endMarker).length - 1, 1, `${name} end marker is not unique`);
     const begin = html.indexOf(module.beginMarker);
     const end = html.indexOf(module.endMarker, begin + module.beginMarker.length);
-    assert.equal(moduleBytes.toString('utf8'), html.slice(begin, end).trimEnd() + '\n', `${name} is not the source slice`);
+    assert.equal(moduleBytes.toString('utf8'), html.slice(begin, end), `${name} does not preserve the exact source bytes`);
   }
   const sandbox = loadOracle();
   const engine = new sandbox.DuijuEngine();
@@ -399,6 +475,23 @@ function selfTest() {
   assert.notEqual(session.devices.A.sessionId, session.devices.B.sessionId);
 
   const generated = generateAll();
+  const feedbackCoverage = [...new Set(generated.uiCases.cases.filter(item => item.locale === 'zh-CN' && item.feedbackBranch).map(item => item.feedbackBranch))].sort();
+  assert.deepEqual(feedbackCoverage, requiredFeedbackBranches.slice().sort(), 'UI cases do not cover every observable feedback branch');
+  const committedMusic = readJson(musicPath);
+  assert.deepEqual(committedMusic.dimensions.activitySamples.neighborRule, {
+    epsilon: .001,
+    offsets: [-.001, 0, .001],
+    rounding: 'three decimal places',
+  }, 'activity fixtures must record the threshold-neighbor rule');
+  for (const threshold of [.25, .26, .30, .42, .52, .65, .70, .72, .74, .75, .76, .78, .80, .82]) {
+    for (const role of roles) {
+      const samples = committedMusic.dimensions.activitySamples.expandedByRole[role];
+      assert(samples.includes(Number((threshold - .001).toFixed(3))), `${role} misses the left neighbor of ${threshold}`);
+      assert(samples.includes(threshold), `${role} misses threshold ${threshold}`);
+      assert(samples.includes(Number((threshold + .001).toFixed(3))), `${role} misses the right neighbor of ${threshold}`);
+    }
+  }
+  assert.equal(committedMusic.caseCount, 48600, 'activity-neighbor matrix case count changed');
   verifyGenerated(musicPath, generated.music, 'music fixtures', fixtureJson);
   verifyGenerated(sessionPath, generated.sessions, 'session trajectories');
   verifyGenerated(uiCasesPath, generated.uiCases, 'UI cases');

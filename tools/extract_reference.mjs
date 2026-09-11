@@ -35,7 +35,7 @@ function sliceUnique(text, name, beginMarker, endMarker) {
   if (begins.length !== 1) throw new Error(`${name}: expected one begin marker, found ${begins.length}`);
   if (ends.length !== 1) throw new Error(`${name}: expected one end marker, found ${ends.length}`);
   if (ends[0] <= begins[0]) throw new Error(`${name}: module boundaries reversed`);
-  return text.slice(begins[0], ends[0]).trimEnd() + '\n';
+  return text.slice(begins[0], ends[0]);
 }
 
 function build(source) {

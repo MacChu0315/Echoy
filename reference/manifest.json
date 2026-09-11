@@ -12,29 +12,29 @@
       "path": "reference/extracted/response.js",
       "beginMarker": "/* Complete-phrase response",
       "endMarker": "/* Harmony v5.0.2:",
-      "size": 7191,
-      "sha256": "1cc58b76eb7ce1f9aac08a53d4274d2a493a541715406c892349a826f8d3e408"
+      "size": 7193,
+      "sha256": "b111847bae8bd542e273247e03de0803a38c42869bb46ebf401a51b78feab285"
     },
     "harmony": {
       "path": "reference/extracted/harmony.js",
       "beginMarker": "/* Harmony v5.0.2:",
       "endMarker": "/* Product rules:",
-      "size": 10014,
-      "sha256": "ae6916c6356653281d58000f2be2c72f76bc7fbf469348da266c3c491e191234"
+      "size": 10016,
+      "sha256": "6414d0e7eea8e8685c4e7844061f6405da3825f6ff8e6a99d1db2344e799f686"
     },
     "engine": {
       "path": "reference/extracted/engine.js",
       "beginMarker": "/* Product rules:",
       "endMarker": "/* Product session model.",
-      "size": 9431,
-      "sha256": "b966a9cd4a50691e611ccc0545152f4ea731b85883b33b50e7ffd3cfc45f70ed"
+      "size": 9433,
+      "sha256": "70be586d4edc34fc9413644b9061a7146173ec5fe243a753b844fa8b5b686b29"
     },
     "session": {
       "path": "reference/extracted/session.js",
       "beginMarker": "/* Product session model.",
       "endMarker": "/* Simulator only:",
-      "size": 13755,
-      "sha256": "bbf01b774d74227ca50a72e9091a027c6edac9c857f6ac3cf219bb7d5846cd59"
+      "size": 13757,
+      "sha256": "ea7b609ba2b83da4ec484890e029becb3652bde49cc1d4fa032ad11fae56ce66"
     }
   },
   "references": {

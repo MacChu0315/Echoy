@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "oracleSha256": "d23c51b025b44a0d2d11a3ad5a371abd4a2117adb8e742491e838af6dc4c0bb5",
-  "caseCount": 38,
+  "caseCount": 74,
   "browser": {
     "path": "/usr/bin/google-chrome",
     "version": "Google Chrome 151.0.7922.75"
@@ -62,6 +62,150 @@
       "width": 480,
       "height": 480,
       "sha256": "817880ee4f0a2934931542120478ade266e5287bcce1e15c090490b96459da17"
+    },
+    {
+      "id": "zh-CN/feedback-motif-recovery",
+      "path": "reference/ui/zh-CN/feedback-motif-recovery.png",
+      "size": 30980,
+      "width": 480,
+      "height": 480,
+      "sha256": "580e6d2934d5df2818fa5637d46981e51073b5ad95aa8c3c5695f2bf97f613a8"
+    },
+    {
+      "id": "zh-CN/feedback-play-preparing",
+      "path": "reference/ui/zh-CN/feedback-play-preparing.png",
+      "size": 31134,
+      "width": 480,
+      "height": 480,
+      "sha256": "4ac21d56b7a3853bc511d27e99a4b736349304f8c8ed5a673f014635e1580686"
+    },
+    {
+      "id": "zh-CN/feedback-sync-failed",
+      "path": "reference/ui/zh-CN/feedback-sync-failed.png",
+      "size": 38004,
+      "width": 480,
+      "height": 480,
+      "sha256": "acf330427850f86348d0a99e2cd22eb5b75e1f900755e5778b854ef73231cd6c"
+    },
+    {
+      "id": "zh-CN/feedback-syncing",
+      "path": "reference/ui/zh-CN/feedback-syncing.png",
+      "size": 37181,
+      "width": 480,
+      "height": 480,
+      "sha256": "8cb6490234fb26a4399ec8ed7a8119a23b42b34680e06df6e74af9abbd4626ec"
+    },
+    {
+      "id": "zh-CN/feedback-sync-waiting",
+      "path": "reference/ui/zh-CN/feedback-sync-waiting.png",
+      "size": 36899,
+      "width": 480,
+      "height": 480,
+      "sha256": "73e64cdc757fd9abc1ecafdb88c95ef8ce4d6f5f6fd494a80e955c73eb785e3e"
+    },
+    {
+      "id": "zh-CN/feedback-pending-role",
+      "path": "reference/ui/zh-CN/feedback-pending-role.png",
+      "size": 30816,
+      "width": 480,
+      "height": 480,
+      "sha256": "c487cb20ebfae9b530d970190709264c4fe3ee3e2efd1378db891003a1d1a483"
+    },
+    {
+      "id": "zh-CN/feedback-pending-phrase",
+      "path": "reference/ui/zh-CN/feedback-pending-phrase.png",
+      "size": 36502,
+      "width": 480,
+      "height": 480,
+      "sha256": "e0133783d4c0f868ba09390a378d31a61f69c5db08e2d5a1a550b3d72027dd8a"
+    },
+    {
+      "id": "zh-CN/feedback-moving",
+      "path": "reference/ui/zh-CN/feedback-moving.png",
+      "size": 31451,
+      "width": 480,
+      "height": 480,
+      "sha256": "adc5f7d3b2b2237ded414aff34200bc590fbb984d01864b4227f0cc26cce9df9"
+    },
+    {
+      "id": "zh-CN/feedback-contact-confirming",
+      "path": "reference/ui/zh-CN/feedback-contact-confirming.png",
+      "size": 30282,
+      "width": 480,
+      "height": 480,
+      "sha256": "2f5ccad6c45cbd3a7e8f2723d5de58c0660e52dcf10ce11efc783b3fdbc83bd4"
+    },
+    {
+      "id": "zh-CN/feedback-arrangement-pending",
+      "path": "reference/ui/zh-CN/feedback-arrangement-pending.png",
+      "size": 30911,
+      "width": 480,
+      "height": 480,
+      "sha256": "c452e6fa0aaea83e23f77d98e34a3ced81267a1b8871affb1800df358384f839"
+    },
+    {
+      "id": "zh-CN/feedback-notice",
+      "path": "reference/ui/zh-CN/feedback-notice.png",
+      "size": 29179,
+      "width": 480,
+      "height": 480,
+      "sha256": "507b41592f53853ce7cabf5f56f564d6104bf65ec8576a4ca1433cb5f6a4cd5e"
+    },
+    {
+      "id": "zh-CN/feedback-link-split",
+      "path": "reference/ui/zh-CN/feedback-link-split.png",
+      "size": 31250,
+      "width": 480,
+      "height": 480,
+      "sha256": "d949193e2ad38fb45cd762b3cd43cca5f16cc72931b72cc8ef021d7b198d0ad8"
+    },
+    {
+      "id": "zh-CN/feedback-link-hold",
+      "path": "reference/ui/zh-CN/feedback-link-hold.png",
+      "size": 31079,
+      "width": 480,
+      "height": 480,
+      "sha256": "5820da32b73526597e1eca14729c36ac255111564627ce82cc060abfa524eafd"
+    },
+    {
+      "id": "zh-CN/feedback-normal-source",
+      "path": "reference/ui/zh-CN/feedback-normal-source.png",
+      "size": 34718,
+      "width": 480,
+      "height": 480,
+      "sha256": "8286a49a3d173e65659db2167b9aa06d41963bb1ede0d79a99993875165b8c06"
+    },
+    {
+      "id": "zh-CN/feedback-normal-leader",
+      "path": "reference/ui/zh-CN/feedback-normal-leader.png",
+      "size": 29598,
+      "width": 480,
+      "height": 480,
+      "sha256": "fa5f0d501b9db1b6adc12841102cb14ce0bf7c41aa72ada4e5ad9573f76e617e"
+    },
+    {
+      "id": "zh-CN/feedback-normal-shared-solo",
+      "path": "reference/ui/zh-CN/feedback-normal-shared-solo.png",
+      "size": 30781,
+      "width": 480,
+      "height": 480,
+      "sha256": "43378fecf39478bb0149abeb0a718f5feb03dd6ef576abb4ed9d29c5d4ada770"
+    },
+    {
+      "id": "zh-CN/feedback-paused-source",
+      "path": "reference/ui/zh-CN/feedback-paused-source.png",
+      "size": 36660,
+      "width": 480,
+      "height": 480,
+      "sha256": "75d88dbf6d56f26eb573448904da011b8099b1bb537b572a4b51a2ac101755b8"
+    },
+    {
+      "id": "zh-CN/feedback-paused-shared",
+      "path": "reference/ui/zh-CN/feedback-paused-shared.png",
+      "size": 30912,
+      "width": 480,
+      "height": 480,
+      "sha256": "13374e2dd66f78f18e1212396ca2f1a0cbd67b4bcfdecb3933b19f4516e78ceb"
     },
     {
       "id": "zh-CN/role-pulse",
@@ -214,6 +358,150 @@
       "width": 480,
       "height": 480,
       "sha256": "39f8c0ea3afec88a5fed3b271a3e8d0473af16af33cc02c2699925a38761d124"
+    },
+    {
+      "id": "en/feedback-motif-recovery",
+      "path": "reference/ui/en/feedback-motif-recovery.png",
+      "size": 31078,
+      "width": 480,
+      "height": 480,
+      "sha256": "f633d52ed35f663023de3f680f5d0a35c3be0882b099788f712a6a70ca0754ce"
+    },
+    {
+      "id": "en/feedback-play-preparing",
+      "path": "reference/ui/en/feedback-play-preparing.png",
+      "size": 31209,
+      "width": 480,
+      "height": 480,
+      "sha256": "492a8fef1e5c0bf5c39fc13afced7d7ca5ae35ace99beebe740f7bf9a6b94a49"
+    },
+    {
+      "id": "en/feedback-sync-failed",
+      "path": "reference/ui/en/feedback-sync-failed.png",
+      "size": 38617,
+      "width": 480,
+      "height": 480,
+      "sha256": "4724d20d0ca0e46d57030f7f59cd912250323966cfa50aa0289b1b29744a4238"
+    },
+    {
+      "id": "en/feedback-syncing",
+      "path": "reference/ui/en/feedback-syncing.png",
+      "size": 38628,
+      "width": 480,
+      "height": 480,
+      "sha256": "d912c18817af2de4d6bf21a55605a989920e9e462ba982effd1f51bb2ceaeecd"
+    },
+    {
+      "id": "en/feedback-sync-waiting",
+      "path": "reference/ui/en/feedback-sync-waiting.png",
+      "size": 38244,
+      "width": 480,
+      "height": 480,
+      "sha256": "e3be6373db2d1b31d4acb4cb31746202066344fb83b35566093be672c695177d"
+    },
+    {
+      "id": "en/feedback-pending-role",
+      "path": "reference/ui/en/feedback-pending-role.png",
+      "size": 31095,
+      "width": 480,
+      "height": 480,
+      "sha256": "1fe8ce934103f55e8aa92f7ea5f579318c7978ad00b1d4d1248248fc877ea61a"
+    },
+    {
+      "id": "en/feedback-pending-phrase",
+      "path": "reference/ui/en/feedback-pending-phrase.png",
+      "size": 37128,
+      "width": 480,
+      "height": 480,
+      "sha256": "a12eb32b8025e40cf833bd95f1f71fa302588e031c45ad69fbad6ad75195173d"
+    },
+    {
+      "id": "en/feedback-moving",
+      "path": "reference/ui/en/feedback-moving.png",
+      "size": 31773,
+      "width": 480,
+      "height": 480,
+      "sha256": "6dad538f5e3931646daa437a4a03e325581b0e1e7e5e1dd4ae589a0f6bcc3bc1"
+    },
+    {
+      "id": "en/feedback-contact-confirming",
+      "path": "reference/ui/en/feedback-contact-confirming.png",
+      "size": 30292,
+      "width": 480,
+      "height": 480,
+      "sha256": "7c2bf81487c4843ca411e4c3b66f61de731cbe476cca950461a5c9685ecdb72a"
+    },
+    {
+      "id": "en/feedback-arrangement-pending",
+      "path": "reference/ui/en/feedback-arrangement-pending.png",
+      "size": 30783,
+      "width": 480,
+      "height": 480,
+      "sha256": "3dafc30e33a15aa9fc55784ef777be6e90f92440c2f677070f7a448592d48bc7"
+    },
+    {
+      "id": "en/feedback-notice",
+      "path": "reference/ui/en/feedback-notice.png",
+      "size": 29288,
+      "width": 480,
+      "height": 480,
+      "sha256": "fe71409597eb4c46a00f54f018a0775ef5f1fb5c2d221a8358783ce16e4340e6"
+    },
+    {
+      "id": "en/feedback-link-split",
+      "path": "reference/ui/en/feedback-link-split.png",
+      "size": 30279,
+      "width": 480,
+      "height": 480,
+      "sha256": "2bfbab005bc6ed02e7843dbce58ad0f0d1dc3a49e004da814e594ebbe80b5551"
+    },
+    {
+      "id": "en/feedback-link-hold",
+      "path": "reference/ui/en/feedback-link-hold.png",
+      "size": 30477,
+      "width": 480,
+      "height": 480,
+      "sha256": "787b9ec3d5a1597ecab7330139bdc2ec9fe89f5e0ed6a0cad0684fd0e6c83581"
+    },
+    {
+      "id": "en/feedback-normal-source",
+      "path": "reference/ui/en/feedback-normal-source.png",
+      "size": 37106,
+      "width": 480,
+      "height": 480,
+      "sha256": "45e4e70facc24bcb768d8f61774c2de1def0f240b9df3813bd1e0838408b036e"
+    },
+    {
+      "id": "en/feedback-normal-leader",
+      "path": "reference/ui/en/feedback-normal-leader.png",
+      "size": 30223,
+      "width": 480,
+      "height": 480,
+      "sha256": "04eb10ce8db78fcc3928333d7b51ddb3c89c28722d94035e0c98d90bb07f51ba"
+    },
+    {
+      "id": "en/feedback-normal-shared-solo",
+      "path": "reference/ui/en/feedback-normal-shared-solo.png",
+      "size": 31407,
+      "width": 480,
+      "height": 480,
+      "sha256": "7363d5124976582752283c80bbc4a63c453c0a07828c2c8b3ae9af157d53a277"
+    },
+    {
+      "id": "en/feedback-paused-source",
+      "path": "reference/ui/en/feedback-paused-source.png",
+      "size": 37617,
+      "width": 480,
+      "height": 480,
+      "sha256": "d799129cb6f41df5db73c9cc12d37d4885566d90e0fd776f3a0318fa292235aa"
+    },
+    {
+      "id": "en/feedback-paused-shared",
+      "path": "reference/ui/en/feedback-paused-shared.png",
+      "size": 30719,
+      "width": 480,
+      "height": 480,
+      "sha256": "5610c759c61e458b4e89c4d3f1fd816ccefce5a8ea0bcce9cf8a4e3a2e93ad2e"
     },
     {
       "id": "en/role-pulse",

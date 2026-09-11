@@ -133,3 +133,5 @@ function compose(d,source,bar=0,duplicate=0,bpm=96){
 const api=Object.freeze({analyze,compose});root.DuijuResponse=api;
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);
+
+

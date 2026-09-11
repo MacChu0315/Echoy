@@ -47,16 +47,18 @@ are not firmware sources.
 
 ## Music fixtures
 
-`tests/cases/music-fixtures.json` contains 18,360 cases and 81,120 expected
+`tests/cases/music-fixtures.json` contains 48,600 cases and 216,510 expected
 events. It is compact JSON because it is machine input for the later C oracle
 comparison. `tupleFields` and `eventFields` define the array layout.
 
 The cases are the full Cartesian product of:
 
 - four roles and all three phrases;
-- activity endpoints 0 and 1, the current role's default, and exact threshold
-  samples `.25`, `.26`, `.30`, `.42`, `.52`, `.65`, `.70`, `.72`, `.74`,
-  `.75`, `.76`, `.78`, `.80`, and `.82`;
+- activity endpoints 0 and 1, the current role's default, and each exact
+  threshold `.25`, `.26`, `.30`, `.42`, `.52`, `.65`, `.70`, `.72`, `.74`,
+  `.75`, `.76`, `.78`, `.80`, and `.82` together with its explicit left and
+  right neighbors at ±.001; the metadata records this three-decimal rule and
+  all 45 expanded values for each role;
 - bars 0 through 4;
 - duplicate indices 0, 1, and 2;
 - solo, empty motif, all-weak motif, sustained notes, chords, and several
@@ -88,11 +90,15 @@ These traces are prototype behavior. The `.38 s`, `.45 s`, `1.05 s`, and
 
 ## UI baselines
 
-`tests/cases/ui-cases.json` defines 19 product-screen states in both `zh-CN`
-and `en`, for 38 captures. The set includes all four performance instruments,
+`tests/cases/ui-cases.json` defines 37 product-screen states in both `zh-CN`
+and `en`, for 74 captures. The set includes all four performance instruments,
 playing, beat waiting, pending activity, all four role/phrase selections,
 volume, boot, data loading, role preparation, role failure, data failure,
-audio failure, and low battery.
+audio failure, and low battery. It also covers all 22 observable branches of
+`DuijuApp.feedback()`: recovery and play preparation, all synchronization and
+pending-commit stages, movement/contact/arrangement confirmation, notices,
+both lost-link states, and every independent/shared/leader/source relation for
+playing and paused states.
 
 Every capture fixes the viewport to 480×480 at device scale 1, injects a
 10,000 ms clock, disables timers and animation, enables reduced motion, fixes
@@ -100,11 +106,14 @@ the color profile, and injects named Liberation Sans, Noto Sans CJK, and
 DejaVu Sans Mono faces. `tests/cases/ui-capture.json` records each font path,
 size, and SHA-256 together with the exact Chrome version.
 
-The same capture file records visible text, every product `data-action`, its
-value, label and hit rectangle, and selected computed style properties and
-rectangles. For canvases it records dimensions, a pixel checksum, the complete
-motif for that frame, and the score-step list. The self-test requires the
-score-step list to match that motif exactly.
+The same capture file records visible text, the exact localized feedback,
+every product `data-action`, its value, label and hit rectangle, and selected
+computed style properties and rectangles. For canvases it records dimensions,
+a pixel checksum, the complete motif for that frame, and the score-step list
+observed independently from the real `CanvasRenderingContext2D.arc` calls made
+at score y=210. The self-test requires those observed event dots to match the
+motif's unique steps exactly, so a missing or misplaced draw call fails even
+when the motif is unchanged.
 
 Strict 480×480 PNGs live under `reference/ui/<locale>/`; their hashes and
 dimensions are in `reference/ui/manifest.json`. They are browser-reference

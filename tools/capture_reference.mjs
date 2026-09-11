@@ -103,6 +103,7 @@ body,button,input,select{font-family:"Echoy Latin","Echoy CJK",sans-serif!import
 const NativeDate=Date;class FrozenDate extends NativeDate{constructor(...args){super(...(args.length?args:[1700000000000]));}static now(){return 1700000000000;}}window.Date=FrozenDate;
 window.setInterval=()=>0;window.clearInterval=()=>{};window.requestAnimationFrame=()=>0;window.cancelAnimationFrame=()=>{};
 const nativeMatchMedia=window.matchMedia.bind(window);window.matchMedia=query=>query.includes('prefers-reduced-motion')?{matches:true,media:query,onchange:null,addListener(){},removeListener(){},addEventListener(){},removeEventListener(){},dispatchEvent(){return false;}}:nativeMatchMedia(query);
+const nativeArc=CanvasRenderingContext2D.prototype.arc;CanvasRenderingContext2D.prototype.arc=function(x,y,r,...rest){if(window.__ECHOY_SCORE_CAPTURE_ACTIVE&&this.canvas?.classList.contains('instrument-canvas')&&Math.abs(y-210)<.0001)(window.__ECHOY_SCORE_ARCS__??=[]).push({x,y,r});return nativeArc.call(this,x,y,r,...rest);};
 try{localStorage.clear();localStorage.setItem('duiju-guide-v041-dismissed','1');}catch(_){}})();
 </script>`;
   const cases = JSON.stringify(uiCases.cases).replaceAll('</script', '<\\/script');
@@ -120,6 +121,24 @@ else if(item.state==='role-preparing'){d.rolePreparing=item.preparingRole;}
 else if(item.state==='role-error'){d.error='素材不可用';}
 else if(item.state==='data-error'){d.fault='data';d.motifAvailable=false;}
 else if(item.state==='audio-error'){d.fault='audio';}
+const shareSession=()=>{const a=app.engine.sessionFor('A'),b=app.engine.sessionFor('B');if(b&&b.id!==a.id)delete app.engine.sessions[b.id];a.members=['A','B'];app.engine.devices.B.sessionId=a.id;app.engine.devices.B.lifecycle='ready';app.engine.devices.B.motifAvailable=true;};
+const setEdge=key=>{shareSession();app.engine.committedEdges={[key]:true};};
+if(item.feedbackBranch==='motif-recovery')d.motifAvailable=false;
+else if(item.feedbackBranch==='play-preparing')app.playRequests.A={boot:d.bootId};
+else if(item.feedbackBranch==='sync-failed')app.engine.merges.fixture={ids:['A','B'],stage:'failed',applyAt:null};
+else if(item.feedbackBranch==='syncing')app.engine.merges.fixture={ids:['A','B'],stage:'syncing',applyAt:null};
+else if(item.feedbackBranch==='sync-waiting')app.engine.merges.fixture={ids:['A','B'],stage:'waiting',applyAt:app.engine.time+2};
+else if(item.feedbackBranch==='pending-role')app.engine.pending.roles.A='harmony';
+else if(item.feedbackBranch==='pending-phrase')app.engine.pending.phrases.A={role:'voice',value:2};
+else if(item.feedbackBranch==='moving')app.engine.moving.A=app.engine.time;
+else if(item.feedbackBranch==='contact-confirming')app.engine.contactInput={'A>B':{left:'A',right:'B',state:'uncertain',since:app.engine.time}};
+else if(item.feedbackBranch==='arrangement-pending'){shareSession();const session=app.engine.sessionFor('A');app.engine.arrangements[session.id]={signature:'fixture',target:{'A>B':true},applyAt:app.engine.time+2,ids:['A','B']};}
+else if(item.feedbackBranch==='notice')app.notices.A={text:'已生效',until:performance.now()+1100};
+else if(item.feedbackBranch==='link-split'){d.linkOnline=false;d.lostSplit=true;}
+else if(item.feedbackBranch==='link-hold'){d.linkOnline=false;d.lostSplit=false;}
+else if(item.feedbackBranch==='normal-source'||item.feedbackBranch==='paused-source')setEdge('B>A');
+else if(item.feedbackBranch==='normal-leader')setEdge('A>B');
+else if(item.feedbackBranch==='normal-shared-solo'||item.feedbackBranch==='paused-shared')shareSession();
 window.EchoyI18n.setLocale(item.locale);app.render();app.view.draw('A');await document.fonts.ready;app.view.draw('A');
 const screen=app.view.units.A.screen,screenRect=screen.getBoundingClientRect(),round=n=>Math.round(n*1000)/1000;
 const relativeRect=element=>{const r=element.getBoundingClientRect();return{x:round(r.x-screenRect.x),y:round(r.y-screenRect.y),width:round(r.width),height:round(r.height)};};
@@ -127,8 +146,9 @@ const props=['display','position','left','top','right','bottom','width','height'
 const selectors=['.product-page','.top-status','.role-heading','.phrase-name','.role-subtitle','.instrument-canvas','.gesture-zone','.expression-control','.role-tab','.phrase-option','.volume-sheet','.status-symbol','.status-heading','.status-copy','.status-action','.bottom-nav','.device-button.secondary','.device-button.transport-button'];
 const styles={};for(const selector of selectors){const elements=[...screen.querySelectorAll(selector)];if(elements.length)styles[selector]=elements.map(element=>{const computed=getComputedStyle(element),style={rect:relativeRect(element)};for(const prop of props)style[prop]=computed[prop];return style;});}
 const actions=[...screen.querySelectorAll('[data-action]')].map(element=>{const computed=getComputedStyle(element);return{action:element.dataset.action,value:element.dataset.value??null,tag:element.tagName.toLowerCase(),text:element.textContent.replace(/\\s+/g,' ').trim(),ariaLabel:element.getAttribute('aria-label'),disabled:element.disabled,rect:relativeRect(element),computed:{display:computed.display,pointerEvents:computed.pointerEvents,touchAction:computed.touchAction}};});
-const plan=app.plan().find(entry=>entry.id==='A'),motif=JSON.parse(JSON.stringify(plan?.motif||[])),canvas=screen.querySelector('canvas');let pixelHash=null;if(canvas){const bytes=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;let value=2166136261;for(const byte of bytes){value^=byte;value=Math.imul(value,16777619);}pixelHash=(value>>>0).toString(16).padStart(8,'0');}
-const result={id:item.locale+'/'+item.id,locale:item.locale,state:item.state,route:screen.querySelector('.product-page')?.dataset.route??null,screen:{width:round(screenRect.width),height:round(screenRect.height),text:screen.innerText.replace(/[ \\t]+/g,' ').replace(/\\n{2,}/g,'\\n').trim()},actions,styles,motif,canvas:{width:canvas?.width??0,height:canvas?.height??0,pixelHash,motifSteps:motif.map(event=>event.step)}};
+const plan=app.plan().find(entry=>entry.id==='A'),motif=JSON.parse(JSON.stringify(plan?.motif||[])),canvas=screen.querySelector('canvas');let pixelHash=null,renderedEventSteps=[];if(canvas){const audioPlaying=app.audio.playing;window.__ECHOY_SCORE_ARCS__=[];window.__ECHOY_SCORE_CAPTURE_ACTIVE=true;app.audio.playing=false;app.view.draw('A');window.__ECHOY_SCORE_CAPTURE_ACTIVE=false;renderedEventSteps=window.__ECHOY_SCORE_ARCS__.filter(dot=>dot.r>2).map(dot=>Math.round((dot.x-29)/19));app.audio.playing=audioPlaying;app.view.draw('A');const bytes=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;let value=2166136261;for(const byte of bytes){value^=byte;value=Math.imul(value,16777619);}pixelHash=(value>>>0).toString(16).padStart(8,'0');}
+const feedbackElement=screen.querySelector('[data-feedback]');
+const result={id:item.locale+'/'+item.id,locale:item.locale,state:item.state,route:screen.querySelector('.product-page')?.dataset.route??null,screen:{width:round(screenRect.width),height:round(screenRect.height),text:screen.innerText.replace(/[ \\t]+/g,' ').replace(/\\n{2,}/g,'\\n').trim()},feedback:{branch:item.feedbackBranch??null,text:feedbackElement?.textContent.trim()??null},actions,styles,motif,canvas:{width:canvas?.width??0,height:canvas?.height??0,pixelHash,observation:canvas?'CanvasRenderingContext2D.arc calls at score y=210':null,renderedEventSteps}};
 document.body.replaceChildren(screen);screen.style.position='absolute';screen.style.inset='0';screen.style.margin='0';window.__ECHOY_CAPTURE__=result;return result;})();
 </script>`;
   return html.replace('</head>', `${head}</head>`).replace('</body>', `${tail}</body>`);
