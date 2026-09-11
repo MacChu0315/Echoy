@@ -1,6 +1,6 @@
 # Echoy：后续 agent 交接
 
-更新日期：2026-09-12。用户已将工程位置确定为独立的 `Echoy/`。Tasks 1–8 已完成：原型 oracle、固件骨架、音乐/会话/DSP/UI/协议，以及设置、电量、诊断、镜像和唯一控制 owner 的真机运行时已建立。Task 9 起继续完整电脑验收工具。
+更新日期：2026-09-12。用户已将工程位置确定为独立的 `Echoy/`。Tasks 1–9 已完成：完整固件源码/运行时、原型 oracle，以及三 C 实例的电脑参考/固件验收工具均已建立。Task 10 继续最终全量验证、单机安装/验收和交接；双/三机与声学项目受当前硬件数量限制。
 
 ## 工作位置与阅读顺序
 
@@ -51,7 +51,7 @@
 
 前期已检查原 JS 的 1,200 个音乐组合及独立开机/吸合/拆开保拍/无自动播放路径，并通过 Playwright 查看 UI 和保存截图。截图是现场参考图，含时间状态和截图取整误差；正式视觉测试需重新生成冻结状态的 480×480 基准。详细记录见规格及计划末尾。
 
-当前已实现完整设备运行时：唯一 control task 持 core，UI/RPC 16 条队列、radio 32 条队列，真实 speaker/radio/contact/NVS/battery/ESP-Iris snapshot 与 RGB565 连续镜像均已接线；HELLO 不授信，物理确认/已成员可完成 2+1 转交。Task 8 平台测试 4/4、全套 28/28、ASan/UBSan 28/28，普通/开发构建均通过且普通版无 `inject_rpc`。真实电源动作、镜像与音频争用、三机无线/起音仍待 Task 10。当前 `echoy.bin` 3,844,016 bytes，只能经 Recovery 安装到 `ota_0`，factory 尺寸 warning 保留。
+当前已实现完整设备运行时和电脑验收工具。Task 9 Python 7/7、JS adapter 4/4、headless 29 项、真实 Chrome 22 项、全套 CTest 30/30 通过；固件模式显示同一 LVGL 帧并播放 C DSP PCM，reference 模式提供固定哈希 HTML，服务仅绑定 127.0.0.1。Task 8 平台与 sanitizer 验证继续通过。真实电源动作、镜像与音频争用、三机无线/起音仍待 Task 10。当前 normal app 只能经 Recovery 安装到 `ota_0`，factory 尺寸 warning 保留。
 
 结构更新时 Echoy 与外层 Mosaico 均未初始化 Git，三个参考仓库工作区干净。初始化 Echoy Git 前按用户规则取得许可；没有 Git 不阻止已授权的本地实现/验证。不要在参考仓库建立 Echoy 工作分支或提交 Echoy 文件。任何建议的 commit 都以 Echoy 已获准初始化为前提。
 

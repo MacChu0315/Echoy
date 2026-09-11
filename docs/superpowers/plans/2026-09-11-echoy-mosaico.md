@@ -359,15 +359,15 @@ A data_recovered：在下一边界恢复来源，不在小节中间重新编曲�
 
 **Consumes:** 同一 C 核心、同一 LVGL 页面、Task 1 原 HTML。**Produces:** 原型参考模式和固件行为模式，支持所有桌面交互和诊断。
 
-- [ ] 参考模式直接提供固定哈希原 HTML；测试服务只绑定 127.0.0.1，只提供明确的项目测试资产，不暴露用户 Sync 整个目录。
-- [ ] 固件模式启动三个 C 实例，Python 标准库桥管理假时钟和消息传送。桌面坐标只进入空间适配层，转换为 contact 事件；核心输入不得含桌面 x/y。
-- [ ] 保留外壳拖动、吸附预览、碰撞/取消、滚动、收纳/开机、第三台、全部六步指引及重开、速查、中英切换、故障面板、事件日志、HTML→固件对照表。指引只观察，不代用户播放或重排。
-- [ ] 固件模式的 .screen 显示同一 LVGL renderer 帧并转发屏内触点；不能继续展示 JS 图形却标成 MCU UI。PC 的音频来自 DSP PCM，经本地桥/AudioWorklet 或 PC 输出适配播放；离线 WAV 用于自动校验。
-- [ ] 桥消息采用有界逐行请求/响应，Python 解析 JSON 后转换为 C runner 固定事件；一次响应携 snapshot/revision，屏幕和音频与该版本绑定。桥连接断开后测试模式停止注入，实际真机继续自主演奏。
-- [ ] 启动入口定义为 `python3 tools/echoy-sim/run.py --mode reference`、`--mode firmware`、`--headless --scenario all`；这三个命令是本任务要实现的工具接口，并非当前已有命令。
-- [ ] 场景覆盖：素材 loading 及取消、下次 role fail、output fault、data fault、sync fail、磁吸 uncertain、Wi-Fi off/peer online、peer offline、低电/零电、仅一台/全部缺席、第三台加入、重置、故障解除不改摆放/播放意图。
-- [ ] 真机模式不能靠桌面坐标伪造实际磁吸证据，故障注入只能显式开发模式；参考模式浏览器后台暂停规则继续保留。
-- [ ] 验证全场景 headless 结果和浏览器键鼠/触摸路径；建议提交 `test: add Echoy firmware simulator and fault scenarios`。
+- [x] 参考模式直接提供固定哈希原 HTML；测试服务只绑定 127.0.0.1，只提供明确的项目测试资产，不暴露用户 Sync 整个目录。
+- [x] 固件模式启动三个 C 实例，Python 标准库桥管理假时钟和消息传送。桌面坐标只进入空间适配层，转换为 contact 事件；核心输入不得含桌面 x/y。
+- [x] 保留外壳拖动、吸附预览、碰撞/取消、滚动、收纳/开机、第三台、全部六步指引及重开、速查、中英切换、故障面板、事件日志、HTML→固件对照表。指引只观察，不代用户播放或重排。
+- [x] 固件模式的 .screen 显示同一 LVGL renderer 帧并转发屏内触点；不能继续展示 JS 图形却标成 MCU UI。PC 的音频来自 DSP PCM，经本地桥/AudioWorklet 或 PC 输出适配播放；离线 WAV 用于自动校验。
+- [x] 桥消息采用有界逐行请求/响应，Python 解析 JSON 后转换为 C runner 固定事件；一次响应携 snapshot/revision，屏幕和音频与该版本绑定。桥连接断开后测试模式停止注入，实际真机继续自主演奏。
+- [x] 启动入口定义为 `python3 tools/echoy-sim/run.py --mode reference`、`--mode firmware`、`--headless --scenario all`；这三个命令是本任务要实现的工具接口，并非当前已有命令。
+- [x] 场景覆盖：素材 loading 及取消、下次 role fail、output fault、data fault、sync fail、磁吸 uncertain、Wi-Fi off/peer online、peer offline、低电/零电、仅一台/全部缺席、第三台加入、重置、故障解除不改摆放/播放意图。
+- [x] 真机模式不能靠桌面坐标伪造实际磁吸证据，故障注入只能显式开发模式；参考模式浏览器后台暂停规则继续保留。
+- [x] 验证全场景 headless 结果和浏览器键鼠/触摸路径；建议提交 `test: add Echoy firmware simulator and fault scenarios`。
 
 ## Task 10: 真机闭环与交接
 
