@@ -1,5 +1,8 @@
 # Echoy desktop acceptance tool
 
+This guide describes the legacy simulator. The rebuild is waiting for a new
+HTML prototype; see the [repository status](../../README.md).
+
 Run from the Echoy project root (Python standard library, CMake and the existing
 host dependencies only):
 
@@ -110,4 +113,4 @@ to an alternate build; CTest sets it to its own target for sanitizer builds.
 These tests establish desktop behavior and adapter isolation. Physical magnetic
 identity, actual wireless timestamps, speaker/acoustic synchronization,
 hardware power behavior, touch latency and 30-minute endurance remain the
-hardware acceptance work documented in `docs/echoy/hardware-acceptance.md`.
+hardware checks to be defined and repeated for the rebuild.

@@ -1,6 +1,0 @@
-Traceback (most recent call last):
-  File "/home/zhuzhengming/esp/ts/Mosaico/Echoy/tests/test_ui_visual_guards.py", line 32, in <module>
-    for kind in sys.argv[1:] or ['instrument','role','move','opacity']:run(kind)
-  File "/home/zhuzhengming/esp/ts/Mosaico/Echoy/tests/test_ui_visual_guards.py", line 28, in run
-    assert not result['accepted'],f'{kind}: broken drawing incorrectly accepted: {result}'
-AssertionError: instrument: broken drawing incorrectly accepted: {'accepted': True, 'regions': []}

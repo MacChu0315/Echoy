@@ -1,1 +1,0 @@
-test_ui_view: /home/zhuzhengming/esp/ts/Mosaico/Echoy/tests/test_ui_view.c:19: transition_cases: Assertion `emitted==before+1&&last.action==UI_FINISH_ACTIVITY' failed.
