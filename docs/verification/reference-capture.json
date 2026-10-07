@@ -1,0 +1,19 @@
+{
+  "browser": "Google Chrome 151.0.7922.75",
+  "viewport": [
+    1600,
+    1200
+  ],
+  "screen_size": [
+    480,
+    480
+  ],
+  "capture": "Exact 480x480 crop at rounded product-screen origin; HTML source unchanged.",
+  "observed_fonts": {
+    "title": "NotoSansCJKsc-Bold",
+    "body": "NotoSansCJKsc-Regular",
+    "action_labels": "NotoSansCJKsc-Medium",
+    "battery": "DejaVuSansMono"
+  },
+  "html_sha256": "241a0a58e0e33cb906b4bf637c2d55f219de988df2a683c68d68f767c7dee6b5"
+}

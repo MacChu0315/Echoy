@@ -1,0 +1,25 @@
+# Echoy development rules
+
+- The approved design is `reference/echoy-arrange-B-v3.html`; hashes are in
+  `reference/SHA256SUMS`. Never edit this baseline to make an implementation pass.
+- Preserve its 480x480 product layout, wording, icons, typography, pages and
+  interactions. Keep browser desk/debug controls outside the device screen.
+  Show concrete differences and obtain approval before a non-equivalent change.
+- Use ESP-GSP JSON/resources and portable C UI shared by the native `sim_bridge`
+  and firmware. Do not substitute a whole-screen image for functioning controls.
+- Validate UI and interaction in the matching official simulator before hardware.
+  Scene-only renders do not validate C callbacks; `--frames`, `--fps` and
+  `--dump-ppm` select scene-only mode in the current Vibe wrapper.
+- Keep application-owned files under this repository. Firmware lives in
+  `projects/echoy/`; `pc/` beneath it excludes board, FreeRTOS and Iris dependencies.
+  Consume public utils/BSP interfaces; do not copy their CLI or modify siblings.
+- Dependency revisions and tool versions are recorded in `docs/dependencies.json`.
+  Use GSP 1.5.1 / GSPC 0.6.1 and the pinned ESP32-S31 SDK, not arbitrary latest tools.
+- Recording captures touch timestamps, not microphone audio. Preserve initial
+  silence, two count-in beats, four recording beats, cancel/empty-record behavior,
+  one-shot reply and explicit per-device continuous-play permission.
+- Preserve the retained Vibe Mode/Recovery partition and integration contract.
+  Device writes use the official `mosaico.py` workflow and current user authorization.
+  Never infer physical audio, wireless or timing acceptance from PC results.
+- Keep `docs/PROJECT_STATE.md` current with verified progress and remaining work.
+  User-supplied verification claims are provenance, not new test results.

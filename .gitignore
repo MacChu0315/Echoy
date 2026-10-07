@@ -1,0 +1,11 @@
+**/build/
+**/build-sim/
+**/build-host/
+**/managed_components/
+**/sdkconfig
+**/sdkconfig.old
+**/.codex-runs/
+.playwright-cli/
+output/
+__pycache__/
+*.pyc

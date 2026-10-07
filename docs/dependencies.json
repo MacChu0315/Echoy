@@ -1,0 +1,10 @@
+{
+  "vibe": "95469e63b621fc6ece3b0e313af8c1ba59dcd066",
+  "utils": "fc63d43f3ac72aa54e701b07b07fbed07a16b3ca",
+  "bsp": "a2c985ad698b3f04a21c63e006b43e7e948bc1d7",
+  "esp_idf": "7b9cc1ac79f865983f59bb8ff3ff43eb74ff1dbe",
+  "target": "esp32s31",
+  "esp_gsp": "1.5.1",
+  "gspc": "0.6.1",
+  "lvgl_transitive_bsp_dependency": "9.5.0"
+}

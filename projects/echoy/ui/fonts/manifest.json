@@ -1,0 +1,32 @@
+[
+  {
+    "source": "NotoSansCJK-Regular.ttc",
+    "source_sha256": "b76b0433203017ca80401b2ee0dd69350349871c4b19d504c34dbdd80541690a",
+    "file": "NotoSansSC-Regular.otf",
+    "sha256": "8303b71d6e8b49c7b711ac79171a47730f3c972d3041fab30ad048d18a63f8b4"
+  },
+  {
+    "source": "NotoSansCJK-Medium.ttc",
+    "source_sha256": "197d5e1e019faca33a4d55931c7d68b8056f3b97cb862049f5cb8de9efdfb8ce",
+    "file": "NotoSansSC-Medium.otf",
+    "sha256": "7837e761363a0ea6c587ae1cf46b3b1c77f9c5dbde7c6de2a58012e43a34ef31"
+  },
+  {
+    "source": "NotoSansCJK-Bold.ttc",
+    "source_sha256": "faa5f3656a78b2e2d450d27fe8382c778bc2b6bb5ea29c986664a6a435056ceb",
+    "file": "NotoSansSC-Bold.otf",
+    "sha256": "e2b39051f98737f8e577747d6bb6fa4fe023f94479df3e9eacbae11e35edefed"
+  },
+  {
+    "source": "DejaVuSansMono.ttf",
+    "source_sha256": "39c29931201f08dd89fdba4129c76288e6baeecf7c94fe4f6a757f2b50718b1b",
+    "file": "DejaVuSansMono.ttf",
+    "sha256": "39c29931201f08dd89fdba4129c76288e6baeecf7c94fe4f6a757f2b50718b1b"
+  },
+  {
+    "source": "LiberationSans-Regular.ttf",
+    "source_sha256": "36efda825bcd7d1de846204c3adad51ced9d9b5cb7df571fb33edc21207e324a",
+    "file": "LiberationSans-Regular.ttf",
+    "sha256": "36efda825bcd7d1de846204c3adad51ced9d9b5cb7df571fb33edc21207e324a"
+  }
+]
