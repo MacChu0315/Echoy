@@ -68,8 +68,9 @@ Files: `projects/echoy/ui/main.json`, `main/echoy_ui.{h,c}`, `pc/platform_pc.c`,
 After the native home foundation is proven: role/settings/detail/fault pages,
 all twelve phrase algorithms and audio, multi-device model/transport, then physical
 integration and acceptance. Preserve the prototype's in-memory semantics unless
-persistence is explicitly requested. Browser-only export/remove actions need an
-explicit device mapping before claiming full product parity.
+persistence is explicitly requested. The user approved hiding the simulated
+remove action on hardware and retaining it on PC (2026-10-08). The export action
+still needs a concrete device implementation before claiming full product parity.
 
 ## Verified outcome
 

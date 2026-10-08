@@ -52,5 +52,6 @@ The current output service is explicitly simulated; no audio is synthesized.
   Current graphics show recorded anchors, not a completed accompaniment engine.
 - Multi-device transport, identities and clocks; real battery and peripherals.
 - Actual screen/touch, acoustic timing, resource use and device acceptance.
-- A user decision for the device version of "Put away this tile (simulation)".
+- Apply the 2026-10-08 decision to hide "Put away this tile (simulation)" on
+  hardware while retaining it on PC when settings are implemented.
   No device write has been performed.

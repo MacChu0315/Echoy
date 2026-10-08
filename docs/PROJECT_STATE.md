@@ -28,10 +28,10 @@ The UI's output service and hardware values are explicitly simulated, including
 in the buildable firmware; do not install it as a finished musical application.
 No physical device write or hardware acceptance has occurred in this rebuild.
 
-The user has been asked whether to hide "Put away this tile (simulation)" on
-the device or retain it disabled. No answer has been received; do not select
-a device mapping silently. This does not affect the completed home foundation.
+On 2026-10-08 the user approved hiding "Put away this tile (simulation)" on
+hardware while retaining it in the PC simulator. Apply this when implementing
+settings; that page is not implemented yet. The frozen HTML remains unchanged.
 
-Next: agree the browser-only settings mapping, then implement the remaining
-UI and music/audio behavior using the frozen prototype. Continue through
+Next: implement the remaining UI and music/audio behavior using the frozen
+prototype and the approved device adaptation. Continue through
 simulator evidence before physical validation.

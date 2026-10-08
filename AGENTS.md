@@ -5,6 +5,8 @@
 - Preserve its 480x480 product layout, wording, icons, typography, pages and
   interactions. Keep browser desk/debug controls outside the device screen.
   Show concrete differences and obtain approval before a non-equivalent change.
+- Approved device adaptation: hide "Put away this tile (simulation)" on hardware;
+  retain the action in the PC simulator and leave the frozen HTML unchanged.
 - Use ESP-GSP JSON/resources and portable C UI shared by the native `sim_bridge`
   and firmware. Do not substitute a whole-screen image for functioning controls.
 - Validate UI and interaction in the matching official simulator before hardware.
