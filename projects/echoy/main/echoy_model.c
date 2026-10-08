@@ -12,6 +12,7 @@
 #define PLAN_RUNNING_LEAD_US INT64_C(120000)
 struct echoy_model {
     echoy_snapshot_t state;
+    bool managed;
     echoy_plan_t current, staged;
     unsigned memories[4];
 };
@@ -27,7 +28,7 @@ static int64_t next_bar(const echoy_snapshot_t *s, int64_t now, int64_t lead)
 }
 static void commit_pending(echoy_model_handle_t m, int64_t now)
 {
-    if (m->state.plan_pending && now >= m->state.apply_at_us) {
+    if (!m->managed && m->state.plan_pending && now >= m->state.apply_at_us) {
         m->current = m->staged;
         m->state.plan_pending = false;
         m->state.committed_revision = m->state.revision;
@@ -36,6 +37,12 @@ static void commit_pending(echoy_model_handle_t m, int64_t now)
 static bool stage(echoy_model_handle_t m, int64_t now)
 {
     echoy_snapshot_t *s = &m->state;
+    if (m->managed) {
+        ++s->revision;
+        s->plan_pending = true;
+        s->apply_at_us = 0;
+        return true;
+    }
     if (!echoy_compose_mask(s->seed, s->role, s->phrase, s->density, &m->staged)) {
         return false;
     }
@@ -304,4 +311,46 @@ void echoy_model_set_fault(echoy_model_handle_t m, bool fault)
     }
     echoy_model_pause(m);
     m->state.fault = fault;
+}
+
+echoy_model_handle_t echoy_model_create_managed(void)
+{
+    echoy_model_handle_t m = echoy_model_create();
+    if (m) {
+        m->managed = true;
+    }
+    return m;
+}
+void echoy_model_apply_external(echoy_model_handle_t m, const echoy_plan_t *plan, uint32_t revision,
+                                bool following, int64_t origin_us, bool clock_started)
+{
+    if (!m || !m->managed || !plan) {
+        return;
+    }
+    m->current = *plan;
+    m->state.plan_pending = false;
+    m->state.apply_at_us = 0;
+    m->state.committed_revision = revision;
+    m->state.clock_origin_us = origin_us;
+    m->state.clock_started = clock_started;
+    echoy_model_set_following(m, following);
+}
+void echoy_model_set_external_pending(echoy_model_handle_t m, bool pending, int64_t at_us)
+{
+    if (!m || !m->managed) {
+        return;
+    }
+    m->state.plan_pending = pending;
+    m->state.apply_at_us = at_us;
+}
+bool echoy_model_start_external(echoy_model_handle_t m, uint32_t generation, int64_t at_us)
+{
+    if (!m || !m->managed || at_us < 0 || m->state.generation != generation ||
+        m->state.phase != ECHOY_PREPARING || m->state.fault || m->state.plan_pending ||
+        !m->current.count) {
+        return false;
+    }
+    m->state.start_us = at_us;
+    m->state.phase = m->state.continuous ? ECHOY_PLAYING : ECHOY_PREVIEW;
+    return true;
 }

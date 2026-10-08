@@ -1,4 +1,10 @@
-# Echoy UI and phrase verification
+# Echoy verification
+
+Current audible three-tile results: [audio and linkage verification](audio-linked/README.md).
+The sections below retain the earlier UI/phrase evidence; their individual commands
+validate that scope. The current desktop uses the shared C audio/linkage controller.
+
+## UI and phrase verification
 
 These checks cover the actual shared C backend in GSP 1.5.1, not scene-only
 renders. They establish UI / musical-data behavior, not audio or hardware parity.
@@ -71,11 +77,10 @@ its generated diagrams. The optional desk control server responds HTTP 200 and
 reports a connected backend; its browser automation navigation was blocked by
 the browser client, so no browser-level desk-page acceptance is claimed.
 
-## Remaining
+## Current remaining work
 
-Audio synthesis/output scheduling, multi-device linking and clock transport,
-real battery/peripherals, device-side export and physical acceptance remain.
-Current visual playback uses real event plans but produces no sound.
-No firmware was flashed. The approved simulated remove action is hidden only on
-hardware. Historical home-foundation screenshots in this directory are retained;
-`full-ui/` contains the current evidence.
+The former audio and PC three-tile gaps are now covered in
+[audio and linkage verification](audio-linked/README.md). Physical speaker output,
+neighbor discovery, real communication/clocks, battery/peripherals, device-side
+export and hardware acceptance remain. No firmware was flashed. The approved
+simulated remove action remains hidden on hardware.

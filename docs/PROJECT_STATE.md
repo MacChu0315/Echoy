@@ -1,40 +1,44 @@
 # Echoy current state
 
-The user approved rebuilding from `reference/echoy-arrange-B-v3.html` with
-ESP-GSP JSON/resources and shared C UI, simulator comparison, then hardware
-integration. The frozen HTML and supplied verification document retain their
-original hashes. Never change the baseline to make the implementation pass.
+The approved source remains `reference/echoy-arrange-B-v3.html`; its hash and the
+supplied verification document are unchanged. Preserve the design, musical rules
+and explicit per-device playback permission. Dependency pins remain in
+`dependencies.json`; no remote write or physical device write has occurred.
 
-## Implemented
+## PC application
 
-- Official app under `projects/echoy`; dependency pins remain in `dependencies.json`.
-  The isolated ESP32-S31 SDK remains at `../.toolchains/esp-idf-7b9cc1a`.
-- Real C composition for all four roles / twelve expressions, including anchor,
-  support, pitch, duration and event ordering. Native home graphics display the
-  committed full plan; recording displays only captured anchors.
-- Chinese/English home, role gallery, settings, guide, information and recovery
-  pages, with phrase memory, density changes at musical boundaries, one-shot
-  audition, explicit looping, scrolling, export and PC remove/restore.
-- The approved remove action is hidden on hardware and retained on PC. PC desk
-  controls live outside the device screen. They simulate fault/loading/battery
-  conditions and download actual generated musical data, not fabricated audio.
-- Official native GSP checks and the fixed-SDK build are recorded in
-  `verification/README.md`. The two home Canvas callbacks and three gallery QOI
-  images share the same renderer and plan data across native/firmware builds.
+The audible three-tile entry is `tools/desk_preview.py` (HTTP 18896, native GSP
+views 3222/3223/3224). A starts on the desk; B/C start silent on the shelf.
+It runs the real portable C synthesis, ArrangeLinked/ArrangeModel and band
+scheduler. Browser code controls placement and embeds official GSP screens;
+it does not synthesize sound or substitute a separate musical model.
 
-## Remaining
+Audio runs on a shared sample timeline independently of GSP rendering. Each
+GSP handle has its own owner thread. Immutable preparation jobs execute outside
+the central state lock and stale revisions are discarded. File export/status I/O
+also occurs outside the audio lock. Playback output uses installed `paplay`.
 
-Audio synthesis and actual output scheduling are not implemented. Visual playback
-advances the real C plan but currently produces no sound. Single-tile PC simulation
-does not implement multi-device linking, clocks or wireless transport. Battery and
-other hardware readings are still mocked; device export has no output adapter.
-No physical device writes or hardware acceptance have occurred in this rebuild.
+Confirmed behavior includes tap audition, recording cues, repeated identical
+recordings, one-shot replies, linked full phrases/pitches, independent looping,
+boundary changes, exact detach retention, fault recovery and remove/restore.
+New neighbors never auto-start, replaced automatic-preview jobs stay cancelled,
+and language selection updates all three product screens.
 
-The user's missing reply was an implementation gap: the earlier foundation only
-stored/drew raw tap bits. A captured `0x44a0` seed is retained as a deterministic
-PC verification fixture. Ordinary taps remain audition-only as required by the
-HTML; recording requires Record, two count-in beats and four capture beats.
+Verification and concrete limits are recorded in `verification/audio-linked/README.md`.
+The supplied HTML remains the oracle, including actual Chrome offline sound.
+Do not call the earlier Vibe single-screen UI-only entry an audible acceptance
+run. It remains useful for isolated UI regressions.
 
-Next: implement the frozen prototype's audio synthesis/output behavior, then
-multi-device and hardware adapters. Continue with simulator evidence before
-physical validation, and obtain authorization before device writes.
+## Remaining physical integration
+
+Portable sources compile for the pinned ESP32-S31 SDK, but the physical app
+entry has not connected the speaker/output adapter, neighbor discovery,
+communication or clock synchronization. Battery and peripheral readings remain
+mocked; device export has no hardware destination. No acoustic, wireless, GPIO,
+resource-watermark or physical-device acceptance has occurred.
+
+Next: connect and validate these hardware adapters using the approved design.
+Determine the actual neighbor/transport interfaces from the pinned BSP and board
+before selecting a physical protocol. Obtain authorization before device writes.
+Do not repeat the earlier mistake of treating UI-only or single-tile tests as
+completion of the whole musical prototype.

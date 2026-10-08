@@ -260,8 +260,6 @@
       "w": 30,
       "h": 27,
       "bg_color": "#d95535",
-      "border_color": "#b87943",
-      "border_width": 0,
       "radius": 10,
       "bind": "richness_knob_color",
       "bind_target": "color"
@@ -290,6 +288,7 @@
       "fg_color": "#d95535",
       "text_align": "center",
       "font": "fonts/LiberationSans-Regular.ttf",
+      "font_charset": "=",
       "bind": "richness_equal_color",
       "bind_target": "color"
     },
@@ -626,7 +625,7 @@
       "fg_color": "#7d896e",
       "bind": "hint",
       "bind_target": "text",
-      "font_charset": "点「录一段」才记录节奏开头可以留空 · 提示音不会录入原来的继续，可随时暂停本机已经收到，不会中途重编结束就停 · 点 ▶ 才持续演奏等共同拍点开始Ⅱ 只暂停本机，不改变节奏▶ 开始演奏 · 不自动改写已取消，原节奏保留没有录入，原节奏保留",
+      "font_charset": "新声音没有准备好，原来的继续 点「录一段」才记录节奏开头可以留空 · 提示音不会录入原来的继续，可随时暂停本机已经收到，不会中途重编结束就停 · 点 ▶ 才持续演奏等共同拍点开始Ⅱ 只暂停本机，不改变节奏▶ 开始演奏 · 不自动改写已取消，原节奏保留没有录入，原节奏保留",
       "text_align": "center"
     },
     {
@@ -1085,7 +1084,7 @@
       "fg_color": "#7d896e",
       "bind": "hint_en",
       "bind_target": "text",
-      "font_charset": "Press Record to capture your rhythm You may start with silence · Cues are not recorded Current sound continues; Pause stays available Received · Current phrase stays intact Stops after one reply · Play to keep going Waiting for the shared beat Pause affects this tile, not the rhythm Play when ready · No automatic changes Cancelled; original kept No notes captured; original kept",
+      "font_charset": "Preparation failed; current sound continues Press Record to capture your rhythm You may start with silence · Cues are not recorded Current sound continues; Pause stays available Received · Current phrase stays intact Stops after one reply · Play to keep going Waiting for the shared beat Pause affects this tile, not the rhythm Play when ready · No automatic changes Cancelled; original kept No notes captured; original kept",
       "text_align": "center",
       "font": "fonts/LiberationSans-Regular.ttf"
     },
@@ -4707,7 +4706,7 @@
       "font": "fonts/NotoSansSC-Regular.otf",
       "bind": "info_device_2_zh_line_0",
       "bind_target": "text",
-      "font_charset": "本机 A · 72% · IMU 0°\n左 / 右扩展: none / none\n来自左侧: — ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%·°—/:.-",
+      "font_charset": "本机 A · 72% · IMU 0°\n左 / 右扩展: none / none\n来自左侧: — ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%·°—/:.-ABC0123456789%",
       "text_align": "left"
     },
     {
@@ -4724,7 +4723,7 @@
       "font": "fonts/NotoSansSC-Regular.otf",
       "bind": "info_device_2_zh_line_1",
       "bind_target": "text",
-      "font_charset": "本机 A · 72% · IMU 0°\n左 / 右扩展: none / none\n来自左侧: — ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%·°—/:.-",
+      "font_charset": "本机 A · 72% · IMU 0°\n左 / 右扩展: none / none\n来自左侧: — ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%·°—/:.-ABC0123456789%",
       "text_align": "left"
     },
     {
@@ -4741,7 +4740,7 @@
       "font": "fonts/NotoSansSC-Regular.otf",
       "bind": "info_device_2_zh_line_2",
       "bind_target": "text",
-      "font_charset": "本机 A · 72% · IMU 0°\n左 / 右扩展: none / none\n来自左侧: — ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%·°—/:.-",
+      "font_charset": "本机 A · 72% · IMU 0°\n左 / 右扩展: none / none\n来自左侧: — ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%·°—/:.-ABC0123456789%",
       "text_align": "left"
     },
     {
@@ -4905,7 +4904,7 @@
       "font": "fonts/LiberationSans-Regular.ttf",
       "bind": "info_device_2_en_line_0",
       "bind_target": "text",
-      "font_charset": "Tile A · 72% · IMU 0°\nLeft / right slot: none / none\nFollowing: — ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%·°—/:.-",
+      "font_charset": "Tile A · 72% · IMU 0°\nLeft / right slot: none / none\nFollowing: — ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%·°—/:.-ABC0123456789%",
       "text_align": "left"
     },
     {
@@ -4922,7 +4921,7 @@
       "font": "fonts/LiberationSans-Regular.ttf",
       "bind": "info_device_2_en_line_1",
       "bind_target": "text",
-      "font_charset": "Tile A · 72% · IMU 0°\nLeft / right slot: none / none\nFollowing: — ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%·°—/:.-",
+      "font_charset": "Tile A · 72% · IMU 0°\nLeft / right slot: none / none\nFollowing: — ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%·°—/:.-ABC0123456789%",
       "text_align": "left"
     },
     {
@@ -4939,7 +4938,7 @@
       "font": "fonts/LiberationSans-Regular.ttf",
       "bind": "info_device_2_en_line_2",
       "bind_target": "text",
-      "font_charset": "Tile A · 72% · IMU 0°\nLeft / right slot: none / none\nFollowing: — ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%·°—/:.-",
+      "font_charset": "Tile A · 72% · IMU 0°\nLeft / right slot: none / none\nFollowing: — ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%·°—/:.-ABC0123456789%",
       "text_align": "left"
     },
     {

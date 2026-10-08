@@ -1,0 +1,8 @@
+[
+  {
+    "index": 366,
+    "sample_specification": "s16le 1ch 24000Hz",
+    "corked": false,
+    "name": "Echoy A+B+C"
+  }
+]

@@ -25,3 +25,7 @@
   Never infer physical audio, wireless or timing acceptance from PC results.
 - Keep `docs/PROJECT_STATE.md` current with verified progress and remaining work.
   User-supplied verification claims are provenance, not new test results.
+- Sound and linkage acceptance must run the shared C synthesis/arrangement and
+  actual PCM scheduler. A UI-only backend, scene render or separately recreated
+  browser sound model is insufficient. Keep audio timing independent of GSP RPC
+  and file I/O; preserve immutable preparation jobs and cancellation generations.

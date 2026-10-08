@@ -193,8 +193,33 @@ static void preview_keeps_old_plan_until_its_end(void)
     echoy_model_delete(m);
 }
 
+static void managed_plan_waits_for_audio_and_external_clock(void)
+{
+    echoy_model_handle_t m = echoy_model_create_managed();
+    assert(m);
+    assert(echoy_model_load_seed(m, 0x44a0, 0, true));
+    echoy_model_tick(m, 10000000);
+    assert(snap(m).phase == ECHOY_PREPARING && snap(m).plan_pending);
+    assert(!echoy_model_get_plan(m)->count);
+    echoy_plan_t plan;
+    assert(echoy_compose_mask(0x44a0, ECHOY_HARMONY, 2, .5, &plan));
+    echoy_model_apply_external(m, &plan, 42, false, 1000000, true);
+    uint32_t generation = snap(m).generation;
+    assert(!echoy_model_start_external(m, generation + 1, 11000000));
+    assert(echoy_model_start_external(m, generation, 11000000));
+    assert(snap(m).phase == ECHOY_PREVIEW && snap(m).start_us == 11000000);
+    assert(snap(m).clock_origin_us == 1000000 && snap(m).committed_revision == 42);
+    echoy_model_tick(m, 13500000);
+    assert(snap(m).phase == ECHOY_IDLE);
+    echoy_model_set_external_pending(m, true, 16000000);
+    assert(!echoy_model_transport(m, 14000000));
+    echoy_model_delete(m);
+}
+
 int main(void)
 {
+    managed_plan_waits_for_audio_and_external_clock();
+    puts("PASS external plan preparation and clock");
     count_in_and_leading_silence();
     puts("PASS count-in and leading silence");
     ordinary_taps_do_not_record();

@@ -1,0 +1,9 @@
+{
+  "frames": 528000,
+  "sample_rate": 24000,
+  "nonzero_samples": 22475,
+  "peak": 6197,
+  "first_nonzero_seconds": 3.476583333333333,
+  "last_nonzero_seconds": 5.429583333333333,
+  "rms": 0.004349536111921593
+}

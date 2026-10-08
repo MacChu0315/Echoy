@@ -46,3 +46,12 @@ bool echoy_model_select_phrase(echoy_model_handle_t model, unsigned phrase, int6
 bool echoy_model_set_density(echoy_model_handle_t model, double density, int64_t now_us);
 bool echoy_model_audition(echoy_model_handle_t model, int64_t now_us);
 bool echoy_model_load_seed(echoy_model_handle_t model, uint16_t seed, int64_t now_us, bool preview);
+
+/* Managed mode keeps recording/permission policy but lets the shared band
+ * prepare and commit linked plans and supply its common output clock. */
+echoy_model_handle_t echoy_model_create_managed(void);
+void echoy_model_apply_external(echoy_model_handle_t model, const echoy_plan_t *plan,
+                                uint32_t revision, bool following, int64_t origin_us,
+                                bool clock_started);
+void echoy_model_set_external_pending(echoy_model_handle_t model, bool pending, int64_t at_us);
+bool echoy_model_start_external(echoy_model_handle_t model, uint32_t generation, int64_t start_us);

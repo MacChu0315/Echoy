@@ -68,8 +68,8 @@ def add(kind,name,x,y,w,h,parent=-1,**kw):
 # makes even the old home-only scene almost fill the 1 MiB UI partition.
 home_status_zh='先试着敲几下准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听先听这一次回应左侧正在演奏已接住左侧的节奏这段留在这里了'
 home_status_en='Try tapping the centre Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat Hear this one reply Following left Playing Left rhythm received Your rhythm is here'
-home_hint_zh='点「录一段」才记录节奏开头可以留空 · 提示音不会录入原来的继续，可随时暂停本机已经收到，不会中途重编结束就停 · 点 ▶ 才持续演奏等共同拍点开始Ⅱ 只暂停本机，不改变节奏▶ 开始演奏 · 不自动改写已取消，原节奏保留没有录入，原节奏保留'
-home_hint_en='Press Record to capture your rhythm You may start with silence · Cues are not recorded Current sound continues; Pause stays available Received · Current phrase stays intact Stops after one reply · Play to keep going Waiting for the shared beat Pause affects this tile, not the rhythm Play when ready · No automatic changes Cancelled; original kept No notes captured; original kept'
+home_hint_zh='新声音没有准备好，原来的继续 点「录一段」才记录节奏开头可以留空 · 提示音不会录入原来的继续，可随时暂停本机已经收到，不会中途重编结束就停 · 点 ▶ 才持续演奏等共同拍点开始Ⅱ 只暂停本机，不改变节奏▶ 开始演奏 · 不自动改写已取消，原节奏保留没有录入，原节奏保留'
+home_hint_en='Preparation failed; current sound continues Press Record to capture your rhythm You may start with silence · Cues are not recorded Current sound continues; Pause stays available Received · Current phrase stays intact Stops after one reply · Play to keep going Waiting for the shared beat Pause affects this tile, not the rhythm Play when ready · No automatic changes Cancelled; original kept No notes captured; original kept'
 role_names_zh='脉冲声线微尘和声'
 phrase_names_zh='重音切分留白短句轻答长线颗粒点缀余韵短和弦分解接句'
 phrase_names_en='Accent Syncopation Space Short phrase Light reply Long line Grains Touches Trails Short chords Arpeggio Answer'
@@ -439,6 +439,8 @@ for obj in objects:
         obj['hidden']=True
 # Fill and progress colors follow the selected/committed role.
 for obj in objects:
+    if obj['name'].startswith('info_device_2_'):
+        obj['font_charset']=obj.get('font_charset',obj.get('text',''))+'ABC0123456789%'
     if obj['name'] == 'richness_fill':
         obj.update(bind=obj['name']+'_color',bind_target='color')
     if obj.get('callback'):contract['callbacks'].append(obj['callback'])
@@ -452,10 +454,12 @@ for role in ('voice','dust','harmony'):
     objects.append(clone)
 # The original richness thumb and its '=' glyph follow the committed role.
 knob_index=next(i for i,obj in enumerate(objects) if obj['name']=='richness_knob')
-objects[knob_index].update(bg_color=ACCENTS['pulse'],border_width=0,bind='richness_knob_color',bind_target='color')
+objects[knob_index].update(bg_color=ACCENTS['pulse'],bind='richness_knob_color',bind_target='color')
+objects[knob_index].pop('border_color',None)
+objects[knob_index].pop('border_width',None)
 add('container','richness_knob_inner',1,1,28,25,knob_index,bg_color='#fafbf5',radius=9)
 equal=next(obj for obj in objects if obj['name']=='equal')
-equal.update(fg_color=ACCENTS['pulse'],bind='richness_equal_color',bind_target='color',_last=True)
+equal.update(fg_color=ACCENTS['pulse'],font_charset='=',bind='richness_equal_color',bind_target='color',_last=True)
 # Labels retain their TEXT bind; parent layers own runtime visibility.
 for suffix in ('','_en'):
     hint=next(obj for obj in objects if obj['name']=='touch_hint'+suffix)
