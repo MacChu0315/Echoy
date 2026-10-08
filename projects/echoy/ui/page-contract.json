@@ -1,0 +1,279 @@
+{
+  "routes": {
+    "home": "home",
+    "role": "role_page",
+    "settings": "settings_page",
+    "guide": "guide_page",
+    "info": "info_page",
+    "status": "status_page"
+  },
+  "locales": {
+    "home": {
+      "zh": "home_zh",
+      "en": "home_en"
+    },
+    "role": {
+      "zh": "role_zh",
+      "en": "role_en"
+    },
+    "settings_header": {
+      "zh": "settings_header_zh",
+      "en": "settings_header_en"
+    },
+    "settings": {
+      "zh": "settings_zh",
+      "en": "settings_en"
+    },
+    "settings_remove": {
+      "zh": "settings_remove_zh",
+      "en": "settings_remove_en"
+    },
+    "guide_header": {
+      "zh": "guide_header_zh",
+      "en": "guide_header_en"
+    },
+    "guide": {
+      "zh": "guide_zh",
+      "en": "guide_en"
+    },
+    "info_header": {
+      "zh": "info_header_zh",
+      "en": "info_header_en"
+    },
+    "info": {
+      "zh": "info_zh",
+      "en": "info_en"
+    },
+    "status_page": {
+      "zh": "status_page_zh",
+      "en": "status_page_en"
+    }
+  },
+  "scroll": {
+    "settings": {
+      "region": [
+        24,
+        108,
+        456,
+        458
+      ],
+      "content": "settings_content",
+      "viewport_height": 350,
+      "height": {
+        "zh": 702,
+        "en": 702,
+        "hardware": 606
+      }
+    },
+    "guide": {
+      "region": [
+        35,
+        108,
+        445,
+        453
+      ],
+      "content": "guide_content",
+      "viewport_height": 345,
+      "height": {
+        "zh": 460,
+        "zh_max_scroll": 115,
+        "en": 529,
+        "en_max_scroll": 184
+      }
+    },
+    "info": {
+      "region": [
+        35,
+        108,
+        445,
+        453
+      ],
+      "content": "info_content",
+      "viewport_height": 345,
+      "height": {
+        "zh": 367,
+        "zh_max_scroll": 22,
+        "en": 379,
+        "en_max_scroll": 34
+      }
+    }
+  },
+  "role_copy": {
+    "pulse": {
+      "zh": "role_copy_pulse_zh",
+      "en": "role_copy_pulse_en"
+    },
+    "voice": {
+      "zh": "role_copy_voice_zh",
+      "en": "role_copy_voice_en"
+    },
+    "dust": {
+      "zh": "role_copy_dust_zh",
+      "en": "role_copy_dust_en"
+    },
+    "harmony": {
+      "zh": "role_copy_harmony_zh",
+      "en": "role_copy_harmony_en"
+    }
+  },
+  "home_titles": {
+    "pulse": {
+      "zh": "home_title_pulse",
+      "en": "home_title_pulse_en"
+    },
+    "voice": {
+      "zh": "home_title_voice",
+      "en": "home_title_voice_en"
+    },
+    "dust": {
+      "zh": "home_title_dust",
+      "en": "home_title_dust_en"
+    },
+    "harmony": {
+      "zh": "home_title_harmony",
+      "en": "home_title_harmony_en"
+    }
+  },
+  "callbacks": [
+    "audition_click",
+    "back_click",
+    "export_click",
+    "guide_click",
+    "info_click",
+    "lang_en_click",
+    "lang_zh_click",
+    "next_role_click",
+    "phrase_1_click",
+    "phrase_2_click",
+    "phrase_3_click",
+    "prev_role_click",
+    "record_click",
+    "recover_click",
+    "remove_click",
+    "role_click",
+    "settings_click",
+    "transport_click"
+  ],
+  "detail_defaults": {
+    "guide": {
+      "zh": [
+        {
+          "name": "guide_heading_0_zh",
+          "text": "先试奏，再录一段。",
+          "y": 10,
+          "height": 32
+        },
+        {
+          "name": "guide_body_1_zh",
+          "text": "中央平时只试奏，不改动节奏。点首页「录一段」，预\n备两拍后自动记录四拍；第一拍可以留空。轻提示音只\n帮助找拍，不写入节奏。录完附和一次，随后停止。",
+          "y": 55,
+          "height": 92
+        },
+        {
+          "name": "guide_heading_2_zh",
+          "text": "把另一台放到右边。",
+          "y": 165,
+          "height": 32
+        },
+        {
+          "name": "guide_body_3_zh",
+          "text": "拖外壳贴近，等接缝确认。新设备先保持安静；点它自\n己的 ▶ 开始演奏。换位置，改变左到右的回应；拆开\n不清空，也不强制停止。",
+          "y": 210,
+          "height": 92
+        },
+        {
+          "name": "guide_body_4_zh",
+          "text": "▶ 稳定播放当前乐句，Ⅱ 只暂停本机；再播放时对齐\n共同拍点。录制时可点「取消」，空录或取消都保留原\n节奏。角色、表达与丰富程度在拍点切入，音量立即生\n效。",
+          "y": 320,
+          "height": 122
+        }
+      ],
+      "en": [
+        {
+          "name": "guide_heading_0_en",
+          "text": "Try the pad, then record.",
+          "y": 10,
+          "height": 32
+        },
+        {
+          "name": "guide_body_1_en",
+          "text": "The pad normally auditions only. Press Record: two\npreparatory beats, then four beats of capture start\nautomatically. You can leave the first beat empty. Quiet\ntiming cues are not recorded. One reply follows, then\nstops.",
+          "y": 55,
+          "height": 144
+        },
+        {
+          "name": "guide_heading_2_en",
+          "text": "Place another tile on its right.",
+          "y": 217,
+          "height": 32
+        },
+        {
+          "name": "guide_body_3_en",
+          "text": "Drag the cases to snap, then wait for confirmation. A new\ntile stays silent until you press its Play. Reorder to change\nwho follows whom. Splitting keeps the rhythm and does\nnot force a stop.",
+          "y": 262,
+          "height": 115
+        },
+        {
+          "name": "guide_body_4_en",
+          "text": "Play repeats the current phrase; Pause affects only this\ntile. Resume aligns to the shared beat. Cancel or an\nempty recording keeps the original. Voice, phrase and\nrichness wait for a bar boundary; volume is immediate.",
+          "y": 396,
+          "height": 115
+        }
+      ]
+    },
+    "info": {
+      "zh": [
+        {
+          "name": "info_heading_0_zh",
+          "text": "单机与多机，同一套声音。",
+          "y": 10,
+          "height": 32
+        },
+        {
+          "name": "info_body_1_zh",
+          "text": "480×480 内屏，R60圆角。四个角色各三种表达来自上\n一版；原始节奏保留。多机使用左侧完整乐句的主次与\n音高信息组织自己的附和，不复制全部装饰音。",
+          "y": 55,
+          "height": 92
+        },
+        {
+          "name": "info_device_2_zh",
+          "text": "本机 A · 72% · IMU 0°\n左 / 右扩展: none / none\n来自左侧: —",
+          "y": 165,
+          "height": 92
+        },
+        {
+          "name": "info_small_3_zh",
+          "text": "只是浏览器仿真，共享电脑音频时钟；未验证真机无线、声学同步或\nGPIO。声音比较的数值匹配不代表主观等响。数据只保留在当前页面内\n存。",
+          "y": 275,
+          "height": 92
+        }
+      ],
+      "en": [
+        {
+          "name": "info_heading_0_en",
+          "text": "Same instrument, solo or together.",
+          "y": 10,
+          "height": 32
+        },
+        {
+          "name": "info_body_1_en",
+          "text": "480×480 display, R60 corners. Twelve expressions retain\nthe previous solo engine. Neighbors use the left phrase’s\nhierarchy and supplied pitches rather than multiplying all\ndecorative events.",
+          "y": 55,
+          "height": 115
+        },
+        {
+          "name": "info_device_2_en",
+          "text": "Tile A · 72% · IMU 0°\nLeft / right slot: none / none\nFollowing: —",
+          "y": 188,
+          "height": 86
+        },
+        {
+          "name": "info_small_3_en",
+          "text": "Browser simulation shares the computer audio clock. No hardware\nwireless, acoustic sync or GPIO verification. RMS matching is not\ncertified perceived loudness. Data lives in this page’s memory only.",
+          "y": 293,
+          "height": 86
+        }
+      ]
+    }
+  }
+}

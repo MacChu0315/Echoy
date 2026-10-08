@@ -16,10 +16,11 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--sim',type=Path,default=ROOT.parent/'.toolchains/gsp-sim-1.5.1/sim')
     parser.add_argument('--output',type=Path,default=ROOT/'output/native-check')
+    parser.add_argument('--build-dir',type=Path,default=APP/'build-sim')
     args=parser.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=True)
     with (out/'build.log').open('w') as build_log:
-        subprocess.run(['cmake','--build',str(APP/'build-sim'),'--target','echoy_backend'],check=True,stdout=build_log,stderr=subprocess.STDOUT)
-    manifest=json.loads((APP/'build-sim/echoy_backend-Release.json').read_text())
+        subprocess.run(['cmake','--build',str(args.build_dir),'--target','echoy_backend'],check=True,stdout=build_log,stderr=subprocess.STDOUT)
+    manifest=json.loads((args.build_dir/'echoy_backend-Release.json').read_text())
     component=Path(manifest['component_root'])
     sys.path.insert(0,str(component/'tools/sim_bridge'))
     from rpc_client import connect

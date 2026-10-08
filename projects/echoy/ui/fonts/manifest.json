@@ -28,5 +28,11 @@
     "source_sha256": "36efda825bcd7d1de846204c3adad51ced9d9b5cb7df571fb33edc21207e324a",
     "file": "LiberationSans-Regular.ttf",
     "sha256": "36efda825bcd7d1de846204c3adad51ced9d9b5cb7df571fb33edc21207e324a"
+  },
+  {
+    "source": "LiberationSans-Bold.ttf",
+    "source_sha256": "c2d334cafbd28522007cc16970db8db4a75256123594a43fe07f89cfceb5bacc",
+    "file": "LiberationSans-Bold.ttf",
+    "sha256": "c2d334cafbd28522007cc16970db8db4a75256123594a43fe07f89cfceb5bacc"
   }
 ]

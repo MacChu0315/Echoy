@@ -49,7 +49,7 @@ void app_main(void)
     esp_gsp_handle_t ui;
     ESP_ERROR_CHECK(esp_gsp_esp_lcd_start(&app_config, &lcd, &ui));
     ESP_ERROR_CHECK(iris_screen_mirror_attach(ui));
-    const echoy_platform_t platform = { .now_us = now_us };
+    const echoy_platform_t platform = { .now_us = now_us, .battery_percent = 72 };
     ESP_ERROR_CHECK(echoy_ui_create(ui, &platform, &s_ui));
 
     ESP_LOGI(TAG, "Echoy GSP UI foundation ready; audio is simulated at %dx%d RGB565",

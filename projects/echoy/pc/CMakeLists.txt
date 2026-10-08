@@ -21,7 +21,7 @@ endif()
 
 add_subdirectory("${ESP_GSP_COMPONENT_DIR}/tools/sim_bridge" sim_bridge)
 gsp_add_backend(echoy_backend
-    SOURCES ../main/echoy_ui.c ../main/echoy_model.c ../main/echoy_art.c platform_pc.c
+    SOURCES ../main/echoy_ui.c ../main/echoy_model.c ../main/echoy_music.c ../main/echoy_view_cache.c ../main/echoy_art.c ../main/echoy_art_image.c platform_pc.c
     INCLUDE_DIRECTORIES ../main
     SCENES ../ui/main.json)
 

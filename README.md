@@ -1,8 +1,10 @@
 # Echoy for ESP-Mosaico
 
 A fresh ESP-GSP implementation of the frozen HTML in `reference/`.
-The initial Chinese Pulse home UI and portable recording model run through the
-official native simulator and compile for ESP32-S31. Audio is still simulated.
+The shared C implementation provides the home, four roles / twelve expressions,
+settings, guide, information and recovery pages in Chinese and English. Recorded
+taps generate real accompaniment plans. It runs in the official native simulator
+and compiles for ESP32-S31. Audio synthesis and multi-device transport remain unfinished.
 See [current state](docs/PROJECT_STATE.md) and [screenshots and checks](docs/verification/README.md).
 
 ## Local development
@@ -32,6 +34,11 @@ cmake -S tests -B build-host
 cmake --build build-host
 ctest --test-dir build-host --output-on-failure
 python3 tools/check_home.py
+python3 tools/check_full_ui.py --build-dir projects/echoy/build-sim
+node tests/music/oracle.mjs
+sh tests/art/run.sh
+sh tests/art_image/run.sh
+python3 -m unittest discover -s tests/preview_controls -p 'test_*.py' -v
 ```
 
 The native check expects the simulator build directory prepared by `project sim`;
@@ -41,6 +48,24 @@ uses Python 3.10+, fontTools, Pillow, CairoSVG and the recorded system font inpu
 ```sh
 python3 tools/generate_scene.py
 ```
+
+Optional PC desk controls provide restore, fault mocks and JSON download outside
+the 480x480 product screen. Use the same private directory for both processes:
+
+```sh
+mkdir -m 700 -p output/preview-control
+ECHOY_SIM_CONTROL_DIR="$PWD/output/preview-control" \
+  python3 ../esp-mosaico-vibe/mosaico.py --workspace . project sim --project projects/echoy --interactive
+# In another terminal:
+python3 tools/preview_controls.py --control-dir "$PWD/output/preview-control"
+```
+
+Open `http://127.0.0.1:18895/`. The underlying official preview is at
+`http://127.0.0.1:3222/`. Optional `ECHOY_SIM_SEED=44a0` preloads a deterministic
+four-tap rhythm in paused state; normal startup has no recorded rhythm.
+Do not reuse a control directory already owned by another running backend.
+A plain pad tap auditions only. Press Record, wait two beats, then tap during the
+four-beat capture. The generated reply runs once; Play explicitly enables looping.
 
 The HTML is an immutable design/behavior reference, not code executed by GSP.
 Follow [AGENTS.md](AGENTS.md) for fidelity, shared implementation and device rules.

@@ -1,0 +1,10 @@
+{
+  "passed": [
+    "Role-page Hear once completes once and returns to idle",
+    "All four roles and twelve expressions commit real generated plans and render gallery images",
+    "Menus, bounded scrolling, Chinese/English text and real session export work through pointer input",
+    "Mock fault/loading/empty states recover to a paused home",
+    "Put-away and external restore preserve the phrase"
+  ],
+  "scope": "native UI and musical data; no audio/hardware acceptance"
+}

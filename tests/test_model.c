@@ -131,6 +131,68 @@ static void fault_and_left_neighbor_cancel(void)
     echoy_model_delete(m);
 }
 
+static void composed_reply_and_role_memory(void)
+{
+    echoy_model_handle_t m = echoy_model_create();
+    record_seed(m);
+    assert(echoy_model_prepare_done(m, snap(m).generation, 4000000));
+    const echoy_plan_t *plan = echoy_model_get_plan(m);
+    assert(plan && plan->source_count == 1 && plan->count > 1);
+    assert(plan->source[0].step == 4);
+    for (size_t i = 0; i < plan->count; ++i) {
+        assert(plan->events[i].step >= 4);
+    }
+    echoy_model_pause(m);
+    assert(echoy_model_select_role(m, ECHOY_HARMONY, 5000000));
+    assert(snap(m).phrase == 2);
+    echoy_model_tick(m, 5050000);
+    assert(echoy_model_select_phrase(m, 3, 5100000));
+    echoy_model_tick(m, 5150000);
+    assert(echoy_model_select_role(m, ECHOY_VOICE, 5200000));
+    assert(snap(m).phrase == 1);
+    assert(echoy_model_select_role(m, ECHOY_HARMONY, 5300000));
+    assert(snap(m).phrase == 3);
+    echoy_model_tick(m, 5350000);
+    assert(echoy_model_get_plan(m)->role == ECHOY_HARMONY);
+    echoy_model_delete(m);
+}
+
+static void configuration_commits_at_bar_boundary(void)
+{
+    echoy_model_handle_t m = echoy_model_create();
+    record_seed(m);
+    echoy_model_pause(m);
+    assert(echoy_model_transport(m, 4000000));
+    assert(echoy_model_prepare_done(m, snap(m).generation, 4000000));
+    assert(echoy_model_select_role(m, ECHOY_VOICE, 5000000));
+    assert(snap(m).plan_pending && snap(m).apply_at_us == 6550000);
+    assert(echoy_model_get_plan(m)->role == ECHOY_PULSE);
+    echoy_model_tick(m, 6549999);
+    assert(echoy_model_get_plan(m)->role == ECHOY_PULSE);
+    echoy_model_tick(m, 6550000);
+    assert(echoy_model_get_plan(m)->role == ECHOY_VOICE);
+    assert(snap(m).phase == ECHOY_PLAYING && snap(m).clock_origin_us == 4050000);
+    assert(echoy_model_set_density(m, 1.0, 7000000));
+    echoy_model_pause(m);
+    echoy_model_tick(m, 9050000);
+    assert(snap(m).phase == ECHOY_IDLE && echoy_model_get_plan(m)->density == 1.0);
+    echoy_model_delete(m);
+}
+
+static void preview_keeps_old_plan_until_its_end(void)
+{
+    echoy_model_handle_t m = echoy_model_create();
+    record_seed(m);
+    assert(echoy_model_prepare_done(m, snap(m).generation, 4000000));
+    assert(echoy_model_select_phrase(m, 3, 5000000));
+    assert(snap(m).apply_at_us == 6550000);
+    echoy_model_tick(m, 6000000);
+    assert(echoy_model_get_plan(m)->phrase == 1 && snap(m).phase == ECHOY_PREVIEW);
+    echoy_model_tick(m, 6550000);
+    assert(echoy_model_get_plan(m)->phrase == 3 && snap(m).phase == ECHOY_IDLE);
+    echoy_model_delete(m);
+}
+
 int main(void)
 {
     count_in_and_leading_silence();
@@ -147,5 +209,11 @@ int main(void)
     puts("PASS persistent musical clock");
     fault_and_left_neighbor_cancel();
     puts("PASS fault and following cancellation");
+    composed_reply_and_role_memory();
+    puts("PASS complete reply and per-role phrase memory");
+    configuration_commits_at_bar_boundary();
+    puts("PASS parameter commit at bar boundary");
+    preview_keeps_old_plan_until_its_end();
+    puts("PASS preview plan lifetime");
     return 0;
 }

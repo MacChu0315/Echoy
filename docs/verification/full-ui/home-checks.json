@@ -1,0 +1,15 @@
+{
+  "passed": [
+    "Canvas color and dashed input boundary match the reference structure",
+    "Ordinary pad presses do not start recording",
+    "Richness cannot change during capture",
+    "Progress and moving beat feedback distinguish count-in, recording and one-shot preview",
+    "Real pointer capture retains an empty first beat and ignores held duplicates",
+    "A completed recording previews once and stops",
+    "Play and pause affect the native output permission",
+    "Cancelling keeps the previous rhythm",
+    "Relative volume drag reaches its upper bound"
+  ],
+  "seed": 128,
+  "scope": "native GSP home UI; audio service simulated; no device validation"
+}

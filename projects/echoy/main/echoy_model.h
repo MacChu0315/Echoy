@@ -1,6 +1,7 @@
 #pragma once
 #include <stdbool.h>
 #include <stdint.h>
+#include "echoy_music.h"
 
 typedef struct echoy_model *echoy_model_handle_t;
 typedef enum {
@@ -19,6 +20,12 @@ typedef struct {
     uint32_t generation;
     int64_t capture_at_us, start_us, clock_origin_us;
     bool continuous, clock_started, following, fault;
+    echoy_role_t role;
+    unsigned phrase;
+    double density;
+    bool plan_pending;
+    int64_t apply_at_us;
+    uint32_t revision, committed_revision;
 } echoy_snapshot_t;
 
 echoy_model_handle_t echoy_model_create(void);
@@ -32,3 +39,10 @@ bool echoy_model_transport(echoy_model_handle_t model, int64_t now_us);
 bool echoy_model_prepare_done(echoy_model_handle_t model, uint32_t generation, int64_t now_us);
 void echoy_model_set_following(echoy_model_handle_t model, bool following);
 void echoy_model_set_fault(echoy_model_handle_t model, bool fault);
+const echoy_plan_t *echoy_model_get_plan(echoy_model_handle_t model);
+unsigned echoy_model_get_role_phrase(echoy_model_handle_t model, echoy_role_t role);
+bool echoy_model_select_role(echoy_model_handle_t model, echoy_role_t role, int64_t now_us);
+bool echoy_model_select_phrase(echoy_model_handle_t model, unsigned phrase, int64_t now_us);
+bool echoy_model_set_density(echoy_model_handle_t model, double density, int64_t now_us);
+bool echoy_model_audition(echoy_model_handle_t model, int64_t now_us);
+bool echoy_model_load_seed(echoy_model_handle_t model, uint16_t seed, int64_t now_us, bool preview);

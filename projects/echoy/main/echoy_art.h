@@ -1,6 +1,8 @@
 #pragma once
 #include "esp_gsp.h"
-#include <stdatomic.h>
-/* Packed snapshot: 16 seed bits, 5 active-step bits (16 means none), 7 energy bits. */
-void echoy_art_draw(const esp_gsp_canvas_surface_t *surface, void *snapshot);
-void echoy_feedback_draw(const esp_gsp_canvas_surface_t *surface, void *snapshot);
+#include "echoy_art_frame.h"
+
+/* RGB565 Canvas callbacks. user_ctx points to an echoy_art_frame_t retained by
+ * the UI through the GSP flush barrier, with one immutable plan per repaint. */
+void echoy_art_draw(const esp_gsp_canvas_surface_t *surface, void *user_ctx);
+void echoy_feedback_draw(const esp_gsp_canvas_surface_t *surface, void *user_ctx);

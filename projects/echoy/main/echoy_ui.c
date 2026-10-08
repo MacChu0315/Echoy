@@ -1,188 +1,603 @@
 #include "echoy_ui.h"
-#include "echoy_model.h"
 #include "echoy_art.h"
+#include "echoy_art_image.h"
+#include "echoy_view_cache.h"
 #define GSP_BUNDLE_ENABLE_RAW_IDS
 #include "bundle_gsp.h"
 #include <math.h>
+#include <stdatomic.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define BAR_US INT64_C(2500000)
 #define BEAT_US INT64_C(625000)
+#define DRAW_US INT64_C(33333)
+typedef enum { HOME, ROLE, SETTINGS, GUIDE, INFO, STATUS, REMOVED } route_t;
+static const char *const routes[] = {"home",       "role_page", "settings_page",
+                                     "guide_page", "info_page", "status_page"};
+static const char *const role_ids[] = {"pulse", "voice", "dust", "harmony"};
+static const echoy_role_t next_role[] = {ECHOY_VOICE, ECHOY_DUST, ECHOY_HARMONY, ECHOY_PULSE};
+static const echoy_role_t previous_role[] = {ECHOY_HARMONY, ECHOY_PULSE, ECHOY_VOICE, ECHOY_DUST};
+static const uint32_t accents[] = {0xd95535, 0x496da1, 0x7b8452, 0xaa7b3d};
+static const char *const phrases[4][3][2] = {
+    {{"重音", "Accent"}, {"切分", "Syncopation"}, {"留白", "Space"}},
+    {{"短句", "Short phrase"}, {"轻答", "Light reply"}, {"长线", "Long line"}},
+    {{"颗粒", "Grains"}, {"点缀", "Touches"}, {"余韵", "Trails"}},
+    {{"短和弦", "Short chords"}, {"分解", "Arpeggio"}, {"接句", "Answer"}}};
+static const uint16_t canvases[] = {GSP_ECHOY_BIND_ART, GSP_ECHOY_BIND_FEEDBACK,
+                                    GSP_ECHOY_BIND_ROLE_PREV_ART, GSP_ECHOY_BIND_ROLE_MAIN_ART,
+                                    GSP_ECHOY_BIND_ROLE_NEXT_ART};
 struct echoy_ui {
     esp_gsp_handle_t gsp;
     echoy_platform_t platform;
+    echoy_view_cache_t view;
     echoy_model_handle_t model;
     void *timer;
-    atomic_int error;
-    atomic_uint art;
-    bool events_registered, pointer_registered, draw_registered, feedback_registered;
-    bool pressed;
-    int drag, drag_y, drag_value, volume, richness;
-    int64_t last_hit_us;
-    char status[96], hint[224];
-    int last_capture, last_busy, last_progress, last_phase;
-    int last_step, last_progress_visible;
-    uint32_t last_art;
+    atomic_int error, image_error;
+    atomic_uint images_pending;
+    bool events_registered, pointer_registered, canvas_registered[2];
+    bool gallery_dirty, gallery_inflight;
+    uint32_t gallery_submitted_revision;
+    echoy_art_frame_t frames[5];
+    echoy_plan_t capture_plan, gallery[3];
+    route_t route;
+    echoy_condition_t condition;
+    bool english, removed, pressed, scrolled;
+    unsigned battery;
+    int drag, drag_y, drag_scroll, scroll[6];
+    double volume, richness, drag_value;
+    bool density_dirty;
+    int64_t density_due_us;
+    int64_t last_hit_us, last_draw_us;
+    int last_step, last_phase, last_route, last_condition, last_english;
+    uint16_t last_capture_mask, last_gallery_seed;
+    uint32_t last_gallery_revision, last_committed;
+    bool frames_dirty;
+    int last_scale, last_fade;
 };
-static void record_error(echoy_ui_handle_t u, esp_gsp_err_t e, const char *operation, int line)
-{
-    if (e != ESP_GSP_OK && u->error == ESP_GSP_OK) {
-        u->error = e;
-        fprintf(stderr, "ECHOY_UI_ERROR: %d line=%d operation=%s\n", (int)e, line, operation);
-        echoy_model_set_fault(u->model, true);
-    }
-}
-#define check(ui, operation) record_error((ui), (operation), #operation, __LINE__)
-static bool capture(echoy_phase_t p)
+static bool capturing(echoy_phase_t p)
 {
     return p == ECHOY_COUNT_IN || p == ECHOY_RECORDING;
 }
-static void update(echoy_ui_handle_t u)
+static int64_t now_us(echoy_ui_handle_t u)
 {
-    echoy_snapshot_t s;
-    echoy_model_get_snapshot(u->model, &s);
-    int64_t now = u->platform.now_us(u->platform.ctx);
-    bool recording = capture(s.phase), busy = s.phase >= ECHOY_PREPARING;
-    char status[96] = "先试着敲几下";
-    const char *hint = "点「录一段」才记录节奏";
-    if (s.phase == ECHOY_COUNT_IN) {
-        int beat = (int)((s.capture_at_us - now + BEAT_US - 1) / BEAT_US);
-        if (beat > 2) {
-            beat = 2;
+    return u->platform.now_us(u->platform.ctx);
+}
+static const char *tr(echoy_ui_handle_t u, const char *zh, const char *en)
+{
+    return u->english ? en : zh;
+}
+static void error_at(echoy_ui_handle_t u, esp_gsp_err_t error, const char *operation, int line)
+{
+    if (error != ESP_GSP_OK && atomic_load(&u->error) == ESP_GSP_OK) {
+        atomic_store(&u->error, error);
+        fprintf(stderr, "ECHOY_UI_ERROR: %d line=%d operation=%s\n", (int)error, line, operation);
+        echoy_model_set_fault(u->model, true);
+        u->condition = ECHOY_AUDIO_FAULT;
+    }
+}
+#define CHECK(u, op) error_at((u), (op), #op, __LINE__)
+#define SHOW(u, name, v) CHECK(u, echoy_view_show((u)->view, (name), (v)))
+#define ENABLE(u, name, v) CHECK(u, echoy_view_enable((u)->view, (name), (v)))
+#define TEXT(u, name, v) CHECK(u, echoy_view_text((u)->view, (name), (v)))
+#define COLOR(u, name, v) CHECK(u, echoy_view_color((u)->view, (name), (v)))
+static void local_text(echoy_ui_handle_t u, const char *base, const char *value)
+{
+    char name[96];
+    snprintf(name, sizeof(name), "%s%s", base, u->english ? "_en" : "");
+    TEXT(u, name, value);
+}
+static uint16_t source_mask(const echoy_plan_t *p)
+{
+    uint16_t mask = 0;
+    for (size_t i = 0; i < p->source_count; i++) {
+        mask |= (uint16_t)(1u << (unsigned)p->source[i].step);
+    }
+    return mask;
+}
+static int scroll_limit(echoy_ui_handle_t u)
+{
+    if (u->route == SETTINGS) {
+        return u->platform.is_simulator ? 352 : 256;
+    }
+    if (u->route == GUIDE) {
+        return u->english ? 184 : 115;
+    }
+    if (u->route == INFO) {
+        return u->english ? 34 : 22;
+    }
+    return 0;
+}
+static const char *scroll_object(route_t route)
+{
+    return route == SETTINGS ? "settings_content"
+           : route == GUIDE  ? "guide_content"
+                             : "info_content";
+}
+static void set_scroll(echoy_ui_handle_t u, int value)
+{
+    if (u->route < SETTINGS || u->route > INFO) {
+        return;
+    }
+    int limit = scroll_limit(u);
+    if (value > 0) {
+        value = 0;
+    }
+    if (value < -limit) {
+        value = -limit;
+    }
+    u->scroll[u->route] = value;
+    CHECK(u, echoy_view_y(u->view, scroll_object(u->route), value));
+}
+static void select_route(echoy_ui_handle_t u, route_t route)
+{
+    u->route = route;
+    u->frames_dirty = true;
+    if (route >= SETTINGS && route <= INFO) {
+        set_scroll(u, u->scroll[route]);
+    }
+}
+static void recover(echoy_ui_handle_t u)
+{
+    u->condition = ECHOY_NORMAL;
+    if (!u->battery) {
+        u->battery = 72;
+    }
+    echoy_model_set_fault(u->model, false);
+    select_route(u, HOME);
+}
+static void set_condition(echoy_ui_handle_t u, echoy_condition_t condition)
+{
+    u->condition = condition;
+    if (condition == ECHOY_BATTERY_EMPTY) {
+        u->battery = 0;
+    }
+    echoy_model_set_fault(u->model, condition != ECHOY_NORMAL);
+    u->frames_dirty = true;
+}
+static void commit_density(echoy_ui_handle_t u, int64_t now)
+{
+    if (u->density_dirty) {
+        echoy_model_set_density(u->model, u->richness, now);
+        u->density_dirty = false;
+        u->frames_dirty = true;
+    }
+}
+static void prepare_graphics(echoy_ui_handle_t u, const echoy_snapshot_t *s, int64_t now)
+{
+    const echoy_plan_t *plan = echoy_model_get_plan(u->model);
+    bool cap = capturing(s->phase);
+    if (cap && (u->last_capture_mask != s->pending_seed || u->capture_plan.role != s->role ||
+                u->capture_plan.phrase != s->phrase || u->capture_plan.density != s->density)) {
+        if (!echoy_compose_mask(s->pending_seed, s->role, s->phrase, s->density,
+                                &u->capture_plan)) {
+            CHECK(u, ESP_GSP_ERR_INVALID_STATE);
+            return;
         }
-        if (beat < 1) {
-            beat = 1;
-        }
-        snprintf(status, sizeof(status), "预备 · %d", beat);
-        hint = "开头可以留空 · 提示音不会录入";
-    } else if (s.phase == ECHOY_RECORDING) {
-        int beat = (int)((now - s.capture_at_us) / BEAT_US) + 1;
-        if (beat > 4) {
-            beat = 4;
-        }
-        snprintf(status, sizeof(status), "录入 · %d / 4", beat);
-        hint = "开头可以留空 · 提示音不会录入";
-    } else if (s.phase == ECHOY_PREPARING) {
-        strcpy(status, "准备新的声音");
-        hint = "原来的继续，可随时暂停本机";
-    } else if (s.phase == ECHOY_PREVIEW) {
-        strcpy(status, "先听这一次");
-        hint = "结束就停 · 点 ▶ 才持续演奏";
-    } else if (s.phase == ECHOY_PLAYING) {
-        strcpy(status, "正在演奏");
-        hint = now < s.start_us ? "等共同拍点开始" : "Ⅱ 只暂停本机，不改变节奏";
-    } else if (s.seed) {
-        strcpy(status, "这段留在这里了");
-        hint = "▶ 开始演奏 · 不自动改写";
+        u->last_capture_mask = s->pending_seed;
+        u->frames_dirty = true;
     }
-    if (s.notice == ECHOY_NOTICE_CANCELLED) {
-        hint = "已取消，原节奏保留";
+    const echoy_plan_t *draw = cap ? &u->capture_plan : plan;
+    double progress;
+    if (s->phase == ECHOY_RECORDING) {
+        progress = (now - s->capture_at_us) / (double)BAR_US;
+    } else if (s->phase == ECHOY_PREVIEW) {
+        progress = (now - s->start_us) / (double)BAR_US;
+    } else {
+        progress = ((now - s->clock_origin_us) % BAR_US) / (double)BAR_US;
     }
-    if (s.notice == ECHOY_NOTICE_EMPTY) {
-        hint = "没有录入，原节奏保留";
-    }
-    if (strcmp(status, u->status)) {
-        check(u, gsp_echoy_status_set_text(u->gsp, status));
-        check(u, gsp_echoy_capture_status_set_text(u->gsp, status));
-        strcpy(u->status, status);
-    }
-    if (strcmp(hint, u->hint)) {
-        check(u, gsp_echoy_hint_set_text(u->gsp, hint));
-        strcpy(u->hint, hint);
-    }
-    if (u->last_capture != recording) {
-        check(u, gsp_echoy_record_text_set_text(u->gsp, recording ? "取消" : "录一段"));
-        check(u, gsp_echoy_record_text_set_visible(u->gsp, !recording));
-        check(u, gsp_echoy_cancel_text_set_visible(u->gsp, recording));
-        check(u, gsp_echoy_status_set_visible(u->gsp, !recording));
-        check(u, gsp_echoy_capture_status_set_visible(u->gsp, recording));
-        check(u, gsp_echoy_record_icon_set_visible(u->gsp, !recording));
-        check(u, gsp_echoy_cancel_icon_set_visible(u->gsp, recording));
-        check(u,
-              gsp_echoy_record_surface_set_color_rgb888(u->gsp, recording ? 0xeee2d8 : 0xe5e9de));
-        check(u, gsp_echoy_role_set_enabled(u->gsp, !recording));
-        check(u, gsp_echoy_settings_set_enabled(u->gsp, !recording));
-        u->last_capture = recording;
-    }
-    int mode = (recording ? 4 : 0) | (busy ? 2 : 0) | (s.seed ? 1 : 0);
-    if (mode != u->last_busy) {
-        check(u, gsp_echoy_transport_set_enabled(u->gsp, !recording && s.seed));
-        check(u, gsp_echoy_transport_set_color_rgb888(u->gsp, busy ? 0x415936 : 0x596d4b));
-        check(u, gsp_echoy_play_icon_set_visible(u->gsp, !busy));
-        check(u, gsp_echoy_pause_icon_set_visible(u->gsp, busy));
-        check(u, gsp_echoy_touch_hint_set_text(u->gsp, !s.seed && !recording ? "试奏区" : ""));
-        check(u, gsp_echoy_pad_border_set_visible(u->gsp, !s.seed && !recording));
-        u->last_busy = mode;
-    }
-    const bool recording_now = s.phase == ECHOY_RECORDING;
-    const bool once = s.phase == ECHOY_PREVIEW;
-    const bool playing_now = (once || s.phase == ECHOY_PLAYING) && now >= s.start_us;
-    const bool progress_visible = recording_now || once;
-    int64_t elapsed = recording_now ? now - s.capture_at_us : now - s.start_us;
-    if (elapsed < 0) {
-        elapsed = 0;
-    }
-    int progress = (int)(elapsed * 100 / BAR_US);
+    bool active = s->phase == ECHOY_RECORDING ||
+                  ((s->phase == ECHOY_PREVIEW || s->phase == ECHOY_PLAYING) && now >= s->start_us);
     if (progress < 0) {
         progress = 0;
     }
-    if (progress > 100) {
-        progress = 100;
+    if (progress > 1) {
+        progress = 1;
     }
-    if (progress_visible != u->last_progress_visible) {
-        check(u, gsp_echoy_progress_set_visible(u->gsp, progress_visible));
-        u->last_progress_visible = progress_visible;
-    }
-    if (progress_visible && progress != u->last_progress) {
-        check(u, gsp_echoy_progress_set_value(u->gsp, progress));
-        u->last_progress = progress;
-    }
-    uint16_t mask = recording ? s.pending_seed : s.seed;
-    unsigned step = 16;
-    if (recording_now || playing_now) {
-        step = (unsigned)(elapsed % BAR_US / 156250);
-    }
-    if ((int)step != u->last_step) {
-        if (step < 16) {
-            if (mask & (1u << step)) {
-                u->last_hit_us = now;
+    int step = active ? (int)fmin(15, floor(progress * 16)) : 16;
+    if (step != u->last_step) {
+        if (active) {
+            for (size_t i = 0; i < draw->count; i++) {
+                const echoy_note_t *note = &draw->events[i];
+                if ((!cap || note->layer == ECHOY_ANCHOR) && (int)floor(note->step) == step) {
+                    u->last_hit_us = now;
+                    break;
+                }
             }
         }
-        u->last_step = (int)step;
+        u->last_step = step;
     }
-    int64_t since = now - u->last_hit_us;
-    unsigned energy =
-        since >= 0 && since < 400000 ? (unsigned)(127 * (400000 - since) / 400000) : 0;
-    uint32_t art =
-        mask | (step << 16) | (energy << 21) | ((!s.seed && !recording) ? (1u << 28) : 0);
-    if (art != u->last_art) {
-        atomic_store_explicit(&u->art, art, memory_order_relaxed);
-        check(u, esp_gsp_canvas_invalidate(u->gsp, GSP_ECHOY_BIND_ART));
-        check(u, esp_gsp_canvas_invalidate(u->gsp, GSP_ECHOY_BIND_FEEDBACK));
-        u->last_art = art;
+    float energy = now >= u->last_hit_us && now - u->last_hit_us < 400000
+                       ? 1 - (now - u->last_hit_us) / 400000.0f
+                       : 0;
+    u->frames[0] = (echoy_art_frame_t){.plan = draw,
+                                       .role = cap ? s->role : plan->role,
+                                       .progress = progress,
+                                       .active = active,
+                                       .energy = energy,
+                                       .empty = !plan->count && !cap,
+                                       .anchors_only = cap,
+                                       .width = 300,
+                                       .height = 204,
+                                       .background = 0xf1efe8};
+    u->frames[1] = u->frames[0];
+    u->frames[1].height = 15;
+    uint16_t seed = plan->source_count ? source_mask(plan) : s->seed;
+    if (u->last_gallery_revision != s->revision || u->last_gallery_seed != seed) {
+        echoy_role_t roles[] = {previous_role[s->role], s->role, next_role[s->role]};
+        for (unsigned i = 0; i < 3; i++) {
+            if (!echoy_compose_mask(seed, roles[i], echoy_model_get_role_phrase(u->model, roles[i]),
+                                    s->density, &u->gallery[i])) {
+                CHECK(u, ESP_GSP_ERR_INVALID_STATE);
+                return;
+            }
+            u->frames[i + 2] = (echoy_art_frame_t){.plan = &u->gallery[i],
+                                                   .role = roles[i],
+                                                   .width = i == 1 ? 206 : 73,
+                                                   .height = i == 1 ? 101 : 48,
+                                                   .background = i == 1 ? 0xe5e7de : 0xecefe4};
+        }
+        u->gallery_dirty = true;
+        u->last_gallery_revision = s->revision;
+        u->last_gallery_seed = seed;
+        u->frames_dirty = true;
+    }
+}
+/* Decoder callbacks may run on another thread. Only atomics cross that boundary. */
+static void gallery_complete(esp_gsp_handle_t gsp, uint16_t bind, gsp_err_t status, void *ctx)
+{
+    (void)gsp;
+    (void)bind;
+    echoy_ui_handle_t u = ctx;
+    if (status != GSP_OK && status != GSP_ERR_CANCELLED) {
+        atomic_store(&u->image_error, status);
+    }
+    atomic_fetch_sub_explicit(&u->images_pending, 1, memory_order_release);
+}
+static void publish_gallery(echoy_ui_handle_t u)
+{
+    /* Back-pressure: finish the previous batch; the next batch uses latest state. */
+    if (!u->gallery_dirty || atomic_load_explicit(&u->images_pending, memory_order_acquire)) {
+        return;
+    }
+    for (unsigned i = 2; i < 5; i++) {
+        uint8_t *encoded = NULL;
+        size_t size = 0;
+        if (!echoy_art_encode_qoi(&u->frames[i], &encoded, &size)) {
+            CHECK(u, ESP_GSP_ERR_NO_MEM);
+            return;
+        }
+        const esp_gsp_image_options_t options = {
+            .ownership = ESP_GSP_IMAGE_COPY, .on_complete = gallery_complete, .complete_ctx = u};
+        atomic_fetch_add(&u->images_pending, 1);
+        esp_gsp_err_t err = esp_gsp_set_image_ex(u->gsp, canvases[i], encoded, size, &options);
+        free(encoded);
+        if (err != ESP_GSP_OK) {
+            atomic_fetch_sub(&u->images_pending, 1);
+            CHECK(u, err);
+            return;
+        }
+    }
+    u->gallery_dirty = false;
+    u->gallery_inflight = true;
+    u->gallery_submitted_revision = u->last_gallery_revision;
+}
+static void show_metadata(echoy_ui_handle_t u, const echoy_snapshot_t *s)
+{
+    const echoy_plan_t *plan = echoy_model_get_plan(u->model);
+    echoy_role_t actual = plan->count ? plan->role : s->role;
+    route_t route = u->removed ? REMOVED : u->condition != ECHOY_NORMAL ? STATUS : u->route;
+    for (unsigned i = 0; i < 6; i++) {
+        SHOW(u, routes[i], route == (route_t)i);
+    }
+    static const char *const locale_groups[] = {
+        "home",         "role",  "settings_header", "settings", "settings_remove",
+        "guide_header", "guide", "info_header",     "info",     "status_page"};
+    char name[96];
+    for (size_t i = 0; i < sizeof(locale_groups) / sizeof(locale_groups[0]); i++) {
+        snprintf(name, sizeof(name), "%s_zh", locale_groups[i]);
+        SHOW(u, name, !u->english);
+        snprintf(name, sizeof(name), "%s_en", locale_groups[i]);
+        SHOW(u, name, u->english);
+    }
+    for (unsigned r = 0; r < 4; r++) {
+        snprintf(name, sizeof(name), "home_title_%s", role_ids[r]);
+        SHOW(u, name, r == actual);
+        snprintf(name, sizeof(name), "home_title_%s_en", role_ids[r]);
+        SHOW(u, name, r == actual);
+        snprintf(name, sizeof(name), "role_copy_%s_zh", role_ids[r]);
+        SHOW(u, name, r == s->role);
+        snprintf(name, sizeof(name), "role_copy_%s_en", role_ids[r]);
+        SHOW(u, name, r == s->role);
+    }
+    local_text(u, "phrase_title",
+               phrases[actual][(plan->count ? plan->phrase : s->phrase) - 1][u->english]);
+    COLOR(u, "richness_fill", accents[actual]);
+    COLOR(u, "richness_knob", accents[actual]);
+    COLOR(u, "equal", accents[actual]);
+    for (unsigned p = 1; p <= 3; p++) {
+        snprintf(name, sizeof(name), "phrase_%u_selected", p);
+        SHOW(u, name, p == s->phrase);
+        snprintf(name, sizeof(name), "phrase_%u_selected_surface", p);
+        COLOR(u, name, accents[s->role]);
+        for (unsigned b = 0; b < 5; b++) {
+            snprintf(name, sizeof(name), "phrase_%u_bar_%u", p, b);
+            COLOR(u, name, accents[s->role]);
+        }
+        snprintf(name, sizeof(name), "phrase_%u_label_%s_%s", p, role_ids[s->role],
+                 u->english ? "en" : "zh");
+        COLOR(u, name, p == s->phrase ? accents[s->role] : 0x637555);
+    }
+    SHOW(u, "settings_remove_group", u->platform.is_simulator);
+    char battery[12];
+    snprintf(battery, sizeof(battery), "%u%%", u->battery);
+    TEXT(u, "battery_text", battery);
+    const char *headers[] = {"role", "settings", "guide", "info"};
+    for (unsigned i = 0; i < 4; i++) {
+        snprintf(name, sizeof(name), "%s_battery_text", headers[i]);
+        TEXT(u, name, battery);
+    }
+    local_text(u, "settings_record_text",
+               s->following
+                   ? tr(u, "先拆开左侧，再录自己的节奏", "Unlink left to record your rhythm")
+                   : tr(u, "录一段新的节奏", "Record a new rhythm"));
+    ENABLE(u, "settings_record",
+           !s->following && !s->fault && !s->plan_pending && !capturing(s->phase));
+    char detail[128];
+    snprintf(name, sizeof(name), "info_device_2_%s_line_0", u->english ? "en" : "zh");
+    snprintf(detail, sizeof(detail),
+             u->english ? "Tile A · %u%% · IMU 0°" : "本机 A · %u%% · IMU 0°", u->battery);
+    TEXT(u, name, detail);
+    snprintf(name, sizeof(name), "info_device_2_%s_line_2", u->english ? "en" : "zh");
+    TEXT(u, name, tr(u, "来自左侧: —", "Following: —"));
+}
+static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int64_t now)
+{
+    const echoy_plan_t *plan = echoy_model_get_plan(u->model);
+    bool cap = capturing(s->phase), busy = s->phase >= ECHOY_PREPARING;
+    char status[128];
+    const char *hint;
+    if (cap) {
+        if (s->phase == ECHOY_COUNT_IN) {
+            int beat = (int)((s->capture_at_us - now + BEAT_US - 1) / BEAT_US);
+            if (beat > 2) {
+                beat = 2;
+            }
+            if (beat < 1) {
+                beat = 1;
+            }
+            snprintf(status, sizeof(status), u->english ? "Ready · %d" : "预备 · %d", beat);
+        } else {
+            int beat = (int)((now - s->capture_at_us) / BEAT_US) + 1;
+            if (beat > 4) {
+                beat = 4;
+            }
+            snprintf(status, sizeof(status), u->english ? "Recording · %d / 4" : "录入 · %d / 4",
+                     beat);
+        }
+        hint = tr(u, "开头可以留空 · 提示音不会录入",
+                  "You may start with silence · Cues are not recorded");
+    } else if (u->density_dirty) {
+        strcpy(status, tr(u, "准备新的声音", "Preparing a new sound"));
+        hint =
+            tr(u, "原来的继续，可随时暂停本机", "Current sound continues; Pause stays available");
+    } else if (s->plan_pending) {
+        strcpy(status, tr(u, "下一小节生效", "Changes at the next bar"));
+        hint = tr(u, "已经收到，不会中途重编", "Received · Current phrase stays intact");
+    } else if (s->phase == ECHOY_PREVIEW) {
+        strcpy(status, now < s->start_us ? tr(u, "等共同拍点试听", "Audition at the shared beat")
+                                         : tr(u, "先听这一次", "Hear this one reply"));
+        hint = tr(u, "结束就停 · 点 ▶ 才持续演奏", "Stops after one reply · Play to keep going");
+    } else if (s->phase == ECHOY_PLAYING) {
+        strcpy(status, tr(u, "正在演奏", "Playing"));
+        hint = now < s->start_us
+                   ? tr(u, "等共同拍点开始", "Waiting for the shared beat")
+                   : tr(u, "Ⅱ 只暂停本机，不改变节奏", "Pause affects this tile, not the rhythm");
+    } else if (plan->count) {
+        strcpy(status, tr(u, "这段留在这里了", "Your rhythm is here"));
+        hint = tr(u, "▶ 开始演奏 · 不自动改写", "Play when ready · No automatic changes");
+    } else {
+        strcpy(status, tr(u, "先试着敲几下", "Try tapping the centre"));
+        hint = tr(u, "点「录一段」才记录节奏", "Press Record to capture your rhythm");
+    }
+    if (s->notice == ECHOY_NOTICE_CANCELLED) {
+        hint = tr(u, "已取消，原节奏保留", "Cancelled; original rhythm kept");
+    }
+    if (s->notice == ECHOY_NOTICE_EMPTY) {
+        hint = tr(u, "没有录入，原节奏保留", "No notes captured; original kept");
+    }
+    local_text(u, "status", status);
+    local_text(u, "hint", hint);
+    SHOW(u, "touch_hint_group", !plan->count && !cap);
+    SHOW(u, "touch_hint_group_en", !plan->count && !cap);
+    for (unsigned r = 0; r < 4; r++) {
+        for (unsigned en = 0; en < 2; en++) {
+            char key[96];
+            snprintf(key, sizeof(key), "capture_status%s%s",
+                     r == ECHOY_PULSE   ? ""
+                     : r == ECHOY_VOICE ? "_voice"
+                     : r == ECHOY_DUST  ? "_dust"
+                                        : "_harmony",
+                     en ? "_en" : "");
+            if (r == (plan->count ? plan->role : s->role) && en == u->english) {
+                TEXT(u, key, status);
+            }
+            SHOW(u, key, cap && r == (plan->count ? plan->role : s->role) && en == u->english);
+        }
+    }
+    SHOW(u, "status", !cap);
+    SHOW(u, "status_en", !cap);
+    SHOW(u, "record_icon", !cap);
+    SHOW(u, "cancel_icon", cap);
+    SHOW(u, "record_text", !cap);
+    SHOW(u, "record_text_en", !cap);
+    SHOW(u, "cancel_text", cap);
+    SHOW(u, "cancel_text_en", cap);
+    COLOR(u, "record_surface", cap ? 0xeee2d8 : 0xe5e9de);
+    ENABLE(u, "record",
+           cap || (!s->following && !s->fault && !s->plan_pending && s->phase != ECHOY_PREPARING &&
+                   !u->density_dirty));
+    ENABLE(u, "role", !cap);
+    ENABLE(u, "settings", !cap);
+    ENABLE(u, "transport",
+           !cap && (busy || (plan->count && !s->plan_pending && !u->density_dirty)));
+    COLOR(u, "transport", busy ? 0x415936 : 0x596d4b);
+    SHOW(u, "play_icon", !busy);
+    SHOW(u, "pause_icon", busy);
+    SHOW(u, "pad_border", !plan->count && !cap);
+    ENABLE(u, "gallery_transport",
+           !cap && (busy || (plan->count && !s->plan_pending && !u->density_dirty)));
+    SHOW(u, "gallery_play", !busy);
+    SHOW(u, "gallery_pause", busy);
+    local_text(u, "gallery_text",
+               busy ? tr(u, "暂停本机", "Pause this tile") : tr(u, "试听一次", "Hear once"));
+    bool progress = s->phase == ECHOY_RECORDING || s->phase == ECHOY_PREVIEW;
+    echoy_role_t actual = plan->count ? plan->role : s->role;
+    for (unsigned r = 0; r < 4; r++) {
+        char key[40];
+        snprintf(key, sizeof(key), r ? "progress_%s" : "progress", role_ids[r]);
+        SHOW(u, key, progress && r == actual);
+    }
+    if (progress) {
+        int64_t from = s->phase == ECHOY_RECORDING ? s->capture_at_us : s->start_us;
+        int value = (int)((now - from) * 100 / BAR_US);
+        if (value < 0) {
+            value = 0;
+        }
+        if (value > 100) {
+            value = 100;
+        }
+        char key[40];
+        snprintf(key, sizeof(key), actual ? "progress_%s" : "progress", role_ids[actual]);
+        CHECK(u, echoy_view_value(u->view, key, value));
+    }
+}
+static void refresh(echoy_ui_handle_t u, int64_t now, bool force)
+{
+    if (u->gallery_inflight && !atomic_load_explicit(&u->images_pending, memory_order_acquire)) {
+        if (atomic_load(&u->image_error) == GSP_OK) {
+            fprintf(stderr, "ECHOY_GALLERY revision=%u\n", (unsigned)u->gallery_submitted_revision);
+        }
+        u->gallery_inflight = false;
+    }
+    echoy_snapshot_t s;
+    echoy_model_get_snapshot(u->model, &s);
+    if (s.fault && u->condition == ECHOY_NORMAL) {
+        u->condition = ECHOY_AUDIO_FAULT;
+    }
+    prepare_graphics(u, &s, now);
+    show_metadata(u, &s);
+    show_home_state(u, &s, now);
+    int height = (int)lround(u->volume * 111);
+    CHECK(u, echoy_view_y(u->view, "volume_knob", 148 - height));
+    CHECK(u, echoy_view_y(u->view, "volume_fill", 111 - height));
+    height = (int)lround(u->richness * 111);
+    CHECK(u, echoy_view_y(u->view, "richness_knob", 148 - height));
+    CHECK(u, echoy_view_y(u->view, "richness_fill", 111 - height));
+    if (u->condition != ECHOY_NORMAL) {
+        local_text(u, "problem_title",
+                   u->condition == ECHOY_AUDIO_FAULT ? tr(u, "暂时无法发声", "Audio unavailable")
+                   : u->condition == ECHOY_BATTERY_EMPTY ? tr(u, "电量已耗尽", "Battery empty")
+                                                         : tr(u, "准备声音", "Preparing sound"));
+        double t = (now % 1800000) / 900000.0;
+        if (t > 1) {
+            t = 2 - t;
+        }
+        t = t * t * (3 - 2 * t);
+        if (u->condition == ECHOY_AUDIO_FAULT) {
+            t = 0;
+        }
+        int scale = (int)lround(65536 * (1 - .15 * t)), fade = (int)lround(204 * t);
+        if (scale != u->last_scale) {
+            const gsp_value_t value = {.type = GSP_VALUE_U32, .data = {.u32 = (uint32_t)scale}};
+            CHECK(u, esp_gsp_component_set_property(u->gsp, GSP_ECHOY_OBJ_KEY_STATUS_ART,
+                                                    GSP_ECHOY_PROP_KEY_SCALE, &value));
+            u->last_scale = scale;
+        }
+        if (fade != u->last_fade) {
+            CHECK(u, gsp_echoy_status_art_fade_set_opacity(u->gsp, fade));
+            u->last_fade = fade;
+        }
+    }
+    if (u->condition == ECHOY_NORMAL && !u->removed &&
+        (force || u->frames_dirty || now - u->last_draw_us >= DRAW_US)) {
+        unsigned count = u->route == HOME ? 2 : 0;
+        for (unsigned i = 0; i < count; i++) {
+            if (u->canvas_registered[i]) {
+                CHECK(u, esp_gsp_canvas_invalidate(u->gsp, canvases[i]));
+            }
+        }
+        u->last_draw_us = now;
+        u->frames_dirty = false;
+    }
+    if (u->route == ROLE && u->condition == ECHOY_NORMAL && !u->removed) {
+        publish_gallery(u);
+    }
+    route_t shown = u->removed ? REMOVED : u->condition != ECHOY_NORMAL ? STATUS : u->route;
+    if ((int)shown != u->last_route) {
+        fprintf(stderr, "ECHOY_ROUTE route=%s locale=%s\n",
+                shown < REMOVED ? routes[shown] : "removed", u->english ? "en" : "zh");
+        u->last_route = shown;
+    }
+    if ((int)u->english != u->last_english) {
+        fprintf(stderr, "ECHOY_LOCALE %s\n", u->english ? "en" : "zh");
+        u->last_english = u->english;
     }
     if ((int)s.phase != u->last_phase) {
         fprintf(stderr, "ECHOY_STATE phase=%d seed=%04x generation=%u at_us=%lld\n", (int)s.phase,
                 s.seed, (unsigned)s.generation, (long long)now);
         u->last_phase = s.phase;
     }
+    if (s.committed_revision != u->last_committed) {
+        const echoy_plan_t *p = echoy_model_get_plan(u->model);
+        fprintf(stderr, "ECHOY_PLAN revision=%u role=%s phrase=%u anchors=%zu events=%zu\n",
+                (unsigned)s.committed_revision, role_ids[p->role], p->phrase, p->source_count,
+                p->count);
+        u->last_committed = s.committed_revision;
+    }
 }
 static void tick(esp_gsp_handle_t gsp, void *ctx)
 {
     (void)gsp;
     echoy_ui_handle_t u = ctx;
-    const int64_t now = u->platform.now_us(u->platform.ctx);
+    int64_t now = now_us(u);
+    int image_error = atomic_exchange(&u->image_error, GSP_OK);
+    if (image_error != GSP_OK) {
+        CHECK(u, (esp_gsp_err_t)image_error);
+    }
+    if (u->platform.poll_command) {
+        for (unsigned i = 0; i < 4; i++) {
+            echoy_command_t c = u->platform.poll_command(u->platform.ctx);
+            if (c == ECHOY_COMMAND_NONE) {
+                break;
+            }
+            if (c == ECHOY_COMMAND_RESTORE) {
+                u->removed = false;
+                recover(u);
+                if (u->platform.set_removed) {
+                    u->platform.set_removed(u->platform.ctx, false);
+                }
+            } else if (c == ECHOY_COMMAND_RECOVER) {
+                recover(u);
+            } else {
+                set_condition(u, c == ECHOY_COMMAND_LOADING         ? ECHOY_LOADING
+                                 : c == ECHOY_COMMAND_BATTERY_EMPTY ? ECHOY_BATTERY_EMPTY
+                                                                    : ECHOY_AUDIO_FAULT);
+            }
+        }
+    }
+    if (u->density_dirty && now >= u->density_due_us) {
+        commit_density(u, now);
+    }
     echoy_model_tick(u->model, now);
     echoy_snapshot_t s;
     echoy_model_get_snapshot(u->model, &s);
-    /* Foundation only: a simulated output service completes preparation.
-       Replace this explicit adapter boundary when the C audio engine is connected. */
-    if (s.phase == ECHOY_PREPARING) {
+    /* The C musical plan is real; the audio output adapter is still pending. */
+    if (s.phase == ECHOY_PREPARING && !s.plan_pending) {
         echoy_model_prepare_done(u->model, s.generation, now);
     }
-    update(u);
+    refresh(u, now, false);
 }
 static void pointer(esp_gsp_handle_t gsp, int32_t x, int32_t y, bool pressed, void *ctx)
 {
@@ -190,60 +605,141 @@ static void pointer(esp_gsp_handle_t gsp, int32_t x, int32_t y, bool pressed, vo
     echoy_ui_handle_t u = ctx;
     echoy_snapshot_t s;
     echoy_model_get_snapshot(u->model, &s);
+    int64_t now = now_us(u);
     if (pressed && !u->pressed) {
         u->drag = 0;
-        if (y >= 113 && y < 320 && (x >= 16 && x < 80)) {
-            u->drag = 1;
-            u->drag_value = u->volume;
-            u->drag_y = y;
-        } else if (y >= 113 && y < 320 && x >= 400 && x < 464 && !capture(s.phase)) {
-            u->drag = 2;
-            u->drag_value = u->richness;
-            u->drag_y = y;
-        } else if (x >= 90 && x < 390 && y >= 113 && y < 317) {
-            int64_t now = u->platform.now_us(u->platform.ctx);
-            if (echoy_model_tap(u->model, now)) {
-                u->last_hit_us = now;
+        u->scrolled = false;
+        u->drag_y = y;
+        if (u->condition == ECHOY_NORMAL && !u->removed) {
+            if (u->route == HOME) {
+                if (y >= 113 && y < 320 && x >= 16 && x < 80) {
+                    u->drag = 1;
+                    u->drag_value = u->volume;
+                } else if (y >= 113 && y < 320 && x >= 400 && x < 464 && !capturing(s.phase)) {
+                    u->drag = 2;
+                    u->drag_value = u->richness;
+                } else if (x >= 90 && x < 390 && y >= 113 && y < 317 &&
+                           echoy_model_tap(u->model, now)) {
+                    u->last_hit_us = now;
+                }
+            } else if (u->route >= SETTINGS && u->route <= INFO &&
+                       x >= (u->route == SETTINGS ? 24 : 35) &&
+                       x < (u->route == SETTINGS ? 456 : 445) && y >= 108 &&
+                       y < (u->route == SETTINGS ? 458 : 453)) {
+                u->drag = 3;
+                u->drag_scroll = u->scroll[u->route];
             }
         }
     }
     if (pressed && u->drag) {
-        int value = u->drag_value + (int)lround((u->drag_y - y) * 100.0 / 180);
-        if (value < 0) {
-            value = 0;
-        }
-        if (value > 100) {
-            value = 100;
-        }
-        int height = (int)lround(value * 111.0 / 100);
-        if (u->drag == 1 && value != u->volume) {
-            u->volume = value;
-            check(u, gsp_echoy_volume_knob_set_y(u->gsp, 148 - height));
-            check(u, gsp_echoy_volume_fill_set_y(u->gsp, 111 - height));
-        }
-        if (u->drag == 2 && !capture(s.phase) && value != u->richness) {
-            u->richness = value;
-            check(u, gsp_echoy_richness_knob_set_y(u->gsp, 148 - height));
-            check(u, gsp_echoy_richness_fill_set_y(u->gsp, 111 - height));
+        if (u->drag == 3) {
+            if (abs(y - u->drag_y) > 4) {
+                u->scrolled = true;
+            }
+            if (u->scrolled) {
+                set_scroll(u, u->drag_scroll + y - u->drag_y);
+            }
+        } else {
+            double value = u->drag_value + (u->drag_y - y) / 180.0;
+            if (value < 0) {
+                value = 0;
+            }
+            if (value > 1) {
+                value = 1;
+            }
+            if (u->drag == 1) {
+                u->volume = value;
+            } else if (!capturing(s.phase) && value != u->richness) {
+                u->richness = value;
+                u->density_dirty = true;
+                u->density_due_us = now + 85000;
+            }
         }
     }
     if (!pressed) {
+        if (u->drag == 2) {
+            commit_density(u, now);
+        }
         u->drag = 0;
     }
     u->pressed = pressed;
-    update(u);
+    refresh(u, now, true);
 }
-static void event(esp_gsp_handle_t gsp, const esp_gsp_event_t *event, void *ctx)
+static void event(esp_gsp_handle_t gsp, const esp_gsp_event_t *e, void *ctx)
 {
     (void)gsp;
     echoy_ui_handle_t u = ctx;
-    int64_t now = u->platform.now_us(u->platform.ctx);
-    if (gsp_echoy_event_is_record_click(event)) {
-        echoy_model_record(u->model, now);
-    } else if (gsp_echoy_event_is_transport_click(event)) {
-        echoy_model_transport(u->model, now);
+    int64_t now = now_us(u);
+    echoy_snapshot_t s;
+    echoy_model_get_snapshot(u->model, &s);
+    /* Suppress only the current drag. A completed gesture must not reject a
+     * subsequent click delivered before its pointer samples by sim_bridge. */
+    if (u->pressed && u->scrolled) {
+        return;
     }
-    update(u);
+    if (gsp_echoy_event_is_recover_click(e)) {
+        recover(u);
+        refresh(u, now, true);
+        return;
+    }
+    if (u->condition != ECHOY_NORMAL || u->removed) {
+        return;
+    }
+    if (gsp_echoy_event_is_record_click(e)) {
+        if (echoy_model_record(u->model, now)) {
+            select_route(u, HOME);
+        }
+    } else if (gsp_echoy_event_is_transport_click(e)) {
+        echoy_model_transport(u->model, now);
+    } else if (!capturing(s.phase)) {
+        if (gsp_echoy_event_is_role_click(e)) {
+            select_route(u, ROLE);
+        } else if (gsp_echoy_event_is_settings_click(e)) {
+            select_route(u, SETTINGS);
+        } else if (gsp_echoy_event_is_guide_click(e)) {
+            select_route(u, GUIDE);
+        } else if (gsp_echoy_event_is_info_click(e)) {
+            select_route(u, INFO);
+        } else if (gsp_echoy_event_is_back_click(e)) {
+            select_route(u, u->route == GUIDE || u->route == INFO ? SETTINGS : HOME);
+        } else if (gsp_echoy_event_is_prev_role_click(e)) {
+            echoy_model_select_role(u->model, previous_role[s.role], now);
+        } else if (gsp_echoy_event_is_next_role_click(e)) {
+            echoy_model_select_role(u->model, next_role[s.role], now);
+        } else if (gsp_echoy_event_is_phrase_1_click(e)) {
+            echoy_model_select_phrase(u->model, 1, now);
+        } else if (gsp_echoy_event_is_phrase_2_click(e)) {
+            echoy_model_select_phrase(u->model, 2, now);
+        } else if (gsp_echoy_event_is_phrase_3_click(e)) {
+            echoy_model_select_phrase(u->model, 3, now);
+        } else if (gsp_echoy_event_is_lang_zh_click(e) || gsp_echoy_event_is_lang_en_click(e)) {
+            u->english = gsp_echoy_event_is_lang_en_click(e);
+            set_scroll(u, u->scroll[u->route]);
+            u->frames_dirty = true;
+        } else if (gsp_echoy_event_is_audition_click(e)) {
+            if (u->route == ROLE && s.phase >= ECHOY_PREPARING) {
+                echoy_model_pause(u->model);
+            } else {
+                if (u->route != ROLE) {
+                    select_route(u, HOME);
+                }
+                echoy_model_audition(u->model, now);
+            }
+        } else if (gsp_echoy_event_is_remove_click(e) && u->platform.is_simulator) {
+            echoy_model_pause(u->model);
+            u->removed = true;
+            if (u->platform.set_removed) {
+                u->platform.set_removed(u->platform.ctx, true);
+            }
+        } else if (gsp_echoy_event_is_export_click(e)) {
+            bool ok = u->platform.export_session &&
+                      u->platform.export_session(u->platform.ctx, &s,
+                                                 echoy_model_get_plan(u->model), u->volume);
+            fprintf(stderr, "ECHOY_EXPORT ok=%s\n", ok ? "true" : "false");
+        }
+    }
+    u->frames_dirty = true;
+    refresh(u, now, true);
 }
 esp_gsp_err_t echoy_ui_create(esp_gsp_handle_t gsp, const echoy_platform_t *platform,
                               echoy_ui_handle_t *out)
@@ -258,35 +754,39 @@ esp_gsp_err_t echoy_ui_create(esp_gsp_handle_t gsp, const echoy_platform_t *plat
     }
     u->gsp = gsp;
     u->platform = *platform;
-    u->volume = 65;
-    u->richness = 50;
+    u->volume = .65;
+    u->richness = .5;
+    u->battery = platform->battery_percent;
     u->last_hit_us = -1000000;
-    u->last_capture = u->last_busy = u->last_progress = u->last_phase = -1;
+    u->last_phase = u->last_route = u->last_condition = u->last_english = -1;
     u->last_step = 16;
-    u->last_progress_visible = -1;
-    u->last_art = (16u << 16) | (1u << 28);
-    atomic_init(&u->art, u->last_art);
+    u->last_gallery_revision = u->last_committed = UINT32_MAX;
+    u->last_capture_mask = UINT16_MAX;
+    u->last_scale = 65536;
+    u->last_fade = 0;
+    atomic_init(&u->error, ESP_GSP_OK);
+    atomic_init(&u->image_error, GSP_OK);
+    atomic_init(&u->images_pending, 0);
     u->model = echoy_model_create();
-    if (!u->model) {
+    u->view = echoy_view_cache_create(gsp);
+    if (!u->model || !u->view) {
+        echoy_model_delete(u->model);
+        echoy_view_cache_delete(u->view);
         free(u);
         return ESP_GSP_ERR_NO_MEM;
     }
-    atomic_init(&u->error, ESP_GSP_OK);
-    esp_gsp_err_t err =
-        esp_gsp_canvas_set_draw_cb(gsp, GSP_ECHOY_BIND_ART, echoy_art_draw, &u->art);
-    u->draw_registered = err == ESP_GSP_OK;
-    check(u, err);
-    if (err == ESP_GSP_OK) {
-        err =
-            esp_gsp_canvas_set_draw_cb(gsp, GSP_ECHOY_BIND_FEEDBACK, echoy_feedback_draw, &u->art);
-        u->feedback_registered = err == ESP_GSP_OK;
-        check(u, err);
+    if (platform->initial_seed) {
+        echoy_model_load_seed(u->model, platform->initial_seed, now_us(u), false);
     }
-    /* Canvas reads only the atomic art snapshot. Finish all model/UI cache
-       initialization before exposing callbacks to the firmware render task. */
-    if (err == ESP_GSP_OK) {
-        update(u);
-        err = atomic_load(&u->error);
+    if (platform->initial_condition != ECHOY_NORMAL) {
+        set_condition(u, platform->initial_condition);
+    }
+    refresh(u, now_us(u), true);
+    esp_gsp_err_t err = atomic_load(&u->error);
+    for (unsigned i = 0; i < 2 && err == ESP_GSP_OK; i++) {
+        err = esp_gsp_canvas_set_draw_cb(
+            gsp, canvases[i], i == 1 ? echoy_feedback_draw : echoy_art_draw, &u->frames[i]);
+        u->canvas_registered[i] = err == ESP_GSP_OK;
     }
     if (err == ESP_GSP_OK) {
         err = esp_gsp_on_event(gsp, event, u);
@@ -304,7 +804,7 @@ esp_gsp_err_t echoy_ui_create(esp_gsp_handle_t gsp, const echoy_platform_t *plat
     }
     if (err != ESP_GSP_OK) {
         if (echoy_ui_delete(u) != ESP_GSP_OK) {
-            *out = u; /* Keep callback storage alive if shutdown cannot be confirmed. */
+            *out = u;
         }
         return err;
     }
@@ -338,29 +838,28 @@ esp_gsp_err_t echoy_ui_delete(echoy_ui_handle_t u)
         }
         u->timer = NULL;
     }
-    if (u->draw_registered) {
-        err = esp_gsp_canvas_stop(u->gsp, GSP_ECHOY_BIND_ART);
-        if (err != ESP_GSP_OK) {
-            return err;
+    for (unsigned i = 0; i < 2; i++) {
+        if (u->canvas_registered[i]) {
+            err = esp_gsp_canvas_stop(u->gsp, canvases[i]);
+            if (err != ESP_GSP_OK) {
+                return err;
+            }
+            u->canvas_registered[i] = false;
         }
-        u->draw_registered = false;
-    }
-    if (u->feedback_registered) {
-        err = esp_gsp_canvas_stop(u->gsp, GSP_ECHOY_BIND_FEEDBACK);
-        if (err != ESP_GSP_OK) {
-            return err;
-        }
-        u->feedback_registered = false;
     }
     err = esp_gsp_flush(u->gsp, 1000);
     if (err != ESP_GSP_OK) {
         return err;
     }
+    if (atomic_load_explicit(&u->images_pending, memory_order_acquire)) {
+        return ESP_GSP_ERR_INVALID_STATE;
+    }
     echoy_model_delete(u->model);
+    echoy_view_cache_delete(u->view);
     free(u);
     return ESP_GSP_OK;
 }
 esp_gsp_err_t echoy_ui_get_error(echoy_ui_handle_t u)
 {
-    return u ? u->error : ESP_GSP_ERR_INVALID_ARG;
+    return u ? (esp_gsp_err_t)atomic_load(&u->error) : ESP_GSP_ERR_INVALID_ARG;
 }

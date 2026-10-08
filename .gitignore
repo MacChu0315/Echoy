@@ -1,5 +1,6 @@
 **/build/
 **/build-sim/
+**/build-sim-*/
 **/build-host/
 **/managed_components/
 **/sdkconfig

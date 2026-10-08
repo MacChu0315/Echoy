@@ -1,0 +1,203 @@
+{
+  "study": "Echoy Arrange B 06",
+  "simulated": true,
+  "edges": [],
+  "tiles": {
+    "A": {
+      "role": "pulse",
+      "phrase": 3,
+      "density": 0.5,
+      "volume": 0.65,
+      "loop": false,
+      "planPending": false,
+      "revision": 17,
+      "committedRevision": 17,
+      "ownSeed": [
+        {
+          "step": 5,
+          "kind": "kick",
+          "vel": 0.74,
+          "dur": 0.22,
+          "origin": "you"
+        },
+        {
+          "step": 7,
+          "kind": "kick",
+          "vel": 0.74,
+          "dur": 0.22,
+          "origin": "you"
+        },
+        {
+          "step": 10,
+          "kind": "kick",
+          "vel": 0.74,
+          "dur": 0.22,
+          "origin": "you"
+        },
+        {
+          "step": 14,
+          "kind": "kick",
+          "vel": 0.74,
+          "dur": 0.22,
+          "origin": "you"
+        }
+      ],
+      "current": {
+        "role": "pulse",
+        "phrase": 3,
+        "density": 0.5,
+        "duration": 2.5,
+        "source": [
+          {
+            "step": 5,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "origin": "you"
+          },
+          {
+            "step": 7,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "origin": "you"
+          },
+          {
+            "step": 10,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "origin": "you"
+          },
+          {
+            "step": 14,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "origin": "you"
+          }
+        ],
+        "foreground": [
+          {
+            "step": 5,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "layer": "anchor",
+            "origin": "you",
+            "expression": 0,
+            "sourceStep": 5,
+            "role": "anchor"
+          },
+          {
+            "step": 7,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "layer": "anchor",
+            "origin": "you",
+            "expression": 0,
+            "sourceStep": 7,
+            "role": "anchor"
+          },
+          {
+            "step": 10,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "layer": "anchor",
+            "origin": "you",
+            "expression": 0,
+            "sourceStep": 10,
+            "role": "anchor"
+          },
+          {
+            "step": 14,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "layer": "anchor",
+            "origin": "you",
+            "expression": 0,
+            "sourceStep": 14,
+            "role": "anchor"
+          }
+        ],
+        "full": [
+          {
+            "step": 5,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "layer": "anchor",
+            "origin": "you",
+            "expression": 0,
+            "sourceStep": 5,
+            "role": "anchor"
+          },
+          {
+            "step": 7,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "layer": "anchor",
+            "origin": "you",
+            "expression": 0,
+            "sourceStep": 7,
+            "role": "anchor"
+          },
+          {
+            "step": 9,
+            "kind": "rim",
+            "vel": 0.3,
+            "dur": 0.09,
+            "layer": "echo",
+            "origin": "partner",
+            "expression": 0,
+            "sourceStep": 5,
+            "role": "echo"
+          },
+          {
+            "step": 10,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "layer": "anchor",
+            "origin": "you",
+            "expression": 0,
+            "sourceStep": 10,
+            "role": "anchor"
+          },
+          {
+            "step": 11,
+            "kind": "rim",
+            "vel": 0.3,
+            "dur": 0.09,
+            "layer": "echo",
+            "origin": "partner",
+            "expression": 0,
+            "sourceStep": 7,
+            "role": "echo"
+          },
+          {
+            "step": 14,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "layer": "anchor",
+            "origin": "you",
+            "expression": 0,
+            "sourceStep": 14,
+            "role": "anchor"
+          }
+        ]
+      }
+    }
+  },
+  "limitations": [
+    "audio synthesis not implemented",
+    "multi-device transport not implemented",
+    "single PC tile; no wireless synchronization",
+    "16-step rhythm quantization"
+  ]
+}
