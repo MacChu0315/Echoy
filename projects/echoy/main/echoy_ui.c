@@ -416,12 +416,20 @@ static void show_metadata(echoy_ui_handle_t u, const echoy_snapshot_t *s)
     }
     SHOW(u, "settings_remove_group", u->platform.is_simulator);
     char battery[12];
-    snprintf(battery, sizeof(battery), "%u%%", u->battery);
+    const bool battery_unknown = u->platform.read_control && u->external.battery_unknown;
+    if (battery_unknown) {
+        snprintf(battery, sizeof(battery), "--%%");
+    } else {
+        snprintf(battery, sizeof(battery), "%u%%", u->battery);
+    }
     TEXT(u, "battery_text", battery);
+    SHOW(u, "battery_fill", !battery_unknown);
     const char *headers[] = {"role", "settings", "guide", "info"};
     for (unsigned i = 0; i < 4; i++) {
         snprintf(name, sizeof(name), "%s_battery_text", headers[i]);
         TEXT(u, name, battery);
+        snprintf(name, sizeof(name), "%s_battery_fill", headers[i]);
+        SHOW(u, name, !battery_unknown);
     }
     local_text(u, "settings_record_text",
                s->following
@@ -432,8 +440,9 @@ static void show_metadata(echoy_ui_handle_t u, const echoy_snapshot_t *s)
     char detail[128];
     snprintf(name, sizeof(name), "info_device_2_%s_line_0", u->english ? "en" : "zh");
     snprintf(detail, sizeof(detail),
-             u->english ? "Tile %c · %u%% · IMU 0°" : "本机 %c · %u%% · IMU 0°",
-             'A' + (u->platform.read_control ? u->external.tile : 0), u->battery);
+             u->english ? "Tile %c · %s · IMU %s" : "本机 %c · %s · IMU %s",
+             'A' + (u->platform.read_control ? u->external.tile : 0), battery,
+             u->platform.read_control && u->external.imu_unknown ? "—" : "0°");
     TEXT(u, name, detail);
     snprintf(name, sizeof(name), "info_device_2_%s_line_2", u->english ? "en" : "zh");
     if (u->platform.read_control && u->external.source >= 0) {

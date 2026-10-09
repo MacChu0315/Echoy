@@ -46,6 +46,8 @@ struct echoy_band {
     uint64_t issued;
     bool english, reduced_motion;
     int64_t render_until;
+    /* Owner-only scratch: keep the 7 KiB empty plan off embedded task stacks. */
+    echoy_plan_t empty_plan;
 };
 static bool valid_tile(int id)
 {
@@ -184,10 +186,12 @@ static void sync_plans(echoy_band_t *b)
     for (int i = 0; i < N; i++) {
         const echoy_arrange_tile_t *t = echoy_arrange_get_tile(b->arrange, i);
         const echoy_arrange_clock_t *c = echoy_arrange_get_clock(b->arrange, t->clock_id);
-        echoy_plan_t empty = {
-            .role = t->role, .phrase = t->phrase, .density = t->density, .duration = 2.5};
+        b->empty_plan.role = t->role;
+        b->empty_plan.phrase = t->phrase;
+        b->empty_plan.density = t->density;
+        b->empty_plan.duration = 2.5;
         echoy_model_apply_external(
-            b->voices[i].model, t->current.valid ? &t->current.music : &empty,
+            b->voices[i].model, t->current.valid ? &t->current.music : &b->empty_plan,
             (uint32_t)echoy_arrange_revision(b->arrange),
             (t->current.valid && t->current.source != ECHOY_TILE_NONE) || wanted_parent(b, i),
             c->origin_us, c->started);

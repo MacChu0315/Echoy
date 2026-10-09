@@ -75,7 +75,7 @@
       "fg_color": "#78836c",
       "bind": "battery_text",
       "bind_target": "text",
-      "font_charset": "0123456789%",
+      "font_charset": "0123456789%-",
       "font": "fonts/DejaVuSansMono.ttf"
     },
     {
@@ -1956,7 +1956,7 @@
       "fg_color": "#78836c",
       "bind": "role_battery_text",
       "bind_target": "text",
-      "font_charset": "0123456789%",
+      "font_charset": "0123456789%-",
       "font": "fonts/DejaVuSansMono.ttf"
     },
     {
@@ -3607,7 +3607,7 @@
       "fg_color": "#78836c",
       "bind": "settings_battery_text",
       "bind_target": "text",
-      "font_charset": "0123456789%",
+      "font_charset": "0123456789%-",
       "font": "fonts/DejaVuSansMono.ttf"
     },
     {
@@ -4351,7 +4351,7 @@
       "fg_color": "#78836c",
       "bind": "guide_battery_text",
       "bind_target": "text",
-      "font_charset": "0123456789%",
+      "font_charset": "0123456789%-",
       "font": "fonts/DejaVuSansMono.ttf"
     },
     {
@@ -5072,7 +5072,7 @@
       "fg_color": "#78836c",
       "bind": "info_battery_text",
       "bind_target": "text",
-      "font_charset": "0123456789%",
+      "font_charset": "0123456789%-",
       "font": "fonts/DejaVuSansMono.ttf"
     },
     {

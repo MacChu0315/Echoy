@@ -76,7 +76,7 @@ home_status_en='Tap to try · Record to keep Preparing to record Ready · 1234 R
 role_names_zh='脉冲声线微尘和声'
 phrase_names_zh='重音切分留白短句轻答长线颗粒点缀余韵短和弦分解接句'
 phrase_names_en='Accent Syncopation Space Short phrase Light reply Long line Grains Touches Trails Short chords Arpeggio Answer'
-home_charsets={'role_title_first':role_names_zh,'role_title_second':role_names_zh,'phrase_title':phrase_names_zh,'battery_text':'0123456789%','record_text':'录制','status':home_status_zh,'capture_status':home_status_zh,'touch_hint':'试奏区'}
+home_charsets={'role_title_first':role_names_zh,'role_title_second':role_names_zh,'phrase_title':phrase_names_zh,'battery_text':'0123456789%-','record_text':'录制','status':home_status_zh,'capture_status':home_status_zh,'touch_hint':'试奏区'}
 charset=home_status_zh
 def label(name,x,y,w,h,content,size,color,parent,**kw):
     return add('label',name,x,y,w,h,parent,text=content,font_size=size,fg_color=color,**kw)
@@ -188,7 +188,7 @@ def header(name,parent,zh,en):
     add('container',name+'_battery_outline',407,42,19,12,parent,border_color='#78836c',border_width=1,radius=2)
     add('container',name+'_battery_tip',428,46,1,4,parent,bg_color='#78836c')
     add('container',name+'_battery_fill',410,45,9,6,parent,bg_color='#78836c')
-    dyn(name+'_battery_text',435,35,25,22,'72%',11,'#78836c',parent,font='fonts/DejaVuSansMono.ttf',font_charset='0123456789%')
+    dyn(name+'_battery_text',435,35,25,22,'72%',11,'#78836c',parent,font='fonts/DejaVuSansMono.ttf',font_charset='0123456789%-')
     return (zh,en)
 
 def scroll_area(name,parent,w,h,content_height,x,y):
