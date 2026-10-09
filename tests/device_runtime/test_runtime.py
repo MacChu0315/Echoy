@@ -16,9 +16,10 @@ class DeviceRuntime(unittest.TestCase):
         cls.binary=Path(cls.temp.name)/'runtime-check'
         main=ROOT/'projects/echoy/main'
         command=['cc','-std=c11','-O1','-g','-Wall','-Wextra','-Werror','-Wno-sign-compare','-pthread',
+                 '-DCONFIG_ECHOY_AUDIO_DIAGNOSTICS=1',
                  '-I'+str(HERE/'stubs'),'-I'+str(HERE),'-I'+str(main),
                  str(HERE/'test_runtime.c'),str(HERE/'fakes.c'),
-                 *[str(main/(name+'.c')) for name in ['platform_device','echoy_band','echoy_model','echoy_music','echoy_arrange','echoy_audio']],
+                 *[str(main/(name+'.c')) for name in ['platform_device','echoy_band','echoy_model','echoy_music','echoy_arrange','echoy_audio','echoy_audio_probe']],
                  '-Wl,--wrap=echoy_band_create','-Wl,--wrap=echoy_band_prepare_job','-lm','-o',str(cls.binary)]
         if os.environ.get('ECHOY_RUNTIME_SANITIZE')=='1':
             command[1:1]=['-fsanitize=address,undefined','-fno-omit-frame-pointer','-fno-pie','-no-pie']
@@ -45,4 +46,8 @@ class DeviceRuntime(unittest.TestCase):
     def test_late_output_faults_without_catchup(self):self.run_case('deadline')
     def test_audio_waits_for_explicit_activation(self):self.run_case('acceptance_gate')
     def test_shutdown_before_activation(self):self.run_case('stop_unactivated')
+    def test_reference_tone_is_explicit_bounded_and_keeps_seed(self):self.run_case('probe')
+    def test_reference_tone_ui_cancel(self):self.run_case('probe_cancel')
+    def test_reference_tone_readback_failure(self):self.run_case('probe_failure')
+    def test_reference_tone_partial_write(self):self.run_case('probe_partial')
 if __name__=='__main__':unittest.main(verbosity=2)

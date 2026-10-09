@@ -375,6 +375,22 @@ esp_err_t board_audio_get_stats(const board_audio_t *audio, board_audio_stats_t 
     return ESP_OK;
 }
 
+esp_err_t board_audio_readback(board_audio_t *audio, board_audio_probe_t *out)
+{
+    if (!audio || audio != owner || !out || audio->faulted) return ESP_ERR_INVALID_ARG;
+    static const uint8_t addresses[] = {0x00, 0x01, 0x09, 0x31, 0x32, 0xfd, 0xfe};
+    *out = (board_audio_probe_t){.pa_requested = audio->pa_on};
+    for (unsigned i = 0; i < BOARD_AUDIO_PROBE_REG_COUNT; ++i) {
+        int value = 0;
+        esp_err_t error = result(audio, esp_codec_dev_read_reg(audio->device, addresses[i], &value));
+        if (error != ESP_OK) { out->error = error; break; }
+        out->registers[i] = (uint8_t)value;
+        out->valid_mask |= 1u << i;
+    }
+    out->sampled_at_us = esp_timer_get_time();
+    return out->error;
+}
+
 esp_err_t board_audio_close(board_audio_t **audio)
 {
     if (!audio) return ESP_ERR_INVALID_ARG;

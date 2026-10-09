@@ -123,7 +123,26 @@ volume-only package `d87ae02e9222`: hardware volume 90 removes another 15 dB of
 attenuation, retaining the UI slider and all logic. Official update verification
 matched the image, HEALTHY event, commit ID and unchanged bootloader/partition
 hashes. The real home screen and startup logs are normal, with no observed UI or
-audio errors. Practical loudness and quality at 90 await user feedback.
+audio errors. The user subsequently reported very quiet sound even with the UI
+slider at maximum, including Voice/Dust rather than only bass-heavy Pulse.
+This rejects practical loudness acceptance of the current volume-90 image.
+
+Read-only investigation of that boot found peak PCM 6,725/32,767, nonzero output,
+PA requested on and no write/deadline errors. Official V1.2 schematics confirm
+the pinned BSP's MCU TX GPIO52 connects to ES8311 SDIN; no pin change was made.
+Driver-accepted samples and a PA software flag do not prove analog output level.
+The actual codec register values have not yet been read from the device.
+
+An opt-in diagnostic package `bb7f0a3dd05f` is prepared, with hardware gain still
+90 and unchanged UI/music. `CONFIG_ECHOY_AUDIO_DIAGNOSTICS` defaults off. Enabled
+builds expose private RPC 0xECA0: 1 reads cached status, 2 explicitly requests a
+fixed 1-second 1 kHz / 8,192-peak PCM reference, 3 cancels. The owner pauses music,
+reads ES8311 registers before/after the reference, and never resumes music
+automatically. Any UI action interrupts the diagnostic. This is instrumentation,
+not a claimed fix. Installation and one reference playback were requested and
+await authorization. See `verification/quiet-audio/README.md` for evidence,
+register ordering and test protocol. Right-side expansion occupancy is also
+awaiting user clarification; those pins share audio signals.
 
 A pulse phrase on `874d650babab` took 9,553,429 us to prepare; this delay still
 needs optimization. ESP-Iris remote

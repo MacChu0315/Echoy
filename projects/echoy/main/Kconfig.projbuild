@@ -1,0 +1,10 @@
+menu "Echoy diagnostic build"
+config ECHOY_AUDIO_DIAGNOSTICS
+    bool "Enable explicit audio readback and one-second reference-tone RPC"
+    default n
+    help
+        Adds private ESP-Iris service 0xECA0 for controlled device bring-up.
+        Never plays automatically. Method 1 reads cached state, 2 requests a
+        fixed one-second 1 kHz tone, and 3 cancels it. Music is paused and never
+        resumed automatically. Keep disabled in normal product builds.
+endmenu

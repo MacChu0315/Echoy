@@ -325,6 +325,68 @@ static void stop_before_activation(void)
     assert(atomic_load(&fake_write_calls) == 0);
     puts("PASS failed UI/acceptance can shut down unopened audio without hanging");
 }
+static echoy_device_diagnostics_t probe_until(echoy_device_handle_t d, echoy_probe_phase_t phase)
+{
+    echoy_device_diagnostics_t snapshot;
+    int64_t end=esp_timer_get_time()+2500000;
+    do {
+        assert(echoy_device_probe_get(d,&snapshot)==ESP_OK);
+        if(snapshot.phase==phase)return snapshot;
+        fake_sleep_ms(1);
+    } while(esp_timer_get_time()<end);
+    fprintf(stderr,"probe timeout: phase %d wanted %d\n",snapshot.phase,phase);abort();
+}
+static void probe_complete(void)
+{
+    echoy_device_handle_t d;
+    start(&d);
+    assert(atomic_load(&fake_probe_calls)==0);
+    assert(action(ECHOY_ACT_EXAMPLE,0));until(ECHOY_NORMAL,ECHOY_PREVIEW,5);
+    assert(echoy_device_probe_request(d,true)==ESP_OK);
+    assert(echoy_device_probe_request(d,true)==ESP_ERR_INVALID_STATE);
+    echoy_device_diagnostics_t p=probe_until(d,ECHOY_PROBE_DONE);
+    assert(p.frames_accepted==24000&&p.before.valid_mask==127&&p.after.valid_mask==127);
+    assert(atomic_load(&fake_probe_calls)==2&&view().state.seed==5&&view().state.phase==ECHOY_IDLE);
+    assert(!view().state.continuous);
+    for(int i=0;i<100;i++)assert(echoy_device_probe_get(d,&p)==ESP_OK);
+    assert(atomic_load(&fake_probe_calls)==2); /* Cached status has no I2C. */
+    fake_sleep_ms(50);assert(view().state.phase==ECHOY_IDLE);
+    stop(&d);puts("PASS explicit one-second reference, two readbacks, no auto replay and retained rhythm");
+}
+static void probe_cancel(void)
+{
+    echoy_device_handle_t d;start(&d);
+    block_writer();
+    assert(echoy_device_probe_request(d,true)==ESP_OK);
+    assert(action(ECHOY_ACT_PAUSE,0));
+    fake_hold_write(false);
+    probe_until(d,ECHOY_PROBE_CANCELLED);
+    assert(atomic_load(&fake_probe_calls)==0);
+    assert(echoy_device_probe_request(d,true)==ESP_OK);probe_until(d,ECHOY_PROBE_PLAYING);
+    assert(action(ECHOY_ACT_PAUSE,0));
+    echoy_device_diagnostics_t p=probe_until(d,ECHOY_PROBE_CANCELLED);
+    assert(p.frames_accepted<24000);assert(atomic_load(&fake_probe_calls)==1);
+    assert(echoy_device_probe_request(d,true)==ESP_OK);probe_until(d,ECHOY_PROBE_PLAYING);
+    assert(echoy_device_probe_request(d,false)==ESP_OK);probe_until(d,ECHOY_PROBE_CANCELLED);
+    stop(&d);puts("PASS UI and explicit stop cancel diagnostic output");
+}
+static void probe_failure(void)
+{
+    echoy_device_handle_t d;start(&d);atomic_store(&fake_probe_failure,1);
+    assert(echoy_device_probe_request(d,true)==ESP_OK);
+    echoy_device_diagnostics_t p=probe_until(d,ECHOY_PROBE_FAILED);
+    assert(p.error==ESP_ERR_TIMEOUT&&p.before.valid_mask==15&&p.frames_accepted==0);
+    until(ECHOY_AUDIO_FAULT,ECHOY_IDLE,0);stop(&d);puts("PASS readback error is exposed and output stops");
+}
+static void probe_partial(void)
+{
+    echoy_device_handle_t d;start(&d);
+    assert(echoy_device_probe_request(d,true)==ESP_OK);probe_until(d,ECHOY_PROBE_PLAYING);
+    atomic_store(&fake_partial_next,1);
+    echoy_device_diagnostics_t p=probe_until(d,ECHOY_PROBE_FAILED);
+    assert(p.error==ESP_ERR_TIMEOUT&&p.frames_accepted<24000);
+    until(ECHOY_AUDIO_FAULT,ECHOY_IDLE,0);stop(&d);puts("PASS partial reference write faults without replay");
+}
 int main(int argc, char **argv)
 {
     assert(argc == 2);
@@ -360,6 +422,10 @@ int main(int argc, char **argv)
         acceptance_gate();
     else if (!strcmp(argv[1], "stop_unactivated"))
         stop_before_activation();
+    else if (!strcmp(argv[1], "probe")) probe_complete();
+    else if (!strcmp(argv[1], "probe_cancel")) probe_cancel();
+    else if (!strcmp(argv[1], "probe_failure")) probe_failure();
+    else if (!strcmp(argv[1], "probe_partial")) probe_partial();
     else
         return 2;
     return 0;

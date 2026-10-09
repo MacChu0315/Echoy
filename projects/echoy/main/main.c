@@ -10,6 +10,7 @@
 #include "iris_screen_mirror.h"
 #include "nvs_flash.h"
 #include "platform_device.h"
+#include "echoy_audio_diagnostics.h"
 #include "sdkconfig.h"
 #include "ui_bundle.h"
 
@@ -102,4 +103,8 @@ void app_main(void)
     ESP_LOGI(TAG,
              "Echoy single-device controller ready at %dx%d RGB565; speaker initializes silently",
              BSP_LCD_H_RES, BSP_LCD_V_RES);
+#if CONFIG_ECHOY_AUDIO_DIAGNOSTICS
+    CHECK_START(echoy_audio_diagnostics_register(s_device));
+    ESP_LOGI(TAG, "Explicit audio diagnostics ready: RPC 0xECA0; no automatic tone");
+#endif
 }

@@ -11,7 +11,8 @@ enum { FAIL_NONE, FAIL_BOARD, FAIL_RAIL, FAIL_I2C, FAIL_GPIO, FAIL_CHANNEL,
        FAIL_INIT, FAIL_DATA, FAIL_CTRL, FAIL_CODEC, FAIL_DEVICE,
        FAIL_FORMAT, FAIL_ENABLE, FAIL_CODEC_START, FAIL_CURVE, FAIL_VOLUME, FAIL_MUTE,
        FAIL_WRONG_RATE, FAIL_WRONG_CHANNELS, FAIL_INFO, FAIL_PRELOAD,
-       FAIL_PARTIAL, FAIL_SHORT, FAIL_PA };
+       FAIL_PARTIAL, FAIL_SHORT, FAIL_PA, FAIL_READBACK };
+static uint8_t registers[256];
 static int failure, pa_level, live, checks, muted, hardware_volume;
 static unsigned write_calls, preload_calls, delay_ticks, mute_before_open;
 static int64_t now_us;
@@ -84,13 +85,14 @@ esp_err_t i2s_channel_write(i2s_chan_handle_t h,const void *data,size_t size,siz
     return failure==FAIL_PARTIAL?ESP_ERR_TIMEOUT:ESP_OK;
 }
 static bool opened_ctrl(const audio_codec_ctrl_if_t *h) { (void)h;return true; }
-static int read_reg(const audio_codec_ctrl_if_t *h,int reg,int bytes,void *data,int len) { (void)h;(void)reg;(void)bytes;memset(data,0,len);return ESP_OK; }
+static int read_reg(const audio_codec_ctrl_if_t *h,int reg,int bytes,void *data,int len) { (void)h;(void)bytes;CHECK(len==1);if(failure==FAIL_READBACK&&reg==0x32)return ESP_ERR_TIMEOUT;*(uint8_t*)data=registers[(uint8_t)reg];return ESP_OK; }
 static int write_reg(const audio_codec_ctrl_if_t *h,int reg,int bytes,void *data,int len)
 {
     (void)h;(void)bytes;(void)len;
     if((reg==0x31&&failure==FAIL_MUTE)||(reg==0x32&&failure==FAIL_VOLUME)||
        (reg==0x00&&failure==FAIL_CODEC_START))return ESP_CODEC_DEV_WRITE_FAIL;
     if(reg==0x31)muted=*(uint8_t*)data;
+    registers[(uint8_t)reg]=*(uint8_t*)data;
     return ESP_OK;
 }
 static int ctrl_info(const audio_codec_ctrl_if_t *h,audio_codec_ctrl_info_t *info) { (void)h;*info=(audio_codec_ctrl_info_t){.type=AUDIO_CODEC_CTRL_I2C,.i2c={.addr=0x32,.port=0}};return ESP_OK; }
@@ -167,6 +169,7 @@ int esp_codec_dev_open(esp_codec_dev_handle_t handle,esp_codec_dev_sample_info_t
     return ESP_OK; /* Mirrors the real unchecked data-interface returns. */
 }
 int esp_codec_dev_write(esp_codec_dev_handle_t handle,void *data,int size) { fake_device_t *d=handle;return d->cfg.data_if->write(d->cfg.data_if,data,size); }
+int esp_codec_dev_read_reg(esp_codec_dev_handle_t handle,int reg,int *value) { fake_device_t *d=handle;const fake_codec_t *c=(const fake_codec_t*)d->cfg.codec_if;*value=0;return c->ctrl->read_reg(c->ctrl,reg,1,value,1); }
 int esp_codec_dev_close(esp_codec_dev_handle_t handle) { fake_device_t *d=handle;if(d->opened){d->cfg.codec_if->enable(d->cfg.codec_if,false);d->cfg.data_if->enable(d->cfg.data_if,ESP_CODEC_DEV_TYPE_OUT,false);d->opened=false;}return ESP_OK; }
 void esp_codec_dev_delete(esp_codec_dev_handle_t h) { esp_codec_dev_close(h);release(h); }
 int audio_codec_delete_codec_if(const audio_codec_if_t *h) { --open_references;release((void*)h);return ESP_OK; }
@@ -189,11 +192,17 @@ int main(void)
     CHECK(stats.frames_written==240&&stats.queue_capacity_frames==360&&stats.write_calls==1);
     CHECK(stats.nonzero_frames==240&&stats.peak_pcm==32768&&stats.pa_enabled&&stats.pa_activations==1);
     CHECK(stats.last_write_us==20000&&stats.max_write_us==20000);
+    board_audio_probe_t probe;
+    CHECK(board_audio_readback(audio,&probe)==ESP_OK&&probe.valid_mask==127&&probe.pa_requested);
+    CHECK(probe.registers[4]==95&&probe.registers[3]==0); /* Stub register mapping, not chip dB. */
     CHECK(board_audio_flush(audio)==ESP_OK&&!pa_level&&muted);
     CHECK(preload_calls==2);for(unsigned i=0;i<720;++i)CHECK(channel->dma[i]==0);
     memset(pcm,0,sizeof(pcm));CHECK(board_audio_write(audio,pcm,240,&written)==ESP_OK&&!pa_level&&muted);
     CHECK(board_audio_get_stats(audio,&stats)==ESP_OK&&stats.nonzero_frames==240&&!stats.pa_enabled&&stats.pa_activations==1);
     CHECK(board_audio_write(audio,pcm,481,&written)==ESP_ERR_INVALID_ARG&&written==0);
+    failure=FAIL_READBACK;
+    CHECK(board_audio_readback(audio,&probe)==ESP_ERR_TIMEOUT&&probe.valid_mask==15);
+    failure=FAIL_NONE;
     CHECK(board_audio_close(&audio)==ESP_OK&&!audio&&live==0&&!pa_level);
 
     for(failure=FAIL_BOARD;failure<=FAIL_PRELOAD;++failure) {

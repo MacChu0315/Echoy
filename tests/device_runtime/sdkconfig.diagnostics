@@ -1,0 +1,2 @@
+# Explicit diagnostic builds only. Normal product defaults keep this off.
+CONFIG_ECHOY_AUDIO_DIAGNOSTICS=y

@@ -22,6 +22,18 @@ typedef struct {
     esp_err_t last_error;
 } board_audio_stats_t;
 
+/* ES8311 public registers: reset, clock, serial input, mute, volume, chip ID.
+ * Read only while the owner has deliberately paused musical playback. */
+#define BOARD_AUDIO_PROBE_REG_COUNT 7
+typedef struct {
+    uint8_t registers[BOARD_AUDIO_PROBE_REG_COUNT];
+    unsigned valid_mask;
+    esp_err_t error;
+    int64_t sampled_at_us;
+    bool pa_requested;
+} board_audio_probe_t;
+esp_err_t board_audio_readback(board_audio_t *audio, board_audio_probe_t *out);
+
 /* All calls belong to one serialized audio task, outside the band/UI mutex.
  * Owns TX-only I2S and codec interfaces; borrows the BSP I2C bus/power rails.
  * Do not also call bsp_audio_init or bsp_audio_codec_speaker_init in this app.

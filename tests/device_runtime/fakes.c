@@ -21,6 +21,7 @@ atomic_int fake_open_calls, fake_close_calls, fake_write_calls, fake_flush_calls
 atomic_int fake_partial_next, fake_open_failure, fake_close_failure, fake_flush_failure;
 atomic_int fake_task_failure, fake_health_stop_timeout, fake_event_tail_reads_after_delete;
 atomic_int fake_watermark_after_exit, fake_nonzero_blocks;
+atomic_int fake_probe_calls, fake_probe_failure;
 static atomic_int health_percent = -1;
 static atomic_bool hold_write, hold_create, hold_prepare, write_blocked, prepare_blocked, create_blocked;
 void fake_sleep_ms(unsigned ms)
@@ -357,6 +358,17 @@ esp_err_t board_audio_get_stats(const board_audio_t *a, board_audio_stats_t *out
 {
     *out = a->stats;
     return ESP_OK;
+}
+esp_err_t board_audio_readback(board_audio_t *a, board_audio_probe_t *out)
+{
+    assert(a);
+    atomic_fetch_add(&fake_probe_calls, 1);
+    *out = (board_audio_probe_t){.registers={0x80,0x3f,0x0c,0x60,188,0x83,0x11},
+                               .valid_mask=127,.sampled_at_us=esp_timer_get_time()};
+    if (atomic_exchange(&fake_probe_failure,0)) {
+        out->error=ESP_ERR_TIMEOUT; out->valid_mask=15;
+    }
+    return out->error;
 }
 struct board_health {
     int unused;

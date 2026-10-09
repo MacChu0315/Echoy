@@ -1,9 +1,32 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
+#include "board_audio.h"
 #include "echoy_ui.h"
 #include "esp_err.h"
 
 typedef struct echoy_device *echoy_device_handle_t;
+typedef enum {
+    ECHOY_PROBE_IDLE,
+    ECHOY_PROBE_QUEUED,
+    ECHOY_PROBE_PLAYING,
+    ECHOY_PROBE_DONE,
+    ECHOY_PROBE_CANCELLED,
+    ECHOY_PROBE_FAILED
+} echoy_probe_phase_t;
+typedef struct {
+    echoy_probe_phase_t phase;
+    esp_err_t error;
+    unsigned frames_accepted, volume_percent;
+    unsigned generation, requested_generation;
+    echoy_condition_t condition;
+    board_audio_probe_t before, after;
+    board_audio_stats_t output;
+} echoy_device_diagnostics_t;
+
+/* Only the diagnostic build exposes these through private RPC. Cached read has
+ * no hardware access. Start pauses music; one-second test never resumes it. */
+esp_err_t echoy_device_probe_request(echoy_device_handle_t device, bool start);
+esp_err_t echoy_device_probe_get(echoy_device_handle_t device, echoy_device_diagnostics_t *out);
 
 /* Firmware lifecycle only. BSP power/I2C must already be initialized. GSP
  * callbacks receive only nonblocking queue admission and a cached loading view.

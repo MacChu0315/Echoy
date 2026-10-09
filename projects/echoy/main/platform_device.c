@@ -2,6 +2,7 @@
 #include "platform_device.h"
 #include "board_audio.h"
 #include "board_health.h"
+#include "echoy_audio_probe.h"
 #include "echoy_band.h"
 #include "esp_heap_caps.h"
 #include "esp_log.h"
@@ -16,6 +17,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef ESP_PLATFORM
+#include "sdkconfig.h"
+#endif
 
 #define BLOCK_FRAMES 240u
 #define QUEUE_US                                                                                   \
@@ -29,6 +33,8 @@
 static const char *TAG = "echoy_device";
 
 typedef struct {
+    unsigned probe_command; /* 0 UI, 1 reference tone, 2 cancel diagnostic. */
+    unsigned probe_generation;
     echoy_action_t action;
     double value;
     int64_t at;
@@ -59,6 +65,11 @@ struct echoy_device {
     unsigned deadline_misses, rejected_actions, queue_overflows;
     esp_err_t shutdown_error;
     board_audio_stats_t last_audio_stats;
+    atomic_bool probe_busy;
+    atomic_uint probe_sequence;
+    bool probe_pending, probe_active;
+    size_t probe_position;
+    echoy_device_diagnostics_t probe, probe_cache;
 };
 
 static int64_t now_us(void *ctx)
@@ -103,6 +114,66 @@ static bool perform_action(void *ctx, echoy_action_t action, double value, int64
     }
     return true;
 }
+esp_err_t echoy_device_probe_get(echoy_device_handle_t d, echoy_device_diagnostics_t *out)
+{
+    if (!d || !out) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    xSemaphoreTake(d->view_lock, portMAX_DELAY);
+    *out = d->probe_cache;
+    out->requested_generation = atomic_load(&d->probe_sequence);
+    out->condition = d->cache.condition;
+    out->volume_percent = (unsigned)lround(d->cache.volume * 100);
+    xSemaphoreGive(d->view_lock);
+    return ESP_OK;
+}
+esp_err_t echoy_device_probe_request(echoy_device_handle_t d, bool start)
+{
+#if !CONFIG_ECHOY_AUDIO_DIAGNOSTICS
+    (void)d;
+    (void)start;
+    return ESP_ERR_NOT_SUPPORTED;
+#else
+    if (!d) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    if (atomic_load(&d->stopping) || !atomic_load(&d->activated)) {
+        return ESP_ERR_INVALID_STATE;
+    }
+    if (start) {
+        xSemaphoreTake(d->view_lock, portMAX_DELAY);
+        bool ready = d->cache.condition == ECHOY_NORMAL;
+        xSemaphoreGive(d->view_lock);
+        if (!ready || atomic_exchange(&d->probe_busy, true)) {
+            return ESP_ERR_INVALID_STATE;
+        }
+    } else if (!atomic_load(&d->probe_busy)) {
+        return ESP_OK;
+    }
+    unsigned generation =
+        start ? atomic_fetch_add(&d->probe_sequence, 1) + 1 : atomic_load(&d->probe_sequence);
+    command_t command = {
+        .probe_command = start ? 1 : 2, .probe_generation = generation, .at = now_us(d)};
+    if (xQueueSend(d->commands, &command, 0) != pdTRUE) {
+        if (start) {
+            atomic_store(&d->probe_busy, false);
+        }
+        return ESP_ERR_NO_MEM;
+    }
+    return ESP_OK;
+#endif
+}
+static void finish_probe(struct echoy_device *d, echoy_probe_phase_t phase, esp_err_t error)
+{
+    unsigned generation = atomic_load(&d->probe_sequence);
+    if (d->probe.generation != generation) {
+        d->probe = (echoy_device_diagnostics_t){.generation = generation};
+    }
+    d->probe_pending = d->probe_active = false;
+    d->probe.phase = phase;
+    d->probe.error = error;
+    atomic_store(&d->probe_busy, false);
+}
 static void publish(struct echoy_device *d)
 {
     if (d->band) {
@@ -117,6 +188,7 @@ static void publish(struct echoy_device *d)
     d->staging.state.fault = d->condition != ECHOY_NORMAL;
     xSemaphoreTake(d->view_lock, portMAX_DELAY);
     d->cache = d->staging;
+    d->probe_cache = d->probe;
     xSemaphoreGive(d->view_lock);
 }
 static void set_condition(struct echoy_device *d, echoy_condition_t condition)
@@ -132,6 +204,9 @@ static void fail_audio(struct echoy_device *d, board_audio_t **audio, const char
                        esp_err_t error)
 {
     d->audio_fault = true;
+    if (atomic_load(&d->probe_busy)) {
+        finish_probe(d, ECHOY_PROBE_FAILED, error);
+    }
     set_condition(d, ECHOY_AUDIO_FAULT);
     if (*audio) {
         board_audio_get_stats(*audio, &d->last_audio_stats);
@@ -233,6 +308,32 @@ static bool process_commands(struct echoy_device *d, board_audio_t **audio)
     /* Bounded batch preserves FIFO order (especially Record then Cancel). */
     for (unsigned i = 0; i < COMMAND_COUNT && xQueueReceive(d->commands, &command, 0) == pdTRUE;
          ++i) {
+        if (command.probe_command) {
+            if (command.probe_generation != atomic_load(&d->probe_sequence) ||
+                !atomic_load(&d->probe_busy)) {
+                continue;
+            }
+            if (command.probe_command == 2) {
+                if (atomic_load(&d->probe_busy)) {
+                    finish_probe(d, ECHOY_PROBE_CANCELLED, ESP_OK);
+                    flush = true;
+                }
+            } else if (d->band && *audio && d->condition == ECHOY_NORMAL) {
+                echoy_band_action(d->band, ECHOY_TILE_A, ECHOY_ACT_PAUSE, 0, now_us(d));
+                d->probe = (echoy_device_diagnostics_t){.phase = ECHOY_PROBE_QUEUED,
+                                                        .generation = command.probe_generation};
+                d->probe_pending = true;
+                flush = true;
+            } else {
+                finish_probe(d, ECHOY_PROBE_FAILED, ESP_ERR_INVALID_STATE);
+            }
+            continue;
+        }
+        /* A real UI action interrupts the diagnostic, preserving user control. */
+        if (atomic_load(&d->probe_busy)) {
+            finish_probe(d, ECHOY_PROBE_CANCELLED, ESP_OK);
+            flush = true;
+        }
         if (command.action == ECHOY_ACT_CONDITION) {
             if (command.value == ECHOY_AUDIO_FAULT) {
                 fail_audio(d, audio, "UI/controller", ESP_FAIL);
@@ -317,6 +418,9 @@ static void owner_worker(void *arg)
                                                        : ECHOY_NORMAL;
         flush |= desired != d->condition;
         set_condition(d, desired);
+        if (desired != ECHOY_NORMAL && atomic_load(&d->probe_busy)) {
+            finish_probe(d, ECHOY_PROBE_FAILED, ESP_ERR_INVALID_STATE);
+        }
         if (flush && audio) {
             esp_err_t error = board_audio_flush(audio);
             if (error != ESP_OK) {
@@ -326,6 +430,37 @@ static void owner_worker(void *arg)
                 d->origin_us = now_us(d) + QUEUE_US;
             }
         }
+#if CONFIG_ECHOY_AUDIO_DIAGNOSTICS
+        if (d->probe_pending && audio && d->condition == ECHOY_NORMAL) {
+            esp_err_t error = board_audio_readback(audio, &d->probe.before);
+            if (error != ESP_OK) {
+                fail_audio(d, &audio, "diagnostic codec readback", error);
+            } else {
+                d->probe_pending = false;
+                d->probe_active = true;
+                d->probe_position = 0;
+                d->probe.phase = ECHOY_PROBE_PLAYING;
+                d->accepted_frames = 0;
+                d->origin_us = now_us(d) + QUEUE_US;
+            }
+        }
+        if (d->probe_active && d->probe_position >= ECHOY_PROBE_FRAMES + ECHOY_PROBE_TAIL_FRAMES) {
+            esp_err_t error = board_audio_readback(audio, &d->probe.after);
+            if (error == ESP_OK) {
+                error = board_audio_flush(audio);
+            }
+            if (error != ESP_OK) {
+                fail_audio(d, &audio, "diagnostic completion", error);
+            } else {
+                finish_probe(d, ECHOY_PROBE_DONE, ESP_OK);
+                d->accepted_frames = 0;
+                d->origin_us = now_us(d) + QUEUE_US;
+            }
+        }
+        if (audio) {
+            board_audio_get_stats(audio, &d->probe.output);
+        }
+#endif
         prepared_t result;
         if (xQueueReceive(d->prepared, &result, 0) == pdTRUE) {
             d->preparation_in_flight = false;
@@ -361,15 +496,19 @@ static void owner_worker(void *arg)
             fail_audio(d, &audio, "estimated output deadline", ESP_ERR_TIMEOUT);
             continue;
         }
-        echoy_band_render(d->band, at, d->block->floating, BLOCK_FRAMES);
-        for (unsigned i = 0; i < BLOCK_FRAMES; ++i) {
-            float sample = d->block->floating[i];
-            if (!isfinite(sample)) {
-                fail_audio(d, &audio, "nonfinite PCM", ESP_ERR_INVALID_RESPONSE);
-                break;
+        if (d->probe_active) {
+            echoy_audio_probe_render(d->probe_position, d->block->pcm, BLOCK_FRAMES);
+        } else {
+            echoy_band_render(d->band, at, d->block->floating, BLOCK_FRAMES);
+            for (unsigned i = 0; i < BLOCK_FRAMES; ++i) {
+                float sample = d->block->floating[i];
+                if (!isfinite(sample)) {
+                    fail_audio(d, &audio, "nonfinite PCM", ESP_ERR_INVALID_RESPONSE);
+                    break;
+                }
+                sample = fmaxf(-1, fminf(1, sample));
+                d->block->pcm[i] = (int16_t)lrintf(sample * 32767);
             }
-            sample = fmaxf(-1, fminf(1, sample));
-            d->block->pcm[i] = (int16_t)lrintf(sample * 32767);
         }
         if (!audio) {
             continue;
@@ -381,6 +520,12 @@ static void owner_worker(void *arg)
         size_t written = 0;
         esp_err_t error = board_audio_write(audio, d->block->pcm, BLOCK_FRAMES, &written);
         d->accepted_frames += written;
+        if (d->probe_active) {
+            d->probe_position += written;
+            d->probe.frames_accepted = d->probe_position < ECHOY_PROBE_FRAMES
+                                           ? (unsigned)d->probe_position
+                                           : ECHOY_PROBE_FRAMES;
+        }
         if (error != ESP_OK || written != BLOCK_FRAMES) {
             fail_audio(d, &audio, "PCM output", error == ESP_OK ? ESP_ERR_INVALID_SIZE : error);
         }
@@ -449,6 +594,8 @@ esp_err_t echoy_device_start(echoy_device_handle_t *out, echoy_platform_t *platf
     atomic_init(&d->owner_exited, false);
     atomic_init(&d->prepare_exited, false);
     atomic_init(&d->activated, false);
+    atomic_init(&d->probe_busy, false);
+    atomic_init(&d->probe_sequence, 0);
     d->condition = ECHOY_LOADING;
     d->cache = (echoy_control_view_t){
         .memories = {1, 1, 1, 2},
