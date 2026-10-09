@@ -1,0 +1,17 @@
+{
+  "passed": [
+    "Native pointer pad tap produces nonzero PCM and stays outside recording",
+    "Example A commits a real seed, plays one reply and stops without loop permission",
+    "A→B→C receives full linked plans and a common root seed; new tiles remain silent",
+    "Each native Play grants local permission at the shared bar; pausing A leaves B/C playing",
+    "B role/phrase/richness change at bar boundaries; old B/C plans and playback continue during preparation",
+    "Detaching preserves exact B/C musical events and independent continuous-play permission",
+    "Fault recovery and native put-away/restore retain data and never autoplay",
+    "Native settings Export contains all three actual full plans and preserved root seeds",
+    "A native EN selection updates the shared desktop language and all three rendered screens without playback",
+    "Shared reduced-motion preference reaches all three native views without changing music or playback permission",
+    "All three native UI owners and official hosts exit naturally without UI or cleanup errors",
+    "Actual mixed PCM is nonzero for taps/replies/continued playback, unclipped, and exactly silent after all pauses"
+  ],
+  "scope": "Three official GSP hosts with native C input, linked music, logical clocks and captured PCM; no physical device acceptance"
+}

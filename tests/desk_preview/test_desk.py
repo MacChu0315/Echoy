@@ -17,7 +17,9 @@ import desk_preview as desk
 
 class Commands(unittest.TestCase):
     def test_exact_native_protocol(self):
-        cases = [({"action": "present", "tile": "B", "present": True}, "present B 1"),
+        cases = [({"action": "motion", "reduce": True}, "motion 1"),
+                 ({"action": "motion", "reduce": False}, "motion 0"),
+                 ({"action": "present", "tile": "B", "present": True}, "present B 1"),
                  ({"action": "edges", "edges": [{"left": "A", "right": "B"}, {"left": "B", "right": "C"}]}, "edges A B B C"),
                  ({"action": "edges", "edges": []}, "edges"),
                  ({"action": "condition", "tile": "C", "condition": "empty"}, "condition C empty"),
@@ -28,7 +30,8 @@ class Commands(unittest.TestCase):
             self.assertEqual(desk.native_command(value), expected)
 
     def test_reject_injection_invalid_graph_and_extra_fields(self):
-        invalid = [{"action": "example", "tile": "A\npause_all"},
+        invalid = [{"action": "motion", "reduce": 1}, {"action": "motion", "reduce": "false"},
+                   {"action": "example", "tile": "A\npause_all"},
                    {"action": "present", "tile": "A", "present": 1},
                    {"action": "volume", "tile": "A", "volume": float("nan")},
                    {"action": "volume", "tile": "A", "volume": True},

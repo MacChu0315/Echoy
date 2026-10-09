@@ -28,7 +28,7 @@ from preview_controls import MAX_JSON, ControlDirectory, Handler as ProtectedHan
 ROOT = Path(__file__).resolve().parents[1]
 APP = ROOT / "projects/echoy"
 COMPONENT = APP / "managed_components/espressif__esp-gsp"
-REFERENCE = ROOT / "reference/echoy-arrange-B-v3.html"
+REFERENCE = ROOT / "reference/v4/echoy-arrange-B-v4.html"
 TILES = ("A", "B", "C")
 
 
@@ -40,12 +40,16 @@ def native_command(value):
     keys = {"present": {"action", "tile", "present"},
             "edges": {"action", "edges"}, "condition": {"action", "tile", "condition"},
             "volume": {"action", "tile", "volume"}, "example": {"action", "tile"},
-            "pause_all": {"action"}, "export": {"action"}}
+            "pause_all": {"action"}, "export": {"action"}, "motion": {"action", "reduce"}}
     if not isinstance(action, str) or action not in keys or set(value) != keys[action]:
         raise ValueError("unknown command fields")
     tile = value.get("tile")
     if "tile" in value and tile not in TILES:
         raise ValueError("unknown tile")
+    if action == "motion":
+        if type(value["reduce"]) is not bool:
+            raise ValueError("reduce must be boolean")
+        return f"motion {int(value['reduce'])}"
     if action == "present":
         if type(value["present"]) is not bool:
             raise ValueError("present must be boolean")
@@ -136,7 +140,7 @@ class DeskControls(ControlDirectory):
 
 def reference_text():
     data = REFERENCE.read_bytes()
-    if hashlib.sha256(data).hexdigest() != "241a0a58e0e33cb906b4bf637c2d55f219de988df2a683c68d68f767c7dee6b5":
+    if hashlib.sha256(data).hexdigest() != "c7e3e2e6992dc1f21857bfa6a8dc1357b5f95ea2dfad0425f60e83b1085ee7e3":
         raise ValueError("frozen reference checksum mismatch")
     return data.decode()
 
@@ -168,7 +172,7 @@ def page(urls):
         shelf.append(f'<button class="shelf-tile" data-shelf="{tile}"><strong>{tile}</strong><span>拖上桌 · 初始静音</span></button>')
         links.append(f'<a class="native-link" href="{url}" target="_blank" rel="noopener">{tile} 原生预览</a>')
     return ('''<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>合拍 · 三台模拟桌面</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head><body>
-<header class="mast"><div class="wordmark">ECHOY / 合拍 · PC SIMULATION</div><h1>先敲一段，再把声音摆在一起。</h1><p>点「录一段」，两拍预备后录四拍；先听一次，喜欢再点 ▶。把另一台放到右侧，再点它自己的 ▶。</p><div class="quick-start"><button id="example">先听“两下紧挨”的示例</button><button id="pause-all">全部暂停</button></div></header>
+<header class="mast"><div class="wordmark">ECHOY / 合拍 · PC SIMULATION</div><h1>先敲一段，再把声音摆在一起。</h1><p>点「录制」，两拍预备后录四拍；先听一次，喜欢再点 ▶。把另一台放到右侧，再点它自己的 ▶。</p><div class="quick-start"><button id="example">先听“两下紧挨”的示例</button><button id="pause-all">全部暂停</button></div></header>
 <main class="layout"><section class="bench arrange-bench"><div class="bench-top"><span>合拍 · A / B / C</span><span>480 × 480 / 每台独立操作</span></div><div class="viewport" id="viewport"><div id="stage"><div class="stage-empty" id="empty-desk">从下方拿一台，放到桌上。</div><div id="snap-ghost" hidden></div>''' + "".join(units) + '''</div></div><div class="bench-foot">拖上方外壳移动 · 拆开不清空、不强制暂停 · 每台单独发声</div><div class="shelf" id="shelf"><h2>再拿一台 · 拖到桌上</h2>''' + "".join(shelf) + '''</div></section>
 <section class="desk-controls"><div class="desk-status" id="audio-status" role="status">正在连接原生桌面…</div><p class="desk-error" id="error" role="alert"></p><div class="row-controls"><label>模拟设备 <select id="selected"><option>A</option><option>B</option><option>C</option></select></label><button data-condition="fault">模拟音频故障</button><button data-condition="loading">模拟加载</button><button data-condition="empty">模拟电量耗尽</button><button data-condition="normal">恢复到静止</button><button id="export">导出本次节奏</button>''' + "".join(links) + '''</div><p class="desk-status">PC 三台共享音频时钟与本地联动；不代表无线同步或真机验收。</p></section></main></body></html>''').encode()
 
@@ -179,6 +183,10 @@ const ids=['A','B','C'], names={pulse:'脉冲',voice:'声线',dust:'微尘',harm
 const spatial=new DuijuSpatial(),positions={A:{x:32,y:22}},intents={},units={},shelf={};
 let status=null,contactTimer=null,dragging=false,exportTarget=null,geometryRevision=0,requestQueue=Promise.resolve();
 const boots={};
+const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+let sentMotion=null;
+async function syncMotion(){if(status?.connected&&sentMotion!==reducedMotion.matches){const value=reducedMotion.matches;await command({action:'motion',reduce:value});sentMotion=value;}}
+reducedMotion.addEventListener('change',()=>{sentMotion=null;syncMotion().catch(report);});
 const error=document.getElementById('error'),viewport=document.getElementById('viewport'),stage=document.getElementById('stage');
 for(const id of ids){units[id]=document.querySelector(`[data-tile="${id}"]`);shelf[id]=document.querySelector(`[data-shelf="${id}"]`);}
 function command(body,valid=()=>true){const task=requestQueue.catch(()=>{}).then(async()=>{if(!valid())return false;const r=await fetch('/command',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),keepalive:true});if(!r.ok)throw Error('原生桌面未接收操作，请检查连接。');return true;});requestQueue=task;return task;}
@@ -212,7 +220,7 @@ document.getElementById('export').onclick=async()=>{try{exportTarget={counter:(s
 document.addEventListener('keydown',e=>{if(e.key==='Escape')command({action:'pause_all'}).catch(report);});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)command({action:'pause_all'}).catch(report);});
 window.addEventListener('pagehide',()=>command({action:'pause_all'}).catch(()=>{}));
-async function refresh(){try{const r=await fetch('/status');if(!r.ok)throw Error('无法读取原生桌面状态');status=await r.json();document.getElementById('audio-status').textContent=!status.connected?'原生桌面已断开':!status.ready?'三台设备正在准备…':status.audio_connected?'音频输出已连接 · 三台共用本地时钟':'音频输出未连接 · 当前不会发声';
+async function refresh(){try{const r=await fetch('/status');if(!r.ok)throw Error('无法读取原生桌面状态');status=await r.json();await syncMotion();document.getElementById('audio-status').textContent=!status.connected?'原生桌面已断开':!status.ready?'三台设备正在准备…':status.audio_connected?'音频输出已连接 · 三台共用本地时钟':'音频输出未连接 · 当前不会发声';
 if(!dragging)for(const id of ids){const tile=status.tiles?.[id];if(!tile)continue;const intent=intents[id];if(intent&&tile.present===intent.value)delete intents[id];else if(intent&&Date.now()<intent.until)continue;else if(intent){delete intents[id];report(Error('设备状态尚未确认，请重试。'));}if(tile.present&&!positions[id])positions[id]=freePosition();if(!tile.present)delete positions[id];const role=names[tile.role]||tile.role||id;units[id].querySelector('.handle-name').textContent=id+' · '+role;shelf[id].querySelector('strong').textContent=id+' · '+role;}
 layout();if(exportTarget&&status.export_available&&status.export_counter>=exportTarget.counter){exportTarget=null;const a=document.createElement('a');a.href='/session.json';a.download='echoy-arrange-B-session.json';a.click();}else if(exportTarget&&Date.now()>exportTarget.until){exportTarget=null;report(Error('导出未完成，请重试。'));}
 }catch(e){report(e);}setTimeout(refresh,350);}layout();refresh();
@@ -419,7 +427,7 @@ def main(argv=None):
             for tile, port in zip(TILES, args.visual_ports):
                 ready = logs / f"{tile}-ready.json"
                 command = [str(args.sim), "--bundle", str(args.bundle), "--api-json", str(args.bundle.with_name("bundle_gsp.api.json")),
-                           "--frames", "0", "--backend-enable", "--backend-required", "--ready-file", str(ready)]
+                           "--frames", "0", "--fps", "1000", "--idle-poll-ms", "1", "--backend-enable", "--backend-required", "--ready-file", str(ready)]
                 command += ["--headless"] if args.headless else ["--visual-listen", f"127.0.0.1:{port}"]
                 host = owned.start(command, logs / f"{tile}-host.log")
                 endpoints += [f"--endpoint-{tile}", wait_ready(host, ready)["backend"]]

@@ -24,8 +24,25 @@ static double energy(echoy_band_t *b, int64_t at, size_t n)
     free(v);
     return e;
 }
+static void merged_cancel_stops_future_audio(void)
+{
+    echoy_band_t*b=echoy_band_create();assert(b);
+    assert(echoy_band_action(b,ECHOY_TILE_A,ECHOY_ACT_RECORD,0,0));
+    assert(echoy_band_action(b,ECHOY_TILE_A,ECHOY_ACT_CANCEL_RECORD,0,40000));
+    assert(!echoy_band_action(b,ECHOY_TILE_A,ECHOY_ACT_CANCEL_RECORD,0,50000));
+    assert(energy(b,60000,60000)==0); /* all six queued cues are gone */
+    assert(echoy_band_action(b,ECHOY_TILE_A,ECHOY_ACT_RECORD,0,3000000));
+    assert(energy(b,3060000,600)>0); /* the real guide is audible before Cancel */
+    assert(echoy_band_action(b,ECHOY_TILE_A,ECHOY_ACT_CANCEL_RECORD,0,3100000));
+    assert(energy(b,3140000,60000)==0);
+    echoy_control_view_t view;echoy_band_read(b,ECHOY_TILE_A,&view);
+    assert(view.state.phase==ECHOY_IDLE&&view.state.seed==0&&view.state.notice==ECHOY_NOTICE_CANCELLED);
+    echoy_band_delete(b);
+}
+
 int main(void)
 {
+    merged_cancel_stops_future_audio();
     echoy_band_t *b = echoy_band_create();
     assert(b);
     echoy_control_view_t v;

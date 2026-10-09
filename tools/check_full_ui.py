@@ -11,14 +11,18 @@ import sys
 import tempfile
 import time
 from PIL import Image, ImageChops
+from check_home import snapshot_backend, assert_v4_geometry, compact_message, assert_header_fit
 ROOT = Path(__file__).resolve().parents[1]
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--build-dir', type=Path, default=ROOT/'projects/echoy/build-sim-next')
-    p.add_argument('--output', type=Path, default=ROOT/'output/full-ui-check')
+    p.add_argument('--build-dir', type=Path, default=ROOT/'projects/echoy/build-sim-v4')
+    p.add_argument('--duration-ms',type=int,default=60000)
+    p.add_argument('--output', type=Path, default=ROOT/'output/v4-full-ui-check')
     a = p.parse_args(); out = a.output.resolve(); out.mkdir(parents=True, exist_ok=True)
-    manifest = json.loads((a.build_dir/'echoy_backend-Release.json').read_text())
+    assert 45000<=a.duration_ms<=240000,'Use a finite duration covering all pages'
+    manifest = snapshot_backend(a.build_dir,out)
+    assert_v4_geometry(json.loads(Path(manifest['api']).read_text()))
     sys.path.insert(0, str(Path(manifest['component_root'])/'tools/sim_bridge'))
     from rpc_client import connect
     with socket.socket() as s:
@@ -36,11 +40,11 @@ def main():
         os.chmod(control, 0o700)
         try:
             sim=ROOT.parent/'.toolchains/gsp-sim-1.5.1/sim'
-            host=subprocess.Popen([str(sim),'--bundle',manifest['bundle'],'--api-json',str(Path(manifest['bundle']).with_name('bundle_gsp.api.json')),'--backend-enable','--backend-required','--api-listen',f'tcp://127.0.0.1:{port}','--headless','--frames','0','--ready-file',str(ready)],stdout=hf,stderr=subprocess.STDOUT)
+            host=subprocess.Popen([str(sim),'--bundle',manifest['bundle'],'--api-json',str(Path(manifest['bundle']).with_name('bundle_gsp.api.json')),'--backend-enable','--backend-required','--api-listen',f'tcp://127.0.0.1:{port}','--headless','--fps','1000','--frames','0','--ready-file',str(ready)],stdout=hf,stderr=subprocess.STDOUT)
             processes.append(host); until(ready.exists,'host readiness')
             info=json.loads(ready.read_text()); assert info['pid']==host.pid
             env={**os.environ,'ECHOY_SIM_CONTROL_DIR':control,'ECHOY_SIM_SEED':'44a0'}
-            backend=subprocess.Popen([manifest['executable'],'--endpoint',info['backend'],'--duration-ms','120000'],env=env,stdout=bf,stderr=subprocess.STDOUT)
+            backend=subprocess.Popen([manifest['executable'],'--endpoint',info['backend'],'--duration-ms',str(a.duration_ms)],env=env,stdout=bf,stderr=subprocess.STDOUT)
             processes.append(backend)
             def log(): return (out/'backend.log').read_text()
             until(lambda:'ECHOY_READY' in log(),'backend readiness')
@@ -72,7 +76,7 @@ def main():
                 until(lambda:re.findall(r'ECHOY_STATE phase=(\d+)',log())[-1]=='0','gallery audition finished',timeout=6)
                 assert 'ECHOY_STATE phase=5' not in log()
                 checks.append('Role-page Hear once completes once and returns to idle')
-                gallery_images=[]
+                gallery_images=[]; home_headers=[]
                 for r in ['pulse','voice','dust','harmony']:
                     for phrase in [1,2,3]:
                         previous_revision=int(re.findall(r'ECHOY_PLAN revision=(\d+)',log())[-1])
@@ -85,6 +89,11 @@ def main():
                         revision=re.findall(r'ECHOY_PLAN revision=(\d+)',log())[-1]
                         until(lambda:f'ECHOY_GALLERY revision={revision}\n' in log(),f'{r}/{phrase} images published')
                         im=shot(f'gallery-{r}-{phrase}'); gallery_images.append(im.crop((137,108,343,209)))
+                        tap('role_back');route('home');home=shot(f'home-zh-{r}-{phrase}')
+                        assert_header_fit(home,r,'zh')
+                        assert not compact_message(home,home.getpixel((100,80))), 'Steady header should not retain a status caption'
+                        home_headers.append({'role':r,'phrase':phrase,'locale':'zh','file':f'home-zh-{r}-{phrase}.png'})
+                        tap('role');route('role_page')
                     tap('role_back');route('home');shot(r+'-home')
                     tap('role');route('role_page')
                     tap('next_role')
@@ -107,6 +116,20 @@ def main():
                 drag(430,145,440);drag(430,145,300);route('settings_page');shot('settings-top-en')
                 tap('settings_guide');route('guide_page');shot('guide-top-en');drag(230,420,170);shot('guide-bottom-en');tap('guide_back');route('settings_page')
                 tap('settings_back');route('home');shot('home-en')
+                tap('role');route('role_page')
+                for r in ['pulse','voice','dust','harmony']:
+                    for phrase in [1,2,3]:
+                        old=int(re.findall(r'ECHOY_PLAN revision=(\d+)',log())[-1]);tap(f'phrase_{phrase}')
+                        until(lambda: int(re.findall(r'ECHOY_PLAN revision=(\d+)',log())[-1])>old, f'English {r}/{phrase} commit')
+                        tap('role_back');route('home');home=shot(f'home-en-{r}-{phrase}')
+                        assert_header_fit(home,r,'en')
+                        assert not compact_message(home,home.getpixel((100,80)))
+                        home_headers.append({'role':r,'phrase':phrase,'locale':'en','file':f'home-en-{r}-{phrase}.png'})
+                        tap('role');route('role_page')
+                    tap('next_role')
+                tap('role_back');route('home')
+                (out/'home-header-captures.json').write_text(json.dumps(home_headers,indent=2)+'\n')
+                checks.append('All twelve expressions have Chinese/English v4 home header captures and hidden steady-state captions')
                 checks.append('Menus, bounded scrolling, Chinese/English text and real session export work through pointer input')
                 for state in ['fault','loading','empty']:
                     command(state);route('status_page');shot('status-'+state)
@@ -116,7 +139,7 @@ def main():
                 assert json.loads((Path(control)/'status.json').read_text())['removed']
                 command('restore');route('home');shot('restored');assert not json.loads((Path(control)/'status.json').read_text())['removed']
                 checks.append('Put-away and external restore preserve the phrase')
-                code=backend.wait(timeout=122);assert code==0,code
+                code=backend.wait(timeout=a.duration_ms/1000+5);assert code==0,code
                 call('quit');assert host.wait(timeout=6)==0
             logs=log()+(out/'host.log').read_text()
             for error in ['ECHOY_UI_ERROR','No free canvas slot','Failed to decode','cleanup_error=-']:

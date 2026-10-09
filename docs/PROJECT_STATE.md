@@ -1,9 +1,26 @@
 # Echoy current state
 
-The approved source remains `reference/echoy-arrange-B-v3.html`; its hash and the
-supplied verification document are unchanged. Preserve the design, musical rules
+The approved source is now `reference/v4/echoy-arrange-B-v4.html`; hashes are in
+`reference/v4/SHA256SUMS`. The delivered ZIP and v3 historical baseline remain
+unchanged. The v4 musical/audio/arrangement code matches v3. Preserve the design, musical rules
 and explicit per-device playback permission. Dependency pins remain in
 `dependencies.json`; no remote write or physical device write has occurred.
+
+## v4 presentation
+
+The single-line identity, raised pad/sliders and 84/244/84 bottom row now follow
+v4. Native hit targets switch independently of the visual transition; capture
+uses one Cancel target, playback/preview uses one Pause target. Stale Cancel
+cannot arm a new recording. A pure C CSS ease-out curve includes shortened
+reversal timing, and fixed glyph masks provide alpha/scale without replacing
+native controls or dynamic status text.
+
+The user explicitly confirmed touch/mouse acceptance; do not claim native
+Tab/Enter focus support. The desk propagates system reduced-motion changes to
+all three C views. Linux native loopback ACK hints and the direct host's high
+simulation tick remove RPC stalls; hardware uses the shared C view/controller.
+Verification: `verification/v4/README.md`. Current live preview uses
+`build-sim-v4`; do not rebuild its bundle in place while it is running.
 
 ## PC application
 

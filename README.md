@@ -1,9 +1,11 @@
 # Echoy for ESP-Mosaico
 
-A shared-C implementation of the frozen HTML in `reference/`. The PC desk runs
+A shared-C implementation of the approved v4 HTML in `reference/v4/`. The PC desk runs
 three official ESP-GSP simulators with actual synthesized sound, twelve musical
 expressions, linked phrases, independent play/pause and a common sample clock.
-The 480x480 GSP screens support Chinese and English. The immutable HTML remains
+The 480x480 GSP screens support Chinese and English. The v4 home uses one
+merged Record/Play strip that becomes full-width Cancel or Pause, with an
+interruptible 240ms transition and the browser system reduced-motion preference. The immutable HTML remains
 the design and behavioral reference; it does not generate the native desk's sound.
 
 [Current state](docs/PROJECT_STATE.md) · [Verification](docs/verification/README.md)
@@ -34,7 +36,9 @@ The launcher owns its child processes and stops them on Ctrl+C. Use fresh ports
 and an alternate `--build-dir` for concurrent work; never rebuild an active
 preview's bundle in place. `--headless --silent` is for generated-PCM tests;
 `--capture path.wav` explicitly records the output adapter until the desk stops.
-Normal use does not continuously record audio. An explicit `--control-dir` must
+Normal use does not continuously record audio. `ECHOY_REDUCED_MOTION=1` forces
+instant visual changes for testing; otherwise the desk follows the browser system
+preference. The approved v4 native input acceptance scope is touch/mouse. An explicit `--control-dir` must
 already exist, belong to the current user and have mode 0700; otherwise a private
 temporary directory is created.
 
@@ -57,7 +61,10 @@ write is part of these commands.
 
 The earlier `mosaico.py --workspace . project sim --project projects/echoy
 --interactive` entry remains a **single-screen UI-only diagnostic**. Use the desk
-entry above for audible/multi-tile acceptance. Its optional legacy controls in
+entry above for audible/multi-tile and v4 animation acceptance. The Linux native
+adapter uses loopback TCP_QUICKACK plus a 1000Hz simulator tick to avoid per-RPC
+frame stalls; this is not a claim of a 1000Hz physical display. C presentation
+updates run at 20ms intervals and audio uses its independent sample clock. Its optional legacy controls in
 `tools/preview_controls.py` also remain diagnostic-only.
 
 ## Verification and source generation
@@ -70,6 +77,7 @@ node tests/music/oracle.mjs
 node tests/arrange/oracle.mjs
 sh tests/audio/run.sh
 sh tests/band/run.sh
+sh tests/v4_strip/run.sh
 sh tests/desk_runtime/run.sh
 python3 -m unittest discover -s tests/desk_preview -v
 python3 tools/check_desk.py --build-dir projects/echoy/build-sim-desk

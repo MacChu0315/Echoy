@@ -12,6 +12,14 @@
       "zh": "home_zh",
       "en": "home_en"
     },
+    "role_footer": {
+      "zh": "role_footer_zh",
+      "en": "role_footer_en"
+    },
+    "settings_footer": {
+      "zh": "settings_footer_zh",
+      "en": "settings_footer_en"
+    },
     "role": {
       "zh": "role_zh",
       "en": "role_en"
@@ -152,8 +160,266 @@
     "remove_click",
     "role_click",
     "settings_click",
+    "strip_action_click",
     "transport_click"
   ],
+  "home_geometry": {
+    "art": [
+      90,
+      89,
+      300,
+      204
+    ],
+    "volume": [
+      16,
+      89,
+      64,
+      207
+    ],
+    "richness": [
+      400,
+      89,
+      64,
+      207
+    ],
+    "progress": [
+      103,
+      301,
+      274,
+      2
+    ],
+    "feedback": [
+      90,
+      315,
+      300,
+      15
+    ],
+    "css_steps": [
+      90,
+      316,
+      300,
+      13
+    ],
+    "state_line": [
+      24,
+      340,
+      432,
+      23
+    ],
+    "role": [
+      22,
+      378,
+      84,
+      84
+    ],
+    "settings": [
+      374,
+      378,
+      84,
+      84
+    ],
+    "header_en": {
+      "pulse": {
+        "separator_x": 103,
+        "phrase_x": 117
+      },
+      "voice": {
+        "separator_x": 102,
+        "phrase_x": 115
+      },
+      "dust": {
+        "separator_x": 93,
+        "phrase_x": 107
+      },
+      "harmony": {
+        "separator_x": 142,
+        "phrase_x": 155
+      }
+    }
+  },
+  "strip": {
+    "bounds": [
+      118,
+      378,
+      244,
+      84
+    ],
+    "radius": 23,
+    "hit_targets": {
+      "record": [
+        118,
+        378,
+        122,
+        84
+      ],
+      "transport": [
+        240,
+        378,
+        122,
+        84
+      ],
+      "strip_action": [
+        118,
+        378,
+        244,
+        84
+      ]
+    },
+    "modes": {
+      "idle": {
+        "record": true,
+        "transport": true,
+        "strip_action": false
+      },
+      "cancel": {
+        "record": false,
+        "transport": false,
+        "strip_action": true
+      },
+      "pause": {
+        "record": false,
+        "transport": false,
+        "strip_action": true
+      }
+    },
+    "border": "strip_border",
+    "border_colors": {
+      "idle": "#d2d9c9",
+      "cancel": "#d5a98d",
+      "pause": "#455b3b"
+    },
+    "tints": {
+      "record": {
+        "name": "strip_record_tint",
+        "x": [
+          -244,
+          0
+        ],
+        "default_x": -122
+      },
+      "play": {
+        "name": "strip_play_tint",
+        "x": [
+          0,
+          244
+        ],
+        "default_x": 122
+      }
+    },
+    "tint_width": 244,
+    "tint_boundary": "record.x + 244 == play.x",
+    "tint_alpha": "RGB888 preblend over #e7ecdf before set_color_rgb888; no unsupported packed-color alpha",
+    "idle_disabled_glyph_alpha": 1.0,
+    "css_easing": [
+      0,
+      0,
+      0.58,
+      1
+    ],
+    "duration_ms": {
+      "tint_geometry": 240,
+      "tint_color": 240,
+      "tint_opacity": 200,
+      "divider": 150,
+      "idle_opacity": 130,
+      "idle_translation": 240,
+      "single_opacity": 200,
+      "single_scale": 240
+    },
+    "native_labels": {
+      "record": {
+        "zh": "strip_record_native",
+        "en": "strip_record_native_en"
+      },
+      "play": {
+        "zh": "strip_play_native",
+        "en": "strip_play_native_en"
+      },
+      "cancel": {
+        "zh": "strip_cancel_native",
+        "en": "strip_cancel_native_en"
+      },
+      "pause": {
+        "zh": "strip_pause_native",
+        "en": "strip_pause_native_en"
+      }
+    },
+    "glyphs": {
+      "record": {
+        "name": "strip_record_glyph",
+        "bounds": [
+          131,
+          404,
+          96,
+          32
+        ],
+        "x_range": [
+          123,
+          131
+        ],
+        "scale": [
+          1,
+          1
+        ],
+        "alpha": "runtime RGBA QOI COPY from echoy_strip_glyph_masks[english][kind]"
+      },
+      "play": {
+        "name": "strip_play_glyph",
+        "bounds": [
+          253,
+          404,
+          96,
+          32
+        ],
+        "x_range": [
+          253,
+          261
+        ],
+        "scale": [
+          1,
+          1
+        ],
+        "alpha": "runtime RGBA QOI COPY from echoy_strip_glyph_masks[english][kind]"
+      },
+      "cancel": {
+        "name": "strip_cancel_glyph",
+        "bounds": [
+          192,
+          404,
+          96,
+          32
+        ],
+        "x_range": [
+          192,
+          192
+        ],
+        "scale": [
+          0.97,
+          1
+        ],
+        "alpha": "runtime RGBA QOI COPY from echoy_strip_glyph_masks[english][kind]"
+      },
+      "pause": {
+        "name": "strip_pause_glyph",
+        "bounds": [
+          192,
+          404,
+          96,
+          32
+        ],
+        "x_range": [
+          192,
+          192
+        ],
+        "scale": [
+          0.97,
+          1
+        ],
+        "alpha": "runtime RGBA QOI COPY from echoy_strip_glyph_masks[english][kind]"
+      }
+    },
+    "glyph_header": "strip/labels.h"
+  },
   "detail_defaults": {
     "guide": {
       "zh": [
@@ -165,7 +431,7 @@
         },
         {
           "name": "guide_body_1_zh",
-          "text": "中央平时只试奏，不改动节奏。点首页「录一段」，预\n备两拍后自动记录四拍；第一拍可以留空。轻提示音只\n帮助找拍，不写入节奏。录完附和一次，随后停止。",
+          "text": "中央平时只试奏，不改动节奏。点首页「录制」，预备\n两拍后自动记录四拍；第一拍可以留空。轻提示音只帮\n助找拍，不写入节奏。录完附和一次，随后停止。",
           "y": 55,
           "height": 92
         },

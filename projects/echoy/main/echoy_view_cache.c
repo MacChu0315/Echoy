@@ -8,13 +8,13 @@
 typedef struct {
     const char *name;
     gsp_component_key_t key;
-    int visible, enabled, color, value, y;
+    int visible, enabled, color, value, y, x, opacity, scale;
     const char *text;
 } view_default_t;
 #include "echoy_view_keys.h"
 #define VIEW_COUNT (sizeof(view_defaults) / sizeof(view_defaults[0]))
 struct cached_value {
-    int visible, enabled, color, value, y;
+    int visible, enabled, color, value, y, x, opacity, scale;
     char *text;
 };
 struct echoy_view_cache {
@@ -57,7 +57,10 @@ echoy_view_cache_t echoy_view_cache_create(esp_gsp_handle_t gsp)
                                              .enabled = view_defaults[i].enabled,
                                              .color = view_defaults[i].color,
                                              .value = view_defaults[i].value,
-                                             .y = view_defaults[i].y};
+                                             .y = view_defaults[i].y,
+                                             .x = view_defaults[i].x,
+                                             .opacity = view_defaults[i].opacity,
+                                             .scale = view_defaults[i].scale};
     }
     return v;
 }
@@ -171,4 +174,44 @@ esp_gsp_err_t echoy_view_text(echoy_view_cache_t v, const char *name, const char
         free(copy);
     }
     return e;
+}
+
+static esp_gsp_err_t scalar(echoy_view_cache_t v, const char *name, int value, int field)
+{
+    int i = lookup(name);
+    if (!v || i < 0) {
+        return ESP_GSP_ERR_INVALID_ARG;
+    }
+    int *cache = field == 0   ? &v->values[i].x
+                 : field == 1 ? &v->values[i].opacity
+                              : &v->values[i].scale;
+    if (*cache == value) {
+        return ESP_GSP_OK;
+    }
+    gsp_value_t p = {.type = field == 0 ? GSP_VALUE_I32 : GSP_VALUE_U32};
+    if (field == 0) {
+        p.data.i32 = value;
+    } else {
+        p.data.u32 = (uint32_t)value;
+    }
+    gsp_property_key_t key = field == 0   ? GSP_ECHOY_PROP_KEY_X
+                             : field == 1 ? GSP_ECHOY_PROP_KEY_OPACITY
+                                          : GSP_ECHOY_PROP_KEY_SCALE;
+    esp_gsp_err_t e = esp_gsp_component_set_property(v->gsp, view_defaults[i].key, key, &p);
+    if (e == ESP_GSP_OK) {
+        *cache = value;
+    }
+    return e;
+}
+esp_gsp_err_t echoy_view_x(echoy_view_cache_t v, const char *n, int32_t x)
+{
+    return scalar(v, n, x, 0);
+}
+esp_gsp_err_t echoy_view_opacity(echoy_view_cache_t v, const char *n, uint8_t a)
+{
+    return scalar(v, n, a, 1);
+}
+esp_gsp_err_t echoy_view_scale(echoy_view_cache_t v, const char *n, uint32_t q)
+{
+    return scalar(v, n, (int)q, 2);
 }

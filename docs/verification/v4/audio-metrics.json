@@ -1,0 +1,83 @@
+{
+  "sample_rate": 24000,
+  "frames": 1200240,
+  "windows": {
+    "ordinary-pad": [
+      5460,
+      24036
+    ],
+    "example-once": [
+      24099,
+      87718
+    ],
+    "B-role-continues": [
+      219258,
+      279425
+    ],
+    "B-phrase-continues": [
+      339602,
+      398365
+    ],
+    "B-density-continues": [
+      459392,
+      517220
+    ],
+    "paused-silence": [
+      698290,
+      707484
+    ]
+  },
+  "metrics": {
+    "all": {
+      "frames": 1200240,
+      "nonzero": 517572,
+      "peak": 6970,
+      "rms": 393.87111460880453,
+      "clipped": 0
+    },
+    "ordinary-pad": {
+      "frames": 18576,
+      "nonzero": 4574,
+      "peak": 370,
+      "rms": 54.67577285976149,
+      "clipped": 0
+    },
+    "example-once": {
+      "frames": 63619,
+      "nonzero": 22475,
+      "peak": 6197,
+      "rms": 410.59761081870465,
+      "clipped": 0
+    },
+    "B-role-continues": {
+      "frames": 60167,
+      "nonzero": 59920,
+      "peak": 4873,
+      "rms": 683.4905547564928,
+      "clipped": 0
+    },
+    "B-phrase-continues": {
+      "frames": 58763,
+      "nonzero": 58091,
+      "peak": 6442,
+      "rms": 562.5626850583711,
+      "clipped": 0
+    },
+    "B-density-continues": {
+      "frames": 57828,
+      "nonzero": 57128,
+      "peak": 6970,
+      "rms": 545.8611499422312,
+      "clipped": 0
+    },
+    "paused-silence": {
+      "frames": 9194,
+      "nonzero": 0,
+      "peak": 0,
+      "rms": 0.0,
+      "clipped": 0
+    }
+  },
+  "silent_adapter": true,
+  "scope": "PCM produced by the real C desk output path; no physical speaker/wireless acceptance"
+}

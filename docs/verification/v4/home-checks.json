@@ -1,0 +1,18 @@
+{
+  "passed": [
+    "v4 pad, sliders and 84px bottom controls replace the removed top target",
+    "Ordinary pad touches audition only and empty Play remains disabled",
+    "Right-end Cancel works within 240ms and no delayed count-in restarts",
+    "Capture retains leading silence, held input stays single, one-shot shows full Pause then returns idle",
+    "Full-width Pause stops a finite audition without enabling a loop or recording",
+    "Left-end Pause works within 240ms without granting recording permission",
+    "Full-width Pause/Cancel and empty recording retain the old rhythm and do not autoplay",
+    "Relative volume drag reaches its upper bound at the v4 geometry"
+  ],
+  "seed": 32,
+  "scope": "native GSP v4 home controls; standalone audio service simulated; no device validation",
+  "reduced_motion_requested": false,
+  "limitations": [
+    "Native keyboard focus traversal is not exposed by the GSP pointer API"
+  ]
+}

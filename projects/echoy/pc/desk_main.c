@@ -496,11 +496,12 @@ static bool status_locked(struct desk *d, const struct desk_snapshot *s)
         fprintf(f,
                 ",\"clock\":\"%c\",\"clock_origin_us\":%lld,\"start_us\":%lld,\"loop\":%s,"
                 "\"events\":%zu,\"preparing\":%s,\"plan_pending\":%s,\"prepare_failed\":%s,"
-                "\"density\":%.17g,\"apply_at_us\":%lld,\"english\":%s}",
+                "\"density\":%.17g,\"apply_at_us\":%lld,\"english\":%s,\"reduced_motion\":%s}",
                 'A' + v.clock, (long long)v.state.clock_origin_us, (long long)v.state.start_us,
                 v.state.continuous ? "true" : "false", v.plan.count, v.preparing ? "true" : "false",
                 v.state.plan_pending ? "true" : "false", v.preparation_failed ? "true" : "false",
-                v.state.density, (long long)v.state.apply_at_us, v.english ? "true" : "false");
+                v.state.density, (long long)v.state.apply_at_us, v.english ? "true" : "false",
+                v.reduced_motion ? "true" : "false");
     }
     fprintf(f,
             "},\"frames_rendered\":%llu,\"audio_origin_us\":%lld,\"status_at_us\":%lld,\"edges\":",
@@ -666,6 +667,13 @@ static bool command_locked(struct desk *d, char *message)
         return false;
     }
     int64_t now = now_us(NULL);
+    if (!strcmp(words[0], "motion") && n == 2 &&
+        (!strcmp(words[1], "0") || !strcmp(words[1], "1"))) {
+        bool forced =
+            getenv("ECHOY_REDUCED_MOTION") && !strcmp(getenv("ECHOY_REDUCED_MOTION"), "1");
+        return echoy_band_action(d->band, ECHOY_TILE_A, ECHOY_ACT_REDUCED_MOTION,
+                                 forced || !strcmp(words[1], "1"), now);
+    }
     if (!strcmp(words[0], "edges")) {
         if (n != 1 && n != 3 && n != 5) {
             return false;
@@ -776,6 +784,9 @@ int main(int argc, char **argv)
         fprintf(stderr, "Cannot initialize C instruments\n");
         atomic_store(&d.failed, true);
         goto cleanup;
+    }
+    if (getenv("ECHOY_REDUCED_MOTION") && !strcmp(getenv("ECHOY_REDUCED_MOTION"), "1")) {
+        echoy_band_action(d.band, ECHOY_TILE_A, ECHOY_ACT_REDUCED_MOTION, 1, now_us(NULL));
     }
     pthread_t ui[3], prepare, audio;
     unsigned created = 0;

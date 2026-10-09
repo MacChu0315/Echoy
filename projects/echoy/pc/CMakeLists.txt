@@ -21,7 +21,7 @@ endif()
 
 add_subdirectory("${ESP_GSP_COMPONENT_DIR}/tools/sim_bridge" sim_bridge)
 gsp_add_backend(echoy_backend
-    SOURCES ../main/echoy_ui.c ../main/echoy_model.c ../main/echoy_music.c ../main/echoy_view_cache.c ../main/echoy_art.c ../main/echoy_art_image.c platform_pc.c
+    SOURCES ../main/echoy_ui.c ../main/echoy_strip.c ../main/echoy_strip_image.c ../main/echoy_model.c ../main/echoy_music.c ../main/echoy_view_cache.c ../main/echoy_art.c ../main/echoy_art_image.c platform_pc.c
     INCLUDE_DIRECTORIES ../main
     SCENES ../ui/main.json)
 
@@ -29,10 +29,17 @@ target_link_libraries(echoy_backend PRIVATE m)
 
 find_package(Threads REQUIRED)
 add_executable(echoy_desk desk_main.c
-    ../main/echoy_ui.c ../main/echoy_model.c ../main/echoy_music.c
+    ../main/echoy_ui.c ../main/echoy_strip.c ../main/echoy_strip_image.c ../main/echoy_model.c ../main/echoy_music.c
     ../main/echoy_view_cache.c ../main/echoy_art.c ../main/echoy_art_image.c
     ../main/echoy_band.c ../main/echoy_audio.c ../main/echoy_arrange.c)
 add_dependencies(echoy_desk echoy_backend_bundle)
 target_include_directories(echoy_desk PRIVATE ../main "${CMAKE_CURRENT_BINARY_DIR}/echoy_backend_assets")
 target_link_libraries(echoy_desk PRIVATE esp_gsp::sim_bridge Threads::Threads m)
 target_compile_options(echoy_desk PRIVATE -Wall -Wextra)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    foreach(target echoy_backend echoy_desk)
+        target_sources(${target} PRIVATE loopback_transport.c)
+        target_link_options(${target} PRIVATE "-Wl,--wrap=recv")
+    endforeach()
+endif()

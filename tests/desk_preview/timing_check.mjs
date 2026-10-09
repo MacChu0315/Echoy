@@ -12,7 +12,7 @@ function fixture(){
     classList:{add(){},remove(){}},addEventListener(){},querySelector:s=>element(key+s),click(){}});return elements.get(key);}
   const context=vm.createContext({console,Date:{now:()=>now},
     document:{getElementById:element,querySelector:element,querySelectorAll:()=>[],addEventListener(){},createElement:element},
-    window:{addEventListener(){}},
+    window:{addEventListener(){},matchMedia(){return {matches:false,addEventListener(event,handler){this.change=handler;}};}},
     setTimeout:(fn,ms)=>{const id=++next;timers.set(id,{fn,at:now+ms});return id;},clearTimeout:id=>timers.delete(id),
     fetch:async(path,options)=>{
       if(path==='/command'){
@@ -54,3 +54,11 @@ function fixture(){
   await f.advance(820);assert.equal(f.sent.filter(c=>c.action==='edges').length,1);
 }
 console.log('PASS 450ms contact confirmation, 220ms boot, removed/replaced boot cancellation');
+
+{
+  const f=fixture();await f.advance(0);
+  assert(f.sent.some(c=>c.action==='motion'&&c.reduce===false));
+  await f.call('reducedMotion.matches=true; reducedMotion.change()');await f.advance(0);
+  assert(f.sent.some(c=>c.action==='motion'&&c.reduce===true&&c.at===0),'System motion change is sent immediately, without the 600ms poll');
+  assert(!f.sent.some(c=>['present','example','play','pause_all'].includes(c.action)),'Motion preference must not change musical state');
+}

@@ -1,0 +1,246 @@
+{
+  "transitions": [
+    {
+      "tile": "A",
+      "mode": "idle",
+      "at_us": 1468783384000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "at_us": 1468785315000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "at_us": 1468785368000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "at_us": 1468786811000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "pause",
+      "at_us": 1468790625000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "at_us": 1468793253000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "pause",
+      "at_us": 1468793686000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "at_us": 1468793732000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "pause",
+      "at_us": 1468794167000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "at_us": 1468794212000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "pause",
+      "at_us": 1468794249000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "at_us": 1468796954000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "at_us": 1468797102000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "at_us": 1468797143000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "at_us": 1468797280000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "at_us": 1468801098000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    }
+  ],
+  "ready": [
+    {
+      "tile": "A",
+      "mode": "idle",
+      "record": 1,
+      "play": 0,
+      "single": 0,
+      "at_us": 1468783384000
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1468785321000
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "record": 1,
+      "play": 0,
+      "single": 0,
+      "at_us": 1468785373000
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1468786816000
+    },
+    {
+      "tile": "A",
+      "mode": "pause",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1468790625000
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "record": 1,
+      "play": 1,
+      "single": 0,
+      "at_us": 1468793259000
+    },
+    {
+      "tile": "A",
+      "mode": "pause",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1468793692000
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "record": 1,
+      "play": 1,
+      "single": 0,
+      "at_us": 1468793738000
+    },
+    {
+      "tile": "A",
+      "mode": "pause",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1468794174000
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "record": 1,
+      "play": 1,
+      "single": 0,
+      "at_us": 1468794218000
+    },
+    {
+      "tile": "A",
+      "mode": "pause",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1468794256000
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "record": 1,
+      "play": 1,
+      "single": 0,
+      "at_us": 1468796960000
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1468797109000
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "record": 1,
+      "play": 1,
+      "single": 0,
+      "at_us": 1468797150000
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1468797286000
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "record": 1,
+      "play": 1,
+      "single": 0,
+      "at_us": 1468801105000
+    }
+  ]
+}

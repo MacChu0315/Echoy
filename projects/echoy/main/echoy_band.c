@@ -44,7 +44,7 @@ struct echoy_band {
     struct cue scheduled[CUES];
     echoy_band_job_t *ready;
     uint64_t issued;
-    bool english;
+    bool english, reduced_motion;
     int64_t render_until;
 };
 static bool valid_tile(int id)
@@ -273,6 +273,13 @@ bool echoy_band_action(echoy_band_t *b, echoy_tile_id_t id, echoy_action_t actio
     if (!b || !valid_tile(id) || now < 0 || !isfinite(value)) {
         return false;
     }
+    if (action == ECHOY_ACT_REDUCED_MOTION) {
+        if (value != 0 && value != 1) {
+            return false;
+        }
+        b->reduced_motion = value != 0;
+        return true;
+    }
     struct voice *v = &b->voices[id];
     echoy_snapshot_t s;
     echoy_model_get_snapshot(v->model, &s);
@@ -284,6 +291,14 @@ bool echoy_band_action(echoy_band_t *b, echoy_tile_id_t id, echoy_action_t actio
     echoy_arrange_patch_t patch = {0};
     bool ok = false;
     switch (action) {
+    case ECHOY_ACT_CANCEL_RECORD:
+        ok = echoy_model_cancel_record(v->model);
+        if (ok) {
+            v->automatic_preview = false;
+            stop_voice(b, id, now);
+            echoy_arrange_mute(b->arrange, id);
+        }
+        return ok;
     case ECHOY_ACT_RECORD:
         ok = echoy_model_record(v->model, now);
         if (ok) {
@@ -621,6 +636,7 @@ bool echoy_band_read(echoy_band_t *b, echoy_tile_id_t id, echoy_control_view_t *
     out->state.density = t->density;
     out->state.revision = (uint32_t)echoy_arrange_revision(b->arrange);
     out->english = b->english;
+    out->reduced_motion = b->reduced_motion;
     out->present = t->present;
     out->volume = v->volume;
     out->battery = v->battery;

@@ -1,7 +1,7 @@
 # Echoy development rules
 
-- The approved design is `reference/echoy-arrange-B-v3.html`; hashes are in
-  `reference/SHA256SUMS`. Never edit this baseline to make an implementation pass.
+- The approved design is `reference/v4/echoy-arrange-B-v4.html`; hashes are in
+  `reference/v4/SHA256SUMS`. The v3 files and original v4 ZIP remain historical baselines. Never edit this baseline to make an implementation pass.
 - Preserve its 480x480 product layout, wording, icons, typography, pages and
   interactions. Keep browser desk/debug controls outside the device screen.
   Show concrete differences and obtain approval before a non-equivalent change.

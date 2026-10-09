@@ -110,6 +110,15 @@ void echoy_model_pause(echoy_model_handle_t m)
     s->pending_seed = 0;
     s->capture_at_us = 0;
 }
+bool echoy_model_cancel_record(echoy_model_handle_t m)
+{
+    if (!m || !capturing(&m->state)) {
+        return false;
+    }
+    echoy_model_pause(m);
+    m->state.notice = ECHOY_NOTICE_CANCELLED;
+    return true;
+}
 bool echoy_model_record(echoy_model_handle_t m, int64_t now)
 {
     if (!m || now < 0) {
@@ -117,9 +126,7 @@ bool echoy_model_record(echoy_model_handle_t m, int64_t now)
     }
     echoy_snapshot_t *s = &m->state;
     if (capturing(s)) {
-        echoy_model_pause(m);
-        s->notice = ECHOY_NOTICE_CANCELLED;
-        return true;
+        return echoy_model_cancel_record(m);
     }
     commit_pending(m, now);
     if (s->fault || s->following || s->plan_pending || s->phase == ECHOY_PREPARING) {

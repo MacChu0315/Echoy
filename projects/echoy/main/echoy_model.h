@@ -31,6 +31,8 @@ typedef struct {
 echoy_model_handle_t echoy_model_create(void);
 void echoy_model_delete(echoy_model_handle_t model);
 void echoy_model_get_snapshot(echoy_model_handle_t model, echoy_snapshot_t *out);
+/* A late Cancel may never become a new Record request. */
+bool echoy_model_cancel_record(echoy_model_handle_t model);
 bool echoy_model_record(echoy_model_handle_t model, int64_t now_us);
 bool echoy_model_tap(echoy_model_handle_t model, int64_t now_us);
 void echoy_model_tick(echoy_model_handle_t model, int64_t now_us);

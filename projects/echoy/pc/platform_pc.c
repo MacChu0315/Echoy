@@ -401,6 +401,7 @@ esp_gsp_err_t gsp_bridge_app_init(esp_gsp_handle_t ui)
         .now_us = now_us,
         .ctx = &context,
         .is_simulator = true,
+        .reduced_motion = getenv("ECHOY_REDUCED_MOTION") && !strcmp(getenv("ECHOY_REDUCED_MOTION"),"1"),
         .battery_percent = 72,
         .initial_seed = initial_seed(),
         .initial_condition = initial_condition(),

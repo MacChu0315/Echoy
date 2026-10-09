@@ -1,6 +1,8 @@
 # Echoy verification
 
-Current audible three-tile results: [audio and linkage verification](audio-linked/README.md).
+Current v4 presentation results: [v4 controls and full regression](v4/README.md).
+
+Earlier audible three-tile results: [audio and linkage verification](audio-linked/README.md).
 The sections below retain the earlier UI/phrase evidence; their individual commands
 validate that scope. The current desktop uses the shared C audio/linkage controller.
 

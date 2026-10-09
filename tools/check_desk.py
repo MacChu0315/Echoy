@@ -25,6 +25,7 @@ import time
 import wave
 
 from PIL import Image, ImageChops
+from check_home import assert_v4_geometry, strip_events
 
 ROOT = Path(__file__).resolve().parents[1]
 BAR_US = 2500000
@@ -116,16 +117,13 @@ class DeskCheck:
         self.call(tile, 'wait', {'frames': 3})
 
     def play_ready(self, tile):
-        # The C model can commit before its queued native properties have
-        # painted. Wait for the user's visible enabled Play surface, not merely
-        # a backend flag, before generating the single intended tap.
-        path = self.output / f'play-ready-{tile}.png'
-        def enabled(_):
-            self.call(tile, 'screenshot', {'path': str(path), 'format': 'png'})
-            with Image.open(path) as image:
-                red, green, blue = image.convert('RGB').getpixel((216, 414))
-                return green < 140 and red < 140 and blue < 140
-        self.until(enabled, tile + ' native Play surface stayed disabled after model readiness', timeout=3)
+        # v4 intentionally leaves disabled idle text at full opacity. Renderer
+        # colour cannot establish permission; use the UI owner's successful
+        # enable/show submission plus the authoritative local playback state.
+        def enabled(state):
+            rows=strip_events((self.output/'desk.log').read_text(),ready=True,tile=tile)
+            return rows and rows[-1].get('mode')=='idle' and rows[-1].get('play')==1 and state['tiles'][tile]['phase']==0
+        self.until(enabled,tile+' native Play permission did not become ready',timeout=4)
 
     def visual_ready(self, tile, route):
         path = self.output / f'visible-{route}-{tile}.png'
@@ -135,7 +133,7 @@ class DeskCheck:
                 image = source.convert('RGB')
                 if route == 'removed':
                     return all(low == high for low, high in image.crop((90, 110, 390, 350)).getextrema())
-                point = {'home': (48, 220), 'role': (28, 179), 'settings': (24, 150),
+                point = {'home': (48, 196), 'role': (28, 179), 'settings': (24, 150),
                          'settings-bottom': (300, 260), 'status': (240, 190)}[route]
                 red, green, blue = image.getpixel(point)
                 if route == 'home':
@@ -151,9 +149,9 @@ class DeskCheck:
 
     def pad(self, tile):
         self.mark(f'pointer pad {tile}')
-        self.call(tile, 'feed_pointer', {'x': 240, 'y': 213, 'pressed': True})
+        self.call(tile, 'feed_pointer', {'x': 240, 'y': 189, 'pressed': True})
         self.call(tile, 'wait', {'frames': 3})
-        self.call(tile, 'feed_pointer', {'x': 240, 'y': 213, 'pressed': False})
+        self.call(tile, 'feed_pointer', {'x': 240, 'y': 189, 'pressed': False})
         self.call(tile, 'wait', {'frames': 3})
 
     def tap_at(self, tile, x, y):
@@ -232,6 +230,7 @@ class DeskCheck:
             shutil.copy2(path, copied[kind])
             assert before == digest(copied[kind]) == digest(path), f'Build changed during snapshot: {path}'
             metadata[kind] = {'source': str(path), 'sha256': before}
+        assert_v4_geometry(json.loads(copied['api'].read_text()))
         metadata['command'] = sys.argv
         (self.output / 'runtime-snapshot.json').write_text(json.dumps(metadata, indent=2) + '\n')
         manifest = json.loads((build / 'echoy_backend-Release.json').read_text())
@@ -242,7 +241,7 @@ class DeskCheck:
             ready_file = self.runtime / f'ready-{tile}.json'
             hosts[tile] = self.start([str(self.args.sim), '--bundle', str(copied['bundle']),
                 '--api-json', str(copied['api']), '--backend-enable', '--backend-required',
-                '--api-listen', 'tcp://127.0.0.1:0', '--headless', '--frames', '0',
+                '--api-listen', 'tcp://127.0.0.1:0', '--headless', '--fps', '1000', '--frames', '0',
                 '--fail-on-error', '--ready-file', str(ready_file)], f'host-{tile}.log')
             self.until(lambda _: ready_file.exists(), f'Host {tile} readiness')
             info = json.loads(ready_file.read_text())
@@ -353,7 +352,7 @@ class DeskCheck:
             assert remainder in (0, 1, BAR_US-1), (tile, playing[tile])
         self.until(lambda _: time.monotonic_ns() // 1000 > max(t['start_us'] for t in playing.values()) + 200000,
                    'Scheduled shared-beat playback did not arrive', timeout=3)
-        self.tap('A', 'transport')
+        self.tap('A', 'strip_action')
         self.until(lambda s: not s['tiles']['A']['loop'] and s['tiles']['A']['phase'] == 0,
                    'A did not pause independently')
         assert all(self.status()['tiles'][tile]['loop'] for tile in 'BC')
@@ -370,7 +369,7 @@ class DeskCheck:
         self.tap('B', 'role_back'); self.visual_ready('B', 'home')
         def density_is_full(plan):
             assert abs(plan['density'] - 1) < 1e-12, plan
-        self.change_at_boundary('B-density', lambda: self.drag('B', 432, 280, 140), density_is_full)
+        self.change_at_boundary('B-density', lambda: self.drag('B', 432, 256, 116), density_is_full)
         self.passed('B role/phrase/richness change at bar boundaries; old B/C plans and playback continue during preparation')
 
         attached = self.export('before-detach')
@@ -462,6 +461,14 @@ class DeskCheck:
         assert all(not t['loop'] and t['phase'] == 0 for t in self.status()['tiles'].values())
         self.passed('A native EN selection updates the shared desktop language and all three rendered screens without playback')
 
+        musical_before={tile:{key:self.status()['tiles'][tile][key] for key in ('seed','phase','loop','events','clock_origin_us')} for tile in TILES}
+        for reduce in (True,False):
+            self.command('motion '+str(int(reduce)))
+            state=self.until(lambda s:all(t.get('reduced_motion') is reduce for t in s['tiles'].values()),'Reduced-motion preference did not reach all three C views')
+            for tile in TILES:
+                assert {key:state['tiles'][tile][key] for key in musical_before[tile]}==musical_before[tile]
+        self.passed('Shared reduced-motion preference reaches all three native views without changing music or playback permission')
+
     def finish(self):
         # Let the backend reach its configured duration and run its normal
         # teardown, rather than treating signal termination as a pass.
@@ -534,9 +541,9 @@ class DeskCheck:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--build-dir', type=Path, default=ROOT / 'projects/echoy/build-sim-desk')
+    parser.add_argument('--build-dir', type=Path, default=ROOT / 'projects/echoy/build-sim-v4')
     parser.add_argument('--sim', type=Path, default=ROOT.parent / '.toolchains/gsp-sim-1.5.1/sim')
-    parser.add_argument('--output', type=Path, default=ROOT / 'output/desk-native-check')
+    parser.add_argument('--output', type=Path, default=ROOT / 'output/v4-desk-native-check')
     parser.add_argument('--duration-ms', type=int, default=60000)
     args = parser.parse_args()
     assert 45000 <= args.duration_ms <= 180000, 'Use a finite duration that covers the complete input scenario'

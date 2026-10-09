@@ -8,6 +8,7 @@ typedef struct {
     int64_t (*now_us)(void *ctx);
     void *ctx;
     bool is_simulator;
+    bool reduced_motion;
     bool (*read_control)(void *ctx, echoy_control_view_t *out);
     bool (*perform_action)(void *ctx, echoy_action_t action, double value, int64_t now_us);
     unsigned battery_percent;

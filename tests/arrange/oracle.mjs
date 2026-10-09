@@ -12,9 +12,9 @@ import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-const baseline = readFileSync(join(root, 'reference/echoy-arrange-B-v3.html'), 'utf8');
+const baseline = readFileSync(join(root, 'reference/v4/echoy-arrange-B-v4.html'), 'utf8');
 assert.equal(createHash('sha256').update(baseline).digest('hex'),
-  '241a0a58e0e33cb906b4bf637c2d55f219de988df2a683c68d68f767c7dee6b5');
+  'c7e3e2e6992dc1f21857bfa6a8dc1357b5f95ea2dfad0425f60e83b1085ee7e3');
 const context = vm.createContext({});
 for (const exportName of ['PulseLab', 'ReplyAB', 'RoleAccompaniment', 'ArrangeModel']) {
   const marker = exportName === 'ArrangeModel' ? 'root.ArrangeModel=ArrangeModel' : `root.${exportName}=api`;

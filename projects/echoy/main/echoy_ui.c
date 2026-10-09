@@ -1,6 +1,8 @@
 #include "echoy_ui.h"
 #include "echoy_art.h"
 #include "echoy_art_image.h"
+#include "echoy_strip.h"
+#include "echoy_strip_image.h"
 #include "echoy_view_cache.h"
 #define GSP_BUNDLE_ENABLE_RAW_IDS
 #include "bundle_gsp.h"
@@ -56,6 +58,11 @@ struct echoy_ui {
     uint32_t last_gallery_revision, last_committed;
     bool frames_dirty;
     int last_scale, last_fade;
+    echoy_strip_motion_t strip_motion;
+    int strip_mode, strip_permissions, strip_glyph_alpha[4], strip_glyph_locale[4];
+    uint32_t strip_border_rgb, strip_glyph_color[4];
+    bool reduced_motion, strip_reduced;
+    int64_t strip_frame_us;
 };
 static bool act(echoy_ui_handle_t u, echoy_action_t action, double value, int64_t now);
 static bool capturing(echoy_phase_t p)
@@ -90,6 +97,8 @@ static bool act(echoy_ui_handle_t u, echoy_action_t action, double value, int64_
         return u->platform.perform_action(u->platform.ctx, action, value, now);
     }
     switch (action) {
+    case ECHOY_ACT_CANCEL_RECORD:
+        return echoy_model_cancel_record(u->model);
     case ECHOY_ACT_RECORD:
         return echoy_model_record(u->model, now);
     case ECHOY_ACT_TAP:
@@ -138,6 +147,7 @@ static void read_state(echoy_ui_handle_t u, echoy_snapshot_t *out)
     u->condition = u->external.condition;
     u->battery = u->external.battery;
     u->volume = u->external.volume;
+    u->reduced_motion = u->external.reduced_motion;
     if (!u->density_dirty) {
         u->richness = u->external.state.density;
     }
@@ -362,8 +372,9 @@ static void show_metadata(echoy_ui_handle_t u, const echoy_snapshot_t *s)
         SHOW(u, routes[i], route == (route_t)i);
     }
     static const char *const locale_groups[] = {
-        "home",         "role",  "settings_header", "settings", "settings_remove",
-        "guide_header", "guide", "info_header",     "info",     "status_page"};
+        "home",         "role",           "settings_header", "settings", "settings_remove",
+        "guide_header", "guide",          "info_header",     "info",     "status_page",
+        "role_footer",  "settings_footer"};
     char name[96];
     for (size_t i = 0; i < sizeof(locale_groups) / sizeof(locale_groups[0]); i++) {
         snprintf(name, sizeof(name), "%s_zh", locale_groups[i]);
@@ -383,6 +394,10 @@ static void show_metadata(echoy_ui_handle_t u, const echoy_snapshot_t *s)
     }
     local_text(u, "phrase_title",
                phrases[actual][(plan->count ? plan->phrase : s->phrase) - 1][u->english]);
+    static const int phrase_x_en[4] = {117, 115, 107, 155};
+    static const int separator_x_en[4] = {103, 102, 93, 142};
+    CHECK(u, echoy_view_x(u->view, "identity_separator_en", separator_x_en[actual]));
+    CHECK(u, echoy_view_x(u->view, "phrase_title_en", phrase_x_en[actual]));
     COLOR(u, "richness_fill", accents[actual]);
     COLOR(u, "richness_knob", accents[actual]);
     COLOR(u, "equal", accents[actual]);
@@ -429,12 +444,124 @@ static void show_metadata(echoy_ui_handle_t u, const echoy_snapshot_t *s)
         TEXT(u, name, tr(u, "来自左侧: —", "Following: —"));
     }
 }
+static uint32_t blend(uint32_t foreground, double alpha)
+{
+    const uint32_t background = 0xe7ecdf;
+    uint32_t result = 0;
+    for (int shift = 0; shift < 24; shift += 8) {
+        double fg = (foreground >> shift) & 255, bg = (background >> shift) & 255;
+        result |= (uint32_t)lround(bg + (fg - bg) * alpha) << shift;
+    }
+    return result;
+}
+static void strip_glyph(echoy_ui_handle_t u, unsigned kind, unsigned alpha, uint32_t color)
+{
+    static const char *names[] = {"strip_record_glyph", "strip_play_glyph", "strip_cancel_glyph",
+                                  "strip_pause_glyph"};
+    static const uint16_t binds[] = {
+        GSP_ECHOY_BIND_STRIP_RECORD_GLYPH, GSP_ECHOY_BIND_STRIP_PLAY_GLYPH,
+        GSP_ECHOY_BIND_STRIP_CANCEL_GLYPH, GSP_ECHOY_BIND_STRIP_PAUSE_GLYPH};
+    SHOW(u, names[kind], alpha != 0);
+    if (!alpha ||
+        (u->strip_glyph_alpha[kind] == (int)alpha &&
+         u->strip_glyph_locale[kind] == (int)u->english && u->strip_glyph_color[kind] == color)) {
+        return;
+    }
+    uint8_t *encoded = NULL;
+    size_t size = 0;
+    if (!echoy_strip_glyph_qoi(u->english, kind, (uint8_t)alpha, color, &encoded, &size)) {
+        CHECK(u, ESP_GSP_ERR_NO_MEM);
+        return;
+    }
+    esp_gsp_image_options_t options = {
+        .ownership = ESP_GSP_IMAGE_COPY, .on_complete = gallery_complete, .complete_ctx = u};
+    atomic_fetch_add(&u->images_pending, 1);
+    esp_gsp_err_t error = esp_gsp_set_image_ex(u->gsp, binds[kind], encoded, size, &options);
+    free(encoded);
+    if (error != ESP_GSP_OK) {
+        atomic_fetch_sub(&u->images_pending, 1);
+        CHECK(u, error);
+        return;
+    }
+    u->strip_glyph_alpha[kind] = (int)alpha;
+    u->strip_glyph_locale[kind] = u->english;
+    u->strip_glyph_color[kind] = color;
+}
+static void show_strip(echoy_ui_handle_t u, const echoy_snapshot_t *s, int64_t now)
+{
+    bool preparing = u->density_dirty || (u->platform.read_control && u->external.preparing);
+    echoy_strip_state_t v = echoy_strip_compute(s, current_plan(u)->count != 0, preparing);
+    static const char *mode_names[] = {"idle", "cancel", "pause"};
+    int permissions =
+        (int)v.record_enabled | ((int)v.play_enabled << 1) | ((int)v.single_enabled << 2);
+    bool changed = u->strip_mode != (int)v.mode, preference = u->strip_reduced != u->reduced_motion;
+    int tile = u->platform.read_control ? u->external.tile : 0;
+    if (changed || preference) {
+        fprintf(stderr, "ECHOY_STRIP tile=%c mode=%s at_us=%lld duration_ms=%d reduced_motion=%d\n",
+                'A' + tile, mode_names[v.mode], (long long)now, u->reduced_motion ? 0 : 240,
+                u->reduced_motion);
+        if (u->strip_mode < 0) {
+            echoy_strip_motion_init(&u->strip_motion, v.mode, now);
+        }
+        echoy_strip_motion_to(&u->strip_motion, v.mode, u->reduced_motion, now);
+    }
+    if (changed || permissions != u->strip_permissions) {
+        /* The full-width target must be hidden in idle: disabled-but-visible
+         * GSP buttons still intercept hits meant for the underlying halves. */
+        if (v.mode == ECHOY_STRIP_IDLE) {
+            SHOW(u, "strip_action", false);
+            ENABLE(u, "strip_action", false);
+        } else {
+            ENABLE(u, "strip_action", v.single_enabled);
+            SHOW(u, "strip_action", true);
+        }
+        ENABLE(u, "record", v.record_enabled);
+        ENABLE(u, "transport", v.play_enabled);
+        SHOW(u, "record", v.mode == ECHOY_STRIP_IDLE);
+        SHOW(u, "transport", v.mode == ECHOY_STRIP_IDLE);
+        fprintf(stderr,
+                "ECHOY_STRIP_READY tile=%c mode=%s record=%d play=%d single=%d at_us=%lld\n",
+                'A' + tile, mode_names[v.mode], v.record_enabled, v.play_enabled, v.single_enabled,
+                (long long)now_us(u));
+        u->strip_permissions = permissions;
+    }
+    u->strip_mode = v.mode;
+    u->strip_reduced = u->reduced_motion;
+    echoy_strip_frame_t f;
+    echoy_strip_motion_frame(&u->strip_motion, now, &f);
+    if (!changed && !preference && now - u->strip_frame_us < 20000) {
+        return;
+    }
+    CHECK(u, echoy_view_x(u->view, "strip_record_tint", (int)lround(f.boundary) - 244));
+    CHECK(u, echoy_view_x(u->view, "strip_play_tint", (int)lround(f.boundary)));
+    COLOR(u, "strip_record_tint", blend(f.record_rgb, f.record_alpha));
+    COLOR(u, "strip_play_tint", blend(f.play_rgb, f.play_alpha));
+    CHECK(u, echoy_view_opacity(u->view, "strip_divider", (uint8_t)lround(255 * f.divider_alpha)));
+    if (u->strip_border_rgb != f.border_rgb) {
+        CHECK(u, gsp_echoy_strip_border_set_tint_rgb888(u->gsp, f.border_rgb));
+        u->strip_border_rgb = f.border_rgb;
+    }
+    CHECK(u, echoy_view_x(u->view, "strip_record_glyph", 131 - (int)lround(f.shift)));
+    CHECK(u, echoy_view_x(u->view, "strip_play_glyph", 253 + (int)lround(f.shift)));
+    CHECK(u, echoy_view_scale(u->view, "strip_cancel_glyph", (uint32_t)lround(f.scale * 65536)));
+    CHECK(u, echoy_view_scale(u->view, "strip_pause_glyph", (uint32_t)lround(f.scale * 65536)));
+    /* v4's more-specific idle glyph rule overrides button:disabled opacity.
+     * Disabled halves retain full opacity while their real input stays blocked. */
+    strip_glyph(u, 0, (unsigned)lround(255 * f.idle_alpha), 0xaa6140);
+    strip_glyph(u, 1, (unsigned)lround(255 * f.idle_alpha), 0x536648);
+    strip_glyph(u, 2, v.mode == ECHOY_STRIP_CANCEL ? (unsigned)lround(255 * f.single_alpha) : 0,
+                0xa36144);
+    /* v4 replaces the single button content with Pause even while returning
+     * to idle; it fades out in the default orange, not the active white. */
+    strip_glyph(u, 3, v.mode != ECHOY_STRIP_CANCEL ? (unsigned)lround(255 * f.single_alpha) : 0,
+                v.mode == ECHOY_STRIP_PAUSE ? 0xf8f8ee : 0xa36144);
+    u->strip_frame_us = now;
+}
 static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int64_t now)
 {
     const echoy_plan_t *plan = current_plan(u);
     bool cap = capturing(s->phase), busy = s->phase >= ECHOY_PREPARING;
-    char status[128];
-    const char *hint;
+    char status[128] = {0};
     if (cap) {
         if (s->phase == ECHOY_COUNT_IN) {
             int beat = (int)((s->capture_at_us - now + BEAT_US - 1) / BEAT_US);
@@ -453,48 +580,34 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
             snprintf(status, sizeof(status), u->english ? "Recording · %d / 4" : "录入 · %d / 4",
                      beat);
         }
-        hint = tr(u, "开头可以留空 · 提示音不会录入",
-                  "You may start with silence · Cues are not recorded");
-    } else if (u->density_dirty) {
+    } else if (u->density_dirty || (u->platform.read_control && u->external.preparing)) {
         strcpy(status, tr(u, "准备新的声音", "Preparing a new sound"));
-        hint =
-            tr(u, "原来的继续，可随时暂停本机", "Current sound continues; Pause stays available");
-    } else if (u->platform.read_control && u->external.preparing) {
-        strcpy(status, tr(u, "准备新的声音", "Preparing a new sound"));
-        hint =
-            tr(u, "原来的继续，可随时暂停本机", "Current sound continues; Pause stays available");
     } else if (s->plan_pending) {
         strcpy(status, tr(u, "下一小节生效", "Changes at the next bar"));
-        hint = tr(u, "已经收到，不会中途重编", "Received · Current phrase stays intact");
     } else if (s->phase == ECHOY_PREVIEW) {
-        strcpy(status, now < s->start_us ? tr(u, "等共同拍点试听", "Audition at the shared beat")
-                                         : tr(u, "先听这一次", "Hear this one reply"));
-        hint = tr(u, "结束就停 · 点 ▶ 才持续演奏", "Stops after one reply · Play to keep going");
-    } else if (s->phase == ECHOY_PLAYING) {
-        strcpy(status,
-               s->following ? tr(u, "回应左侧", "Following left") : tr(u, "正在演奏", "Playing"));
-        hint = now < s->start_us
-                   ? tr(u, "等共同拍点开始", "Waiting for the shared beat")
-                   : tr(u, "Ⅱ 只暂停本机，不改变节奏", "Pause affects this tile, not the rhythm");
-    } else if (plan->count) {
-        strcpy(status, s->following ? tr(u, "已接住左侧的节奏", "Left rhythm received")
-                                    : tr(u, "这段留在这里了", "Your rhythm is here"));
-        hint = tr(u, "▶ 开始演奏 · 不自动改写", "Play when ready · No automatic changes");
-    } else {
-        strcpy(status, tr(u, "先试着敲几下", "Try tapping the centre"));
-        hint = tr(u, "点「录一段」才记录节奏", "Press Record to capture your rhythm");
+        strcpy(status, now < s->start_us
+                           ? tr(u, "等共同拍点试听", "Audition at the shared beat")
+                           : tr(u, "试听一次 · 结束自动停", "One reply · Stops at the end"));
+    } else if (s->phase == ECHOY_PLAYING && now < s->start_us) {
+        strcpy(status, tr(u, "等共同拍点开始", "Waiting for the shared beat"));
+    } else if (!plan->count) {
+        strcpy(status, tr(u, "中央试奏 · 录制才保存", "Tap to try · Record to keep"));
     }
     if (s->notice == ECHOY_NOTICE_CANCELLED) {
-        hint = tr(u, "已取消，原节奏保留", "Cancelled; original rhythm kept");
+        strcpy(status, tr(u, "已取消，原节奏保留", "Cancelled; original rhythm kept"));
     }
     if (s->notice == ECHOY_NOTICE_EMPTY) {
-        hint = tr(u, "没有录入，原节奏保留", "No notes captured; original kept");
+        strcpy(status, tr(u, "没有录入，原节奏保留", "No notes captured; original kept"));
     }
     if (u->platform.read_control && u->external.preparation_failed) {
-        hint = tr(u, "新声音没有准备好，原来的继续", "Preparation failed; current sound continues");
+        strcpy(status, tr(u, "新声音没有准备好，原来的继续",
+                          "Preparation failed; current sound continues"));
     }
-    local_text(u, "status", status);
-    local_text(u, "hint", hint);
+    if (status[0]) {
+        local_text(u, "status", status);
+    }
+    SHOW(u, "status", status[0] && !cap);
+    SHOW(u, "status_en", status[0] && !cap);
     SHOW(u, "touch_hint_group", !plan->count && !cap);
     SHOW(u, "touch_hint_group_en", !plan->count && !cap);
     for (unsigned r = 0; r < 4; r++) {
@@ -506,31 +619,15 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
                      : r == ECHOY_DUST  ? "_dust"
                                         : "_harmony",
                      en ? "_en" : "");
-            if (r == (plan->count ? plan->role : s->role) && en == u->english) {
+            bool selected = cap && r == (plan->count ? plan->role : s->role) && en == u->english;
+            if (selected) {
                 TEXT(u, key, status);
             }
-            SHOW(u, key, cap && r == (plan->count ? plan->role : s->role) && en == u->english);
+            SHOW(u, key, selected);
         }
     }
-    SHOW(u, "status", !cap);
-    SHOW(u, "status_en", !cap);
-    SHOW(u, "record_icon", !cap);
-    SHOW(u, "cancel_icon", cap);
-    SHOW(u, "record_text", !cap);
-    SHOW(u, "record_text_en", !cap);
-    SHOW(u, "cancel_text", cap);
-    SHOW(u, "cancel_text_en", cap);
-    COLOR(u, "record_surface", cap ? 0xeee2d8 : 0xe5e9de);
-    ENABLE(u, "record",
-           cap || (!s->following && !s->fault && !s->plan_pending && s->phase != ECHOY_PREPARING &&
-                   !u->density_dirty));
     ENABLE(u, "role", !cap);
     ENABLE(u, "settings", !cap);
-    ENABLE(u, "transport",
-           !cap && (busy || (plan->count && !s->plan_pending && !u->density_dirty)));
-    COLOR(u, "transport", busy ? 0x415936 : 0x596d4b);
-    SHOW(u, "play_icon", !busy);
-    SHOW(u, "pause_icon", busy);
     SHOW(u, "pad_border", !plan->count && !cap);
     ENABLE(u, "gallery_transport",
            !cap && (busy || (plan->count && !s->plan_pending && !u->density_dirty)));
@@ -572,6 +669,7 @@ static void refresh(echoy_ui_handle_t u, int64_t now, bool force)
     if (s.fault && u->condition == ECHOY_NORMAL) {
         u->condition = ECHOY_AUDIO_FAULT;
     }
+    show_strip(u, &s, now);
     prepare_graphics(u, &s, now);
     show_metadata(u, &s);
     show_home_state(u, &s, now);
@@ -700,13 +798,13 @@ static void pointer(esp_gsp_handle_t gsp, int32_t x, int32_t y, bool pressed, vo
         u->drag_y = y;
         if (u->condition == ECHOY_NORMAL && !u->removed) {
             if (u->route == HOME) {
-                if (y >= 113 && y < 320 && x >= 16 && x < 80) {
+                if (y >= 89 && y < 296 && x >= 16 && x < 80) {
                     u->drag = 1;
                     u->drag_value = u->volume;
-                } else if (y >= 113 && y < 320 && x >= 400 && x < 464 && !capturing(s.phase)) {
+                } else if (y >= 89 && y < 296 && x >= 400 && x < 464 && !capturing(s.phase)) {
                     u->drag = 2;
                     u->drag_value = u->richness;
-                } else if (x >= 90 && x < 390 && y >= 113 && y < 317 &&
+                } else if (x >= 90 && x < 390 && y >= 89 && y < 293 &&
                            act(u, ECHOY_ACT_TAP, 0, now)) {
                     u->last_hit_us = now;
                 }
@@ -774,12 +872,25 @@ static void event(esp_gsp_handle_t gsp, const esp_gsp_event_t *e, void *ctx)
     if (u->condition != ECHOY_NORMAL || u->removed) {
         return;
     }
+    echoy_strip_state_t strip = echoy_strip_compute(
+        &s, current_plan(u)->count != 0,
+        u->density_dirty || (u->platform.read_control && u->external.preparing));
     if (gsp_echoy_event_is_record_click(e)) {
-        if (act(u, ECHOY_ACT_RECORD, 0, now)) {
+        if ((u->route == SETTINGS || strip.record_enabled) && act(u, ECHOY_ACT_RECORD, 0, now)) {
             select_route(u, HOME);
         }
+    } else if (gsp_echoy_event_is_strip_action_click(e)) {
+        if (u->route == HOME && strip.single_enabled) {
+            if (strip.mode == ECHOY_STRIP_CANCEL) {
+                act(u, ECHOY_ACT_CANCEL_RECORD, 0, now);
+            } else if (strip.mode == ECHOY_STRIP_PAUSE) {
+                act(u, ECHOY_ACT_PAUSE, 0, now);
+            }
+        }
     } else if (gsp_echoy_event_is_transport_click(e)) {
-        act(u, ECHOY_ACT_TRANSPORT, 0, now);
+        if (u->route == HOME && strip.play_enabled) {
+            act(u, ECHOY_ACT_TRANSPORT, 0, now);
+        }
     } else if (!capturing(s.phase)) {
         if (gsp_echoy_event_is_role_click(e)) {
             select_route(u, ROLE);
@@ -848,6 +959,12 @@ esp_gsp_err_t echoy_ui_create(esp_gsp_handle_t gsp, const echoy_platform_t *plat
     u->volume = .65;
     u->richness = .5;
     u->battery = platform->battery_percent;
+    u->strip_mode = u->strip_permissions = -1;
+    u->strip_border_rgb = UINT32_MAX;
+    u->reduced_motion = platform->reduced_motion;
+    for (unsigned i = 0; i < 4; i++) {
+        u->strip_glyph_alpha[i] = u->strip_glyph_locale[i] = -1;
+    }
     u->last_hit_us = -1000000;
     u->last_phase = u->last_route = u->last_condition = u->last_english = -1;
     u->last_step = 16;

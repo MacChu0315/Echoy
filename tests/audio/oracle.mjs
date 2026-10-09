@@ -10,7 +10,7 @@ const playwright = process.env.ECHOY_PLAYWRIGHT_MODULE || '/home/zhuzhengming/.n
 const {chromium} = await import(playwright);
 const browser = await chromium.launch({executablePath:process.env.ECHOY_CHROME || '/opt/google/chrome/chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
 const page = await browser.newPage();
-await page.goto('file://' + path.join(root, 'reference/echoy-arrange-B-v3.html'));
+await page.goto('file://' + path.join(root, 'reference/v4/echoy-arrange-B-v4.html'));
 const specs=[];
 for(const role of ['pulse','voice','dust','harmony']) for(let phrase=1;phrase<=3;phrase++)
   specs.push({name:role+'-'+phrase,role,phrase,density:.65,steps:[0,2,10],original:role==='pulse'&&phrase===1});

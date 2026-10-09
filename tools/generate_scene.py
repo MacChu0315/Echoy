@@ -8,12 +8,13 @@ import shutil
 import math
 from fontTools.ttLib import TTFont
 from fontTools import subset
-from PIL import Image, ImageFont
+from PIL import Image, ImageDraw, ImageFont
+from io import BytesIO
 import cairosvg
 ROOT=Path(__file__).resolve().parents[1]
 UI=ROOT/'projects/echoy/ui'
-SOURCE=ROOT/'reference/echoy-arrange-B-v3.html'
-assert hashlib.sha256(SOURCE.read_bytes()).hexdigest()=='241a0a58e0e33cb906b4bf637c2d55f219de988df2a683c68d68f767c7dee6b5'
+SOURCE=ROOT/'reference/v4/echoy-arrange-B-v4.html'
+assert hashlib.sha256(SOURCE.read_bytes()).hexdigest()=='c7e3e2e6992dc1f21857bfa6a8dc1357b5f95ea2dfad0425f60e83b1085ee7e3'
 text=SOURCE.read_text()
 chars=''.join(sorted(set(text)))
 (UI/'fonts').mkdir(exist_ok=True)
@@ -57,6 +58,10 @@ Image.new('RGB',(300,15),(241,239,232)).save(UI/'feedback.png')
 Image.new('RGB',(206,101),(229,231,222)).save(UI/'role-main.png')
 Image.new('RGB',(73,48),(236,239,228)).save(UI/'role-neighbor.png')
 (UI/'icons/pad-border.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="204" viewBox="0 0 300 204"><g id="icon"><rect x=".5" y=".5" width="299" height="203" rx="29.5" fill="none" stroke="#ccd4c1" stroke-width="1" stroke-dasharray="3 3"/></g></svg>')
+# GSP's clip_children is rectangular. These four small vector cutouts keep
+# the strip's R23 outside corners paper-colored as its native tints move.
+(UI/'icons/strip-corners.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg" width="244" height="84" viewBox="0 0 244 84"><g id="icon" fill="#f1efe8"><path d="M0 0H23A23 23 0 0 0 0 23Z M221 0H244V23A23 23 0 0 0 221 0Z M244 61V84H221A23 23 0 0 0 244 61Z M23 84H0V61A23 23 0 0 0 23 84Z"/></g></svg>')
+(UI/'icons/strip-border.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg" width="244" height="84" viewBox="0 0 244 84"><g id="icon"><rect x=".5" y=".5" width="243" height="83" rx="22.5" fill="none" stroke="#d2d9c9" stroke-width="1"/></g></svg>')
 # GSPC 0.6.1 does not preserve SVG stroke-dasharray. Rasterize this small
 # static decoration; controls, text, music art and feedback remain native.
 cairosvg.svg2png(url=str(UI/'icons/pad-border.svg'),write_to=str(UI/'icons/pad-border.png'))
@@ -66,14 +71,12 @@ def add(kind,name,x,y,w,h,parent=-1,**kw):
 # Runtime glyphs are scoped to the actual UI text, never HTML/CSS/JavaScript.
 # GSP embeds one font pack per (font,size); an all-source corpus at every size
 # makes even the old home-only scene almost fill the 1 MiB UI partition.
-home_status_zh='先试着敲几下准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听先听这一次回应左侧正在演奏已接住左侧的节奏这段留在这里了'
-home_status_en='Try tapping the centre Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat Hear this one reply Following left Playing Left rhythm received Your rhythm is here'
-home_hint_zh='新声音没有准备好，原来的继续 点「录一段」才记录节奏开头可以留空 · 提示音不会录入原来的继续，可随时暂停本机已经收到，不会中途重编结束就停 · 点 ▶ 才持续演奏等共同拍点开始Ⅱ 只暂停本机，不改变节奏▶ 开始演奏 · 不自动改写已取消，原节奏保留没有录入，原节奏保留'
-home_hint_en='Preparation failed; current sound continues Press Record to capture your rhythm You may start with silence · Cues are not recorded Current sound continues; Pause stays available Received · Current phrase stays intact Stops after one reply · Play to keep going Waiting for the shared beat Pause affects this tile, not the rhythm Play when ready · No automatic changes Cancelled; original kept No notes captured; original kept'
+home_status_zh='中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续'
+home_status_en='Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original kept No notes captured; original kept Preparation failed; current sound continues'
 role_names_zh='脉冲声线微尘和声'
 phrase_names_zh='重音切分留白短句轻答长线颗粒点缀余韵短和弦分解接句'
 phrase_names_en='Accent Syncopation Space Short phrase Light reply Long line Grains Touches Trails Short chords Arpeggio Answer'
-home_charsets={'role_title_first':role_names_zh,'role_title_second':role_names_zh,'phrase_title':phrase_names_zh,'battery_text':'0123456789%','record_text':'录一段取消','status':home_status_zh,'capture_status':home_status_zh,'touch_hint':'试奏区','hint':home_hint_zh}
+home_charsets={'role_title_first':role_names_zh,'role_title_second':role_names_zh,'phrase_title':phrase_names_zh,'battery_text':'0123456789%','record_text':'录制','status':home_status_zh,'capture_status':home_status_zh,'touch_hint':'试奏区'}
 charset=home_status_zh
 def label(name,x,y,w,h,content,size,color,parent,**kw):
     return add('label',name,x,y,w,h,parent,text=content,font_size=size,fg_color=color,**kw)
@@ -83,26 +86,20 @@ def dyn(name,x,y,w,h,content,size,color,parent,**kw):
 paper=add('container','paper',0,0,480,480,bg_color='#f1efe8',radius=60,clip_children=True)
 home=add('layer','home',0,0,480,480,paper,bind='home_visible',bind_target='visible')
 # Browser text ink is two pixels above GSP's default centered Noto line box.
-# Separate native labels preserve the prototype's one-pixel CJK title tracking.
-dyn('role_title_first',35,23,26,31,'脉',25,'#d95535',home,font='fonts/NotoSansSC-Bold.otf')
-dyn('role_title_second',61,23,26,31,'冲',25,'#d95535',home,font='fonts/NotoSansSC-Bold.otf')
-dyn('phrase_title',35,55,240,24,'重音',17,'#78836d',home)
-# Header button preserves the full 132x84 input area and its inset surface.
-rec=add('button','record',244,0,132,84,home,callback='record_click',enabled=True,bg_color='#00000000')
-add('container','record_surface',3,20,126,52,rec,bg_color='#e5e9de',border_color='#d0d8c6',border_width=1,radius=16)
-add('image','record_icon',31,38,15,15,rec,image='icons/record.svg',svg_layout='canvas',svg_element='icon',fit='stretch')
-add('image','cancel_icon',31,38,15,15,rec,image='icons/cross.svg',svg_layout='canvas',svg_element='icon',fit='stretch',hidden=True)
-dyn('record_text',53,30,60,32,'录一段',16,'#667256',rec,hidden=True)
-label('cancel_text',53,30,60,32,'取消',16,'#956244',rec,hidden=True)
+# v4 keeps role and expression on one line, with .2px CJK tracking.
+dyn('role_title_first',34,25,26,32,'脉',25,'#d95535',home,font='fonts/NotoSansSC-Bold.otf')
+dyn('role_title_second',60,25,26,32,'冲',25,'#d95535',home,font='fonts/NotoSansSC-Bold.otf')
+label('identity_separator',94,26,8,32,'·',17,'#74806b',home,font='fonts/LiberationSans-Regular.ttf')
+dyn('phrase_title',110,25,220,32,'重音',18,'#78836d',home)
 # Battery is a placeholder supplied by the PC adapter until hardware integration.
-add('container','battery_outline',395,41,19,12,home,border_color='#78836c',border_width=1,radius=2)
-add('container','battery_tip',416,45,1,4,home,bg_color='#78836c')
-add('container','battery_fill',398,44,9,6,home,bg_color='#78836c')
-dyn('battery_text',424,35,23,22,'72%',12,'#78836c',home,font='fonts/DejaVuSansMono.ttf')
-dyn('status',90,86,300,24,'先试着敲几下',14,'#657457',home,text_align='center',hidden=True)
-label('capture_status',90,86,300,24,'先试着敲几下',14,'#d95535',home,text_align='center',hidden=True,bind='capture_status',bind_target='text',font_charset=charset)
+add('container','battery_outline',399,37,19,12,home,border_color='#78836c',border_width=1,radius=2)
+add('container','battery_tip',420,41,1,4,home,bg_color='#78836c')
+add('container','battery_fill',402,40,9,6,home,bg_color='#78836c')
+dyn('battery_text',428,31,23,22,'72%',12,'#78836c',home,font='fonts/DejaVuSansMono.ttf')
+dyn('status',24,339,432,23,'中央试奏 · 录制才保存',13,'#7c886e',home,text_align='center',hidden=True)
+label('capture_status',24,339,432,23,'预备 · 2',13,'#a46848',home,text_align='center',hidden=True,bind='capture_status',bind_target='text',font_charset=charset)
 for name,x,color,default,top,bottom in [('volume',16,'#657756',65,'','音量'),('richness',400,'#d95535',50,'丰富','简洁')]:
-    p=add('container',name, x,113,64,207,home,bg_color='#e7ebdf',border_color='#d8dece',border_width=1,radius=24)
+    p=add('container',name, x,89,64,207,home,bg_color='#e7ebdf',border_color='#d8dece',border_width=1,radius=24)
     if top:label(name+'_top',0,13,64,24,top,14,'#67785a',p,text_align='center')
     else:add('image','speaker',21,14,22,22,p,image='icons/speaker.svg',svg_layout='canvas',svg_element='icon',fit='stretch')
     label(name+'_bottom',0,169,64,22,bottom,14,'#67785a',p,text_align='center')
@@ -113,20 +110,29 @@ for name,x,color,default,top,bottom in [('volume',16,'#657756',65,'','音量'),(
     kw=dict(bg_color='#fafbf5',border_color='#93a382' if name=='volume' else '#b87943',border_width=1,radius=13 if name=='volume' else 10)
     knob=add('container',name+'_knob',20 if name=='volume' else 17,round(160-height-12),25 if name=='volume' else 30,25 if name=='volume' else 27,p,**kw)
     if name=='richness':label('equal',0,0,30,27,'=',21,'#687b57',knob,text_align='center',font='fonts/LiberationSans-Regular.ttf')
-add('image','art',90,113,300,204,home,image='canvas.png',codec='lossless',bind='art',bind_target='resource')
-add('image','pad_border',90,113,300,204,home,image='icons/pad-border.png',codec='lossless',hidden=True)
-dyn('touch_hint',90,289,300,24,'试奏区',13,'#6b795c',home,text_align='center')
-add('container','progress_bg',103,318,274,2,home,bg_color='#dce0d2',hidden=True)
-add('progress','progress',103,318,274,2,home,min=0,max=100,value=0,fg_color='#d95535',bg_color='#dce0d2',hidden=True)
-add('image','feedback',90,329,300,15,home,image='feedback.png',codec='lossless',bind='feedback',bind_target='resource')
-dyn('hint',28,348,424,23,'点「录一段」才记录节奏',12,'#7d896e',home,text_align='center')
-for name,x,word,icon in [('role',28,'角色','wave'),('settings',312,'设置','gear')]:
-    p=add('button',name,x,381,140,84,home,callback=name+'_click',enabled=True,bg_color='#e7ecdf',border_color='#cfd8c3',border_width=1,radius=21)
-    add('image',name+'_icon',38,30,23,23,p,image='icons/'+icon+'.svg',svg_layout='canvas',svg_element='icon',fit='stretch')
-    label(name+'_label',68,26,45,28,word,17,'#4c613e',p,font='fonts/NotoSansSC-Medium.otf')
-play=add('button','transport',198,381,84,84,home,callback='transport_click',enabled=False,bg_color='#596d4b',radius=42)
-add('image','play_icon',25,25,34,34,play,image='icons/play.svg',svg_layout='canvas',svg_element='icon',fit='stretch')
-add('image','pause_icon',25,25,34,34,play,image='icons/pause.svg',svg_layout='canvas',svg_element='icon',fit='stretch',hidden=True)
+add('image','art',90,89,300,204,home,image='canvas.png',codec='lossless',bind='art',bind_target='resource')
+add('image','pad_border',90,89,300,204,home,image='icons/pad-border.png',codec='lossless',hidden=True)
+dyn('touch_hint',90,265,300,24,'试奏区',13,'#6b795c',home,text_align='center')
+add('container','progress_bg',103,301,274,2,home,bg_color='#dce0d2',hidden=True)
+add('progress','progress',103,301,274,2,home,min=0,max=100,value=0,fg_color='#d95535',bg_color='#dce0d2',hidden=True)
+add('image','feedback',90,315,300,15,home,image='feedback.png',codec='lossless',bind='feedback',bind_target='resource')
+for name,x,word,asset in [('role',22,'角色','wave'),('settings',374,'设置','gear')]:
+    p=add('button',name,x,378,84,84,home,callback=name+'_click',enabled=True,bg_color='#e9ede2',border_color='#cfd8c3',border_width=1,radius=22)
+    add('image',name+'_icon',13,32,20,20,p,image='icons/'+asset+'.svg',svg_layout='canvas',svg_element='icon',fit='stretch',tint='#536746')
+    label(name+'_label',39,407-378,39,22,word,16,'#536746',p,font='fonts/NotoSansSC-Medium.otf')
+
+# Background and hit geometry are independent from the changing glyphs.
+strip=add('container','strip',118,378,244,84,home,bg_color='#e7ecdf',radius=23,clip_children=True)
+for name,x,color,low,high in [('record',-122,'#eee8df',-244,0),('play',122,'#e8ede1',0,244)]:
+    # A fixed-width fill translated through the clip gives exactly the same
+    # two complementary visible widths as CSS. GSP 1.5.1 rejects a COLOR bind
+    # combined with dynamic w/opacity; the controller preblends tint alpha into
+    # the strip's fixed background and updates this supported RGB888 color.
+    add('layer','strip_'+name+'_tint',{'default':x,'min':low,'max':high},0,244,84,strip,bg_color=color,bind='strip_'+name+'_tint_color',bind_target='color')
+add('container','strip_divider',122,22,1,40,strip,bg_color='#d4d7c9',opacity={'default':255,'min':0,'max':255})
+rec=add('button','record',0,0,122,84,strip,callback='record_click',enabled=True,bg_color='#00000000',bind='record_visible',bind_target='visible')
+play=add('button','transport',122,0,122,84,strip,callback='transport_click',enabled=False,bg_color='#00000000',bind='transport_visible',bind_target='visible')
+single=add('button','strip_action',0,0,244,84,strip,callback='strip_action_click',enabled=False,hidden=True,bg_color='#00000000',bind='strip_action_visible',bind_target='visible')
 
 # Page and locale layers are explicit visibility targets. A name alone does
 # not expose visibility, and each bind must be unique in GSPC 0.6.1.
@@ -202,33 +208,45 @@ for obj in objects[:home_text['zh']]:
         x+=objects[p]['x'];y+=objects[p]['y'];p=objects[p]['parent']
     obj.update(parent=home_text['zh'],x=x,y=y)
 home_en={
-    'phrase_title':('Accent',13,phrase_names_en),
-    'record_text':('Record',16,'Record Cancel'),
-    'cancel_text':('Cancel',16,'Cancel'),
-    'status':('Try tapping the centre',14,home_status_en),
-    'capture_status':('Try tapping the centre',14,home_status_en),
+    'identity_separator':('·',17,'·'),
+    'phrase_title':('Accent',16,phrase_names_en),
+    'status':('Tap to try · Record to keep',12,home_status_en),
+    'capture_status':('Ready · 2',12,home_status_en),
     'volume_bottom':('Volume',14,'Volume'),
     'richness_top':('Rich',14,'Rich'),
     'richness_bottom':('Simple',14,'Simple'),
     'touch_hint':('Try here',13,'Try here'),
-    'hint':('Press Record to capture your rhythm',12,home_hint_en),
-    'role_label':('Role',14,'Role'),
-    'settings_label':('Settings',14,'Settings'),
+    'role_label':('Role',12,'Role'),
+    'settings_label':('Settings',12,'Settings'),
 }
 for obj in list(objects):
     if obj['name'] not in home_en:continue
     content,size,corpus=home_en[obj['name']]
     clone=dict(obj);clone.update(name=obj['name']+'_en',parent=home_text['en'],text=content,font_size=size,font=LATIN,font_charset=corpus,bind=obj['name']+'_en',bind_target='text')
     if obj['name'] in ('role_label','settings_label'):
-        clone.update(w=68,font=LATIN_BOLD)
-        clone['x']=99 if obj['name']=='role_label' else 372
+        clone.update(w=48,font=LATIN)
+        clone['x']=62 if obj['name']=='role_label' else 405
+        clone['y']=409
+    if obj['name']=='phrase_title':clone.update(x={'default':117,'min':107,'max':155},y=26)
+    if obj['name']=='identity_separator':clone.update(x={'default':103,'min':93,'max':142},y=26)
+    if obj['name'] in ('status','capture_status'):clone['y']=340
     objects.append(clone)
     if obj['name'] in ('cancel_text','volume_bottom','richness_top','richness_bottom','role_label','settings_label'):
         obj.update(bind=obj['name'],bind_target='text',font_charset=obj['text'])
-for name,x,english_x in [('role_icon',66,69),('settings_icon',350,342)]:
+for name,x,english_x in [('role_icon',35,41),('settings_icon',387,384)]:
     original=next(obj for obj in objects if obj['name']==name)
-    original.update(parent=home_text['zh'],x=x,y=411)
-    clone=dict(original);clone.update(name=name+'_en',parent=home_text['en'],x=english_x);objects.append(clone)
+    original.update(parent=home_text['zh'],x=x,y=410)
+    clone=dict(original);clone.update(name=name+'_en',parent=home_text['en'],x=english_x,y=412,w=17,h=17);objects.append(clone)
+# Keep all footer glyphs under their real button so its disabled overlay also
+# dims the icon and wording, rather than only washing out the background.
+for name in ('role','settings'):
+    button_index=next(i for i,obj in enumerate(objects) if obj['name']==name)
+    button_obj=objects[button_index]
+    footer_text=locales(name+'_footer',button_index,w=84,h=84)
+    for lang,suffix in [('zh',''),('en','_en')]:
+        for kind in ('icon','label'):
+            obj=next(obj for obj in objects if obj['name']==name+'_'+kind+suffix)
+            obj.update(parent=footer_text[lang],x=obj['x']-button_obj['x'],y=obj['y']-button_obj['y'])
 # A label has one binding family; known role titles use separately colored
 # targets. This preserves real role colors without unsupported dual bindings.
 for role,data in ROLES.items():
@@ -241,14 +259,112 @@ for role,data in ROLES.items():
             original=next(obj for obj in objects if obj['name']==name)
             original['parent']=zh_group
         else:
-            label(name+'_'+role,35+i*26,23,26,31,character,25,ACCENTS[role],zh_group,font='fonts/NotoSansSC-Bold.otf')
-    label('role_title_'+role+'_en',35,23,190,31,data[1],25,ACCENTS[role],en_group,font=LATIN_BOLD)
+            label(name+'_'+role,34+i*26,25,26,32,character,25,ACCENTS[role],zh_group,font='fonts/NotoSansSC-Bold.otf')
+    label('role_title_'+role+'_en',34,26,110,32,data[1],23,ACCENTS[role],en_group,font=LATIN_BOLD)
     for lang,parent in [('zh',zh_group),('en',en_group)]:
         suffix='' if lang=='zh' else '_en'
         original=next(obj for obj in objects if obj['name']=='capture_status'+suffix)
         if role=='pulse':original['parent']=parent
         else:
-            clone=dict(original);clone.update(name='capture_status_'+role+suffix,bind='capture_status_'+role+suffix,parent=parent,fg_color=ACCENTS[role]);objects.append(clone)
+            clone=dict(original);clone.update(name='capture_status_'+role+suffix,bind='capture_status_'+role+suffix,parent=parent,fg_color='#a46848');objects.append(clone)
+
+contract['home_geometry']={
+    'art':[90,89,300,204], 'volume':[16,89,64,207], 'richness':[400,89,64,207],
+    'progress':[103,301,274,2], 'feedback':[90,315,300,15], 'css_steps':[90,316,300,13],
+    'state_line':[24,340,432,23], 'role':[22,378,84,84], 'settings':[374,378,84,84],
+    'header_en':{'pulse':{'separator_x':103,'phrase_x':117},'voice':{'separator_x':102,'phrase_x':115},'dust':{'separator_x':93,'phrase_x':107},'harmony':{'separator_x':142,'phrase_x':155}},
+}
+contract['strip']={'bounds':[118,378,244,84], 'radius':23,
+    'hit_targets':{'record':[118,378,122,84],'transport':[240,378,122,84],'strip_action':[118,378,244,84]},
+    'modes':{'idle':{'record':True,'transport':True,'strip_action':False},'cancel':{'record':False,'transport':False,'strip_action':True},'pause':{'record':False,'transport':False,'strip_action':True}},
+    'border':'strip_border', 'border_colors':{'idle':'#d2d9c9','cancel':'#d5a98d','pause':'#455b3b'},
+    'tints':{'record':{'name':'strip_record_tint','x':[-244,0],'default_x':-122},'play':{'name':'strip_play_tint','x':[0,244],'default_x':122}},
+    'tint_width':244, 'tint_boundary':'record.x + 244 == play.x', 'tint_alpha':'RGB888 preblend over #e7ecdf before set_color_rgb888; no unsupported packed-color alpha',
+    'idle_disabled_glyph_alpha':1.0,
+    'css_easing':[0,0,.58,1], 'duration_ms':{'tint_geometry':240,'tint_color':240,'tint_opacity':200,'divider':150,'idle_opacity':130,'idle_translation':240,'single_opacity':200,'single_scale':240},
+}
+# Native text is retained as the stable fallback. The controller can replace
+# only these glyph groups with the separately tested transparent image path.
+contract['strip']['native_labels']={}
+for name,zh,en,asset,color,origin,width,icon_size in [
+    ('record','录制','Record','record','#aa6140',118,122,19),
+    ('play','播放','Play','play','#536648',240,122,23),
+    ('cancel','取消','Cancel','cross','#a36144',118,244,23),
+    ('pause','暂停','Pause','pause','#f8f8ee',118,244,23),
+]:
+    contract['strip']['native_labels'][name]={}
+    for lang,word in [('zh',zh),('en',en)]:
+        suffix='' if lang=='zh' else '_en'
+        frame=add('container',f'strip_{name}_frame'+suffix,origin,378,width,84,home_text[lang])
+        shift={'default':0,'min':-8,'max':0} if name=='record' else {'default':0,'min':0,'max':8} if name=='play' else 0
+        group=layer(f'strip_{name}_native'+suffix,frame,x=shift,w=width,h=84,hidden=True)
+        contract['strip']['native_labels'][name][lang]=f'strip_{name}_native'+suffix
+        font=REGULAR if lang=='zh' else LATIN
+        size=17 if lang=='zh' else 16
+        gap=9 if lang=='zh' else 8
+        text_width=ImageFont.truetype(str(UI/font),size).getlength(word)
+        left=(width-icon_size-gap-text_width)/2
+        icon(('record_icon' if name=='record' else 'play_icon' if name=='play' else 'cancel_icon' if name=='cancel' else 'pause_icon')+suffix,asset,round(left),round((84-icon_size)/2),icon_size,icon_size,group,tint=color)
+        dyn(('record_text' if name=='record' else 'play_text' if name=='play' else 'cancel_text' if name=='cancel' else 'pause_text')+suffix,round(left+icon_size+gap),28 if lang=='zh' else 30,math.ceil(text_width)+2,24,word,size,color,group,font=font)
+icon('strip_corners','strip-corners',0,0,244,84,strip)
+icon('strip_border','strip-border',0,0,244,84,strip,tint='#d2d9c9')
+
+# Only the eight fixed strip icon+word glyphs need alpha/scale animation.
+# They are transparent masks, never a screenshot of a control or its surface.
+# The public RGBA image COPY path applies continuous alpha on these A8 masks;
+# background fills, border, buttons, header and dynamic status remain native.
+(UI/'strip').mkdir(exist_ok=True)
+GLYPH_W,GLYPH_H=96,32
+# A newly shown single action must stay transparent until its first async
+# COPY publish completes; never flash a full-opacity static fallback frame.
+Image.new('RGBA',(GLYPH_W,GLYPH_H),(0,0,0,0)).save(UI/'strip'/'single-placeholder.png')
+glyph_header=['/* Generated by tools/generate_scene.py from pinned fonts and original SVG icons. */',
+    '#pragma once','#include <stdint.h>',
+    '#define ECHOY_STRIP_GLYPH_WIDTH 96','#define ECHOY_STRIP_GLYPH_HEIGHT 32',
+    'typedef enum { ECHOY_STRIP_GLYPH_RECORD, ECHOY_STRIP_GLYPH_PLAY, ECHOY_STRIP_GLYPH_CANCEL, ECHOY_STRIP_GLYPH_PAUSE } echoy_strip_glyph_kind_t;',
+    'typedef struct { uint16_t width, height, stride; uint32_t color_rgb888; const uint8_t *alpha; } echoy_strip_glyph_mask_t;']
+glyph_rows=[]
+glyph_specs=[('record','录制','Record','record','#aa6140',19),('play','播放','Play','play','#536648',23),('cancel','取消','Cancel','cross','#a36144',23),('pause','暂停','Pause','pause','#f8f8ee',23)]
+for lang,language_index in [('zh',0),('en',1)]:
+    rows=[]
+    for name,zh,en,asset,color,icon_size in glyph_specs:
+        word=zh if lang=='zh' else en
+        size=17 if lang=='zh' else 16
+        font=ImageFont.truetype(str(UI/(REGULAR if lang=='zh' else LATIN)),size)
+        gap=9 if lang=='zh' else 8
+        left=(GLYPH_W-icon_size-gap-font.getlength(word))/2
+        svg=f'<svg xmlns="http://www.w3.org/2000/svg" width="{icon_size}" height="{icon_size}" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">{icons[asset].replace("currentColor","#ffffff")}</svg>'
+        icon_rgba=Image.open(BytesIO(cairosvg.svg2png(bytestring=svg.encode()))).convert('RGBA')
+        rgba=Image.new('RGBA',(GLYPH_W,GLYPH_H),(255,255,255,0))
+        rgba.alpha_composite(icon_rgba,(round(left),round((GLYPH_H-icon_size)/2)))
+        ascent,descent=font.getmetrics()
+        # The HTML's Arial-first line box sets the baseline even when the
+        # characters fall back to Noto; its CJK ink is 2px above Noto's own box.
+        ImageDraw.Draw(rgba).text((left+icon_size+gap,(GLYPH_H-ascent-descent)/2+ascent-(2 if lang=='zh' else 0)),word,font=font,fill=(255,255,255,255),anchor='ls')
+        alpha=rgba.getchannel('A')
+        symbol=f'echoy_strip_alpha_{lang}_{name}'
+        glyph_header.append(f'static const uint8_t {symbol}[ECHOY_STRIP_GLYPH_WIDTH * ECHOY_STRIP_GLYPH_HEIGHT] = {{')
+        data=alpha.tobytes()
+        glyph_header.extend('    '+','.join(str(v) for v in data[at:at+24])+',' for at in range(0,len(data),24))
+        glyph_header.append('};')
+        rows.append(f'    {{96,32,96,0x{color[1:]}u,{symbol}}},')
+        foreground=Image.new('RGBA',(GLYPH_W,GLYPH_H),color)
+        foreground.putalpha(alpha)
+        foreground.save(UI/'strip'/f'{name}-{lang}.png')
+    glyph_rows.append(rows)
+glyph_header.append('/* First index: 0 = Chinese, 1 = English; second index: echoy_strip_glyph_kind_t. */')
+glyph_header.append('static const echoy_strip_glyph_mask_t echoy_strip_glyph_masks[2][4] = {')
+for rows in glyph_rows:glyph_header.extend(['  {',*rows,'  },'])
+glyph_header.append('};')
+(UI/'strip'/'labels.h').write_text('\n'.join(glyph_header)+'\n')
+(UI/'strip'/'play-initial.png').unlink(missing_ok=True)
+contract['strip']['glyphs']={}
+for name,x,low,high in [('record',131,123,131),('play',253,253,261),('cancel',192,192,192),('pause',192,192,192)]:
+    source='single-placeholder.png' if name in ('cancel','pause') else name+'-zh.png'
+    options={} if name in ('record','play') else dict(scalable=True,scale=.97,min_scale=.97,max_scale=1.0)
+    add('image','strip_'+name+'_glyph',{'default':x,'min':low,'max':high} if low!=high else x,404,96,32,home,image='strip/'+source,codec='raw' if name in ('cancel','pause') else 'lossless',dynamic_image=True,bind='strip_'+name+'_glyph',bind_target='resource',hidden=True,**options)
+    contract['strip']['glyphs'][name]={'name':'strip_'+name+'_glyph','bounds':[x,404,96,32],'x_range':[low,high],'scale':[.97,1] if name in ('cancel','pause') else [1,1],'alpha':'runtime RGBA QOI COPY from echoy_strip_glyph_masks[english][kind]'}
+contract['strip']['glyph_header']='strip/labels.h'
 
 # Role / phrase gallery.
 role_page=route('role')
@@ -430,13 +546,11 @@ for page_name in ('home','role_page','settings_page','guide_page','info_page','s
 
 for obj in objects:
     if obj['type']=='button':
-        obj['disabled_color']='#f1efe8'; obj['disabled_opacity']=145
+        obj['disabled_color']='#f1efe8'; obj['disabled_opacity']=0 if obj['name'] in ('record','transport','strip_action') else 145
     if obj['name'] in ('volume_knob','volume_fill','richness_knob','richness_fill'):
         y=obj['y']; obj['y']={'default':y,'min':0,'max':180}
-    if obj['name'] in ('record_surface','transport') or obj['name'].startswith('step_'):
+    if obj['name'].startswith('step_'):
         obj['bind']=obj['name']+'_color'; obj['bind_target']='color'
-    if obj['name'] in ('record_icon','play_icon'):
-        obj['hidden']=True
 # Fill and progress colors follow the selected/committed role.
 for obj in objects:
     if obj['name'].startswith('info_device_2_'):

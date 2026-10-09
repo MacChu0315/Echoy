@@ -27,14 +27,16 @@ typedef enum {
     ECHOY_ACT_CONDITION,
     ECHOY_ACT_PRESENT,
     ECHOY_ACT_EXAMPLE,
-    ECHOY_ACT_LANGUAGE
+    ECHOY_ACT_LANGUAGE,
+    ECHOY_ACT_CANCEL_RECORD,
+    ECHOY_ACT_REDUCED_MOTION
 } echoy_action_t;
 typedef struct {
     echoy_snapshot_t state;
     echoy_plan_t plan;
     unsigned memories[4], battery;
     double volume;
-    bool present, preparing, preparation_failed, english;
+    bool present, preparing, preparation_failed, english, reduced_motion;
     int tile, source, clock;
     echoy_condition_t condition;
 } echoy_control_view_t;

@@ -9,3 +9,7 @@ esp_gsp_err_t echoy_view_text(echoy_view_cache_t view,const char *name,const cha
 esp_gsp_err_t echoy_view_color(echoy_view_cache_t view,const char *name,uint32_t rgb888);
 esp_gsp_err_t echoy_view_value(echoy_view_cache_t view,const char *name,int32_t value);
 esp_gsp_err_t echoy_view_y(echoy_view_cache_t view,const char *name,int32_t y);
+
+esp_gsp_err_t echoy_view_x(echoy_view_cache_t view,const char *name,int32_t x);
+esp_gsp_err_t echoy_view_opacity(echoy_view_cache_t view,const char *name,uint8_t alpha);
+esp_gsp_err_t echoy_view_scale(echoy_view_cache_t view,const char *name,uint32_t scale_q16);
