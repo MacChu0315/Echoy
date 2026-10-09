@@ -1,0 +1,44 @@
+{
+  "package": "874d650babab",
+  "operation_id": "be8a0500-5d12-4db5-863c-6539e358a567",
+  "status": "succeeded",
+  "validation": {
+    "boot_id": 14556096418758680989,
+    "healthy": true,
+    "application_validation": {
+      "actual": "7d136be5d292778cfc76c40493618716247f57f65b4bb74601a44cd128abc1fe",
+      "actual_field": "firmware_sha256",
+      "expected": "7d136be5d292778cfc76c40493618716247f57f65b4bb74601a44cd128abc1fe",
+      "expected_field": "elf_sha256",
+      "mode": "elf_sha256"
+    },
+    "source_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "d2273dcee3654190b3e5da59b234d3bf",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    },
+    "target_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "be8a05005d124db5863c6539e358a567",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    }
+  },
+  "observation": {
+    "uptime_us": 327184605,
+    "crash_count": 0,
+    "free_internal": 121455,
+    "free_spiram": 12915568,
+    "min_free_internal": 71360,
+    "min_free_spiram": 12443416
+  },
+  "ui_errors_in_current_boot": 0,
+  "audio_errors_in_current_boot": 0,
+  "latest_audio_diagnostics": "I (303630) echoy_device: internal=121455 PSRAM=12915568 owner_stack=8728 prepare=9553429us render_max=2201us accepted=7201440 nonzero=2677015 peak=4368 pa=1 activations=2 write_max=8893us partial=0 write_errors=0 deadline_misses=0 rejected=",
+  "user_feedback": "Sound remains very quiet at hardware volume 60."
+}

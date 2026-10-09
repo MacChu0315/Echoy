@@ -69,6 +69,35 @@ This changes queue capacity based on measured demand, not admission timeouts.
   five existing SDK esp_wifi/wpa_supplicant private-include dependency warnings;
   there are no C/C++ compiler warnings. Vendor sources were not modified.
 
-The [final manifest](artifacts.json) identifies package `874d650babab`, with
-unchanged scene/UI image, partition table and Recovery write scope. Installation
-permission was requested. Its physical result must be checked separately.
+## Queue64 physical result
+
+The user authorized the [final startup package](artifacts.json) `874d650babab`.
+Operation `be8a0500-5d12-4db5-863c-6539e358a567` succeeded with HEALTHY,
+boot `14556096418758680989`, and matching ELF hash
+`7d136be5d292778cfc76c40493618716247f57f65b4bb74601a44cd128abc1fe`.
+Bootloader/partition hashes are unchanged. The current Recovery boot's main-task
+completion log was verified before the update; no installation replay occurred.
+
+Official `iris device-status`, `iris logs --snapshot` and `iris screenshot`
+verified the real home screen, capture → preparation → one-shot → idle and a
+stable boot past 327 seconds. No 261/263 UI error or audio error occurred.
+Latest observed streaming: 7,201,440 accepted frames, 2,677,015 nonzero frames,
+peak 4,368, PA enabled, zero partial/write/deadline errors; render maximum 2,201 us,
+write maximum 8,893 us, owner stack minimum 8,728 bytes. A pulse phrase took
+9,553,429 us to prepare, still requiring optimization.
+[Structured evidence](queue64-device-result.json).
+
+## Volume calibration awaiting installation
+
+The user reported that hardware volume 60 remained very quiet. PCM peak is about
+13% full scale before another -20 dB hardware attenuation. The new
+[volume-only package](volume90-artifacts.json) `d87ae02e9222` changes hardware
+volume to 90 (-5 dB, +15 dB relative to 60) while retaining all digital controls,
+musical logic, startup fixes, UI resources and partitions. This is a configured
+gain difference; practical loudness still requires user verification.
+
+`sh tests/board_audio/run.sh` passed 22,263 assertions after the expected volume
+assertion first failed against 60. Official `system-update-bundle` and bundle
+inspection passed. No new memory/lifecycle code changed, so the earlier sanitizer
+coverage remains applicable rather than being presented as a new run. The volume
+package is prepared locally; permission for this specific write was requested.

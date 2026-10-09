@@ -13,8 +13,10 @@ No software stereo duplication or resampling is necessary. The adapter checks
 the actual public I2S mode configuration after codec opening. DMA is 3 by 120
 mono frames (720 bytes, 15 ms capacity), not a claimed measured output latency.
 
-`open` leaves PA GPIO45 and DAC muted. Hardware volume stays at 60 (the codec's
-default volume curve gives -20 dB before its board-gain compensation). The first
+`open` leaves PA GPIO45 and DAC muted. Hardware volume stays at 90 (the codec's
+default volume curve gives -5 dB before its board-gain compensation). This was
+raised after the physical device remained very quiet at 60: captured PCM peaks
+were about 13% of full scale before the additional hardware attenuation. The first
 accepted nonzero block unmutes; band/UI digital gain is unchanged. On a write
 fault PA is disabled before any I2C work, then TX stops. Cancel/flush disables
 PA, mutes, stops TX, zeroes every DMA descriptor with the public preload API and

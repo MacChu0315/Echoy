@@ -10,7 +10,7 @@
 #define BOARD_AUDIO_DMA_FRAMES 120u
 #define BOARD_AUDIO_DMA_DESCRIPTORS 3u
 #define BOARD_AUDIO_WRITE_TIMEOUT_MS 40u
-#define BOARD_AUDIO_HARDWARE_VOLUME 60
+#define BOARD_AUDIO_HARDWARE_VOLUME 90
 
 typedef struct board_audio board_audio_t;
 typedef struct {

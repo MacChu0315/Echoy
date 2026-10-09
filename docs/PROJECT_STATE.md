@@ -107,22 +107,33 @@ audio package `87197fd80c0d` was written but failed UI setup with queue timeout
 
 A native fixture measured 27 initial component changes: SDK queue depth 24
 reproduces the timeout; 64 passes. Current defaults and compile-time guards
-require 64 and manual acceptance. The final package `874d650babab` is prepared;
-target-specific installation permission is pending. Tests: 16 runtime cases and
+require 64 and manual acceptance. The user authorized `874d650babab`; it installed
+successfully and remained on the same healthy boot for over five minutes with
+zero UI errors, audio write errors or estimated deadline misses. Recording,
+one-shot playback and return to idle were observed in the device logs.
+Tests: 16 runtime cases and
 22,263 audio assertions, including ASan/UBSan/LSan, plus the real GSP fixture.
 See `verification/device-audio/README.md` for hardware history and artifacts.
 
-Observed post-Restore on `afae9df52f28`: maximum render time 2,363 us, owner stack
-minimum 8,380 bytes, preparation stack minimum 8,192 bytes. A pulse phrase took
-10,354,001 us to prepare; this delay still needs optimization. ESP-Iris remote
+On installed `874d650babab`: render maximum 2,201 us, write maximum 8,893 us,
+owner stack minimum 8,728 bytes, zero partial writes, and sustained nonzero PCM
+with PA enabled. Peak PCM was 4,368/32,767 (about 13% full scale). The user still
+reported very quiet sound at hardware volume 60. A volume-only package
+`d87ae02e9222` is prepared and awaits target-specific approval: hardware volume
+90 removes another 15 dB of attenuation, retaining the UI slider and all logic.
+Its audio tests and official build pass.
+
+A pulse phrase on `874d650babab` took 9,553,429 us to prepare; this delay still
+needs optimization. ESP-Iris remote
 pointer injection is unavailable in the current mirror adapter; interaction
 evidence above comes from physical user touches.
 
 ## Remaining physical integration
 
-Install the reviewed fix only with current target-specific authorization, then
-verify actual UI, audio and health readings. The initial package authorization
-has already been exercised; it is not blanket permission for future writes.
+Install the reviewed volume calibration only with current target-specific
+authorization, then confirm practical loudness and sound quality with the user.
+The previous package authorizations have already been exercised; they are not
+blanket permission for future writes.
 Use the official Mosaico workflow; generic IDF flash targets point at retained
 factory Recovery and are blocked. Let Recovery finish initialization before
 submitting updates on this board; do not blindly replay an uncertain operation.

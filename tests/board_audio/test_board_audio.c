@@ -177,7 +177,7 @@ int main(void)
 {
     board_audio_t *audio=NULL;
     CHECK(board_audio_open(&audio)==ESP_OK);CHECK(audio&&live==5);
-    CHECK(!pa_level&&muted&&mute_before_open&&hardware_volume==60&&delay_ticks>=10);
+    CHECK(!pa_level&&muted&&mute_before_open&&hardware_volume==90&&delay_ticks>=10);
     CHECK(requested.sample_rate==24000&&requested.bits_per_sample==16&&requested.channel==1);
     board_audio_t *duplicate=NULL;CHECK(board_audio_open(&duplicate)==ESP_ERR_INVALID_STATE&&!duplicate);
     int16_t pcm[240];for(unsigned i=0;i<240;++i)pcm[i]=(int16_t)(i*271-32768);
