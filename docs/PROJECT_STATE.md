@@ -8,6 +8,10 @@ and explicit per-device playback permission. Dependency pins remain in
 
 ## v4 presentation
 
+On 2026-10-09 the user explicitly accepted the current v4 GSP simulator effect.
+Treat this as approval of the simulated presentation and interaction baseline.
+It does not authorize device writes or establish physical hardware acceptance.
+
 The single-line identity, raised pad/sliders and 84/244/84 bottom row now follow
 v4. Native hit targets switch independently of the visual transition; capture
 uses one Cancel target, playback/preview uses one Pause target. Stale Cancel
