@@ -118,10 +118,12 @@ See `verification/device-audio/README.md` for hardware history and artifacts.
 On installed `874d650babab`: render maximum 2,201 us, write maximum 8,893 us,
 owner stack minimum 8,728 bytes, zero partial writes, and sustained nonzero PCM
 with PA enabled. Peak PCM was 4,368/32,767 (about 13% full scale). The user still
-reported very quiet sound at hardware volume 60. A volume-only package
-`d87ae02e9222` is prepared and awaits target-specific approval: hardware volume
-90 removes another 15 dB of attenuation, retaining the UI slider and all logic.
-Its audio tests and official build pass.
+reported very quiet sound at hardware volume 60. The user authorized and installed
+volume-only package `d87ae02e9222`: hardware volume 90 removes another 15 dB of
+attenuation, retaining the UI slider and all logic. Official update verification
+matched the image, HEALTHY event, commit ID and unchanged bootloader/partition
+hashes. The real home screen and startup logs are normal, with no observed UI or
+audio errors. Practical loudness and quality at 90 await user feedback.
 
 A pulse phrase on `874d650babab` took 9,553,429 us to prepare; this delay still
 needs optimization. ESP-Iris remote
@@ -130,8 +132,8 @@ evidence above comes from physical user touches.
 
 ## Remaining physical integration
 
-Install the reviewed volume calibration only with current target-specific
-authorization, then confirm practical loudness and sound quality with the user.
+The current device runs the volume-90 calibration. Confirm practical loudness
+and sound quality with the user before declaring acoustic acceptance.
 The previous package authorizations have already been exercised; they are not
 blanket permission for future writes.
 Use the official Mosaico workflow; generic IDF flash targets point at retained

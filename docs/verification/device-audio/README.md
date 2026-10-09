@@ -87,7 +87,7 @@ write maximum 8,893 us, owner stack minimum 8,728 bytes. A pulse phrase took
 9,553,429 us to prepare, still requiring optimization.
 [Structured evidence](queue64-device-result.json).
 
-## Volume calibration awaiting installation
+## Volume calibration
 
 The user reported that hardware volume 60 remained very quiet. PCM peak is about
 13% full scale before another -20 dB hardware attenuation. The new
@@ -100,4 +100,25 @@ gain difference; practical loudness still requires user verification.
 assertion first failed against 60. Official `system-update-bundle` and bundle
 inspection passed. No new memory/lifecycle code changed, so the earlier sanitizer
 coverage remains applicable rather than being presented as a new run. The volume
-package is prepared locally; permission for this specific write was requested.
+package was subsequently authorized and installed, as recorded below.
+
+## Volume90 installation result
+
+The user explicitly requested flashing 90. Official operation
+`c2a0444c-27d4-41a4-b1cb-ccf787dd1137` installed the exact package
+`d87ae02e9222d961332295aef876531504f1e3aeb08ee2116baa3dad2db49361`.
+The current Recovery Boot ID's initialization-complete log was checked first.
+The operation succeeded with HEALTHY on boot `16556209682536332364`, matching ELF
+SHA-256 `d172e99ba688ed9f313b9655df67b13f0c4f5ca94da37fd8f65b8daa49d26fa2`
+and the update commit ID. Bootloader and partition hashes remain unchanged.
+
+Executed `iris device-status`, `iris logs --snapshot` and `iris screenshot` after
+the update. The real home screen is visible, ES8311 opens successfully, and the
+current boot has no observed UI error or audio output failure. Startup is silent
+and retains the initial disabled Play control until a rhythm is recorded.
+[Structured evidence](volume90-device-result.json) and
+[device screenshot](volume90-running-device.png).
+
+This verifies installation and initial operation. Actual loudness/distortion at
+hardware volume 90 still requires the user's listening feedback. No external
+audio capture or physical waveform measurement was performed.

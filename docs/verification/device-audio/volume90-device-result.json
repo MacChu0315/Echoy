@@ -1,0 +1,46 @@
+{
+  "package_sha256": "d87ae02e9222d961332295aef876531504f1e3aeb08ee2116baa3dad2db49361",
+  "hardware_volume": 90,
+  "operation_id": "c2a0444c-27d4-41a4-b1cb-ccf787dd1137",
+  "status": "succeeded",
+  "device_id": "4553502d49524953010030eda0f452a0",
+  "validation": {
+    "boot_id": 16556209682536332364,
+    "healthy": true,
+    "application_validation": {
+      "actual": "d172e99ba688ed9f313b9655df67b13f0c4f5ca94da37fd8f65b8daa49d26fa2",
+      "actual_field": "firmware_sha256",
+      "expected": "d172e99ba688ed9f313b9655df67b13f0c4f5ca94da37fd8f65b8daa49d26fa2",
+      "expected_field": "elf_sha256",
+      "mode": "elf_sha256"
+    },
+    "source_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "be8a05005d124db5863c6539e358a567",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    },
+    "target_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "c2a0444c27d441a4b1cbccf787dd1137",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    }
+  },
+  "observation": {
+    "uptime_us": 105006388,
+    "crash_count": 0,
+    "free_internal": 125947,
+    "free_spiram": 13655988,
+    "min_free_internal": 86744,
+    "min_free_spiram": 13184872
+  },
+  "ui_errors": [],
+  "audio_errors": [],
+  "latest_audio_diagnostics": "I (93585) echoy_device: internal=125947 PSRAM=13655988 owner_stack=8728 prepare=1us render_max=1706us accepted=2160240 nonzero=0 peak=0 pa=0 activations=0 write_max=11913us partial=0 write_errors=0 deadline_misses=0 rejected=0 overflow=0 pr",
+  "acoustic_acceptance": "Awaiting user listening feedback; no waveform measurement"
+}
