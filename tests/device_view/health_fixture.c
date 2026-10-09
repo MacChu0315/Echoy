@@ -3,8 +3,34 @@
 #include "echoy_ui.h"
 #include "gsp_sim_bridge.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 static echoy_ui_handle_t ui;
+static bool initializing;
+static unsigned submitted, capacity;
+
+/* Model the bounded ESP-IDF queue while its render task is occupied by the
+ * first frame. Forward accepted calls to the actual simulator, not a fake UI. */
+static bool admit(void)
+{
+    return !initializing || (++submitted <= capacity);
+}
+#define WRAP_SCALAR(name, type) \
+    esp_gsp_err_t __real_##name(esp_gsp_handle_t, gsp_component_key_t, type); \
+    esp_gsp_err_t __wrap_##name(esp_gsp_handle_t g, gsp_component_key_t k, type v) \
+    { return admit() ? __real_##name(g, k, v) : ESP_GSP_ERR_TIMEOUT; }
+WRAP_SCALAR(esp_gsp_component_set_visible, bool)
+WRAP_SCALAR(esp_gsp_component_set_enabled, bool)
+WRAP_SCALAR(esp_gsp_component_set_color_rgb888, uint32_t)
+WRAP_SCALAR(esp_gsp_component_set_value, int32_t)
+WRAP_SCALAR(esp_gsp_component_set_text, const char *)
+esp_gsp_err_t __real_esp_gsp_component_set_property(esp_gsp_handle_t, gsp_component_key_t,
+                                                   gsp_property_key_t, const gsp_value_t *);
+esp_gsp_err_t __wrap_esp_gsp_component_set_property(esp_gsp_handle_t g, gsp_component_key_t k,
+                                                    gsp_property_key_t p, const gsp_value_t *v)
+{
+    return admit() ? __real_esp_gsp_component_set_property(g, k, p, v) : ESP_GSP_ERR_TIMEOUT;
+}
 static echoy_control_view_t view = {
     .state = {.role = ECHOY_PULSE, .phrase = 1, .density = .5},
     .plan = {.role = ECHOY_PULSE, .phrase = 1, .density = .5, .duration = 2.5},
@@ -45,11 +71,21 @@ static bool action(void *ctx, echoy_action_t kind, double value, int64_t at)
 }
 esp_gsp_err_t gsp_bridge_app_init(esp_gsp_handle_t gsp)
 {
+    capacity = getenv("ECHOY_TEST_QUEUE_DEPTH") ? (unsigned)atoi(getenv("ECHOY_TEST_QUEUE_DEPTH")) : 64;
+    if (getenv("ECHOY_TEST_LOADING")) {
+        view.condition = ECHOY_LOADING;
+        view.state.fault = true;
+    }
     echoy_platform_t platform = {.now_us = clock_us,
                                  .read_control = read_view,
                                  .perform_action = action,
                                  .is_simulator = false};
+    initializing = true;
     esp_gsp_err_t result = echoy_ui_create(gsp, &platform, &ui);
+    initializing = false;
+    fprintf(stderr, "HEALTH_FIXTURE startup_submissions=%u capacity=%u\n", submitted, capacity);
+    view.condition = ECHOY_NORMAL;
+    view.state.fault = false;
     fprintf(stderr, "HEALTH_FIXTURE init=%d\n", result);
     return result;
 }

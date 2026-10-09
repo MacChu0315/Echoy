@@ -13,8 +13,8 @@ No software stereo duplication or resampling is necessary. The adapter checks
 the actual public I2S mode configuration after codec opening. DMA is 3 by 120
 mono frames (720 bytes, 15 ms capacity), not a claimed measured output latency.
 
-`open` leaves PA GPIO45 and DAC muted. Hardware volume stays at 40 (the codec's
-default volume curve gives -30 dB before its board-gain compensation). The first
+`open` leaves PA GPIO45 and DAC muted. Hardware volume stays at 60 (the codec's
+default volume curve gives -20 dB before its board-gain compensation). The first
 accepted nonzero block unmutes; band/UI digital gain is unchanged. On a write
 fault PA is disabled before any I2C work, then TX stops. Cancel/flush disables
 PA, mutes, stops TX, zeroes every DMA descriptor with the public preload API and
@@ -49,7 +49,9 @@ These tests compile against the real managed codec public headers and stub only
 the hardware/BSP/codec calls. They check format, mono bytes, bounded DMA waits,
 partial writes, mute ordering, queue clearing, error propagation, reference
 cleanup, retry and failed-destructor lockout. The stubs model known codec bugs;
-they do not prove electrical behavior, acoustic level, board timing or real
+accepted nonzero PCM, peak magnitude (including -32768), write duration and PA
+transitions are also checked. These diagnostic counters are not measured sound.
+They do not prove electrical behavior, acoustic level, board timing or real
 underruns. Those require a separately authorized device run. LeakSanitizer needs
 execution outside a ptrace-restricted sandbox; do not treat its sandbox failure
 as a successful leak check.

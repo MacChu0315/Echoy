@@ -1,0 +1,36 @@
+{
+  "operation_id": "d2273dce-e365-4190-b3e5-da59b234d3bf",
+  "status": "outcome_unknown",
+  "error": "system update was written but healthy acceptance was not observed within 45 seconds",
+  "package_sha256": "87197fd80c0dbcbc3bea81e468871c230a7b0d06b2b9c5db1fdcc6285d34960b",
+  "progress": {
+    "bytes_received": 1934336,
+    "bytes_total": 1934336,
+    "component_id": null,
+    "component_kind": null,
+    "device_progress_permille": 950,
+    "job_id": 1,
+    "progress_permille": 875,
+    "source_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "c2da2ecb109849c5a465fa45cc83acb1",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    },
+    "stage": "waiting_device",
+    "target_application": {
+      "chip_id": 32,
+      "elf_sha256": "2af876f3160d111bb7de99bb217bb678af49d9930ad30533f2ebcdc02a1c8d46",
+      "project_name": "echoy",
+      "sha256": "8d04f5963c9380e468ebb750b45fd8cd1549450f65bad44b614d0f726f33496e",
+      "size": 1553968,
+      "version": "1.0.0"
+    },
+    "target_recovery": null,
+    "updated_ns": 1791522572363253179,
+    "writer_boot_id": 8576869063894147282,
+    "writer_boot_id_text": "8576869063894147282"
+  }
+}

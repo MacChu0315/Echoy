@@ -25,6 +25,7 @@
 #define PREPARE_DONE BIT1
 #define STARTED BIT2
 #define COMMAND_COUNT 32
+#define DIAGNOSTIC_BYTES 512
 static const char *TAG = "echoy_device";
 
 typedef struct {
@@ -50,13 +51,14 @@ struct echoy_device {
     echoy_band_t *band; /* Exclusively owned by audio/control after startup handoff. */
     echoy_control_view_t cache, staging;
     pcm_block_t *block;
-    atomic_bool stopping, queue_fault, accepting, owner_exited, prepare_exited;
+    atomic_bool stopping, queue_fault, accepting, owner_exited, prepare_exited, activated;
     bool audio_fault, fatal, preparation_in_flight, battery_empty;
     echoy_condition_t condition;
     int64_t origin_us, next_log_us, last_prepare_us, max_render_us;
     uint64_t accepted_frames;
     unsigned deadline_misses, rejected_actions, queue_overflows;
     esp_err_t shutdown_error;
+    board_audio_stats_t last_audio_stats;
 };
 
 static int64_t now_us(void *ctx)
@@ -131,9 +133,22 @@ static void fail_audio(struct echoy_device *d, board_audio_t **audio, const char
 {
     d->audio_fault = true;
     set_condition(d, ECHOY_AUDIO_FAULT);
+    if (*audio) {
+        board_audio_get_stats(*audio, &d->last_audio_stats);
+    }
     const esp_err_t close_error = board_audio_close(audio);
     ESP_LOGE(TAG, "%s failed: %s; playback stopped; explicit recovery required", operation,
              esp_err_to_name(error));
+    ESP_LOGE(
+        TAG,
+        "accepted=%llu nonzero=%llu peak=%u pa=%u activations=%u partial=%u "
+        "write_errors=%u last_write_us=%u max_write_us=%u",
+        (unsigned long long)d->last_audio_stats.frames_written,
+        (unsigned long long)d->last_audio_stats.nonzero_frames,
+        (unsigned)d->last_audio_stats.peak_pcm, (unsigned)d->last_audio_stats.pa_enabled,
+        (unsigned)d->last_audio_stats.pa_activations, (unsigned)d->last_audio_stats.partial_writes,
+        (unsigned)d->last_audio_stats.write_failures, (unsigned)d->last_audio_stats.last_write_us,
+        (unsigned)d->last_audio_stats.max_write_us);
     if (close_error != ESP_OK) {
         /* Cleanup failure can leave hardware ownership uncertain. Do not reopen. */
         d->fatal = true;
@@ -150,6 +165,7 @@ static bool open_audio(struct echoy_device *d, board_audio_t **audio)
         return false;
     }
     d->audio_fault = false;
+    d->last_audio_stats = (board_audio_stats_t){0};
     d->accepted_frames = 0;
     /* I2S owns three 5 ms DMA descriptors. This is an estimated presentation
      * timeline, not a measured DAC playhead. Hardware acceptance measures it. */
@@ -163,7 +179,7 @@ static void prepare_worker(void *arg)
     echoy_band_t *band = atomic_load(&d->stopping) ? NULL : echoy_band_create();
     xQueueSend(d->startup, &band, portMAX_DELAY);
     while (!atomic_load(&d->stopping)) {
-        char diagnostic[320];
+        char diagnostic[DIAGNOSTIC_BYTES];
         if (xQueueReceive(d->diagnostics, diagnostic, 0) == pdTRUE) {
             ESP_LOGI(TAG, "%s prep_stack=%u", diagnostic,
                      (unsigned)uxTaskGetStackHighWaterMark(NULL));
@@ -257,20 +273,24 @@ static void log_resources(struct echoy_device *d, board_audio_t *audio)
         return;
     }
     d->next_log_us = now + INT64_C(30000000);
-    board_audio_stats_t stats = {0};
+    board_audio_stats_t stats = d->last_audio_stats;
     if (audio) {
         board_audio_get_stats(audio, &stats);
     }
-    char diagnostic[320];
+    char diagnostic[DIAGNOSTIC_BYTES];
     snprintf(diagnostic, sizeof(diagnostic),
              "internal=%u PSRAM=%u owner_stack=%u prepare=%lldus render_max=%lldus "
-             "accepted=%llu partial=%u write_errors=%u deadline_misses=%u rejected=%u overflow=%u",
+             "accepted=%llu nonzero=%llu peak=%u pa=%u activations=%u write_max=%uus "
+             "partial=%u write_errors=%u deadline_misses=%u rejected=%u overflow=%u",
              (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT),
              (unsigned)heap_caps_get_free_size(MALLOC_CAP_SPIRAM),
              (unsigned)uxTaskGetStackHighWaterMark(NULL), (long long)d->last_prepare_us,
              (long long)d->max_render_us, (unsigned long long)stats.frames_written,
-             (unsigned)stats.partial_writes, (unsigned)stats.write_failures, d->deadline_misses,
-             d->rejected_actions, d->queue_overflows);
+             (unsigned long long)stats.nonzero_frames, (unsigned)stats.peak_pcm,
+             (unsigned)stats.pa_enabled, (unsigned)stats.pa_activations,
+             (unsigned)stats.max_write_us, (unsigned)stats.partial_writes,
+             (unsigned)stats.write_failures, d->deadline_misses, d->rejected_actions,
+             d->queue_overflows);
     /* UART logging may block for longer than a PCM block. Worker owns all
      * periodic log output; dropping a diagnostic is safer than blocking audio. */
     xQueueOverwrite(d->diagnostics, diagnostic);
@@ -283,7 +303,7 @@ static void owner_worker(void *arg)
     while (xQueueReceive(d->startup, &d->band, ticks(10)) != pdTRUE) {
         /* Always accept ownership, including a stop during startup. */
     }
-    if (!d->band) {
+    if (!d->band && !atomic_load(&d->stopping)) {
         d->fatal = d->audio_fault = true;
         ESP_LOGE(TAG, "shared controller allocation failed; Recovery remains available");
     } else if (!atomic_load(&d->stopping)) {
@@ -428,6 +448,7 @@ esp_err_t echoy_device_start(echoy_device_handle_t *out, echoy_platform_t *platf
     atomic_init(&d->accepting, true);
     atomic_init(&d->owner_exited, false);
     atomic_init(&d->prepare_exited, false);
+    atomic_init(&d->activated, false);
     d->condition = ECHOY_LOADING;
     d->cache = (echoy_control_view_t){
         .memories = {1, 1, 1, 2},
@@ -444,7 +465,7 @@ esp_err_t echoy_device_start(echoy_device_handle_t *out, echoy_platform_t *platf
     d->startup = xQueueCreate(1, sizeof(echoy_band_t *));
     d->jobs = xQueueCreate(1, sizeof(echoy_band_job_t *));
     d->prepared = xQueueCreate(1, sizeof(prepared_t));
-    d->diagnostics = xQueueCreate(1, 320);
+    d->diagnostics = xQueueCreate(1, DIAGNOSTIC_BYTES);
     d->view_lock = xSemaphoreCreateMutex();
     d->done = xEventGroupCreate();
     d->block = heap_caps_calloc(1, sizeof(*d->block), MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
@@ -473,13 +494,23 @@ esp_err_t echoy_device_start(echoy_device_handle_t *out, echoy_platform_t *platf
         ESP_LOGW(TAG, "battery worker unavailable: %s; displaying unknown",
                  esp_err_to_name(health_error));
     }
-    xEventGroupSetBits(d->done, STARTED);
     *platform = (echoy_platform_t){.ctx = d,
                                    .now_us = now_us,
                                    .read_control = read_control,
                                    .perform_action = perform_action,
                                    .initial_condition = ECHOY_LOADING};
     *out = d;
+    return ESP_OK;
+}
+esp_err_t echoy_device_activate(echoy_device_handle_t d)
+{
+    if (!d) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    if (atomic_load(&d->stopping) || atomic_exchange(&d->activated, true)) {
+        return ESP_ERR_INVALID_STATE;
+    }
+    xEventGroupSetBits(d->done, STARTED);
     return ESP_OK;
 }
 esp_err_t echoy_device_stop(echoy_device_handle_t *handle, uint32_t timeout_ms)
@@ -491,6 +522,8 @@ esp_err_t echoy_device_stop(echoy_device_handle_t *handle, uint32_t timeout_ms)
     const int64_t deadline = now_us(d) + (int64_t)timeout_ms * 1000;
     atomic_store(&d->accepting, false);
     atomic_store(&d->stopping, true);
+    /* Also release workers if UI/acceptance failed before activation. */
+    xEventGroupSetBits(d->done, STARTED);
     EventBits_t done =
         xEventGroupWaitBits(d->done, OWNER_DONE | PREPARE_DONE, pdFALSE, pdTRUE, ticks(timeout_ms));
     if ((done & (OWNER_DONE | PREPARE_DONE)) != (OWNER_DONE | PREPARE_DONE)) {

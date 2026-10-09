@@ -15,7 +15,7 @@ and the normal leak checks. Some restricted execution environments prevent
 LeakSanitizer from inspecting threads; this produces its `ptrace` fatal error,
 not a passing leak result. Run the same local test outside that restriction.
 
-The 14 cases cover:
+The 16 cases cover:
 
 - Cached UI reads while the audio write is blocked; unknown battery/IMU values.
 - Valid loading-state plan metadata and phrase memories before band creation.
@@ -26,6 +26,8 @@ The 14 cases cover:
 - Empty battery remaining latched when the next health read is unknown.
 - Shutdown during startup or immutable preparation, timeout retention and retry.
 - Partial task creation, health cleanup retry and audio cleanup error propagation.
+- Audio remains unopened during UI setup/firmware acceptance, activates once on
+  explicit release, and shuts down safely if acceptance fails before activation.
 
 The event-group fixture deliberately delays the pinned SDK's post-unlock read
 in `xEventGroupSetBits()`. Successful cases assert that the group is not deleted

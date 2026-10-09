@@ -1,0 +1,14 @@
+{
+  "mode": "first-frame-busy queue model with real GSP/C UI",
+  "depth_24": {
+    "startup_submissions": 25,
+    "init_error": 263,
+    "result": "expected failure"
+  },
+  "depth_64": {
+    "startup_submissions": 27,
+    "init_error": 0,
+    "result": "passed"
+  },
+  "remaining_startup_work": "image/callback registrations require additional slots"
+}

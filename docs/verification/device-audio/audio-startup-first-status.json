@@ -1,0 +1,9 @@
+{
+  "device_id": "4553502d49524953010030eda0f452a0",
+  "boot_id": 17529347554090806226,
+  "project_name": "echoy",
+  "firmware_sha256": "2af876f3160d111bb7de99bb217bb678af49d9930ad30533f2ebcdc02a1c8d46",
+  "firmware_mode": "normal",
+  "reset_reason": 3,
+  "crash_count": 0
+}

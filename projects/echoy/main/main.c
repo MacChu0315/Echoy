@@ -10,7 +10,15 @@
 #include "iris_screen_mirror.h"
 #include "nvs_flash.h"
 #include "platform_device.h"
+#include "sdkconfig.h"
 #include "ui_bundle.h"
+
+#if CONFIG_ESP_MOSAICO_APP_AUTO_ACCEPT
+#error "Echoy accepts firmware before audio activation; disable ESP_MOSAICO_APP_AUTO_ACCEPT"
+#endif
+#if CONFIG_ESP_GSP_QUEUE_DEPTH < 64
+#error "Echoy startup requires ESP_GSP_QUEUE_DEPTH >= 64; regenerate from current defaults"
+#endif
 
 static const char *TAG = "echoy";
 static echoy_ui_handle_t s_ui;
@@ -65,10 +73,19 @@ void app_main(void)
     echoy_platform_t platform;
     CHECK_START(echoy_device_start(&s_device, &platform));
     esp_gsp_err_t ui_error = echoy_ui_create(ui, &platform, &s_ui);
+    if (ui_error == ESP_GSP_OK) {
+        /* Accepting the image writes OTA/NVS metadata and can suspend cached
+         * I2S interrupts. Complete it before starting the sample clock, never
+         * by lengthening the audio timeout or hiding an interrupted stream. */
+        ui_error = esp_iris_mark_healthy();
+    }
+    if (ui_error == ESP_GSP_OK) {
+        ui_error = echoy_device_activate(s_device);
+    }
     if (ui_error != ESP_GSP_OK) {
         platform.perform_action(platform.ctx, ECHOY_ACT_CONDITION, ECHOY_AUDIO_FAULT,
                                 platform.now_us(platform.ctx));
-        ESP_LOGE(TAG, "UI controller failed: %d; Recovery remains active", ui_error);
+        ESP_LOGE(TAG, "Application startup failed: %d; Recovery remains active", ui_error);
         if (s_ui && echoy_ui_delete(s_ui) != ESP_GSP_OK) {
             /* A callback may still reference the runtime: keep its storage. */
             ESP_LOGE(TAG, "UI callbacks could not detach; retaining silent runtime");

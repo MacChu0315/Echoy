@@ -91,17 +91,32 @@ official updater verified Echoy's ELF identity, HEALTHY event, commit ID and
 partition hash, with unchanged bootloader hash. This supports a startup-overlap
 hypothesis but does not prove the watchdog's low-level cause.
 
-That installed image has a UI initialization fault: unknown battery readings
-call `set_visible(false)` on five battery fills without a compiled visibility
-binding (`ESP_GSP_ERR_NOT_FOUND`, 261). UI setup aborts and the runtime stops;
-the actual screen says Audio unavailable. Firmware HEALTHY therefore does not
-establish usable UI or audio. No acoustic acceptance has occurred.
+The first UI binding fault (261 for unknown-battery fill visibility) was fixed
+and package `afae9df52f28` was subsequently authorized and installed. That UI
+reached home, but delayed automatic firmware acceptance overlapped streaming and
+audio timed out at boot. After the user tapped Restore, playback stayed active;
+the user recorded a phrase, navigated pages and confirmed audible but very quiet
+sound. These are user observations, not measured acoustic acceptance.
 
-The scene generator now declares those five visibility bindings. A new native
-GSP test reproduces 261 before the fix and passes unknown/37%/unknown transitions
-and all five pages after it. Existing home regression and zero-warning S31 build
-pass. Fixed bundle `afae9df52f28` is locally prepared; installation permission is
-pending. See `verification/device-install/README.md` and `fix-artifacts.json`.
+The current local implementation completes firmware acceptance after UI setup
+and before explicitly activating the audio worker. Delayed auto-accept is
+disabled. Hardware volume is now 60 instead of 40; accepted nonzero PCM/peak/PA
+and write-duration diagnostics are retained across faults. The first approved
+audio package `87197fd80c0d` was written but failed UI setup with queue timeout
+263; it correctly withheld HEALTHY and audio activation.
+
+A native fixture measured 27 initial component changes: SDK queue depth 24
+reproduces the timeout; 64 passes. Current defaults and compile-time guards
+require 64 and manual acceptance. The final package `874d650babab` is prepared;
+target-specific installation permission is pending. Tests: 16 runtime cases and
+22,263 audio assertions, including ASan/UBSan/LSan, plus the real GSP fixture.
+See `verification/device-audio/README.md` for hardware history and artifacts.
+
+Observed post-Restore on `afae9df52f28`: maximum render time 2,363 us, owner stack
+minimum 8,380 bytes, preparation stack minimum 8,192 bytes. A pulse phrase took
+10,354,001 us to prepare; this delay still needs optimization. ESP-Iris remote
+pointer injection is unavailable in the current mirror adapter; interaction
+evidence above comes from physical user touches.
 
 ## Remaining physical integration
 

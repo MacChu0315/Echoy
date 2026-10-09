@@ -11,6 +11,11 @@ gsp_add_backend(echoy_backend
     INCLUDE_DIRECTORIES "${APP}/main"
     SCENES "${APP}/ui/main.json")
 target_link_libraries(echoy_backend PRIVATE m)
+foreach(call esp_gsp_component_set_visible esp_gsp_component_set_enabled
+             esp_gsp_component_set_color_rgb888 esp_gsp_component_set_value
+             esp_gsp_component_set_text esp_gsp_component_set_property)
+    target_link_options(echoy_backend PRIVATE "-Wl,--wrap=${call}")
+endforeach()
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_sources(echoy_backend PRIVATE "${APP}/pc/loopback_transport.c")
     target_link_options(echoy_backend PRIVATE "-Wl,--wrap=recv")

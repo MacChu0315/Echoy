@@ -12,5 +12,6 @@ void fake_hold_create(bool value);
 void fake_hold_prepare(bool value);
 bool fake_write_is_blocked(void);
 bool fake_prepare_is_blocked(void);
+bool fake_create_is_blocked(void);
 void fake_sleep_ms(unsigned ms);
 void fake_join_tasks(void);

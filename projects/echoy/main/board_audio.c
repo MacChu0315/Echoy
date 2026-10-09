@@ -314,11 +314,18 @@ esp_err_t board_audio_write(board_audio_t *audio, const int16_t *pcm, size_t fra
     if (!frames) return ESP_OK;
     memcpy(audio->pcm, pcm, frames * sizeof(*pcm));
     audio->written_bytes = 0;
-    audio->write_deadline = esp_timer_get_time() + BOARD_AUDIO_WRITE_TIMEOUT_MS * INT64_C(1000);
+    const int64_t write_started = esp_timer_get_time();
+    audio->write_deadline = write_started + BOARD_AUDIO_WRITE_TIMEOUT_MS * INT64_C(1000);
     ++audio->stats.write_calls;
     esp_err_t error = esp_codec_dev_write(audio->device, audio->pcm, (int)(frames * sizeof(*pcm)));
     *written_frames = audio->written_bytes / sizeof(*pcm);
     audio->stats.frames_written += *written_frames;
+    for (size_t i = 0; i < *written_frames; ++i) {
+        const int32_t sample = pcm[i];
+        const uint32_t magnitude = (uint32_t)(sample < 0 ? -sample : sample);
+        if (sample) ++audio->stats.nonzero_frames;
+        if (magnitude > audio->stats.peak_pcm) audio->stats.peak_pcm = magnitude;
+    }
     if (*written_frames && *written_frames < frames) ++audio->stats.partial_writes;
     if (error == ESP_OK && audio->written_bytes != frames * sizeof(*pcm)) error = ESP_FAIL;
     if (error == ESP_OK && !audio->pa_on) {
@@ -328,9 +335,15 @@ esp_err_t board_audio_write(board_audio_t *audio, const int16_t *pcm, size_t fra
             audio->interface_error = ESP_OK;
             error = result(audio, esp_codec_dev_set_out_mute(audio->device, false));
             if (error == ESP_OK) error = gpio_set_level(BSP_AUDIO_PA_CTRL, 1);
-            if (error == ESP_OK) audio->pa_on = true;
+            if (error == ESP_OK) {
+                audio->pa_on = true;
+                ++audio->stats.pa_activations;
+            }
         }
     }
+    audio->stats.last_write_us = (uint32_t)(esp_timer_get_time() - write_started);
+    if (audio->stats.last_write_us > audio->stats.max_write_us)
+        audio->stats.max_write_us = audio->stats.last_write_us;
     if (error != ESP_OK) {
         ++audio->stats.write_failures;
         if (error == ESP_ERR_TIMEOUT) ++audio->stats.write_timeouts;
@@ -358,6 +371,7 @@ esp_err_t board_audio_get_stats(const board_audio_t *audio, board_audio_stats_t 
 {
     if (!audio || audio != owner || !out) return ESP_ERR_INVALID_ARG;
     *out = audio->stats;
+    out->pa_enabled = audio->pa_on;
     return ESP_OK;
 }
 

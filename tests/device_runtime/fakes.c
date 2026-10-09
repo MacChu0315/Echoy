@@ -22,7 +22,7 @@ atomic_int fake_partial_next, fake_open_failure, fake_close_failure, fake_flush_
 atomic_int fake_task_failure, fake_health_stop_timeout, fake_event_tail_reads_after_delete;
 atomic_int fake_watermark_after_exit, fake_nonzero_blocks;
 static atomic_int health_percent = -1;
-static atomic_bool hold_write, hold_create, hold_prepare, write_blocked, prepare_blocked;
+static atomic_bool hold_write, hold_create, hold_prepare, write_blocked, prepare_blocked, create_blocked;
 void fake_sleep_ms(unsigned ms)
 {
     struct timespec t = {ms / 1000, (ms % 1000) * 1000000L};
@@ -393,9 +393,16 @@ bool board_health_battery_empty(const board_health_snapshot_t *s)
 echoy_band_t *__real_echoy_band_create(void);
 echoy_band_t *__wrap_echoy_band_create(void)
 {
-    while (atomic_load(&hold_create))
+    while (atomic_load(&hold_create)) {
+        atomic_store(&create_blocked, true);
         fake_sleep_ms(1);
+    }
+    atomic_store(&create_blocked, false);
     return __real_echoy_band_create();
+}
+bool fake_create_is_blocked(void)
+{
+    return atomic_load(&create_blocked);
 }
 bool __real_echoy_band_prepare_job(echoy_band_job_t *job);
 bool __wrap_echoy_band_prepare_job(echoy_band_job_t *job)

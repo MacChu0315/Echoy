@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include "esp_err.h"
@@ -9,13 +10,15 @@
 #define BOARD_AUDIO_DMA_FRAMES 120u
 #define BOARD_AUDIO_DMA_DESCRIPTORS 3u
 #define BOARD_AUDIO_WRITE_TIMEOUT_MS 40u
-#define BOARD_AUDIO_HARDWARE_VOLUME 40
+#define BOARD_AUDIO_HARDWARE_VOLUME 60
 
 typedef struct board_audio board_audio_t;
 typedef struct {
-    uint64_t frames_written;
+    uint64_t frames_written, nonzero_frames;
     uint32_t write_calls, write_failures, write_timeouts, partial_writes, flushes;
     uint32_t queue_capacity_frames;
+    uint32_t peak_pcm, last_write_us, max_write_us, pa_activations;
+    bool pa_enabled;
     esp_err_t last_error;
 } board_audio_stats_t;
 
@@ -38,8 +41,8 @@ esp_err_t board_audio_write(board_audio_t *audio, const int16_t *pcm, size_t fra
  * Scheduler-owned/stale PCM must also be discarded by the caller. */
 esp_err_t board_audio_flush(board_audio_t *audio);
 
-/* Statistics are driver acceptance counts/capacity, not DAC playhead or a
- * claimed hardware underrun counter. */
+/* Statistics describe accepted PCM and successful PA control, not a measured
+ * analog waveform, DAC playhead or hardware underrun counter. Getter has no I/O. */
 esp_err_t board_audio_get_stats(const board_audio_t *audio, board_audio_stats_t *out);
 
 /* Mutes before cleanup, consumes *audio and sets it to NULL. Shared BSP rails

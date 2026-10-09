@@ -177,7 +177,7 @@ int main(void)
 {
     board_audio_t *audio=NULL;
     CHECK(board_audio_open(&audio)==ESP_OK);CHECK(audio&&live==5);
-    CHECK(!pa_level&&muted&&mute_before_open&&hardware_volume==40&&delay_ticks>=10);
+    CHECK(!pa_level&&muted&&mute_before_open&&hardware_volume==60&&delay_ticks>=10);
     CHECK(requested.sample_rate==24000&&requested.bits_per_sample==16&&requested.channel==1);
     board_audio_t *duplicate=NULL;CHECK(board_audio_open(&duplicate)==ESP_ERR_INVALID_STATE&&!duplicate);
     int16_t pcm[240];for(unsigned i=0;i<240;++i)pcm[i]=(int16_t)(i*271-32768);
@@ -187,9 +187,12 @@ int main(void)
     CHECK(pa_level==1&&!muted&&write_calls==2&&waits[0]==40&&waits[1]==30);
     board_audio_stats_t stats;CHECK(board_audio_get_stats(audio,&stats)==ESP_OK);
     CHECK(stats.frames_written==240&&stats.queue_capacity_frames==360&&stats.write_calls==1);
+    CHECK(stats.nonzero_frames==240&&stats.peak_pcm==32768&&stats.pa_enabled&&stats.pa_activations==1);
+    CHECK(stats.last_write_us==20000&&stats.max_write_us==20000);
     CHECK(board_audio_flush(audio)==ESP_OK&&!pa_level&&muted);
     CHECK(preload_calls==2);for(unsigned i=0;i<720;++i)CHECK(channel->dma[i]==0);
     memset(pcm,0,sizeof(pcm));CHECK(board_audio_write(audio,pcm,240,&written)==ESP_OK&&!pa_level&&muted);
+    CHECK(board_audio_get_stats(audio,&stats)==ESP_OK&&stats.nonzero_frames==240&&!stats.pa_enabled&&stats.pa_activations==1);
     CHECK(board_audio_write(audio,pcm,481,&written)==ESP_ERR_INVALID_ARG&&written==0);
     CHECK(board_audio_close(&audio)==ESP_OK&&!audio&&live==0&&!pa_level);
 
@@ -203,6 +206,7 @@ int main(void)
     failure=FAIL_NONE;CHECK(board_audio_open(&audio)==ESP_OK);failure=FAIL_PARTIAL;
     pcm[0]=100;CHECK(board_audio_write(audio,pcm,240,&written)==ESP_ERR_TIMEOUT&&written==40&&!pa_level);
     CHECK(board_audio_get_stats(audio,&stats)==ESP_OK&&stats.write_failures==1&&stats.write_timeouts==1&&stats.partial_writes==1&&stats.frames_written==40);
+    CHECK(stats.nonzero_frames==1&&stats.peak_pcm==100&&!stats.pa_enabled&&stats.pa_activations==0);
     CHECK(board_audio_write(audio,pcm,1,&written)==ESP_ERR_INVALID_STATE&&written==0);
     failure=FAIL_NONE;CHECK(board_audio_close(&audio)==ESP_OK&&!audio&&live==0);
     CHECK(board_audio_open(&audio)==ESP_OK);failure=FAIL_SHORT;

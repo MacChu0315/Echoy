@@ -32,6 +32,7 @@ static echoy_control_view_t until(int condition, int phase, int seed)
 static void start(echoy_device_handle_t *d)
 {
     assert(echoy_device_start(d, &p) == ESP_OK);
+    assert(echoy_device_activate(*d) == ESP_OK);
     assert(*d);
     assert(!p.is_simulator);
     until(ECHOY_NORMAL, ECHOY_IDLE, 0);
@@ -173,6 +174,12 @@ static void startup_timeout(void)
     echoy_device_handle_t d;
     fake_hold_create(true);
     assert(echoy_device_start(&d, &p) == ESP_OK);
+    assert(echoy_device_activate(d) == ESP_OK);
+    int64_t end = esp_timer_get_time() + 1000000;
+    while (!fake_create_is_blocked()) {
+        assert(esp_timer_get_time() < end);
+        fake_sleep_ms(1);
+    }
     assert(view().condition == ECHOY_LOADING);
     assert(echoy_device_stop(&d, 5) == ESP_ERR_TIMEOUT && d);
     assert(!action(ECHOY_ACT_RECORD, 0));
@@ -241,6 +248,7 @@ static void loading_cache_contract(void)
     }
     assert(v.battery_unknown && v.imu_unknown);
     fake_hold_create(false);
+    assert(echoy_device_activate(d) == ESP_OK);
     until(ECHOY_NORMAL, ECHOY_IDLE, 0);
     stop(&d);
     puts("PASS initial loading cache is a valid input for the real UI's gallery composer");
@@ -250,6 +258,7 @@ static void open_failure_recovery(void)
     echoy_device_handle_t d;
     atomic_store(&fake_open_failure, 1);
     assert(echoy_device_start(&d, &p) == ESP_OK);
+    assert(echoy_device_activate(d) == ESP_OK);
     until(ECHOY_AUDIO_FAULT, ECHOY_IDLE, 0);
     fake_sleep_ms(80);
     assert(atomic_load(&fake_open_calls) == 1 && !atomic_load(&fake_write_calls));
@@ -289,6 +298,33 @@ static void missed_deadline(void)
     stop(&d);
     puts("PASS output deadline miss faults instead of writing catch-up blocks");
 }
+static void acceptance_gate(void)
+{
+    echoy_device_handle_t d;
+    assert(echoy_device_start(&d, &p) == ESP_OK);
+    /* Simulate main performing UI setup and blocking flash acceptance work.
+     * Audio must not start until that lifecycle work is explicitly complete. */
+    fake_sleep_ms(120);
+    assert(atomic_load(&fake_open_calls) == 0);
+    assert(atomic_load(&fake_write_calls) == 0);
+    assert(view().condition == ECHOY_LOADING);
+    assert(echoy_device_activate(d) == ESP_OK);
+    assert(echoy_device_activate(d) == ESP_ERR_INVALID_STATE);
+    until(ECHOY_NORMAL, ECHOY_IDLE, 0);
+    assert(atomic_load(&fake_open_calls) == 1);
+    stop(&d);
+    puts("PASS deferred runtime does not stream while startup flash work is in progress");
+}
+static void stop_before_activation(void)
+{
+    echoy_device_handle_t d;
+    assert(echoy_device_start(&d, &p) == ESP_OK);
+    assert(view().condition == ECHOY_LOADING);
+    stop(&d);
+    assert(atomic_load(&fake_open_calls) == 0);
+    assert(atomic_load(&fake_write_calls) == 0);
+    puts("PASS failed UI/acceptance can shut down unopened audio without hanging");
+}
 int main(int argc, char **argv)
 {
     assert(argc == 2);
@@ -320,6 +356,10 @@ int main(int argc, char **argv)
         flush_failure();
     else if (!strcmp(argv[1], "deadline"))
         missed_deadline();
+    else if (!strcmp(argv[1], "acceptance_gate"))
+        acceptance_gate();
+    else if (!strcmp(argv[1], "stop_unactivated"))
+        stop_before_activation();
     else
         return 2;
     return 0;

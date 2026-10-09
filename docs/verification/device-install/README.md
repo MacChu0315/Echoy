@@ -93,6 +93,7 @@ Prepared fix:
 [`echoy-battery-binding-afae9df52f28.irisfw`](../../../output/device-release/echoy-battery-binding-afae9df52f28.irisfw),
 1,090,287 bytes, SHA-256
 `afae9df52f2849714d677aeed6c78077d481837dd682dc81808f11bbb5735950`.
-[Component manifest](fix-artifacts.json). This new package has not been installed;
-target-specific permission was requested. Physical verification must be repeated
-after installation rather than inferred from the previous HEALTHY event.
+[Component manifest](fix-artifacts.json). The user later authorized this package
+and it was installed successfully; the visibility-binding error disappeared.
+Subsequent audio findings are in [the audio report](../device-audio/README.md).
+Installation success must not be substituted for UI or acoustic acceptance.

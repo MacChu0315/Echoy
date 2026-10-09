@@ -1,0 +1,49 @@
+{
+  "schema": "esp-iris-system-update/v1",
+  "manifest_sha256": "97c9de8d2adf5934e0f1b13cd7627bf13eaf7611d58f292809f8bb7a8660a03b",
+  "key_id": null,
+  "chip_id": 32,
+  "flash_size": 16777216,
+  "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+  "components": [
+    {
+      "id": 1,
+      "kind": "partition_table",
+      "flags": 0,
+      "target_offset": 32768,
+      "size": 4096,
+      "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+      "file": "partition-table.bin"
+    },
+    {
+      "id": 2,
+      "kind": "application",
+      "flags": 0,
+      "target_offset": 2162688,
+      "size": 1553968,
+      "sha256": "8d04f5963c9380e468ebb750b45fd8cd1549450f65bad44b614d0f726f33496e",
+      "file": "ota_0.bin"
+    },
+    {
+      "id": 3,
+      "kind": "data",
+      "flags": 0,
+      "target_offset": 15728640,
+      "size": 376272,
+      "sha256": "9dda554fa00197d0a6020dc139423fb48b2973f00b81e87d405a081142d9f183",
+      "file": "ui_apps.bin"
+    }
+  ],
+  "signature_verified": false,
+  "release": "1.0.0",
+  "minimum_recovery_version": "0.1",
+  "local_bundle": {
+    "file": "output/device-release/echoy-audio-startup-87197fd80c0d.irisfw",
+    "sha256": "87197fd80c0dbcbc3bea81e468871c230a7b0d06b2b9c5db1fdcc6285d34960b",
+    "bytes": 1090615
+  },
+  "build_directory": "output/device-audio-build",
+  "manual_accept_before_audio": true,
+  "hardware_volume": 60,
+  "physical_acceptance": false
+}

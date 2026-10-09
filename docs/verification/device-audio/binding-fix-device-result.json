@@ -1,0 +1,31 @@
+{
+  "boot_id": 16880710469859591394,
+  "writer_boot_id": 18031481990124145485,
+  "healthy": true,
+  "application_validation": {
+    "actual": "d6f50e2a8db9cbcc8ed36fd1e62ce8dafab9e9d36758f29faa97a3c48ad71f52",
+    "actual_field": "firmware_sha256",
+    "expected": "d6f50e2a8db9cbcc8ed36fd1e62ce8dafab9e9d36758f29faa97a3c48ad71f52",
+    "expected_field": "elf_sha256",
+    "mode": "elf_sha256"
+  },
+  "source_inventory": {
+    "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+    "flags": 7,
+    "last_operation_id": "7d241c9d8c4b4a1cb3eefbef614ef87b",
+    "last_result": 0,
+    "layout_version": 4,
+    "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+  },
+  "target_inventory": {
+    "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+    "flags": 7,
+    "last_operation_id": "c2da2ecb109849c5a465fa45cc83acb1",
+    "last_result": 0,
+    "layout_version": 4,
+    "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+  },
+  "package": "afae9df52f28",
+  "ui_binding_error_resolved": true,
+  "user_report": "After Restore stays on home. Sound later confirmed audible but very quiet."
+}
