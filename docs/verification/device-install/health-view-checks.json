@@ -1,0 +1,9 @@
+{
+  "passed": [
+    "unknown battery initializes real C UI",
+    "all five fill visibility bindings exist",
+    "unknown to 37 percent to unknown updates text and fill",
+    "all five pages remain usable"
+  ],
+  "scope": "official GSP, production C UI, fixture health readings; no physical audio or battery"
+}

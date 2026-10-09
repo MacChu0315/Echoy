@@ -1,0 +1,48 @@
+{
+  "schema": "esp-iris-system-update/v1",
+  "manifest_sha256": "ee3cad7839a4c8833dd48768b9b9870e72e4cc383bed9c3d00f63f1e34c45068",
+  "key_id": null,
+  "chip_id": 32,
+  "flash_size": 16777216,
+  "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+  "components": [
+    {
+      "id": 1,
+      "kind": "partition_table",
+      "flags": 0,
+      "target_offset": 32768,
+      "size": 4096,
+      "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+      "file": "partition-table.bin"
+    },
+    {
+      "id": 2,
+      "kind": "application",
+      "flags": 0,
+      "target_offset": 2162688,
+      "size": 1553552,
+      "sha256": "c3207a2ab5e868d558ffc23268b09e19e28ea61286525d65c5a65c567f6b3431",
+      "file": "ota_0.bin"
+    },
+    {
+      "id": 3,
+      "kind": "data",
+      "flags": 0,
+      "target_offset": 15728640,
+      "size": 376272,
+      "sha256": "9dda554fa00197d0a6020dc139423fb48b2973f00b81e87d405a081142d9f183",
+      "file": "ui_apps.bin"
+    }
+  ],
+  "signature_verified": false,
+  "release": "1.0.0",
+  "minimum_recovery_version": "0.1",
+  "local_bundle": {
+    "file": "output/device-release/echoy-battery-binding-afae9df52f28.irisfw",
+    "sha256": "afae9df52f2849714d677aeed6c78077d481837dd682dc81808f11bbb5735950",
+    "bytes": 1090287
+  },
+  "build_run": "20261009-121900-build-2",
+  "source_commit_before_fix": "29265da",
+  "physical_acceptance": false
+}

@@ -91,10 +91,10 @@ dyn('role_title_first',34,25,26,32,'脉',25,'#d95535',home,font='fonts/NotoSansS
 dyn('role_title_second',60,25,26,32,'冲',25,'#d95535',home,font='fonts/NotoSansSC-Bold.otf')
 label('identity_separator',94,26,8,32,'·',17,'#74806b',home,font='fonts/LiberationSans-Regular.ttf')
 dyn('phrase_title',110,25,220,32,'重音',18,'#78836d',home)
-# Battery is a placeholder supplied by the PC adapter until hardware integration.
+# Hardware health can be unknown: expose fill visibility as well as percentage text.
 add('container','battery_outline',399,37,19,12,home,border_color='#78836c',border_width=1,radius=2)
 add('container','battery_tip',420,41,1,4,home,bg_color='#78836c')
-add('container','battery_fill',402,40,9,6,home,bg_color='#78836c')
+add('container','battery_fill',402,40,9,6,home,bg_color='#78836c',bind='battery_fill_visible',bind_target='visible')
 dyn('battery_text',428,31,23,22,'72%',12,'#78836c',home,font='fonts/DejaVuSansMono.ttf')
 dyn('status',24,339,432,23,'中央试奏 · 录制才保存',13,'#7c886e',home,text_align='center',hidden=True)
 label('capture_status',24,339,432,23,'预备 · 2',13,'#a46848',home,text_align='center',hidden=True,bind='capture_status',bind_target='text',font_charset=charset)
@@ -187,7 +187,7 @@ def header(name,parent,zh,en):
     icon(name+'_back_icon','back',29,29,25,25,back,tint='#5d6c50')
     add('container',name+'_battery_outline',407,42,19,12,parent,border_color='#78836c',border_width=1,radius=2)
     add('container',name+'_battery_tip',428,46,1,4,parent,bg_color='#78836c')
-    add('container',name+'_battery_fill',410,45,9,6,parent,bg_color='#78836c')
+    add('container',name+'_battery_fill',410,45,9,6,parent,bg_color='#78836c',bind=name+'_battery_fill_visible',bind_target='visible')
     dyn(name+'_battery_text',435,35,25,22,'72%',11,'#78836c',parent,font='fonts/DejaVuSansMono.ttf',font_charset='0123456789%-')
     return (zh,en)
 

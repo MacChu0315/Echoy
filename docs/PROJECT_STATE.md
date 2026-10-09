@@ -4,7 +4,8 @@ The approved source is now `reference/v4/echoy-arrange-B-v4.html`; hashes are in
 `reference/v4/SHA256SUMS`. The delivered ZIP and v3 historical baseline remain
 unchanged. The v4 musical/audio/arrangement code matches v3. Preserve the design, musical rules
 and explicit per-device playback permission. Dependency pins remain in
-`dependencies.json`; no remote write or physical device write has occurred.
+`dependencies.json`. No remote write has occurred. The first authorized physical
+installation and its follow-up UI fix are recorded below.
 
 ## v4 presentation
 
@@ -75,15 +76,41 @@ ESP32-S31 SDK. Verification and the final artifact are recorded in
 `verification/device-preparation/README.md`. These are local checks with host
 hardware substitutes, not physical-device acceptance.
 
+## First authorized physical installation (2026-10-09)
+
+The user authorized installing bundle `38b79718eed8` on `/dev/ttyACM0`. The
+verified board is Mosaico v1.2 / ESP32-S31, Device ID
+`4553502d49524953010030eda0f452a0`, with retained Recovery 0.1.2 and layout
+`mosaico-retained-recovery-2m-v1`.
+
+The first attempt hit an interrupt-watchdog reset in Recovery while application
+erase overlapped Recovery UI/network initialization. Read-only reconciliation
+confirmed a reboot into Recovery and no commit record. A controlled retry of the
+same authorized bundle after Recovery finished initialization succeeded. The
+official updater verified Echoy's ELF identity, HEALTHY event, commit ID and
+partition hash, with unchanged bootloader hash. This supports a startup-overlap
+hypothesis but does not prove the watchdog's low-level cause.
+
+That installed image has a UI initialization fault: unknown battery readings
+call `set_visible(false)` on five battery fills without a compiled visibility
+binding (`ESP_GSP_ERR_NOT_FOUND`, 261). UI setup aborts and the runtime stops;
+the actual screen says Audio unavailable. Firmware HEALTHY therefore does not
+establish usable UI or audio. No acoustic acceptance has occurred.
+
+The scene generator now declares those five visibility bindings. A new native
+GSP test reproduces 261 before the fix and passes unknown/37%/unknown transitions
+and all five pages after it. Existing home regression and zero-warning S31 build
+pass. Fixed bundle `afae9df52f28` is locally prepared; installation permission is
+pending. See `verification/device-install/README.md` and `fix-artifacts.json`.
+
 ## Remaining physical integration
 
-No device has been flashed or accepted. The user selected `/dev/ttyACM0`; a later
-OS-only inventory confirms an Espressif `303a:4002` device named
-`ESP-Iris Mosaico woofly` there. No serial session has been opened; protocol device
-ID, board revision, actual layout and Recovery compatibility remain unverified.
-Present the exact bundle and write scope for target-specific user confirmation
-before device operations. Use the official Mosaico system-update workflow; generic
-IDF flash targets point at the retained factory Recovery partition and are blocked.
+Install the reviewed fix only with current target-specific authorization, then
+verify actual UI, audio and health readings. The initial package authorization
+has already been exercised; it is not blanket permission for future writes.
+Use the official Mosaico workflow; generic IDF flash targets point at retained
+factory Recovery and are blocked. Let Recovery finish initialization before
+submitting updates on this board; do not blindly replay an uncertain operation.
 
 Next: validate single-device touch, speaker, battery, preparation latency and
 resource watermarks on hardware. Then implement/accept physical neighbor

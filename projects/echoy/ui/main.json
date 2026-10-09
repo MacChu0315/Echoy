@@ -60,7 +60,9 @@
       "y": 40,
       "w": 9,
       "h": 6,
-      "bg_color": "#78836c"
+      "bg_color": "#78836c",
+      "bind": "battery_fill_visible",
+      "bind_target": "visible"
     },
     {
       "type": "label",
@@ -1941,7 +1943,9 @@
       "y": 45,
       "w": 9,
       "h": 6,
-      "bg_color": "#78836c"
+      "bg_color": "#78836c",
+      "bind": "role_battery_fill_visible",
+      "bind_target": "visible"
     },
     {
       "type": "label",
@@ -3592,7 +3596,9 @@
       "y": 45,
       "w": 9,
       "h": 6,
-      "bg_color": "#78836c"
+      "bg_color": "#78836c",
+      "bind": "settings_battery_fill_visible",
+      "bind_target": "visible"
     },
     {
       "type": "label",
@@ -4336,7 +4342,9 @@
       "y": 45,
       "w": 9,
       "h": 6,
-      "bg_color": "#78836c"
+      "bg_color": "#78836c",
+      "bind": "guide_battery_fill_visible",
+      "bind_target": "visible"
     },
     {
       "type": "label",
@@ -5057,7 +5065,9 @@
       "y": 45,
       "w": 9,
       "h": 6,
-      "bg_color": "#78836c"
+      "bg_color": "#78836c",
+      "bind": "info_battery_fill_visible",
+      "bind_target": "visible"
     },
     {
       "type": "label",

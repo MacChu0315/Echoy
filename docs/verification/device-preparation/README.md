@@ -3,6 +3,8 @@
 Scope: local implementation and verification of the device entry, audio adapter,
 battery adapter and task lifecycle. No physical device was opened, reset, probed
 or written during this work. The accepted v4 reference remains unchanged.
+This records the preparation phase; the subsequent authorized installation and
+real-device failure are in [the hardware record](../device-install/README.md).
 
 ## Verified result (2026-10-09)
 
