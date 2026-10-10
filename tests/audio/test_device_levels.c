@@ -47,7 +47,7 @@ static void harmony_speaker_headroom(void)
     assert(echoy_compose_mask(0x40aa, ECHOY_HARMONY, 3, .5, &plan));
     echoy_audio_loops_t *audio = NULL;
     assert(echoy_audio_prepare(&plan, false, &audio) == ECHOY_AUDIO_OK);
-    const double volumes[] = {.35, .49, .65, 1};
+    const double volumes[] = {.05, .49, .65, 1};
     for (unsigned v = 0; v < sizeof(volumes) / sizeof(*volumes); ++v) {
         for (unsigned i = 0; i < FRAMES; ++i) {
             float bank = audio->samples[ECHOY_AUDIO_FULL][i] *
@@ -57,16 +57,40 @@ static void harmony_speaker_headroom(void)
         double peak = 0;
         size_t limited = 0;
         double rms = convert(&peak, &limited);
-        assert(peak <= .60002 && rms > .05);
+        assert(peak <= .60002 && rms > .005);
         assert(v == 0 ? limited == 0 : limited > 0);
     }
     echoy_audio_free_loops(audio);
     puts("PASS calibrated Harmony 40aa respects speaker headroom across UI volumes");
 }
 
+static void louder_balanced_speaker_profile(void)
+{
+    /* Captured from the installed .60-ceiling/gain6 profile before voicing,
+     * for the user's actual 8234 seed at .65 volume and .5 density. */
+    const double previous_rms[] = {.076304862, .078975005, .005302474, .170780880};
+    for (unsigned role = 0; role < 4; ++role) {
+        echoy_plan_t plan;
+        assert(echoy_compose_mask(0x8234, role, role == ECHOY_HARMONY ? 3 : 1, .5, &plan));
+        echoy_audio_loops_t *audio = NULL;
+        assert(echoy_audio_prepare(&plan, role == ECHOY_PULSE, &audio) == ECHOY_AUDIO_OK);
+        for (unsigned i = 0; i < FRAMES; ++i) {
+            float bank = audio->samples[ECHOY_AUDIO_FULL][i] * echoy_device_role_gains[role];
+            input[i] = (float)(bank * .65 * .45);
+        }
+        double peak = 0;
+        size_t limited = 0;
+        double change_db = 20 * log10(convert(&peak, &limited) / previous_rms[role]);
+        assert(peak <= .60002 && change_db >= 2.5 && change_db <= 5);
+        echoy_audio_free_loops(audio);
+    }
+    puts("PASS all four roles gain average level without increasing the speaker peak ceiling");
+}
+
 int main(void)
 {
     harmony_speaker_headroom();
+    louder_balanced_speaker_profile();
     const unsigned seeds[] = {0x0890, 0xffff, 0x5555, 1};
     echoy_audio_buffer_t *tap = NULL;
     assert(echoy_audio_render_cue(ECHOY_AUDIO_TAP, &tap) == ECHOY_AUDIO_OK);

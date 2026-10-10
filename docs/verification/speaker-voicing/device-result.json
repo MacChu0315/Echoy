@@ -1,0 +1,75 @@
+{
+  "package": {
+    "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-release/echoy-speaker-voicing-7c431dacfd59.irisfw",
+    "sha256": "7c431dacfd597710347e184a0c3795e3b118ba4b2c3e7b54483ce0d684223c7e"
+  },
+  "device_id": "4553502d49524953010030eda0f452a0",
+  "operation_id": "2c3e8697-aaac-425b-a11a-0f9043b396a9",
+  "status": "succeeded",
+  "validation": {
+    "boot_id": 6467976503804649253,
+    "healthy": true,
+    "validated": true,
+    "application_validation": {
+      "actual": "2efeb91a77ad34e430d2b5b87f722fed0b9daf533eef4db6e89ec7ad46d13c3a",
+      "actual_field": "firmware_sha256",
+      "expected": "2efeb91a77ad34e430d2b5b87f722fed0b9daf533eef4db6e89ec7ad46d13c3a",
+      "expected_field": "elf_sha256",
+      "mode": "elf_sha256"
+    },
+    "source_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "d0fd64fbf4e44858859c963e28c3393c",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    },
+    "target_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "2c3e8697aaac425ba11a0f9043b396a9",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    }
+  },
+  "role_gains": [
+    1.6,
+    0.52,
+    0.0317,
+    2.38
+  ],
+  "global_pcm_gain": 18,
+  "peak_ceiling": 0.6,
+  "highpass_hz": 120,
+  "release_ms": 40,
+  "post_install_listening": "User heard no obvious distortion and would prefer louder output. Clean-sound feedback is positive; loudness improvement remains desired.",
+  "home_screenshot_verified": true,
+  "startup_write_errors": 0,
+  "startup_deadline_misses": 0,
+  "playback": {
+    "seed": "2154",
+    "observed_playback_role": "pulse",
+    "peak_pcm": 19660,
+    "clipped": 0,
+    "partial_writes": 0,
+    "write_errors": 0,
+    "deadline_misses": 0,
+    "render_conversion_max_us": 3281,
+    "owner_stack_min_bytes": 8744,
+    "pulse_preparation_us": 346311
+  },
+  "final_live_status": {
+    "same_boot": true,
+    "firmware_sha256": "2efeb91a77ad34e430d2b5b87f722fed0b9daf533eef4db6e89ec7ad46d13c3a",
+    "stale": false,
+    "uptime_us": 456562486
+  },
+  "final_playback_logs": {
+    "pcm": "I (663147) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=15843120 nonzero=810321 peak=19660 pa=1 activations=3 write_max=10740us partial=0 write_errors=0 deadline_misses=0",
+    "runtime": "I (663147) echoy_device: internal=110939 PSRAM=12746932 owner_stack=8744 prepare=594575us render_max=4032us rejected=0 overflow=0 limited=1852757 prep_stack=7972"
+  },
+  "original_failure_path_listening": "User explicitly confirmed Harmony phrase 3 (Answer) also has no obvious distortion at the same higher volume. This is listening provenance, not measured THD or SPL.",
+  "answer_playback_observed": true
+}

@@ -265,7 +265,7 @@ completion of the whole musical prototype.
 
 ## Current audio follow-up
 
-Current device package is `44ad4e4a59ec`, HEALTHY boot `11202007909105101612`.
+The .60-ceiling trial package was `44ad4e4a59ec`, HEALTHY boot `11202007909105101612`.
 It retains hardware90, gain6, all role gains, UI and synthesis; only the device
 peak ceiling changes from .90 to .60. Image/commit/retained-layout verification
 and the actual home screenshot pass. The user reports markedly improved
@@ -273,6 +273,33 @@ distortion, but all four roles are too quiet; loudness acceptance remains open.
 Playback seed `8234` reaches the new PCM ceiling 19,660 with no clipping,
 partial writes, output errors or estimated deadline misses. Next evaluate
 higher average output within this ceiling before another hardware trial.
+The user explicitly approved a follow-up device-only voicing trial: attenuate
+frequencies below about 120 Hz, adjust compression and role balance while keeping
+the .60 ceiling, and prioritize louder/less-distorted playback over retaining
+the original bass weight. Rhythm and pitch remain unchanged; frozen HTML/shared
+synthesis remain the reference. This authorizes the bounded timbre change and
+its installation on the same board under the existing update authorization.
+The follow-up is now installed as current package `7c431dacfd59`, HEALTHY boot
+`6467976503804649253`. It adds a device-only second-order 120 Hz high-pass,
+uses PCM drive18 with the same .60 ceiling/1 ms lookahead, and reduces limiter
+release to 40 ms. Musical trims are 1.6/.52/.0317/2.38; default-volume median
+digital RMS increases are about 3 dB across roles versus the preceding trial.
+The common output changes also affect cues, whose scheduling is unchanged.
+Startup identity/commit/retained-layout and home checks pass. Physical listening
+found no obvious distortion, but the user would prefer more loudness. A further
+local scan found gain18 -> gain48 gives only .75 dB median Harmony RMS at full
+volume, versus 8.52 dB for Dust, so no additional gain-only package was installed.
+Retain `7c431dacfd59` as the latest profile. The current package logs confirm
+Harmony phrase 2 (Broken), and the user subsequently explicitly confirmed that
+phrase 3 (Answer), the original problematic expression, also has no obvious
+distortion at the same higher volume. Physical listening follow-up is closed
+for this trial; louder overall output is still desired. Further substantial
+loudness improvement needs acoustic/output-chain measurement or a separately
+evaluated spectral adjustment. The absolute hardware limit remains unknown.
+288 calibrated cases have no clipping and true peak <= -3.9 dBFS; 120 raw synth
+banks are unchanged. Filter/mean-level regressions, PCM/band tests and 22 runtime
+cases (normal and sanitizer) pass. The official build has zero warnings and
+15% app partition headroom. See `verification/speaker-voicing/README.md`.
 
 The resumed investigation recovered the missing volume evidence: Harmony Answer,
 seed `40aa`, density .5 had been at full volume. The user still heard distortion

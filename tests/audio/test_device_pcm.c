@@ -1,5 +1,6 @@
 #include "echoy_device_pcm.h"
 #include <assert.h>
+#include <float.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,21 +17,56 @@ static void convert(echoy_device_pcm_t *s, const float *in, int16_t *out, size_t
         assert(abs(out[i]) <= 19661);
     }
 }
+
+static void speaker_filter_response(void)
+{
+    /* Independent steady-state bounds for a 120 Hz, second-order Butterworth
+     * high-pass. The quiet input must not engage peak limiting. */
+    const unsigned frequencies[] = {40, 120, 1000};
+    const double minimum[] = {.105, .702, .998};
+    const double maximum[] = {.116, .712, 1.002};
+    for (unsigned f = 0; f < 3; ++f) {
+        echoy_device_pcm_t state;
+        echoy_device_pcm_reset(&state);
+        for (unsigned i = 0; i < 24000; ++i) {
+            source[i] = .005f * sinf((float)(2 * 3.141592653589793 * frequencies[f] * i / 24000));
+        }
+        echoy_device_pcm_stats_t stats;
+        assert(echoy_device_pcm_convert(&state, source, whole, 24000, &stats));
+        assert(stats.clipped == 0 && stats.limited == 0);
+        double energy = 0;
+        for (unsigned i = 12000; i < 24000; ++i) {
+            double x = whole[i] / 32767.0;
+            energy += x * x;
+        }
+        double ratio = sqrt(energy / 12000) / (.005 * ECHOY_DEVICE_PCM_GAIN / sqrt(2));
+        assert(ratio >= minimum[f] && ratio <= maximum[f]);
+    }
+    echoy_device_pcm_t state;
+    echoy_device_pcm_reset(&state);
+    for (unsigned i = 0; i < 24000; ++i) source[i] = .005f;
+    convert(&state, source, whole, 24000);
+    for (unsigned i = 12000; i < 24000; ++i) assert(abs(whole[i]) <= 1);
+}
+
 int main(void)
 {
+    speaker_filter_response();
     echoy_device_pcm_t a, b;
     echoy_device_pcm_reset(&a);
-    /* Quiet sine stays linear, apart from the documented 24-frame delay. */
+    /* Quiet 1 kHz stays at the expected pass-band level, with 24-frame latency.
+     * The high-pass intentionally changes phase, so exact old samples differ. */
     for (unsigned i = 0; i < 24000; i++) {
-        source[i] = .05f * sinf(i * .2617993878f);
+        source[i] = .01f * sinf(i * .2617993878f);
     }
     convert(&a, source, whole, 24000);
     for (unsigned i = 0; i < 24; i++) {
         assert(whole[i] == 0);
     }
-    for (unsigned i = 24; i < 24000; i++) {
-        assert(abs(whole[i] - (int)lrintf(source[i - 24] * 6 * 32767)) <= 1);
-    }
+    double energy = 0;
+    for (unsigned i = 12000; i < 24000; i++) energy += whole[i] * (double)whole[i];
+    double rms = sqrt(energy / 12000) / 32767;
+    assert(rms > .1271 && rms < .1274);
 
     /* Abrupt, bipolar overloads must respect the ceiling at every alignment. */
     for (unsigned i = 0; i < 24000; i++) {
@@ -57,12 +93,15 @@ int main(void)
     /* A single strong transient must not permanently duck later quiet audio. */
     echoy_device_pcm_reset(&a);
     for (unsigned i = 0; i < 24000; i++) {
-        source[i] = .01f;
+        source[i] = .001f * sinf(i * .2617993878f);
     }
     source[0] = 1;
     convert(&a, source, whole, 24000);
     assert(whole[24] >= 19659 && whole[24] <= 19661);
-    assert(whole[23999] >= 1965 && whole[23999] <= 1967);
+    energy = 0;
+    for (unsigned i = 12000; i < 24000; i++) energy += whole[i] * (double)whole[i];
+    rms = sqrt(energy / 12000) / 32767;
+    assert(rms > .0126 && rms < .0129);
     /* Reset discards both pending sound and gain reduction after cancellation. */
     source[0] = .1f;
     convert(&a, source, whole, 1);
@@ -77,8 +116,9 @@ int main(void)
     assert(whole[24] >= 19659 && whole[24] <= 19661);
 
     /* Reject the entire invalid block without mutating output or the delay. */
-    float invalid[] = {NAN, INFINITY, -INFINITY};
-    for (unsigned i = 0; i < 3; i++) {
+    float invalid[] = {NAN, INFINITY, -INFINITY, FLT_MAX, -FLT_MAX,
+                       FLT_MAX / (ECHOY_DEVICE_PCM_GAIN * 2)};
+    for (unsigned i = 0; i < sizeof(invalid) / sizeof(*invalid); i++) {
         b = a;
         float input[] = {.1f, invalid[i]};
         int16_t output[] = {123, 456};
@@ -89,6 +129,6 @@ int main(void)
     assert(!echoy_device_pcm_convert(&a, NULL, whole, 1, &stats));
     assert(!echoy_device_pcm_convert(&a, source, NULL, 1, &stats));
     assert(!echoy_device_pcm_convert(&a, source, whole, 1, NULL));
-    puts("PASS quiet-signal gain, peak ceiling, block continuity, release, reset and invalid PCM "
+    puts("PASS speaker filter, quiet-signal gain, peak ceiling, block continuity, release, reset and invalid PCM "
          "rejection");
 }

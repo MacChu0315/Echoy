@@ -5,11 +5,10 @@
 
 /* Device-only output adaptation at 24 kHz. Reference diagnostics bypass it.
  * The one-millisecond delay permits smooth peak attenuation before a transient. */
-/* Musical-bank calibration only; cues bypass these per-role factors.
- * Pulse/Voice unchanged; Dust about -23.5 dB and Harmony about +7.5 dB,
- * from separate on-board listening matches against Voice. */
+/* Musical-bank trims for the device speaker voicing trial; cues bypass these
+ * per-role factors. Shared synthesis and PC playback retain their own output. */
 extern const float echoy_device_role_gains[4];
-#define ECHOY_DEVICE_PCM_GAIN 6.0f
+#define ECHOY_DEVICE_PCM_GAIN 18.0f
 /* Board listening trial: Harmony remained distorted below digital clipping.
  * Its clean selected peak was about .65; retain margin for the output chain.
  * This bounds digital samples, not a guarantee of analog/acoustic linearity. */
@@ -20,6 +19,7 @@ typedef struct {
     float samples[ECHOY_DEVICE_PCM_LOOKAHEAD + 1];
     float gains[ECHOY_DEVICE_PCM_LOOKAHEAD];
     float envelope;
+    float hp_x1, hp_x2, hp_y1, hp_y2;
     unsigned sample_at, gain_at;
 } echoy_device_pcm_t;
 typedef struct {
