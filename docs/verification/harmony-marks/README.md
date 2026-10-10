@@ -52,7 +52,7 @@ their previous rendering. The frozen HTML and audio behavior are unchanged.
   [Playing](playing.png), [paused](paused.png), [playback state](playing-state.json).
 - `sha256sum -c SHA256SUMS` in `reference/v4` and `git diff --check` pass.
 
-## Current preview
+## Separation preview
 
 The new build replaces only this task's previous preview at the same URLs:
 desk `http://127.0.0.1:18897/`, A `http://127.0.0.1:3225/` (B/C 3226/3227).
@@ -65,5 +65,45 @@ python3 tools/desk_preview.py --build-dir projects/echoy/build-sim-harmony-marks
   --no-build --no-browser --port 18897 --visual-ports 3225,3226,3227
 ```
 
-User visual feedback is pending. Hardware still runs `7c431dacfd59`; this UI change
+The user reported improvement and requested the label alignment below. Hardware
+still runs `7c431dacfd59`; this UI change
 has not been installed on the board and does not claim hardware timing acceptance.
+
+## Align with slider label tops
+
+The user found the separation improved and requested the short marks lower, at
+the top ink pixels of the Chinese Volume/Simplicity labels, approximately level
+with Dust's marks. The labels' actual ink begins at screen y263, below their y258
+layout boxes. Harmony home marks move down 20 px: local row centers 155/161/167
+become 175/181/187. With the canvas at y89, the first stroke's visible top is y263.
+Three-row chords occupy screen y263–276, matching the labels' ink height. Dust's
+existing mark center remains y262; its rendering is unchanged.
+
+The five-pixel endpoint gaps, note positions, upper ribbons, card previews and
+bottom controls are preserved. The position-sensitive art assertions fail nine
+checks on the previous renderer and pass after the translation. `sh tests/art/run.sh`
+passes all 1,722 checks plus cache/blend checks; `sh tests/art_image/run.sh` passes
+2,458 checks and 809 independently decoded fixtures. The isolated native build
+passes, and GSP API geometry retains the original bottom-control bounds.
+
+Before/after comparison confirms an exact 20 px translation of the Harmony mark
+region, with no changes to the upper ribbons or any of the 33 other sampled
+role/size/state cases. [Translation checks](height-pixel-checks.json).
+Actual GSP pointer flows cover playback after its scheduled start, pause, and all
+three Harmony expressions. Native screenshots measure both label tops and the
+first mark top at y263 in all four captured states.
+[Pixel alignment](height-alignment-checks.json), [native flows](height-native-checks.json),
+[playing](aligned-playing.png), [three-row chord](aligned-short-chord.png).
+
+The current height-adjusted preview uses `build-sim-harmony-mark-height`: desk
+18898, A/B/C 3228/3229/3230. The prior preview at 18897/3225 remains running to
+preserve the user's newly recorded rhythm; the new preview contains a separate
+seed5 Harmony example. Hardware remains on the retained audio package.
+
+```sh
+python3 tools/desk_preview.py --build-dir projects/echoy/build-sim-harmony-mark-height \
+  --no-build --no-browser --port 18898 --visual-ports 3228,3229,3230
+```
+
+The user accepted retaining this alignment. It remains a simulator-only change;
+hardware has not yet received these UI refinements.

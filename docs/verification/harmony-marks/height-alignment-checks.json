@@ -1,0 +1,38 @@
+[
+  {
+    "frame": "playing.png",
+    "mark_top": 263,
+    "mark_bottom": 264,
+    "label_tops": {
+      "volume": 263,
+      "richness": 263
+    }
+  },
+  {
+    "frame": "short-chord.png",
+    "mark_top": 263,
+    "mark_bottom": 276,
+    "label_tops": {
+      "volume": 263,
+      "richness": 263
+    }
+  },
+  {
+    "frame": "answer.png",
+    "mark_top": 263,
+    "mark_bottom": 276,
+    "label_tops": {
+      "volume": 263,
+      "richness": 263
+    }
+  },
+  {
+    "frame": "paused.png",
+    "mark_top": 263,
+    "mark_bottom": 264,
+    "label_tops": {
+      "volume": 263,
+      "richness": 263
+    }
+  }
+]

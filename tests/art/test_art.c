@@ -125,13 +125,13 @@ static void pitched_art(echoy_art_frame_t frame)
     CHECK(shorter[173 * WIDTH + 30] == color(0xf1efe8));
     frame.role = ECHOY_HARMONY;
     uint16_t *harmony = render(echoy_art_draw, &frame);
-    CHECK(harmony[167 * WIDTH + 12] != color(0xf1efe8));
+    CHECK(harmony[187 * WIDTH + 12] != color(0xf1efe8));
     /* Canvas defaults to miter joins: the closed ribbons have pointed tips. */
     CHECK(harmony[33 * WIDTH + 12] != color(0xf1efe8));
     changed.events[0].note_count = 1;
     changed.events[0].harmony[0] = 59;
     uint16_t *single = render(echoy_art_draw, &frame);
-    CHECK(single[167 * WIDTH + 12] == color(0xf1efe8));
+    CHECK(single[187 * WIDTH + 12] == color(0xf1efe8));
     CHECK(memcmp(single, harmony, 75 * WIDTH * 2) != 0);
     free(single);
     free(harmony);
@@ -179,7 +179,7 @@ static void harmony_mark_separation(void)
         .width = WIDTH, .height = HEIGHT};
     uint16_t *spaced = render(echoy_art_draw, &frame);
     for (unsigned row = 0; row < 3; ++row) {
-        unsigned y = 155 + row * 6;
+        unsigned y = 175 + row * 6;
         CHECK(spaced[y * WIDTH + 50] != color(0xf1efe8));
         CHECK(spaced[y * WIDTH + 60] == color(0xf1efe8));
         CHECK(spaced[y * WIDTH + 65] != color(0xf1efe8));
@@ -190,13 +190,13 @@ static void harmony_mark_separation(void)
     plan.events[0] = plan.events[1];
     plan.events[1] = swap;
     uint16_t *reversed = render(echoy_art_draw, &frame);
-    CHECK(memcmp(spaced + 150 * WIDTH, reversed + 150 * WIDTH, 24 * WIDTH * 2) == 0);
+    CHECK(memcmp(spaced + 170 * WIDTH, reversed + 170 * WIDTH, 24 * WIDTH * 2) == 0);
     free(reversed);
     free(spaced);
     /* Hidden accompaniment must not shorten the captured anchor's mark. */
     frame.anchors_only = true;
     uint16_t *capture = render(echoy_art_draw, &frame);
-    CHECK(capture[155 * WIDTH + 60] != color(0xf1efe8));
+    CHECK(capture[175 * WIDTH + 60] != color(0xf1efe8));
     free(capture);
 
     plan = (echoy_plan_t){.count = 32};
@@ -208,7 +208,7 @@ static void harmony_mark_separation(void)
     unsigned runs = 0;
     bool was_ink = false;
     for (unsigned x = 0; x < WIDTH; ++x) {
-        bool ink = dense[155 * WIDTH + x] != color(0xf1efe8);
+        bool ink = dense[175 * WIDTH + x] != color(0xf1efe8);
         if (ink && !was_ink) ++runs;
         was_ink = ink;
     }

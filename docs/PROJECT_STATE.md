@@ -39,16 +39,22 @@ now retain their onset positions but end before the next included onset, with
 five pixels between stroke endpoints. This separates overlapping sounding notes
 visually without changing the music. Hidden capture layers do not affect spacing.
 
-The current interactive preview uses `build-sim-harmony-marks`: desk HTTP 18897,
-A/B/C views 3225/3226/3227. It replaces the ribbon-only preview on those same
-ports; the original v4 preview remains at 18896/3222–3224. New A was prepared
-with the same seed5/density .0777778 and paused on Harmony phrase2 for review.
-Feedback on the duration marks is pending; these UI refinements have not been
+The user found the separated marks improved, then requested alignment with the
+top ink of the Chinese Volume/Simplicity labels. Home mark rows now move down
+20 px to local centers 175/181/187: first visible stroke pixels are at screen y263,
+exactly matching the two label tops. Gaps and all surrounding geometry remain
+unchanged. Three-row chords stay within y263–276; Dust is unchanged nearby.
+
+The current preview uses `build-sim-harmony-mark-height`: desk HTTP 18898,
+A/B/C views 3228/3229/3230. The earlier mark-spacing preview at 18897/3225–3227
+is retained to preserve the user's new recording, and v4 remains at 18896/3222–3224.
+The new A view contains a separate seed5 Harmony phrase2 example for review.
+The user accepted retaining the label-top alignment; these UI refinements have not been
 installed on hardware. Art/image and native GSP input tests pass, including
 bottom-control bounds, 33 unchanged cases outside Harmony home, and 54 generated
 plans with separate marks for every event. See `verification/harmony-layout/README.md`
 for the ribbon change and `verification/harmony-marks/README.md` for the current
-mark-spacing evidence and preview restart command.
+mark-spacing and label-alignment evidence and current preview restart command.
 
 ## PC application
 

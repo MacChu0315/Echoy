@@ -1,0 +1,36 @@
+{
+  "unchanged_cases": 33,
+  "translation_checks": [
+    {
+      "case": "role3-size0-state2.rgb565",
+      "down_pixels": 20,
+      "changed_bounds": [
+        9,
+        154,
+        279,
+        176
+      ]
+    },
+    {
+      "case": "role3-size0-state1.rgb565",
+      "down_pixels": 20,
+      "changed_bounds": [
+        9,
+        154,
+        279,
+        176
+      ]
+    },
+    {
+      "case": "role3-size0-state0.rgb565",
+      "down_pixels": 20,
+      "changed_bounds": [
+        9,
+        154,
+        279,
+        176
+      ]
+    }
+  ],
+  "upper_ribbons_unchanged": true
+}

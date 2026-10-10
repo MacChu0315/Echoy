@@ -462,6 +462,8 @@ static void harmony(const raster_t *r, const echoy_art_frame_t *frame,
      * retain their original spacing; the note-duration marks stay below. */
     const bool home = frame->width == 300 && frame->height == 204;
     const float row_gap = home ? 44 : 29;
+    /* Home stroke ink starts at screen y263, matching the slider label tops. */
+    const float mark_y = home ? 175 : 155;
     for (unsigned row = 0; row < 3; ++row) {
         int tone = current && current->harmony_count > row ? current->harmony[row] : fallback[row];
         float center = 78 + ((int)row - 1) * row_gap;
@@ -495,7 +497,7 @@ static void harmony(const raster_t *r, const echoy_art_frame_t *frame,
         unsigned count = n->note_count ? n->note_count : 1;
         if (count > 3) count = 3;
         for (unsigned j = 0; j < count; ++j) {
-            line(r, x, 155 + j * 6, end, 155 + j * 6,
+            line(r, x, mark_y + j * 6, end, mark_y + j * 6,
                  anchor ? 2 : 1.5f, color, anchor ? .85f : .43f);
         }
     }
