@@ -263,16 +263,15 @@ export still has no hardware destination; IMU integration is also unfinished.
 Do not repeat the earlier mistake of treating UI-only or single-tile tests as
 completion of the whole musical prototype.
 
-## Current audio follow-up
+## Current device audio (retained)
 
 The .60-ceiling trial package was `44ad4e4a59ec`, HEALTHY boot `11202007909105101612`.
 It retains hardware90, gain6, all role gains, UI and synthesis; only the device
 peak ceiling changes from .90 to .60. Image/commit/retained-layout verification
-and the actual home screenshot pass. The user reports markedly improved
-distortion, but all four roles are too quiet; loudness acceptance remains open.
+and the actual home screenshot pass. The user reported markedly improved
+distortion, but all four roles were too quiet, prompting the next trial below.
 Playback seed `8234` reaches the new PCM ceiling 19,660 with no clipping,
-partial writes, output errors or estimated deadline misses. Next evaluate
-higher average output within this ceiling before another hardware trial.
+partial writes, output errors or estimated deadline misses.
 The user explicitly approved a follow-up device-only voicing trial: attenuate
 frequencies below about 120 Hz, adjust compression and role balance while keeping
 the .60 ceiling, and prioritize louder/less-distorted playback over retaining
@@ -293,9 +292,12 @@ Retain `7c431dacfd59` as the latest profile. The current package logs confirm
 Harmony phrase 2 (Broken), and the user subsequently explicitly confirmed that
 phrase 3 (Answer), the original problematic expression, also has no obvious
 distortion at the same higher volume. Physical listening follow-up is closed
-for this trial; louder overall output is still desired. Further substantial
-loudness improvement needs acoustic/output-chain measurement or a separately
-evaluated spectral adjustment. The absolute hardware limit remains unknown.
+for this trial. On 2026-10-10 the user decided to retain the current volume
+("音量上就先这样吧"). Keep package `7c431dacfd59` and its output parameters;
+stop further loudness tuning unless requested. This is provisional retention,
+not a claim of measured acoustic performance or the absolute hardware limit.
+Any future substantial loudness improvement needs acoustic/output-chain
+measurement or a separately evaluated spectral adjustment.
 288 calibrated cases have no clipping and true peak <= -3.9 dBFS; 120 raw synth
 banks are unchanged. Filter/mean-level regressions, PCM/band tests and 22 runtime
 cases (normal and sanitizer) pass. The official build has zero warnings and

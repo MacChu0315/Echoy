@@ -99,3 +99,8 @@ reported phrase 3 (Answer). The user then selected Answer and explicitly confirm
 obvious distortion at the same higher volume. This closes the expression-specific
 listening follow-up for this trial; it is user observation, not a measured THD
 or SPL claim, and does not establish every possible rhythm or speaker limit.
+
+The user subsequently decided to retain the current volume ("音量上就先这样吧")
+on 2026-10-10. Keep package `7c431dacfd59` and this profile; stop further loudness
+tuning unless requested. This provisionally closes the tuning task without
+claiming a measured acoustic limit.
