@@ -1,0 +1,36 @@
+{
+  "unchanged_cases": 33,
+  "changed_harmony_home_cases": [
+    {
+      "case": "role3-size0-state2.rgb565",
+      "changed_pixels": 114,
+      "bounds": [
+        23,
+        154,
+        265,
+        156
+      ]
+    },
+    {
+      "case": "role3-size0-state1.rgb565",
+      "changed_pixels": 114,
+      "bounds": [
+        23,
+        154,
+        265,
+        156
+      ]
+    },
+    {
+      "case": "role3-size0-state0.rgb565",
+      "changed_pixels": 114,
+      "bounds": [
+        23,
+        154,
+        265,
+        156
+      ]
+    }
+  ],
+  "upper_ribbons_unchanged": true
+}

@@ -63,3 +63,8 @@ The user has been given the new live preview for visual feedback. This layout
 has not been installed on hardware; physical firmware remains `7c431dacfd59`
 with the retained sound profile. No new acoustic or physical-frame-rate claim
 is made by these UI-only changes.
+
+The user subsequently accepted retaining this ribbon spacing and clarified that
+the short duration marks below it needed separation. The preview on 18897/3225
+now runs that follow-up build; see [the current report](../harmony-marks/README.md).
+This report's comparisons describe the earlier ribbon-only change.

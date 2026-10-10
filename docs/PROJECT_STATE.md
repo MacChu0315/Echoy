@@ -33,13 +33,22 @@ At the user's request, the shared C renderer now spreads the three Harmony home
 ribbons from 29 to 44 px vertical spacing, retaining the middle position, curves
 and playback animation. Bottom controls retain their exact sizes; role cards,
 other roles and rhythm-duration marks are unchanged. The frozen v4 reference is
-untouched. The new interactive preview uses `build-sim-harmony-spacing`: desk
-HTTP 18897, A/B/C views 3225/3226/3227. The old preview remains at 18896/3222–3224.
-The new A view is paused on a playable Harmony phrase2 example. Visual feedback
-is pending; no hardware installation of this UI change has occurred.
-Art/image and native GSP input tests pass, including exact bottom-control bounds
-and 33 unchanged comparison cases outside Harmony home artwork. See
-`verification/harmony-layout/README.md` for evidence and the restart command.
+untouched. The user accepted retaining this ribbon spacing and clarified that
+the remaining crowding concerned the short duration marks below it. Those marks
+now retain their onset positions but end before the next included onset, with
+five pixels between stroke endpoints. This separates overlapping sounding notes
+visually without changing the music. Hidden capture layers do not affect spacing.
+
+The current interactive preview uses `build-sim-harmony-marks`: desk HTTP 18897,
+A/B/C views 3225/3226/3227. It replaces the ribbon-only preview on those same
+ports; the original v4 preview remains at 18896/3222–3224. New A was prepared
+with the same seed5/density .0777778 and paused on Harmony phrase2 for review.
+Feedback on the duration marks is pending; these UI refinements have not been
+installed on hardware. Art/image and native GSP input tests pass, including
+bottom-control bounds, 33 unchanged cases outside Harmony home, and 54 generated
+plans with separate marks for every event. See `verification/harmony-layout/README.md`
+for the ribbon change and `verification/harmony-marks/README.md` for the current
+mark-spacing evidence and preview restart command.
 
 ## PC application
 

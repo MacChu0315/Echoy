@@ -460,7 +460,8 @@ static void harmony(const raster_t *r, const echoy_art_frame_t *frame,
     const double *waves[] = {harmony_wave_0, harmony_wave_1, harmony_wave_2};
     /* Spread the home ribbons around the same middle line. Compact role cards
      * retain their original spacing; the note-duration marks stay below. */
-    const float row_gap = frame->width == 300 && frame->height == 204 ? 44 : 29;
+    const bool home = frame->width == 300 && frame->height == 204;
+    const float row_gap = home ? 44 : 29;
     for (unsigned row = 0; row < 3; ++row) {
         int tone = current && current->harmony_count > row ? current->harmony[row] : fallback[row];
         float center = 78 + ((int)row - 1) * row_gap;
@@ -477,11 +478,24 @@ static void harmony(const raster_t *r, const echoy_art_frame_t *frame,
         const echoy_note_t *n = &frame->plan->events[i];
         if (!included(frame, n)) continue;
         float x = 10 + n->step / 16 * 280, length = fmaxf(3, n->duration / STEP_SECONDS / 16 * 280);
+        float end = fminf(294, x + length);
+        if (home) {
+            /* Keep onset positions, but leave a visible gap between marks even
+             * when their sounding durations overlap. Five pixels between line
+             * endpoints also accommodates the rounded strokes. Hidden capture
+             * layers must not affect spacing; event order is not assumed. */
+            for (size_t next = 0; next < note_count(frame); ++next) {
+                const echoy_note_t *after = &frame->plan->events[next];
+                if (included(frame, after) && after->step > n->step)
+                    end = fminf(end, 10 + after->step / 16 * 280 - 5);
+            }
+            end = fmaxf(x, end);
+        }
         bool anchor = n->layer == ECHOY_ANCHOR;
         unsigned count = n->note_count ? n->note_count : 1;
         if (count > 3) count = 3;
         for (unsigned j = 0; j < count; ++j) {
-            line(r, x, 155 + j * 6, fminf(294, x + length), 155 + j * 6,
+            line(r, x, 155 + j * 6, end, 155 + j * 6,
                  anchor ? 2 : 1.5f, color, anchor ? .85f : .43f);
         }
     }

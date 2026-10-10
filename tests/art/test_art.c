@@ -165,6 +165,57 @@ static void feedback(echoy_art_frame_t frame)
     free(idle);
 }
 
+static void harmony_mark_separation(void)
+{
+    /* Current seed5/phrase2 has a .23 s anchor at step2 and a .20 s
+     * accompaniment at step3: their real sounding durations overlap. */
+    echoy_plan_t plan = {.count = 2};
+    plan.events[0] = (echoy_note_t){.step = 2, .duration = .23,
+        .layer = ECHOY_ANCHOR, .note_count = 3};
+    plan.events[1] = (echoy_note_t){.step = 3, .duration = .20,
+        .layer = ECHOY_SUPPORT, .note_count = 3};
+    echoy_plan_t original = plan;
+    echoy_art_frame_t frame = {.plan = &plan, .role = ECHOY_HARMONY,
+        .width = WIDTH, .height = HEIGHT};
+    uint16_t *spaced = render(echoy_art_draw, &frame);
+    for (unsigned row = 0; row < 3; ++row) {
+        unsigned y = 155 + row * 6;
+        CHECK(spaced[y * WIDTH + 50] != color(0xf1efe8));
+        CHECK(spaced[y * WIDTH + 60] == color(0xf1efe8));
+        CHECK(spaced[y * WIDTH + 65] != color(0xf1efe8));
+    }
+    CHECK(memcmp(&plan, &original, sizeof(plan)) == 0);
+    /* Bounds must not depend on event array order. */
+    echoy_note_t swap = plan.events[0];
+    plan.events[0] = plan.events[1];
+    plan.events[1] = swap;
+    uint16_t *reversed = render(echoy_art_draw, &frame);
+    CHECK(memcmp(spaced + 150 * WIDTH, reversed + 150 * WIDTH, 24 * WIDTH * 2) == 0);
+    free(reversed);
+    free(spaced);
+    /* Hidden accompaniment must not shorten the captured anchor's mark. */
+    frame.anchors_only = true;
+    uint16_t *capture = render(echoy_art_draw, &frame);
+    CHECK(capture[155 * WIDTH + 60] != color(0xf1efe8));
+    free(capture);
+
+    plan = (echoy_plan_t){.count = 32};
+    for (unsigned i = 0; i < 32; ++i)
+        plan.events[i] = (echoy_note_t){.step = i * .5, .duration = .23,
+            .layer = ECHOY_ANCHOR, .note_count = 1};
+    frame.anchors_only = false;
+    uint16_t *dense = render(echoy_art_draw, &frame);
+    unsigned runs = 0;
+    bool was_ink = false;
+    for (unsigned x = 0; x < WIDTH; ++x) {
+        bool ink = dense[155 * WIDTH + x] != color(0xf1efe8);
+        if (ink && !was_ink) ++runs;
+        was_ink = ink;
+    }
+    CHECK(runs == 32);
+    free(dense);
+}
+
 static void geometry(echoy_art_frame_t frame)
 {
     frame.role = ECHOY_PULSE;
@@ -260,6 +311,7 @@ int main(void)
     echoy_art_frame_t frame = { .plan = &plan, .width = WIDTH, .height = HEIGHT };
     pulse_layers(frame);
     pitched_art(frame);
+    harmony_mark_separation();
     feedback(frame);
     geometry(frame);
     playback_selection(frame);

@@ -1,0 +1,23 @@
+{
+  "present": true,
+  "role": "harmony",
+  "phrase": 2,
+  "volume": 0.65,
+  "battery": 72,
+  "condition": "normal",
+  "phase": 5,
+  "seed": 5,
+  "source": null,
+  "clock": "A",
+  "clock_origin_us": 1584128317376,
+  "start_us": 1584460817376,
+  "loop": true,
+  "events": 6,
+  "preparing": false,
+  "plan_pending": false,
+  "prepare_failed": false,
+  "density": 0.07777777777777775,
+  "apply_at_us": 0,
+  "english": false,
+  "reduced_motion": false
+}

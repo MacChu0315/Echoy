@@ -1,0 +1,58 @@
+{
+  "before": {
+    "cases": 54,
+    "merged_marker_cases": 35,
+    "maximum_events": 16,
+    "seed5_phrase2": [
+      {
+        "seed": "0005",
+        "phrase": "2",
+        "density": "0.0",
+        "events": "6",
+        "separate_marks": "5"
+      },
+      {
+        "seed": "0005",
+        "phrase": "2",
+        "density": "0.5",
+        "events": "9",
+        "separate_marks": "6"
+      },
+      {
+        "seed": "0005",
+        "phrase": "2",
+        "density": "1.0",
+        "events": "12",
+        "separate_marks": "5"
+      }
+    ]
+  },
+  "after": {
+    "cases": 54,
+    "merged_marker_cases": 0,
+    "maximum_events": 16,
+    "seed5_phrase2": [
+      {
+        "seed": "0005",
+        "phrase": "2",
+        "density": "0.0",
+        "events": "6",
+        "separate_marks": "6"
+      },
+      {
+        "seed": "0005",
+        "phrase": "2",
+        "density": "0.5",
+        "events": "9",
+        "separate_marks": "9"
+      },
+      {
+        "seed": "0005",
+        "phrase": "2",
+        "density": "1.0",
+        "events": "12",
+        "separate_marks": "12"
+      }
+    ]
+  }
+}
