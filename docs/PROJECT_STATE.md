@@ -168,16 +168,24 @@ evidence above comes from physical user touches.
 
 ## Remaining physical integration
 
-The current device runs calibrated package `3f156df66112`, hardware volume 90,
-device PCM gain 3 and diagnostic RPC disabled. Its installation authorization
-has been exercised. The one-reference-playback authorization has also been used.
-The user rejects musical loudness even at confirmed maximum UI volume. Further
-linear amplification is limited by the worst tested mixed peak (.920); any
-dynamic-range processing would affect musical dynamics and needs an explicit
-product decision under the faithful-prototype constraint. No such change is yet
-approved or implemented.
-The previous package authorizations have already been exercised; they are not
-blanket permission for future writes.
+The current device runs limiter trial `4ee7991a5d56`, hardware volume 90,
+device PCM gain 6 with .90 peak limiting and diagnostic RPC disabled. The
+one-reference-playback authorization has already been used.
+The user rejects musical loudness even at confirmed maximum UI volume. On
+2026-10-10 the user approved trying device-only loudness gain with peak limiting,
+including its effect on musical dynamics. They also explicitly authorized all
+subsequent Echoy upgrade-package installations on this same verified board,
+without per-package confirmation. Preserve Recovery and verify each artifact and
+target; do not reinterpret this as permission for unrelated devices or remote
+Git writes. The limiter was built, inspected and installed successfully on boot
+`15517228967953464410`; verified image identity, HEALTHY, commit and retained
+layout all passed. The actual screen reached home. Local checks cover 144 plans
+and 2,304 mixtures with no clipping; RMS increases 3.25–6.02 dB over gain 3.
+21 runtime tests pass normally and with sanitizers. The device-only processor
+adds 1 ms lookahead and clears its tail on pause/fault/reopen. Physical recording
+and repeated playback/pause were observed: peak 29,490, gain reduction active,
+zero clipping/output errors/deadline misses, render+conversion maximum 3,211 us.
+Listening acceptance is pending. See `verification/loudness-limiter/README.md`.
 Use the official Mosaico workflow; generic IDF flash targets point at retained
 factory Recovery and are blocked. Let Recovery finish initialization before
 submitting updates on this board; do not blindly replay an uncertain operation.

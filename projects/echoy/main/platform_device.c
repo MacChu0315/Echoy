@@ -33,6 +33,8 @@
 #define DIAGNOSTIC_BYTES 512
 static const char *TAG = "echoy_device";
 
+_Static_assert(BOARD_AUDIO_SAMPLE_RATE == 24000, "PCM limiter requires 24 kHz");
+
 typedef struct {
     unsigned probe_command; /* 0 UI, 1 reference tone, 2 cancel diagnostic. */
     unsigned probe_generation;
@@ -63,7 +65,8 @@ struct echoy_device {
     echoy_condition_t condition;
     int64_t origin_us, next_log_us, last_prepare_us, max_render_us;
     uint64_t accepted_frames;
-    uint64_t pcm_clipped;
+    echoy_device_pcm_t pcm_processor;
+    uint64_t pcm_clipped, pcm_limited;
     unsigned deadline_misses, rejected_actions, queue_overflows;
     esp_err_t shutdown_error;
     board_audio_stats_t last_audio_stats;
@@ -206,6 +209,7 @@ static void fail_audio(struct echoy_device *d, board_audio_t **audio, const char
                        esp_err_t error)
 {
     d->audio_fault = true;
+    echoy_device_pcm_reset(&d->pcm_processor);
     if (atomic_load(&d->probe_busy)) {
         finish_probe(d, ECHOY_PROBE_FAILED, error);
     }
@@ -242,6 +246,7 @@ static bool open_audio(struct echoy_device *d, board_audio_t **audio)
         return false;
     }
     d->audio_fault = false;
+    echoy_device_pcm_reset(&d->pcm_processor);
     d->last_audio_stats = (board_audio_stats_t){0};
     d->accepted_frames = 0;
     /* I2S owns three 5 ms DMA descriptors. This is an estimated presentation
@@ -392,11 +397,12 @@ static void log_resources(struct echoy_device *d, board_audio_t *audio)
              (unsigned)stats.write_failures, d->deadline_misses);
     snprintf(diagnostic + DIAGNOSTIC_BYTES / 2, DIAGNOSTIC_BYTES / 2,
              "internal=%u PSRAM=%u owner_stack=%u prepare=%lldus render_max=%lldus rejected=%u "
-             "overflow=%u",
+             "overflow=%u limited=%llu",
              (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT),
              (unsigned)heap_caps_get_free_size(MALLOC_CAP_SPIRAM),
              (unsigned)uxTaskGetStackHighWaterMark(NULL), (long long)d->last_prepare_us,
-             (long long)d->max_render_us, d->rejected_actions, d->queue_overflows);
+             (long long)d->max_render_us, d->rejected_actions, d->queue_overflows,
+             (unsigned long long)d->pcm_limited);
     /* UART logging may block for longer than a PCM block. Worker owns all
      * periodic log output; dropping a diagnostic is safer than blocking audio. */
     xQueueOverwrite(d->diagnostics, diagnostic);
@@ -426,6 +432,9 @@ static void owner_worker(void *arg)
         if (desired != ECHOY_NORMAL && atomic_load(&d->probe_busy)) {
             finish_probe(d, ECHOY_PROBE_FAILED, ESP_ERR_INVALID_STATE);
         }
+        if (flush) {
+            echoy_device_pcm_reset(&d->pcm_processor);
+        }
         if (flush && audio) {
             esp_err_t error = board_audio_flush(audio);
             if (error != ESP_OK) {
@@ -452,6 +461,7 @@ static void owner_worker(void *arg)
         if (d->probe_active && d->probe_position >= ECHOY_PROBE_FRAMES + ECHOY_PROBE_TAIL_FRAMES) {
             esp_err_t error = board_audio_readback(audio, &d->probe.after);
             if (error == ESP_OK) {
+                echoy_device_pcm_reset(&d->pcm_processor);
                 error = board_audio_flush(audio);
             }
             if (error != ESP_OK) {
@@ -505,12 +515,13 @@ static void owner_worker(void *arg)
             echoy_audio_probe_render(d->probe_position, d->block->pcm, BLOCK_FRAMES);
         } else {
             echoy_band_render(d->band, at, d->block->floating, BLOCK_FRAMES);
-            size_t clipped = 0;
-            if (!echoy_device_pcm_convert(d->block->floating, d->block->pcm, BLOCK_FRAMES,
-                                          &clipped)) {
+            echoy_device_pcm_stats_t stats;
+            if (!echoy_device_pcm_convert(&d->pcm_processor, d->block->floating, d->block->pcm,
+                                          BLOCK_FRAMES, &stats)) {
                 fail_audio(d, &audio, "nonfinite PCM", ESP_ERR_INVALID_RESPONSE);
             } else {
-                d->pcm_clipped += clipped;
+                d->pcm_clipped += stats.clipped;
+                d->pcm_limited += stats.limited;
             }
         }
         if (!audio) {

@@ -23,6 +23,13 @@
 - Preserve the retained Vibe Mode/Recovery partition and integration contract.
   Device writes use the official `mosaico.py` workflow and current user authorization.
   Never infer physical audio, wireless or timing acceptance from PC results.
+- The user authorizes subsequent Echoy upgrade-package installations on the
+  verified Mosaico `4553502d49524953010030eda0f452a0` (`/dev/ttyACM0`) without
+  per-package confirmation. Verify identity/artifact, retain Recovery and use
+  the official workflow. This is not authorization for remote repository writes.
+- Approved audio trial: device-only loudness gain with peak limiting may change
+  musical dynamics. Keep the frozen HTML and shared synthesis unchanged; physical
+  listening acceptance is still required.
 - Keep `docs/PROJECT_STATE.md` current with verified progress and remaining work.
   User-supplied verification claims are provenance, not new test results.
 - Sound and linkage acceptance must run the shared C synthesis/arrangement and

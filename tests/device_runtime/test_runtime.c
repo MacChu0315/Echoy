@@ -102,6 +102,28 @@ static void fifo_cancel(void)
     stop(&d);
     puts("PASS Record then Cancel stays FIFO, flushes DMA and cannot arm a late capture");
 }
+static void pause_clears_limiter_tail(void)
+{
+    echoy_device_handle_t d;
+    start(&d);
+    assert(action(ECHOY_ACT_EXAMPLE, 0));
+    until(ECHOY_NORMAL, ECHOY_PREVIEW, 5);
+    int64_t end = esp_timer_get_time() + 1000000;
+    while (!atomic_load(&fake_nonzero_blocks)) {
+        assert(esp_timer_get_time() < end);
+        fake_sleep_ms(1);
+    }
+    block_writer();
+    int flushes = atomic_load(&fake_flush_calls);
+    assert(action(ECHOY_ACT_PAUSE, 0));
+    fake_hold_write(false);
+    until(ECHOY_NORMAL, ECHOY_IDLE, 5);
+    fake_sleep_ms(40);
+    assert(atomic_load(&fake_flush_calls) > flushes);
+    assert(atomic_load(&fake_nonzero_since_flush) == 0);
+    stop(&d);
+    puts("PASS pause clears delayed limiter PCM before the next board write");
+}
 static void overflow(void)
 {
     echoy_device_handle_t d;
@@ -394,6 +416,8 @@ int main(int argc, char **argv)
         unknown_and_cache();
     else if (!strcmp(argv[1], "fifo"))
         fifo_cancel();
+    else if (!strcmp(argv[1], "limiter_pause"))
+        pause_clears_limiter_tail();
     else if (!strcmp(argv[1], "overflow"))
         overflow();
     else if (!strcmp(argv[1], "partial"))

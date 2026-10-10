@@ -32,6 +32,7 @@ class DeviceRuntime(unittest.TestCase):
         self.assertIn('PASS ',result.stdout)
     def test_cache_unknown_battery_and_blocked_io(self):self.run_case('cache')
     def test_record_cancel_fifo(self):self.run_case('fifo')
+    def test_pause_discards_delayed_pcm(self):self.run_case('limiter_pause')
     def test_overflow_fail_silent_and_recovery(self):self.run_case('overflow')
     def test_partial_write_and_recovery(self):self.run_case('partial')
     def test_empty_battery_survives_unknown_read(self):self.run_case('battery')

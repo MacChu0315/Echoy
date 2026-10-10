@@ -1,0 +1,2 @@
+PASS quiet-signal gain, peak ceiling, block continuity, release, reset and invalid PCM rejection
+PASS loops=144 tap_mixtures=2304 output_rms=[0.075803821,0.121500099] gain_over_3x_db=[3.251600,6.020607] peak=0.899990844 mixed_peak=0.899990844 limited_loops=55 no_clipping

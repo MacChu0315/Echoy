@@ -6,6 +6,7 @@ extern atomic_int fake_open_calls, fake_close_calls, fake_write_calls, fake_flus
 extern atomic_int fake_partial_next, fake_open_failure, fake_close_failure, fake_flush_failure;
 extern atomic_int fake_task_failure, fake_health_stop_timeout, fake_event_tail_reads_after_delete;
 extern atomic_int fake_watermark_after_exit, fake_nonzero_blocks;
+extern atomic_int fake_nonzero_since_flush;
 extern atomic_int fake_probe_calls, fake_probe_failure;
 void fake_set_health(int percent); /* -1 unknown, -2 absent, 0..100 validated */
 void fake_hold_write(bool value);

@@ -20,7 +20,7 @@
 atomic_int fake_open_calls, fake_close_calls, fake_write_calls, fake_flush_calls;
 atomic_int fake_partial_next, fake_open_failure, fake_close_failure, fake_flush_failure;
 atomic_int fake_task_failure, fake_health_stop_timeout, fake_event_tail_reads_after_delete;
-atomic_int fake_watermark_after_exit, fake_nonzero_blocks;
+atomic_int fake_watermark_after_exit, fake_nonzero_blocks, fake_nonzero_since_flush;
 atomic_int fake_probe_calls, fake_probe_failure;
 static atomic_int health_percent = -1;
 static atomic_bool hold_write, hold_create, hold_prepare, write_blocked, prepare_blocked, create_blocked;
@@ -328,6 +328,7 @@ esp_err_t board_audio_write(board_audio_t *a, const int16_t *pcm, size_t frames,
     for (size_t i = 0; i < *written; i++)
         if (pcm[i]) {
             atomic_fetch_add(&fake_nonzero_blocks, 1);
+            atomic_fetch_add(&fake_nonzero_since_flush, 1);
             break;
         }
     a->stats.frames_written += *written;
@@ -342,6 +343,7 @@ esp_err_t board_audio_flush(board_audio_t *a)
     assert(a);
     atomic_fetch_add(&fake_flush_calls, 1);
     a->stats.flushes++;
+    atomic_store(&fake_nonzero_since_flush, 0);
     a->next_write = esp_timer_get_time();
     return atomic_exchange(&fake_flush_failure, 0) ? ESP_FAIL : ESP_OK;
 }

@@ -1,0 +1,59 @@
+{
+  "package": "4ee7991a5d56",
+  "operation_id": "a312e9a0-1c45-46f6-a9d8-b6cb8c60602f",
+  "status": "succeeded",
+  "validation": {
+    "boot_id": 15517228967953464410,
+    "healthy": true,
+    "application_validation": {
+      "actual": "8ef8ce037e9ffcf57e77ac0e202dac37b1dbf57ae272f6caf69b806a31707d73",
+      "actual_field": "firmware_sha256",
+      "expected": "8ef8ce037e9ffcf57e77ac0e202dac37b1dbf57ae272f6caf69b806a31707d73",
+      "expected_field": "elf_sha256",
+      "mode": "elf_sha256"
+    },
+    "source_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "eedc87f821cb4100b4127f263e4f06e2",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    },
+    "target_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "a312e9a01c4546f6a9d8b6cb8c60602f",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    }
+  },
+  "startup": {
+    "home_screenshot_verified": true,
+    "pcm_gain_milli": 6000,
+    "clipped": 0,
+    "write_errors": 0,
+    "deadline_misses": 0
+  },
+  "listening_acceptance": "pending user feedback",
+  "playback": {
+    "observed_at_device_ms": 93583,
+    "seed": "a404",
+    "pcm_gain_milli": 6000,
+    "clipped": 0,
+    "limited_samples": 116086,
+    "accepted": 2160240,
+    "nonzero": 154196,
+    "peak": 29490,
+    "pa_requested_at_capture": 0,
+    "pa_activations": 3,
+    "partial": 0,
+    "write_errors": 0,
+    "deadline_misses": 0,
+    "render_max_us": 3211,
+    "write_max_us": 12116,
+    "owner_stack_min_bytes": 8744,
+    "last_prepare_us": 10654753
+  }
+}
