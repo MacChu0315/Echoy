@@ -225,28 +225,35 @@ Use the official Mosaico workflow; generic IDF flash targets point at retained
 factory Recovery and are blocked. Let Recovery finish initialization before
 submitting updates on this board; do not blindly replay an uncertain operation.
 
-Current device package: `52b40e645630`, verified HEALTHY boot
-`572815562769689448`. It retains the performance changes and fixed global output
-settings, with musical-bank gains Pulse/Voice 1, Dust .22 (about -13.15 dB),
-Harmony 1.188502 (+1.5 dB). Calibration belongs to the immutable prepared bank,
-not the current UI selection; cue levels are unchanged. Image/commit, retained
-Recovery and boot checks passed; actual boot logs confirm 1000/1000/220/1188 milli.
+Current device package: `ea1b10c28cd4`, verified HEALTHY boot
+`16482991358666837799`. It retains the performance changes, hardware volume90,
+global gain6 and peak ceiling .90. Musical-bank gains are Pulse/Voice 1,
+Dust .0672 (about -23.45 dB), Harmony 2.38 (about +7.53 dB); cues are unchanged.
+Actual boot logs confirm the new coefficients. The worker also reports each
+prepared bank's real peak before/after applying its gain, outside the realtime
+output loop. Image/commit/retained-layout checks and the home screenshot pass;
+no startup audio write errors or deadline misses were seen.
 
-The user rejected both -2 dB and -4 dB Dust trials as still noticeably loud.
-Rather than guessing further small steps, the user matched the old -4 dB Dust
-slider to Voice's nominal .65 level on the verified board/seed `1128`. Screenshots
-show Voice knob y177 and matched Dust y224, corresponding to about .225 volume.
-The user confirmed these sounded close. `.630957 * .225 / .65 ~= .219`; the
-selected .22 coefficient is within the visual slider-readback resolution and
-reproduces that matched level at the normal common slider position. A separate
-post-installation listening verdict is not yet recorded.
+The .22-Dust/1.1885-Harmony trial was rejected as Dust still louder than expected
+and Harmony too quiet. Two further user listening selections used seed `1128`:
+Harmony at nominal .65 matched Voice lowered to about .324 (knob y213), giving
+`1.188502*.65/.324324 ~= 2.382`. Using that Voice reference, Dust was lowered to
+the desired relative level at about .099 (knob y238), giving
+`.22*.099099/.324324 ~= .067222`. These are quantized screenshot estimates and
+user listening provenance, not acoustic SPL measurements. Both results were
+installed together; a separate post-installation listening verdict is pending.
 
-144 compiled-profile cases have no clipping; all 108 non-Dust WAVs are unchanged.
-Band tests and 22 runtime cases pass; firmware build/install pass. Digital LUFS
-alone did not explain the board's perceived imbalance, so do not substitute
-numerical equality for this user-provided listening calibration or claim measured
-speaker SPL/frequency response. Harmony's earlier +1.5 dB remains provisional,
-unchanged here. See `verification/role-balance/README.md`.
+192 compiled-profile cases include the actual matching seed: no clipping,
+max sample peak .899990844447, max measured true peak -0.8 dBFS. The 72 prior
+Pulse/Voice WAVs are unchanged. Band/calibration tests, sanitizers and all 22
+runtime cases pass; official firmware build/install pass. Do not substitute
+numerical LUFS equality for this board-specific listening calibration.
+See `verification/role-balance/README.md`.
+
+This boot logged a BQ27220 profile-block read timeout during startup. The existing
+BSP then rewrote its battery profile, verified all 26 fields, exited CFGUPDATE
+and reported the battery online. Battery code was not changed here; retain this
+recovered startup observation for later battery validation.
 
 Next: validate single-device touch, speaker, battery and
 resource watermarks on hardware. Then implement/accept physical neighbor

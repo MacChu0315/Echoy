@@ -2,7 +2,7 @@
 #include <math.h>
 #include <string.h>
 
-const float echoy_device_role_gains[4] = {1.0f, 1.0f, .22f, 1.188502227f};
+const float echoy_device_role_gains[4] = {1.0f, 1.0f, .0672f, 2.38f};
 
 void echoy_device_pcm_reset(echoy_device_pcm_t *state)
 {

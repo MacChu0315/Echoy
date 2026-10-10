@@ -6,8 +6,8 @@
 /* Device-only output adaptation at 24 kHz. Reference diagnostics bypass it.
  * The one-millisecond delay permits smooth peak attenuation before a transient. */
 /* Musical-bank calibration only; cues bypass these per-role factors.
- * Pulse/Voice unchanged; Dust about -13.2 dB (matched on the board);
- * Harmony +1.5 dB listening trial. */
+ * Pulse/Voice unchanged; Dust about -23.5 dB and Harmony about +7.5 dB,
+ * from separate on-board listening matches against Voice. */
 extern const float echoy_device_role_gains[4];
 #define ECHOY_DEVICE_PCM_GAIN 6.0f
 #define ECHOY_DEVICE_PCM_CEILING .90f

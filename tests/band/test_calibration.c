@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-static const float gains[4]={1,1,.22f,1.188502227f};
+static const float gains[4]={1,1,.0672f,2.38f};
 static void render(unsigned role,bool calibrated,bool tap,float *out)
 {
     echoy_band_t *b=echoy_band_create();assert(b);

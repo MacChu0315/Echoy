@@ -43,5 +43,5 @@
   "home_screenshot_verified": true,
   "startup_write_errors": 0,
   "startup_deadline_misses": 0,
-  "listening_acceptance": "User matched old Dust slider to Voice before installation; equivalent compiled calibration installed, separate post-update listening not yet confirmed."
+  "listening_acceptance": "Rejected after update: user reports Dust still louder than expected and Harmony clearly too quiet."
 }

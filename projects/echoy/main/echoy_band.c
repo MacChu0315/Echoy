@@ -2,6 +2,9 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef ESP_PLATFORM
+#include "esp_log.h"
+#endif
 #define N ECHOY_ARRANGE_TILE_COUNT
 #define BAR INT64_C(2500000)
 #define FADE INT64_C(8000)
@@ -502,8 +505,23 @@ bool echoy_band_calibrate_job(echoy_band_job_t *j, const float role_gains[4])
         if (!j->banks[i]) continue;
         echoy_audio_loops_t *loops=j->banks[i]->loops;
         float gain=role_gains[j->arrangement.plans[i].music.role];
-        for (size_t at=0; at<loops->frames; ++at)
+#ifdef ESP_PLATFORM
+        float peak_before = 0, peak_after = 0;
+#endif
+        for (size_t at=0; at<loops->frames; ++at) {
+#ifdef ESP_PLATFORM
+            peak_before = fmaxf(peak_before, fabsf(loops->samples[ECHOY_AUDIO_FULL][at]));
+#endif
             loops->samples[ECHOY_AUDIO_FULL][at] *= gain;
+#ifdef ESP_PLATFORM
+            peak_after = fmaxf(peak_after, fabsf(loops->samples[ECHOY_AUDIO_FULL][at]));
+#endif
+        }
+#ifdef ESP_PLATFORM
+        ESP_LOGI("echoy_balance", "role=%u gain_milli=%u before_peak_micro=%u after_peak_micro=%u",
+                 (unsigned)j->arrangement.plans[i].music.role, (unsigned)(gain * 1000),
+                 (unsigned)(peak_before * 1000000), (unsigned)(peak_after * 1000000));
+#endif
     }
     j->calibrated=true;
     return true;

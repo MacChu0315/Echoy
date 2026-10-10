@@ -135,3 +135,47 @@ The home screenshot is normal. Actual startup logs confirm role gains
 misses. [Installation](matched-device-result.json), [artifact](matched-artifacts.json).
 The user matched the pre-installation slider levels; a separate post-installation
 listening verdict has not yet been received.
+
+## Paired Dust and Harmony match
+
+The user rejected the .22-Dust/1.1885-Harmony package after confirming its actual
+playback: Dust was still louder than expected and Harmony clearly too quiet.
+The same board, seed `1128` and unchanged global output were used for two paired
+listening selections before another update:
+
+1. Harmony phrase 2 stayed at nominal .65 volume. The user lowered Voice phrase 1
+   to match it and confirmed the sounds were close. Voice knob y213 corresponds
+   to about .324 volume. Harmony's equivalent common-volume gain is
+   `1.188502 * .65 / .324324 ~= 2.38196`; the selected coefficient is 2.38.
+2. That .324 Voice level became the reference. The user lowered Dust phrase 1
+   to their desired relative level and confirmed the selection. Dust knob y238
+   corresponds to about .099 volume. Its common-volume gain is
+   `.22 * .099099 / .324324 ~= .067222`; the selected coefficient is .0672.
+
+The screenshots are quantized slider readbacks, and the judgments are user
+listening provenance; neither establishes calibrated acoustic SPL. Pulse/Voice
+unity, cues, hardware volume 90, global PCM gain6, ceiling .90, layout and
+performance optimizations remain unchanged. [Evidence](paired-listening-match.json).
+
+`sh tests/band/run.sh` and all 22 runtime cases pass. The calibration check also
+passes ASan/UBSan/LSan. 192 cases now include the actual seed `1128` as well as
+the previous three seeds, all roles/phrases, densities .5/1 and volumes .65/1:
+zero sample clipping, sample peak <= .899990844447, maximum measured true peak
+-0.8 dBFS. All 72 corresponding Pulse/Voice WAVs are byte-identical to the prior
+corpus. [Checks](paired-checks.json), [levels](paired-levels.csv).
+
+The worker now logs each actual musical bank's gain and peak before/after
+calibration, outside the realtime audio path. This makes subsequent physical
+checks verify applied buffer scaling rather than just configured constants.
+
+Package `ea1b10c28cd4` installed successfully with operation
+`b09994f1-78da-4515-8b71-5425b9c3e10e`, HEALTHY boot `16482991358666837799`,
+verified image/commit and unchanged bootloader/partition hashes. The actual home
+screenshot is normal. Boot logs confirm 1000/1000/67/2380 milli role gains,
+global gain6000, and no audio output errors or deadline misses while idle.
+[Installation](paired-device-result.json), [artifact](paired-artifacts.json).
+Separate post-installation listening acceptance is pending. Startup also logged
+a BQ27220 profile-block read timeout. The existing BSP subsequently updated the
+profile, verified 26 fields, exited CFGUPDATE and reported the battery online.
+The battery path was not modified here; this recovered event is retained for
+separate battery validation.

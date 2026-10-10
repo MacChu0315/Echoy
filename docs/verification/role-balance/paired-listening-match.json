@@ -1,0 +1,46 @@
+{
+  "boot_id": 572815562769689448,
+  "seed": "1128",
+  "harmony_match": {
+    "knob_center_y": 213.0,
+    "white_y_range": [
+      202,
+      224
+    ],
+    "voice_volume_estimate": 0.32432432432432434,
+    "harmony_reference_volume": 0.65,
+    "previous_harmony_gain": 1.188502227,
+    "estimated_harmony_gain": 2.3819565466125003,
+    "estimated_total_db": 7.53867669005067
+  },
+  "dust_match": {
+    "knob_center_y": 238.0,
+    "white_y_range": [
+      227,
+      249
+    ],
+    "dust_volume_estimate": 0.0990990990990991,
+    "voice_reference_volume_estimate": 0.32432432432432434,
+    "previous_dust_gain": 0.22,
+    "estimated_dust_gain": 0.06722222222222221,
+    "estimated_total_db": -23.449742695737122
+  },
+  "user_feedback": {
+    "harmony": "好了,两者接近",
+    "dust": "调好了，就是期望的响度"
+  },
+  "selected_gains": [
+    1,
+    1,
+    0.0672,
+    2.38
+  ],
+  "selected_db": [
+    0,
+    0,
+    -23.45261453892349,
+    7.531539141130239
+  ],
+  "volume_readback": "Screenshot knob center; 249-round(volume*111). Quantized estimate, not numeric RPC.",
+  "limiter_samples_during_matching": 0
+}
