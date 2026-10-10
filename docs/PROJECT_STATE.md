@@ -131,28 +131,51 @@ Read-only investigation of that boot found peak PCM 6,725/32,767, nonzero output
 PA requested on and no write/deadline errors. Official V1.2 schematics confirm
 the pinned BSP's MCU TX GPIO52 connects to ES8311 SDIN; no pin change was made.
 Driver-accepted samples and a PA software flag do not prove analog output level.
-The actual codec register values have not yet been read from the device.
+Codec register values have now been read from the device, as recorded below.
 
-An opt-in diagnostic package `bb7f0a3dd05f` is prepared, with hardware gain still
+The user authorized and installed diagnostic package `bb7f0a3dd05f`, with hardware gain still
 90 and unchanged UI/music. `CONFIG_ECHOY_AUDIO_DIAGNOSTICS` defaults off. Enabled
 builds expose private RPC 0xECA0: 1 reads cached status, 2 explicitly requests a
 fixed 1-second 1 kHz / 8,192-peak PCM reference, 3 cancels. The owner pauses music,
 reads ES8311 registers before/after the reference, and never resumes music
-automatically. Any UI action interrupts the diagnostic. This is instrumentation,
-not a claimed fix. Installation and one reference playback were requested and
-await authorization. See `verification/quiet-audio/README.md` for evidence,
-register ordering and test protocol. Right-side expansion occupancy is also
-awaiting user clarification; those pins share audio signals.
+automatically. Any UI action interrupts the diagnostic. Exactly one authorized
+reference completed: both register masks 127, ID 0x83/0x11, volume register 0xBC,
+mute 0x60 before and 0 afterward, 24,000 tone frames, no errors. The user heard it
+clearly and substantially louder than the phrases. This confirms working output
+at that known signal level; it is not a measured frequency response or SPL.
 
-A pulse phrase on `874d650babab` took 9,553,429 us to prepare; this delay still
-needs optimization. ESP-Iris remote
+The shared prototype normalizes loop RMS to at most .045, then applies a .45
+master. Measurements across 144 representative plans give RMS .0151–.02025 at
+maximum UI volume, about 19–21 dB below the continuous reference. Shared synthesis
+and HTML remain unchanged. A device-only linear gain of 3 (+9.54 dB) is now installed
+before PCM conversion, with clipping telemetry. All 144 loops and 2,304 tested
+ten-taps/second mixtures avoid clipping; worst calibrated peak is .920. Runtime
+and sanitizer checks pass. Package `3f156df66112` disables temporary diagnostics
+and was explicitly authorized and installed successfully on boot
+`1222412418091812715`. Official image/HEALTHY/commit and retained-layout checks
+passed; the home screenshot is normal. Idle startup telemetry confirms gain 3000
+milli, clipping 0, output errors 0 and deadline misses 0. Playback telemetry also shows nonzero PCM, peak 14,414, no clipping or output
+errors. The user reported louder output but still too quiet, and repeated that
+assessment after moving the UI slider to maximum (confirmed by screenshot).
+The gain correction is installed, but practical loudness acceptance still fails.
+See `verification/quiet-audio/README.md` for the evidence and test scope.
+
+A pulse phrase on `874d650babab` took 9,553,429 us to prepare. On the gain-3 boot,
+a subsequent role preparation took 42,284,433 us; synthesis delay still needs
+optimization. ESP-Iris remote
 pointer injection is unavailable in the current mirror adapter; interaction
 evidence above comes from physical user touches.
 
 ## Remaining physical integration
 
-The current device runs the volume-90 calibration. Confirm practical loudness
-and sound quality with the user before declaring acoustic acceptance.
+The current device runs calibrated package `3f156df66112`, hardware volume 90,
+device PCM gain 3 and diagnostic RPC disabled. Its installation authorization
+has been exercised. The one-reference-playback authorization has also been used.
+The user rejects musical loudness even at confirmed maximum UI volume. Further
+linear amplification is limited by the worst tested mixed peak (.920); any
+dynamic-range processing would affect musical dynamics and needs an explicit
+product decision under the faithful-prototype constraint. No such change is yet
+approved or implemented.
 The previous package authorizations have already been exercised; they are not
 blanket permission for future writes.
 Use the official Mosaico workflow; generic IDF flash targets point at retained

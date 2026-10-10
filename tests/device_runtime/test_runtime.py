@@ -19,7 +19,7 @@ class DeviceRuntime(unittest.TestCase):
                  '-DCONFIG_ECHOY_AUDIO_DIAGNOSTICS=1',
                  '-I'+str(HERE/'stubs'),'-I'+str(HERE),'-I'+str(main),
                  str(HERE/'test_runtime.c'),str(HERE/'fakes.c'),
-                 *[str(main/(name+'.c')) for name in ['platform_device','echoy_band','echoy_model','echoy_music','echoy_arrange','echoy_audio','echoy_audio_probe']],
+                 *[str(main/(name+'.c')) for name in ['platform_device','echoy_band','echoy_model','echoy_music','echoy_arrange','echoy_audio','echoy_audio_probe','echoy_device_pcm']],
                  '-Wl,--wrap=echoy_band_create','-Wl,--wrap=echoy_band_prepare_job','-lm','-o',str(cls.binary)]
         if os.environ.get('ECHOY_RUNTIME_SANITIZE')=='1':
             command[1:1]=['-fsanitize=address,undefined','-fno-omit-frame-pointer','-fno-pie','-no-pie']

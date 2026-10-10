@@ -4,6 +4,7 @@
 #include "board_health.h"
 #include "echoy_audio_probe.h"
 #include "echoy_band.h"
+#include "echoy_device_pcm.h"
 #include "esp_heap_caps.h"
 #include "esp_log.h"
 #include "esp_timer.h"
@@ -62,6 +63,7 @@ struct echoy_device {
     echoy_condition_t condition;
     int64_t origin_us, next_log_us, last_prepare_us, max_render_us;
     uint64_t accepted_frames;
+    uint64_t pcm_clipped;
     unsigned deadline_misses, rejected_actions, queue_overflows;
     esp_err_t shutdown_error;
     board_audio_stats_t last_audio_stats;
@@ -256,7 +258,8 @@ static void prepare_worker(void *arg)
     while (!atomic_load(&d->stopping)) {
         char diagnostic[DIAGNOSTIC_BYTES];
         if (xQueueReceive(d->diagnostics, diagnostic, 0) == pdTRUE) {
-            ESP_LOGI(TAG, "%s prep_stack=%u", diagnostic,
+            ESP_LOGI(TAG, "%s", diagnostic);
+            ESP_LOGI(TAG, "%s prep_stack=%u", diagnostic + DIAGNOSTIC_BYTES / 2,
                      (unsigned)uxTaskGetStackHighWaterMark(NULL));
         }
         echoy_band_job_t *job = NULL;
@@ -378,20 +381,22 @@ static void log_resources(struct echoy_device *d, board_audio_t *audio)
     if (audio) {
         board_audio_get_stats(audio, &stats);
     }
-    char diagnostic[DIAGNOSTIC_BYTES];
-    snprintf(diagnostic, sizeof(diagnostic),
-             "internal=%u PSRAM=%u owner_stack=%u prepare=%lldus render_max=%lldus "
-             "accepted=%llu nonzero=%llu peak=%u pa=%u activations=%u write_max=%uus "
-             "partial=%u write_errors=%u deadline_misses=%u rejected=%u overflow=%u",
+    char diagnostic[DIAGNOSTIC_BYTES] = {0};
+    snprintf(diagnostic, DIAGNOSTIC_BYTES / 2,
+             "pcm_gain_milli=%u clipped=%llu accepted=%llu nonzero=%llu peak=%u pa=%u "
+             "activations=%u write_max=%uus partial=%u write_errors=%u deadline_misses=%u",
+             (unsigned)(ECHOY_DEVICE_PCM_GAIN * 1000), (unsigned long long)d->pcm_clipped,
+             (unsigned long long)stats.frames_written, (unsigned long long)stats.nonzero_frames,
+             (unsigned)stats.peak_pcm, (unsigned)stats.pa_enabled, (unsigned)stats.pa_activations,
+             (unsigned)stats.max_write_us, (unsigned)stats.partial_writes,
+             (unsigned)stats.write_failures, d->deadline_misses);
+    snprintf(diagnostic + DIAGNOSTIC_BYTES / 2, DIAGNOSTIC_BYTES / 2,
+             "internal=%u PSRAM=%u owner_stack=%u prepare=%lldus render_max=%lldus rejected=%u "
+             "overflow=%u",
              (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT),
              (unsigned)heap_caps_get_free_size(MALLOC_CAP_SPIRAM),
              (unsigned)uxTaskGetStackHighWaterMark(NULL), (long long)d->last_prepare_us,
-             (long long)d->max_render_us, (unsigned long long)stats.frames_written,
-             (unsigned long long)stats.nonzero_frames, (unsigned)stats.peak_pcm,
-             (unsigned)stats.pa_enabled, (unsigned)stats.pa_activations,
-             (unsigned)stats.max_write_us, (unsigned)stats.partial_writes,
-             (unsigned)stats.write_failures, d->deadline_misses, d->rejected_actions,
-             d->queue_overflows);
+             (long long)d->max_render_us, d->rejected_actions, d->queue_overflows);
     /* UART logging may block for longer than a PCM block. Worker owns all
      * periodic log output; dropping a diagnostic is safer than blocking audio. */
     xQueueOverwrite(d->diagnostics, diagnostic);
@@ -500,14 +505,12 @@ static void owner_worker(void *arg)
             echoy_audio_probe_render(d->probe_position, d->block->pcm, BLOCK_FRAMES);
         } else {
             echoy_band_render(d->band, at, d->block->floating, BLOCK_FRAMES);
-            for (unsigned i = 0; i < BLOCK_FRAMES; ++i) {
-                float sample = d->block->floating[i];
-                if (!isfinite(sample)) {
-                    fail_audio(d, &audio, "nonfinite PCM", ESP_ERR_INVALID_RESPONSE);
-                    break;
-                }
-                sample = fmaxf(-1, fminf(1, sample));
-                d->block->pcm[i] = (int16_t)lrintf(sample * 32767);
+            size_t clipped = 0;
+            if (!echoy_device_pcm_convert(d->block->floating, d->block->pcm, BLOCK_FRAMES,
+                                          &clipped)) {
+                fail_audio(d, &audio, "nonfinite PCM", ESP_ERR_INVALID_RESPONSE);
+            } else {
+                d->pcm_clipped += clipped;
             }
         }
         if (!audio) {

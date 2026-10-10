@@ -1,0 +1,49 @@
+{
+  "phase": 3,
+  "error": 0,
+  "condition": 0,
+  "ui_volume": 65,
+  "generation": 1,
+  "requested_generation": 1,
+  "hardware_volume": 90,
+  "frames": 24000,
+  "frequency_hz": 1000,
+  "peak_pcm": 8192,
+  "before": {
+    "valid": 127,
+    "error": 0,
+    "at_us": 80173277,
+    "pa_requested": 0,
+    "regs": [
+      128,
+      63,
+      12,
+      96,
+      188,
+      131,
+      17
+    ]
+  },
+  "after": {
+    "valid": 127,
+    "error": 0,
+    "at_us": 81203123,
+    "pa_requested": 1,
+    "regs": [
+      128,
+      63,
+      12,
+      0,
+      188,
+      131,
+      17
+    ]
+  },
+  "output": {
+    "accepted": 1890480,
+    "nonzero": 21999,
+    "peak": 8192,
+    "pa_requested": 0,
+    "errors": 0
+  }
+}

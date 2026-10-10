@@ -1,0 +1,35 @@
+{
+  "package": "bb7f0a3dd05f",
+  "operation_id": "88113a40-7d5d-4c46-892e-4bfde6dac9f2",
+  "status": "succeeded",
+  "validation": {
+    "boot_id": 16152412761377796384,
+    "healthy": true,
+    "application_validation": {
+      "actual": "87626318ac1b6071a8b1b1985de555adfe3042347bd71ea8312ee3a059aab071",
+      "actual_field": "firmware_sha256",
+      "expected": "87626318ac1b6071a8b1b1985de555adfe3042347bd71ea8312ee3a059aab071",
+      "expected_field": "elf_sha256",
+      "mode": "elf_sha256"
+    },
+    "source_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "c2a0444c27d441a4b1cbccf787dd1137",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    },
+    "target_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "88113a407d5d4c46892e4bfde6dac9f2",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    }
+  },
+  "reference_generation": 1,
+  "reference_submissions": 1,
+  "user_feedback": "Clear and distinctly louder than musical phrases."
+}

@@ -1,0 +1,2 @@
+PASS calibrated linear samples, headroom, clipping accounting and invalid PCM rejection
+PASS loops=144 tap_mixtures=2304 baseline_rms=[0.015064637,0.020250000] calibrated_rms=[0.045193911,0.060749999] baseline_peak=0.292499989 calibrated_peak=0.877499968 calibrated_mix_peak=0.919789312 no_clipping
