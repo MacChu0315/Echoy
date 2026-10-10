@@ -1,0 +1,47 @@
+{
+  "package": {
+    "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-release/echoy-dust-matched-52b40e645630.irisfw",
+    "sha256": "52b40e6456302a154154aa22e69c6414be2ccbf92363eb562c07d062c7510a93"
+  },
+  "operation_id": "d6ee981f-6813-43ef-9056-9fdd856b60c3",
+  "status": "succeeded",
+  "validation": {
+    "boot_id": 572815562769689448,
+    "healthy": true,
+    "application_validation": {
+      "actual": "ad75e3d6335707e753ca5c977d968e635a93c354e4c8876a4ed4eaa7cf7eb102",
+      "actual_field": "firmware_sha256",
+      "expected": "ad75e3d6335707e753ca5c977d968e635a93c354e4c8876a4ed4eaa7cf7eb102",
+      "expected_field": "elf_sha256",
+      "mode": "elf_sha256"
+    },
+    "source_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "b23665b097684b90bcea76c836b15f78",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    },
+    "target_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "d6ee981f681343ef90569fdd856b60c3",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    }
+  },
+  "role_gains_milli": [
+    1000,
+    1000,
+    220,
+    1188
+  ],
+  "global_pcm_gain": 6,
+  "peak_ceiling": 0.9,
+  "home_screenshot_verified": true,
+  "startup_write_errors": 0,
+  "startup_deadline_misses": 0,
+  "listening_acceptance": "User matched old Dust slider to Voice before installation; equivalent compiled calibration installed, separate post-update listening not yet confirmed."
+}

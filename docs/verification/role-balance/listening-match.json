@@ -1,0 +1,33 @@
+{
+  "dust4-feedback-screen": {
+    "knob_center_y": 177.0,
+    "white_y_range": [
+      166,
+      188
+    ],
+    "displayed_volume_estimate": 0.6486486486486487
+  },
+  "dust-matched-screen": {
+    "knob_center_y": 224.0,
+    "white_y_range": [
+      213,
+      235
+    ],
+    "displayed_volume_estimate": 0.22522522522522523
+  },
+  "reference_volume": 0.65,
+  "estimated_gain": 0.21862693849618847,
+  "estimated_total_db": -13.205926534876845,
+  "user_feedback": "调好了，两者接近",
+  "boot_id": 6559752351850501042,
+  "seed": "1128",
+  "reference_role": "voice",
+  "matched_role": "dust",
+  "phrase": 1,
+  "previous_dust_gain": 0.6309573445,
+  "selected_dust_gain": 0.22,
+  "selected_total_db": -13.151546383555875,
+  "limiter_samples_during_matching": 0,
+  "volume_display_resolution": 0.009009009009009009,
+  "notes": "Volume is inferred from the RGB565 knob center, not a direct numeric device readback; .65 is the nominal reference consistent with its screenshot."
+}

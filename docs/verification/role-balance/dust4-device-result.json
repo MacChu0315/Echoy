@@ -41,5 +41,5 @@
   "global_pcm_gain": 6,
   "peak_ceiling": 0.9,
   "home_screenshot_verified": true,
-  "listening_acceptance": "pending"
+  "listening_acceptance": "Rejected: user reports Dust still very noticeably loud."
 }

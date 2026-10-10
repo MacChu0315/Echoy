@@ -225,22 +225,28 @@ Use the official Mosaico workflow; generic IDF flash targets point at retained
 factory Recovery and are blocked. Let Recovery finish initialization before
 submitting updates on this board; do not blindly replay an uncertain operation.
 
-Current device package: `4db21a252792`, verified HEALTHY boot
-`6559752351850501042`. It retains the performance changes and fixed global output
-settings, and trials musical-bank gains Pulse/Voice 1, Dust .630957 (-4 dB),
+Current device package: `52b40e645630`, verified HEALTHY boot
+`572815562769689448`. It retains the performance changes and fixed global output
+settings, with musical-bank gains Pulse/Voice 1, Dust .22 (about -13.15 dB),
 Harmony 1.188502 (+1.5 dB). Calibration belongs to the immutable prepared bank,
-not the current UI selection; cue levels are unchanged. Installation, retained
-Recovery and boot checks passed; listening acceptance is pending. The prior
-`e45af2f7817a` (-2 dB Dust) was rejected as still too loud after confirming its
-actual Dust bank was playing at UI volume .65. Other role settings are unchanged
-in the new trial.
+not the current UI selection; cue levels are unchanged. Image/commit, retained
+Recovery and boot checks passed; actual boot logs confirm 1000/1000/220/1188 milli.
 
-The user's reported imbalance is Dust > Pulse/Voice > Harmony. 144 digital cases
-support Dust attenuation, but Voice/Harmony originally differed only 0–.2 LU.
-Harmony boost is a subjective listening trial, not a proven digital amplitude
-fix. With the further Dust attenuation, digital Dust LUFS is now below Voice;
-this is a device-listening trial rather than generic numerical equalization.
-Preserve this distinction and use user feedback for the next calibration decision. See `verification/role-balance/README.md`.
+The user rejected both -2 dB and -4 dB Dust trials as still noticeably loud.
+Rather than guessing further small steps, the user matched the old -4 dB Dust
+slider to Voice's nominal .65 level on the verified board/seed `1128`. Screenshots
+show Voice knob y177 and matched Dust y224, corresponding to about .225 volume.
+The user confirmed these sounded close. `.630957 * .225 / .65 ~= .219`; the
+selected .22 coefficient is within the visual slider-readback resolution and
+reproduces that matched level at the normal common slider position. A separate
+post-installation listening verdict is not yet recorded.
+
+144 compiled-profile cases have no clipping; all 108 non-Dust WAVs are unchanged.
+Band tests and 22 runtime cases pass; firmware build/install pass. Digital LUFS
+alone did not explain the board's perceived imbalance, so do not substitute
+numerical equality for this user-provided listening calibration or claim measured
+speaker SPL/frequency response. Harmony's earlier +1.5 dB remains provisional,
+unchanged here. See `verification/role-balance/README.md`.
 
 Next: validate single-device touch, speaker, battery and
 resource watermarks on hardware. Then implement/accept physical neighbor

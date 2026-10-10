@@ -1,0 +1,9 @@
+{
+  "cases": 144,
+  "clipped_samples": 0,
+  "maximum_peak": 0.899990844447,
+  "dust_maximum_peak": 0.3616748558,
+  "other_role_wavs_unchanged": 108,
+  "dust_gain": 0.22,
+  "dust_total_db": -13.151546383555875
+}

@@ -99,5 +99,39 @@ Package `4db21a252792` then installed successfully with operation
 matching image/commit and unchanged bootloader/partition hashes. The actual home
 screen is normal. Boot logs confirm gains 1000/1000/630/1188 milli, global gain
 6000 milli, and no idle output errors or deadline misses. [Current install](dust4-device-result.json).
-Further listening feedback is pending; the earlier -2 dB rejection is not
-acceptance of this new setting.
+The user subsequently rejected -4 dB too: Dust was still very noticeably loud.
+
+## Direct listening match
+
+The same -4 dB firmware/boot was verified, including actual Voice and Dust bank
+changes for seed `1128`, with no output errors or limiter activity. The user
+kept Voice at the existing nominal .65 volume, then reduced Dust's slider until
+they reported the sounds were close. The screenshot moved the knob center from
+y=177 to y=224. From the UI mapping (`249 - round(volume*111)`), the final position
+represents about .225 volume. This is quantized visual readback, not an exact
+numeric volume RPC or an acoustic SPL measurement.
+
+The corresponding bank gain is `.630957 * .225 / .65 ~= .219`. The selected
+coefficient is `.22` (about -13.15 dB total), within the slider's readback
+resolution. At the usual .65 slider position it reproduces the user's matched
+Dust level. Pulse/Voice unity, Harmony 1.188502, cues, global gain6, hardware90
+and the limiter are unchanged. No spectral filtering or synthesis change is
+introduced. [Listening evidence](listening-match.json),
+[Voice reference](match-reference-voice.png), [adjusted Dust](match-adjusted-dust.png).
+
+`sh tests/band/run.sh` and `python3 tests/device_runtime/test_runtime.py` pass
+(22 runtime cases). Another 144 cases use the actual compiled role-gain table:
+zero clipping, Dust peak <= .361674856, all 108 other-role WAVs byte-identical to
+the -4 dB corpus. [Checks](matched-checks.json), [levels](matched-levels.csv).
+The pinned official firmware/bundle build passes. This calibration is based on
+the user's board listening comparison; it is not a claim that the unweighted or
+EBU digital levels of all roles are equal.
+
+Package `52b40e645630` installed successfully with operation
+`d6ee981f-6813-43ef-9056-9fdd856b60c3`, HEALTHY boot `572815562769689448`,
+matching image and commit record, and unchanged bootloader/partition hashes.
+The home screenshot is normal. Actual startup logs confirm role gains
+1000/1000/220/1188 milli, global gain 6000 milli and no output errors or deadline
+misses. [Installation](matched-device-result.json), [artifact](matched-artifacts.json).
+The user matched the pre-installation slider levels; a separate post-installation
+listening verdict has not yet been received.
