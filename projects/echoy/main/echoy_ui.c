@@ -11,6 +11,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef ESP_PLATFORM
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#endif
 
 #define BAR_US INT64_C(2500000)
 #define BEAT_US INT64_C(625000)
@@ -40,9 +44,10 @@ struct echoy_ui {
     atomic_int error, image_error;
     atomic_uint images_pending;
     bool events_registered, pointer_registered, canvas_registered[2];
-    bool gallery_dirty, gallery_inflight;
+    bool gallery_dirty, gallery_inflight, last_draw_animated;
     uint32_t gallery_submitted_revision;
     echoy_art_frame_t frames[5];
+    struct echoy_art_workspace *art_workspace;
     echoy_plan_t capture_plan, gallery[3];
     route_t route;
     echoy_condition_t condition;
@@ -53,6 +58,9 @@ struct echoy_ui {
     bool density_dirty;
     int64_t density_due_us;
     int64_t last_hit_us, last_draw_us;
+#ifdef ESP_PLATFORM
+    int64_t perf_tick_at, perf_log_at, perf_tick_max, perf_gap_max;
+#endif
     int last_step, last_phase, last_route, last_condition, last_english;
     uint16_t last_capture_mask, last_gallery_seed;
     uint32_t last_gallery_revision, last_committed;
@@ -292,6 +300,7 @@ static void prepare_graphics(echoy_ui_handle_t u, const echoy_snapshot_t *s, int
                        ? 1 - (now - u->last_hit_us) / 400000.0f
                        : 0;
     u->frames[0] = (echoy_art_frame_t){.plan = draw,
+                                       .workspace = u->art_workspace,
                                        .role = cap ? s->role : plan->role,
                                        .progress = progress,
                                        .active = active,
@@ -313,6 +322,7 @@ static void prepare_graphics(echoy_ui_handle_t u, const echoy_snapshot_t *s, int
                 return;
             }
             u->frames[i + 2] = (echoy_art_frame_t){.plan = &u->gallery[i],
+                                                   .workspace = u->art_workspace,
                                                    .role = roles[i],
                                                    .width = i == 1 ? 206 : 73,
                                                    .height = i == 1 ? 101 : 48,
@@ -341,6 +351,9 @@ static void publish_gallery(echoy_ui_handle_t u)
     if (!u->gallery_dirty || atomic_load_explicit(&u->images_pending, memory_order_acquire)) {
         return;
     }
+#ifdef ESP_PLATFORM
+    int64_t gallery_start = now_us(u);
+#endif
     for (unsigned i = 2; i < 5; i++) {
         uint8_t *encoded = NULL;
         size_t size = 0;
@@ -359,6 +372,10 @@ static void publish_gallery(echoy_ui_handle_t u)
             return;
         }
     }
+#ifdef ESP_PLATFORM
+    fprintf(stderr, "ECHOY_GALLERY_COST role=%u us=%lld\n", (unsigned)u->frames[3].role,
+            (long long)(now_us(u)-gallery_start));
+#endif
     u->gallery_dirty = false;
     u->gallery_inflight = true;
     u->gallery_submitted_revision = u->last_gallery_revision;
@@ -680,6 +697,7 @@ static void refresh(echoy_ui_handle_t u, int64_t now, bool force)
     }
     show_strip(u, &s, now);
     prepare_graphics(u, &s, now);
+    u->frames_dirty |= s.committed_revision != u->last_committed;
     show_metadata(u, &s);
     show_home_state(u, &s, now);
     int height = (int)lround(u->volume * 111);
@@ -713,8 +731,10 @@ static void refresh(echoy_ui_handle_t u, int64_t now, bool force)
             u->last_fade = fade;
         }
     }
+    bool animated = u->frames[0].active || u->frames[0].energy > 0;
     if (u->condition == ECHOY_NORMAL && !u->removed &&
-        (force || u->frames_dirty || now - u->last_draw_us >= DRAW_US)) {
+        (force || u->frames_dirty ||
+         ((animated || u->last_draw_animated) && now - u->last_draw_us >= DRAW_US))) {
         unsigned count = u->route == HOME ? 2 : 0;
         for (unsigned i = 0; i < count; i++) {
             if (u->canvas_registered[i]) {
@@ -722,6 +742,7 @@ static void refresh(echoy_ui_handle_t u, int64_t now, bool force)
             }
         }
         u->last_draw_us = now;
+        u->last_draw_animated = animated;
         u->frames_dirty = false;
     }
     if (u->route == ROLE && u->condition == ECHOY_NORMAL && !u->removed) {
@@ -793,6 +814,19 @@ static void tick(esp_gsp_handle_t gsp, void *ctx)
         echoy_model_prepare_done(u->model, s.generation, now);
     }
     refresh(u, now, false);
+#ifdef ESP_PLATFORM
+    int64_t elapsed = now_us(u)-now, gap = u->perf_tick_at ? now-u->perf_tick_at : 0;
+    if (elapsed > u->perf_tick_max) u->perf_tick_max = elapsed;
+    if (gap > u->perf_gap_max) u->perf_gap_max = gap;
+    u->perf_tick_at = now;
+    if (now-u->perf_log_at >= 5000000) {
+        fprintf(stderr, "ECHOY_UI_COST route=%u tick_max_us=%lld gap_max_us=%lld stack_min=%u\n",
+                (unsigned)u->route, (long long)u->perf_tick_max, (long long)u->perf_gap_max,
+                (unsigned)uxTaskGetStackHighWaterMark(NULL));
+        u->perf_log_at = now;
+        u->perf_tick_max = u->perf_gap_max = 0;
+    }
+#endif
 }
 static void pointer(esp_gsp_handle_t gsp, int32_t x, int32_t y, bool pressed, void *ctx)
 {
@@ -984,11 +1018,13 @@ esp_gsp_err_t echoy_ui_create(esp_gsp_handle_t gsp, const echoy_platform_t *plat
     atomic_init(&u->error, ESP_GSP_OK);
     atomic_init(&u->image_error, GSP_OK);
     atomic_init(&u->images_pending, 0);
+    u->art_workspace = echoy_art_workspace_create();
     u->model = echoy_model_create();
     u->view = echoy_view_cache_create(gsp);
-    if (!u->model || !u->view) {
+    if (!u->model || !u->view || !u->art_workspace) {
         echoy_model_delete(u->model);
         echoy_view_cache_delete(u->view);
+        echoy_art_workspace_delete(u->art_workspace);
         free(u);
         return ESP_GSP_ERR_NO_MEM;
     }
@@ -1073,6 +1109,7 @@ esp_gsp_err_t echoy_ui_delete(echoy_ui_handle_t u)
     }
     echoy_model_delete(u->model);
     echoy_view_cache_delete(u->view);
+    echoy_art_workspace_delete(u->art_workspace);
     free(u);
     return ESP_GSP_OK;
 }
@@ -1088,5 +1125,6 @@ void echoy_ui_release_closed(echoy_ui_handle_t u)
     }
     echoy_model_delete(u->model);
     echoy_view_cache_delete(u->view);
+    echoy_art_workspace_delete(u->art_workspace);
     free(u);
 }

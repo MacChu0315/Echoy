@@ -1,6 +1,9 @@
 #include "echoy_art.h"
+#include "echoy_art_tables.h"
+#include "echoy_art_blend.h"
 #include <math.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define PI 3.14159265358979323846
@@ -12,8 +15,24 @@
 
 typedef struct { float x, y; } point_t;
 typedef struct { int x0, y0, x1, y1; } bounds_t;
+typedef struct { point_t a, b, c; float area; bounds_t bounds; } join_t;
+struct echoy_art_workspace {
+    bounds_t segments[PATH_POINTS];
+    join_t joins[PATH_POINTS];
+    uint16_t pixels[300 * 204];
+    echoy_art_frame_t frame;
+    echoy_plan_t plan;
+    bool valid;
+};
+struct echoy_art_workspace *echoy_art_workspace_create(void)
+{
+    return calloc(1,sizeof(struct echoy_art_workspace));
+}
+void echoy_art_workspace_delete(struct echoy_art_workspace *workspace) { free(workspace); }
+
 typedef struct {
     const esp_gsp_canvas_surface_t *surface;
+    struct echoy_art_workspace *workspace;
     float sx, sy, offset;
 } raster_t;
 
@@ -57,9 +76,9 @@ static void pixel(const esp_gsp_canvas_surface_t *s, int x, int y, uint32_t colo
     }
     unsigned old = *p, r = ((old >> 11) & 31) * 255 / 31, g = ((old >> 5) & 63) * 255 / 63,
              b = (old & 31) * 255 / 31;
-    r = (unsigned)(r + (int)((color >> 16) & 255) * (double)alpha - r * alpha);
-    g = (unsigned)(g + (int)((color >> 8) & 255) * (double)alpha - g * alpha);
-    b = (unsigned)(b + (int)(color & 255) * (double)alpha - b * alpha);
+    r = echoy_art_blend_channel(r, (color >> 16) & 255, alpha);
+    g = echoy_art_blend_channel(g, (color >> 8) & 255, alpha);
+    b = echoy_art_blend_channel(b, color & 255, alpha);
     *p = rgb565((r << 16) | (g << 8) | b);
 }
 
@@ -91,10 +110,22 @@ static void circle(const raster_t *r, float cx, float cy, float radius,
                      (cy - outer) * r->sy + r->offset - 1,
                      (cx + outer) * r->sx + r->offset + 1,
                      (cy + outer) * r->sy + r->offset + 1);
+    /* Only the antialiased boundary needs distance roots. Use a conservative
+     * one-pixel margin so RGB565 coverage remains identical, including scaled
+     * gallery ellipses. Reject the large empty center of stroked rings first. */
+    const float margin = 1 / fminf(r->sx, r->sy);
+    const float outside = outer + margin;
+    const float inside = fmaxf(0, radius - stroke * .5f - margin);
     for (int y = b.y0; y < b.y1; ++y) {
         for (int x = b.x0; x < b.x1; ++x) {
             float dx = (x + .5f - r->offset) / r->sx - cx;
             float dy = (y + .5f - r->offset) / r->sy - cy;
+            float squared = dx * dx + dy * dy;
+            if (squared > outside * outside) continue;
+            if (squared < inside * inside) {
+                if (stroke <= 0) pixel(r->surface, x, y, color, opacity);
+                continue;
+            }
             float d = hypotf(dx, dy);
             float scale = edge_scale(r, dx, dy, d);
             float coverage = stroke > 0 ?
@@ -113,9 +144,10 @@ static float cross(point_t a, point_t b, point_t c)
 
 /* The ribbon paths close in a sharp tip. Canvas uses a miter join by default,
  * so extend the union of round segments with the outer join triangles. */
-static void miter_joins(const raster_t *r, const point_t *points, unsigned count, float half,
-                        int bx, int by, int right, int bottom, float *coverage)
+static unsigned prepare_joins(const raster_t *r, const point_t *points, unsigned count,
+                              float half, join_t *joins)
 {
+    unsigned used = 0;
     for (unsigned i = 0; i < count; ++i) {
         const point_t vertex = points[i];
         unsigned before = (i + count - 1) % count, after = (i + 1) % count;
@@ -145,10 +177,23 @@ static void miter_joins(const raster_t *r, const point_t *points, unsigned count
                               fminf(a.y, fminf(b.y, c.y)) * r->sy + r->offset,
                               fmaxf(a.x, fmaxf(b.x, c.x)) * r->sx + r->offset,
                               fmaxf(a.y, fmaxf(b.y, c.y)) * r->sy + r->offset);
+        joins[used++] = (join_t){a,b,c,area,bounds};
+    }
+    return used;
+}
+static void miter_joins(const raster_t *r, const join_t *joins, unsigned count,
+                        int bx, int by, int right, int bottom, float *coverage)
+{
+    for (unsigned i = 0; i < count; ++i) {
+        const join_t *join = &joins[i];
+        bounds_t bounds = join->bounds;
+        if (bounds.x1 <= bx || bounds.x0 >= right || bounds.y1 <= by || bounds.y0 >= bottom) continue;
         if (bounds.x0 < bx) bounds.x0 = bx;
         if (bounds.y0 < by) bounds.y0 = by;
         if (bounds.x1 > right) bounds.x1 = right;
         if (bounds.y1 > bottom) bounds.y1 = bottom;
+        point_t a=join->a, b=join->b, c=join->c;
+        float area=join->area;
         for (int y = bounds.y0; y < bounds.y1; ++y) {
             for (int x = bounds.x0; x < bounds.x1; ++x) {
                 unsigned inside = 0;
@@ -188,6 +233,22 @@ static void stroke_path(const raster_t *r, const point_t *points, unsigned count
                      (min_y - extent) * r->sy + r->offset - 1,
                      (max_x + extent) * r->sx + r->offset + 1,
                      (max_y + extent) * r->sy + r->offset + 1);
+    /* Geometry is invariant across coverage blocks. Compute it once instead
+     * of repeating bounds/normalization for every small raster tile. */
+    /* All private callers use at most PATH_POINTS vertices. Open paths need
+     * no join workspace, keeping their render-thread stack footprint small. */
+    bounds_t local_segments[r->workspace ? 1 : count];
+    join_t local_joins[r->workspace || !closed ? 1 : count];
+    bounds_t *segments = r->workspace ? r->workspace->segments : local_segments;
+    join_t *joins = r->workspace ? r->workspace->joins : local_joins;
+    unsigned join_count = closed ? prepare_joins(r, points, count, half, joins) : 0;
+    for (unsigned i = 0; i < count - !closed; ++i) {
+        point_t a = points[i], z = points[(i + 1) % count];
+        segments[i] = clip(r, (fminf(a.x,z.x)-half)*r->sx+r->offset-1,
+                           (fminf(a.y,z.y)-half)*r->sy+r->offset-1,
+                           (fmaxf(a.x,z.x)+half)*r->sx+r->offset+1,
+                           (fmaxf(a.y,z.y)+half)*r->sy+r->offset+1);
+    }
     for (int by = b.y0; by < b.y1; by += BLOCK_HEIGHT) {
         for (int bx = b.x0; bx < b.x1; bx += BLOCK_WIDTH) {
             const int right = bx + BLOCK_WIDTH < b.x1 ? bx + BLOCK_WIDTH : b.x1;
@@ -195,10 +256,8 @@ static void stroke_path(const raster_t *r, const point_t *points, unsigned count
             float coverage[BLOCK_WIDTH * BLOCK_HEIGHT] = {0};
             for (unsigned i = 0; i < count - !closed; ++i) {
                 point_t a = points[i], z = points[(i + 1) % count];
-                bounds_t segment = clip(r, (fminf(a.x, z.x) - half) * r->sx + r->offset - 1,
-                                       (fminf(a.y, z.y) - half) * r->sy + r->offset - 1,
-                                       (fmaxf(a.x, z.x) + half) * r->sx + r->offset + 1,
-                                       (fmaxf(a.y, z.y) + half) * r->sy + r->offset + 1);
+                bounds_t segment = segments[i];
+                if (segment.x1 <= bx || segment.x0 >= right || segment.y1 <= by || segment.y0 >= bottom) continue;
                 if (segment.x0 < bx) segment.x0 = bx;
                 if (segment.y0 < by) segment.y0 = by;
                 if (segment.x1 > right) segment.x1 = right;
@@ -218,7 +277,7 @@ static void stroke_path(const raster_t *r, const point_t *points, unsigned count
                     }
                 }
             }
-            if (closed) miter_joins(r, points, count, half, bx, by, right, bottom, coverage);
+            if (closed) miter_joins(r, joins, join_count, bx, by, right, bottom, coverage);
             for (int y = by; y < bottom; ++y) {
                 for (int x = bx; x < right; ++x) {
                     pixel(r->surface, x, y, color, coverage[(y - by) * BLOCK_WIDTH + x - bx] * opacity);
@@ -246,35 +305,36 @@ static void fill_path(const raster_t *r, const point_t *points, unsigned count,
     bounds_t b = clip(r, r->surface->x, min_y * r->sy + r->offset,
                      r->surface->x + r->surface->width, max_y * r->sy + r->offset);
     for (int y = b.y0; y < b.y1; ++y) {
+        float crossings[4][PATH_POINTS];
+        unsigned hits[4] = {0};
+        for (unsigned sample = 0; sample < 4; ++sample) {
+            const float at_y = (y + (sample + .5f) / 4 - r->offset) / r->sy;
+            for (unsigned i = 0; i < count; ++i) {
+                point_t a = points[i], z = points[(i + 1) % count];
+                if ((a.y <= at_y && z.y > at_y) || (z.y <= at_y && a.y > at_y)) {
+                    float crossing = (a.x + (at_y-a.y)*(z.x-a.x)/(z.y-a.y))*r->sx+r->offset;
+                    unsigned insert = hits[sample]++;
+                    while (insert && crossings[sample][insert-1] > crossing) {
+                        crossings[sample][insert] = crossings[sample][insert-1];
+                        --insert;
+                    }
+                    crossings[sample][insert] = crossing;
+                }
+            }
+        }
         for (int bx = b.x0; bx < b.x1; bx += BLOCK_WIDTH) {
             float coverage[BLOCK_WIDTH] = {0};
             const int right = bx + BLOCK_WIDTH < b.x1 ? bx + BLOCK_WIDTH : b.x1;
             for (unsigned sample = 0; sample < 4; ++sample) {
-                const float at_y = (y + (sample + .5f) / 4 - r->offset) / r->sy;
-                float crossings[PATH_POINTS];
-                unsigned hits = 0;
-                for (unsigned i = 0; i < count; ++i) {
-                    point_t a = points[i], z = points[(i + 1) % count];
-                    if ((a.y <= at_y && z.y > at_y) || (z.y <= at_y && a.y > at_y)) {
-                        float crossing = (a.x + (at_y - a.y) * (z.x - a.x) / (z.y - a.y)) * r->sx + r->offset;
-                        unsigned insert = hits++;
-                        while (insert && crossings[insert - 1] > crossing) {
-                            crossings[insert] = crossings[insert - 1];
-                            --insert;
-                        }
-                        crossings[insert] = crossing;
-                    }
-                }
-                for (unsigned i = 0; i + 1 < hits; i += 2) {
+                for (unsigned i = 0; i + 1 < hits[sample]; i += 2) {
                     for (int x = bx; x < right; ++x) {
-                        float span = fminf(x + 1, crossings[i + 1]) - fmaxf(x, crossings[i]);
-                        coverage[x - bx] += fmaxf(0, span) * .25f;
+                        float span = fminf(x+1,crossings[sample][i+1])-fmaxf(x,crossings[sample][i]);
+                        coverage[x-bx] += fmaxf(0,span)*.25f;
                     }
                 }
             }
-            for (int x = bx; x < right; ++x) {
-                pixel(r->surface, x, y, color, clamp01(coverage[x - bx]) * opacity);
-            }
+            for (int x = bx; x < right; ++x)
+                pixel(r->surface,x,y,color,clamp01(coverage[x-bx])*opacity);
         }
     }
 }
@@ -345,7 +405,7 @@ static void voice(const raster_t *r, const echoy_art_frame_t *frame,
             double u = i / 140.0;
             points[i] = (point_t){10 + i * 2,
                 41 + row * 11 + sin(u * PI * (3 + frequency) + row * .22) *
-                pow(sin(u * PI), 1.6) * (25 + energy * 9) * strength[row]};
+                voice_window[i] * (25 + energy * 9) * strength[row]};
         }
         uint32_t ink = row == 2 || row == 3 ? color : row < 2 ? 0xa8b7bc : 0xbec6bd;
         stroke_path(r, points, 141, false, row == 2 ? 2 : 1.1f, ink, 1);
@@ -361,24 +421,17 @@ static void voice(const raster_t *r, const echoy_art_frame_t *frame,
     }
 }
 
-static double random_value(unsigned n)
-{
-    /* The frozen artwork uses double precision before the fractional part. */
-    double value = sin(n * 127.1 + 311.7) * 43758.5453;
-    return value - floor(value);
-}
-
 static void dust(const raster_t *r, const echoy_art_frame_t *frame,
                  const unsigned cells[16], unsigned step, uint32_t color)
 {
     for (unsigned i = 0; i < 135; ++i) {
-        double u = random_value(i + 1), v = random_value(i + 54);
+        double u = dust_u[i], v = dust_v[i];
         float x = 10 + u * 280;
-        float y = 89 + sin(u * 7) * 13 + (v - .5) * (35 * sin(u * PI) + 10) * 2;
+        float y = dust_y[i];
         unsigned col = (unsigned)(u * 16);
         bool event = cells[col], hot = frame->active && col == step;
         float opacity = hot ? 1 : event ? .65f : .35 + v * .2;
-        float radius = (event ? 1.8 : 1) + (hot ? 1.2 : 0) + random_value(i + 8) * .6;
+        float radius = (event ? 1.8 : 1) + (hot ? 1.2 : 0) + dust_radius[i];
         circle(r, x, y, radius, 0, event ? color : 0xbbc4a8, opacity);
     }
     for (size_t i = 0; i < note_count(frame); ++i) {
@@ -404,14 +457,14 @@ static void harmony(const raster_t *r, const echoy_art_frame_t *frame,
     }
     const bool held = frame->active && current;
     static const int fallback[] = {50, 57, 65};
+    const double *waves[] = {harmony_wave_0, harmony_wave_1, harmony_wave_2};
     for (unsigned row = 0; row < 3; ++row) {
         int tone = current && current->harmony_count > row ? current->harmony[row] : fallback[row];
         float center = 49 + row * 29, arch = 16 + tone % 12 * .5f + (held ? energy * 2 : 0);
         point_t points[PATH_POINTS];
         for (unsigned i = 0; i < 136; ++i) {
-            double u = i / 135.0;
-            points[i] = (point_t){15 + i * 2, center - sin(PI * u) * arch + sin(u * PI * 2 + row * .3) * 5};
-            points[271 - i] = (point_t){15 + i * 2, center + sin(PI * u) * 10 + sin(u * PI * 2 + row * .3) * 5};
+            points[i] = (point_t){15 + i * 2, center - harmony_arch[i] * arch + waves[row][i]};
+            points[271 - i] = (point_t){15 + i * 2, center + harmony_arch[i] * 10 + waves[row][i]};
         }
         fill_path(r, points, PATH_POINTS, color, held ? .1f : .06f);
         stroke_path(r, points, PATH_POINTS, true, held ? 1.8f : 1.2f, row == 1 ? color : 0xb7a587, 1);
@@ -430,12 +483,11 @@ static void harmony(const raster_t *r, const echoy_art_frame_t *frame,
     }
 }
 
-void echoy_art_draw(const esp_gsp_canvas_surface_t *surface, void *ctx)
+static void art_render(const esp_gsp_canvas_surface_t *surface, const echoy_art_frame_t *frame)
 {
-    const echoy_art_frame_t *frame = ctx;
     clear_surface(surface, frame->background ? frame->background : PAPER);
     if (!frame->width || !frame->height) return;
-    raster_t raster = {surface, frame->width / 300.0f, frame->height / 204.0f,
+    raster_t raster = {surface, frame->workspace, frame->width / 300.0f, frame->height / 204.0f,
                        frame->empty ? 1 : 0};
     double now = fmax(0, fmin(1, frame->progress)) * 16;
     unsigned step = (unsigned)now, cells[16];
@@ -450,13 +502,54 @@ void echoy_art_draw(const esp_gsp_canvas_surface_t *surface, void *ctx)
     }
 }
 
+static bool same_frame(const struct echoy_art_workspace *work, const echoy_art_frame_t *frame)
+{
+    const echoy_art_frame_t *old = &work->frame;
+    return work->valid && old->role == frame->role && old->width == frame->width &&
+           old->height == frame->height && old->background == frame->background &&
+           old->active == frame->active && old->energy == frame->energy &&
+           old->empty == frame->empty && old->anchors_only == frame->anchors_only &&
+           (!frame->active || old->progress == frame->progress) &&
+           (!!old->plan == !!frame->plan) &&
+           (!frame->plan || !memcmp(&work->plan, frame->plan, sizeof(work->plan)));
+}
+void echoy_art_draw(const esp_gsp_canvas_surface_t *surface, void *ctx)
+{
+    const echoy_art_frame_t *frame = ctx;
+    struct echoy_art_workspace *work = frame->workspace;
+    if (!work || !frame->width || !frame->height || frame->width > 300 || frame->height > 204) {
+        art_render(surface, frame);
+        return;
+    }
+    if (!same_frame(work, frame)) {
+        esp_gsp_canvas_surface_t full = {.pixels=work->pixels, .stride_bytes=frame->width*2,
+            .width=frame->width, .height=frame->height, .pixel_format=ESP_GSP_CANVAS_PIXEL_RGB565};
+        art_render(&full, frame);
+        work->frame = *frame;
+        if (frame->plan) work->plan = *frame->plan;
+        work->valid = true;
+    }
+    /* GSP supplies a clipped canvas-local rectangle, with its own row stride. */
+    clear_surface(surface, frame->background ? frame->background : PAPER);
+    for (unsigned y=0; y<surface->height; ++y) {
+        int sy=surface->y+(int)y;
+        if (sy < 0 || (unsigned)sy >= frame->height) continue;
+        int left=surface->x;
+        int right=surface->x+surface->width;
+        if (right > (int)frame->width) right=frame->width;
+        if (left < right)
+            memcpy((uint8_t *)surface->pixels+y*surface->stride_bytes+(left-surface->x)*2,
+                   work->pixels+sy*frame->width+left,(right-left)*2);
+    }
+}
+
 void echoy_feedback_draw(const esp_gsp_canvas_surface_t *surface, void *ctx)
 {
     const echoy_art_frame_t *frame = ctx;
     clear_surface(surface, frame->background ? frame->background : PAPER);
     if (!frame->width || !frame->height) return;
     /* The authored 15px canvas extends the CSS 13px row by one pixel per side. */
-    raster_t raster = {surface, frame->width / 300.0f, frame->height / 15.0f, 0};
+    raster_t raster = {surface, frame->workspace, frame->width / 300.0f, frame->height / 15.0f, 0};
     unsigned step = (unsigned)(fmax(0, fmin(1, frame->progress)) * 16), cells[16];
     if (step > 15) step = 15;
     onset_cells(frame, cells);

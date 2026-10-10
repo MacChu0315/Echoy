@@ -1,0 +1,5 @@
+role=0 baseline_ms=4.044 optimized_ms=1.331 speedup=3.04
+role=1 baseline_ms=13.930 optimized_ms=6.526 speedup=2.13
+role=2 baseline_ms=0.860 optimized_ms=0.745 speedup=1.15
+role=3 baseline_ms=34.237 optimized_ms=9.157 speedup=3.74
+compared_pixels=1026120 different=0

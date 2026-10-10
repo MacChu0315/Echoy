@@ -28,8 +28,9 @@
   per-package confirmation. Verify identity/artifact, retain Recovery and use
   the official workflow. This is not authorization for remote repository writes.
 - Approved audio trial: device-only loudness gain with peak limiting may change
-  musical dynamics. Keep the frozen HTML and shared synthesis unchanged; physical
-  listening acceptance is still required.
+  musical dynamics. Preserve the frozen HTML and musical rules. Numerical
+  synthesis optimizations must pass the existing HTML audio comparison budgets;
+  physical listening acceptance is still required.
 - Keep `docs/PROJECT_STATE.md` current with verified progress and remaining work.
   User-supplied verification claims are provenance, not new test results.
 - Sound and linkage acceptance must run the shared C synthesis/arrangement and

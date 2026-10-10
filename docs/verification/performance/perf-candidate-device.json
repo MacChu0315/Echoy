@@ -1,0 +1,35 @@
+{
+  "operation_id": "fefb7516-5371-4ef9-8952-c116a04e7516",
+  "status": "succeeded",
+  "package": {
+    "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-release/echoy-perf-candidate-ac24f401ee50.irisfw",
+    "sha256": "ac24f401ee50eab295daeeb1608aa6b5ddd00002aad33b4600e3adcd4dce5d6d"
+  },
+  "validation": {
+    "boot_id": 10138989517193841671,
+    "healthy": true,
+    "application_validation": {
+      "actual": "1d1a04d66168e1e23c4ac5e884d5f389b62b7276cd083a37a5fa7f3c1123ae80",
+      "actual_field": "firmware_sha256",
+      "expected": "1d1a04d66168e1e23c4ac5e884d5f389b62b7276cd083a37a5fa7f3c1123ae80",
+      "expected_field": "elf_sha256",
+      "mode": "elf_sha256"
+    },
+    "source_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "7fc63c32a4e34fb38eab5b25cb6221aa",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    },
+    "target_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "fefb751653714ef98952c116a04e7516",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    }
+  }
+}

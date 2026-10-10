@@ -1,0 +1,2 @@
+PASS 4 concurrent preparation jobs x4 repetitions byte-identical to serial output
+PASS 384 chord pitch/count combinations: reused cache byte-identical to fresh poisoned workspace, all finite

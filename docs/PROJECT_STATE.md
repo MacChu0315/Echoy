@@ -161,14 +161,46 @@ The gain correction is installed, but practical loudness acceptance still fails.
 See `verification/quiet-audio/README.md` for the evidence and test scope.
 
 A pulse phrase on `874d650babab` took 9,553,429 us to prepare. On the gain-3 boot,
-a subsequent role preparation took 42,284,433 us; synthesis delay still needs
-optimization. ESP-Iris remote
+a subsequent role preparation took 42,284,433 us. The performance work below
+addresses this delay. ESP-Iris remote
 pointer injection is unavailable in the current mirror adapter; interaction
 evidence above comes from physical user touches.
 
+## Responsiveness (2026-10-10)
+
+The current installed package is `22fa6931ffb3`, with verified HEALTHY boot
+`14291928129683081475`, matching ELF identity and unchanged retained Recovery
+layout/bootloader. Sound output settings remain hardware volume 90, gain 6 and
+peak ceiling .90.
+
+The instrumented baseline measured 10–49 s synthesis, 7.4–7.5 fps even on a silent
+Pulse home, and 1.3–1.4 fps on active Harmony. Fixes remove per-sample software
+double/transcendental work from normal synthesis, preserve precise filters at
+extreme legal Grain pitches, cache oscillator data per job, avoid static
+repainting, reuse invariant geometry, and cache the current dynamic art across
+GSP partial surfaces. Scratch storage belongs to each UI instance instead of
+occupying the render task stack. The same C implementation remains portable.
+
+The first optimized hardware run prepared Pulse in .31 s, Voice in .79–.82 s,
+Dust in .42 s and Harmony in .60–.62 s (different recorded rhythms from baseline).
+The user confirmed both preparation and UI were markedly smoother. Active
+complex art still ran at 4–5 fps and render stack headroom reached 1,284 bytes,
+which motivated the final raster cache and scratch-storage correction.
+The final package boots to the expected home. The user reported normal screens
+and controls, smoother than before. Final captured Pulse playback: .30–.34 s
+preparation, 14.4 rendered fps, UI gap about 80 ms, render stack minimum 7,660
+bytes, no clipping/audio write errors/deadline misses. Do not call this 30/60 fps,
+or quote Pulse measurements as final Harmony measurements.
+
+Tests pass: 99 HTML audio references with unchanged budgets; 384 full-pitch
+comparisons to prior C; audio behavior/ownership/performance and sanitizer checks;
+1,026,120 art pixels unchanged; cache/geometry/blend and independent QOI decoding;
+21 runtime cases and full official GSP pointer flows in an isolated build.
+See `verification/performance/README.md` for scope, measurements and artifacts.
+
 ## Remaining physical integration
 
-The current device runs limiter trial `4ee7991a5d56`, hardware volume 90,
+The retained output calibration was accepted provisionally on `4ee7991a5d56`: hardware volume 90,
 device PCM gain 6 with .90 peak limiting and diagnostic RPC disabled. The
 one-reference-playback authorization has already been used.
 The user rejected gain-3 musical loudness even at confirmed maximum UI volume. On
@@ -186,14 +218,19 @@ adds 1 ms lookahead and clears its tail on pause/fault/reopen. Physical recordin
 and repeated playback/pause were observed: peak 29,490, gain reduction active,
 zero clipping/output errors/deadline misses, render+conversion maximum 3,211 us.
 On 2026-10-10 the user chose to keep the current volume for now ("音量就先这样吧").
-Retain this package and its output parameters; stop further loudness tuning unless
+Retain these output parameters; stop further loudness tuning unless
 requested. This is provisional retention, not a claim of complete acoustic-quality
 acceptance. See `verification/loudness-limiter/README.md`.
 Use the official Mosaico workflow; generic IDF flash targets point at retained
 factory Recovery and are blocked. Let Recovery finish initialization before
 submitting updates on this board; do not blindly replay an uncertain operation.
 
-Next: validate single-device touch, speaker, battery, preparation latency and
+Current follow-up: the user reports role loudness imbalance (Dust > Pulse/Voice
+> Harmony). Compare the same generated rhythm across roles through the actual
+device PCM path before choosing calibration; preserve the retained global volume
+and limiter parameters. No role-specific correction has been implemented yet.
+
+Next: validate single-device touch, speaker, battery and
 resource watermarks on hardware. Then implement/accept physical neighbor
 discovery, transport and clock synchronization on two and three boards. Device
 export still has no hardware destination; IMU integration is also unfinished.

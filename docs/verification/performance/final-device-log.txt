@@ -1,0 +1,93 @@
+I (3000) echoy_device: pcm_gain_milli=6000 clipped=0 accepted=0 nonzero=0 peak=0 pa=0 activations=0 write_max=0us partial=0 write_errors=0 deadline_misses=0
+I (3000) echoy_device: internal=125655 PSRAM=13473868 owner_stack=8876 prepare=0us render_max=0us rejected=0 overflow=0 limited=0 prep_stack=7988
+ECHOY_UI_COST route=0 tick_max_us=2250 gap_max_us=99997 stack_min=7660
+I (7870) gsp_esp: perf: 0.6 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=3893 gap_max_us=40005 stack_min=7660
+I (12880) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=659 gap_max_us=30000 stack_min=7660
+I (17890) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=661 gap_max_us=29998 stack_min=7660
+I (22900) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=660 gap_max_us=29999 stack_min=7660
+I (27910) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=659 gap_max_us=29998 stack_min=7660
+I (32910) gsp_esp: perf: 0.0 rendered fps
+I (33000) echoy_device: pcm_gain_milli=6000 clipped=0 accepted=720240 nonzero=0 peak=0 pa=0 activations=0 write_max=7456us partial=0 write_errors=0 deadline_misses=0
+I (33000) echoy_device: internal=125675 PSRAM=13495320 owner_stack=8744 prepare=4us render_max=2635us rejected=0 overflow=0 limited=0 prep_stack=7988
+ECHOY_UI_COST route=0 tick_max_us=661 gap_max_us=29998 stack_min=7660
+I (37920) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=957 gap_max_us=30028 stack_min=7660
+I (42930) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=657 gap_max_us=29999 stack_min=7660
+I (47940) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=658 gap_max_us=29998 stack_min=7660
+I (52950) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=655 gap_max_us=30000 stack_min=7660
+I (57960) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=658 gap_max_us=29998 stack_min=7660
+I (62960) gsp_esp: perf: 0.0 rendered fps
+I (63010) echoy_device: pcm_gain_milli=6000 clipped=0 accepted=1440480 nonzero=0 peak=0 pa=0 activations=0 write_max=7693us partial=0 write_errors=0 deadline_misses=0
+I (63010) echoy_device: internal=125675 PSRAM=13495320 owner_stack=8744 prepare=4us render_max=2635us rejected=0 overflow=0 limited=0 prep_stack=7988
+ECHOY_UI_COST route=0 tick_max_us=657 gap_max_us=29999 stack_min=7660
+I (67970) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=658 gap_max_us=29998 stack_min=7660
+I (72980) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=659 gap_max_us=29998 stack_min=7660
+I (77990) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=658 gap_max_us=29998 stack_min=7660
+I (83000) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=656 gap_max_us=29998 stack_min=7660
+I (88000) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=658 gap_max_us=29998 stack_min=7660
+I (93000) gsp_esp: perf: 2.6 rendered fps
+I (93020) echoy_device: pcm_gain_milli=6000 clipped=0 accepted=2160480 nonzero=1254 peak=2689 pa=1 activations=1 write_max=7882us partial=0 write_errors=0 deadline_misses=0
+I (93020) echoy_device: internal=123975 PSRAM=13486100 owner_stack=8744 prepare=4us render_max=2880us rejected=0 overflow=0 limited=0 prep_stack=7988
+ECHOY_UI_COST route=0 tick_max_us=5753 gap_max_us=90000 stack_min=7660
+I (96270) echoy_synth: role=0 phrase=1 events=12 source_us=85746 foreground_us=80460 full_us=99766 normalize_us=36593
+I (98070) gsp_esp: perf: 14.2 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=4122 gap_max_us=80004 stack_min=7660
+I (103010) gsp_esp: perf: 3.4 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=4909 gap_max_us=79998 stack_min=7660
+I (108090) gsp_esp: perf: 13.5 rendered fps
+I (109330) echoy_synth: role=0 phrase=1 events=12 source_us=91012 foreground_us=83067 full_us=106654 normalize_us=39322
+I (110510) echoy_synth: role=0 phrase=1 events=15 source_us=92252 foreground_us=83280 full_us=109053 normalize_us=38819
+ECHOY_UI_COST route=0 tick_max_us=4010 gap_max_us=80001 stack_min=7660
+I (113100) gsp_esp: perf: 14.4 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=1066 gap_max_us=80308 stack_min=7660
+I (118160) gsp_esp: perf: 14.4 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=1067 gap_max_us=80001 stack_min=7660
+I (123020) echoy_device: pcm_gain_milli=6000 clipped=0 accepted=2880480 nonzero=360883 peak=29490 pa=1 activations=1 write_max=7882us partial=0 write_errors=0 deadline_misses=0
+I (123020) echoy_device: internal=122443 PSRAM=12754896 owner_stack=8744 prepare=344373us render_max=3726us rejected=0 overflow=0 limited=120630 prep_stack=7988
+I (123180) gsp_esp: perf: 14.5 rendered fps
+I (123680) echoy_synth: role=0 phrase=1 events=9 source_us=93628 foreground_us=87599 full_us=100541 normalize_us=39275
+ECHOY_UI_COST route=0 tick_max_us=3368 gap_max_us=80003 stack_min=7660
+I (128220) gsp_esp: perf: 14.3 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=4115 gap_max_us=80000 stack_min=7660
+I (133170) gsp_esp: perf: 5.4 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=734 gap_max_us=29999 stack_min=7660
+I (138190) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=732 gap_max_us=29999 stack_min=7660
+I (143200) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=733 gap_max_us=29999 stack_min=7660
+I (148210) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=730 gap_max_us=29999 stack_min=7660
+I (153020) echoy_device: pcm_gain_milli=6000 clipped=0 accepted=3600480 nonzero=461578 peak=29490 pa=0 activations=1 write_max=7882us partial=0 write_errors=0 deadline_misses=0
+I (153020) echoy_device: internal=121303 PSRAM=12754896 owner_stack=8744 prepare=342268us render_max=3849us rejected=0 overflow=0 limited=234268 prep_stack=7988
+I (153210) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=727 gap_max_us=29999 stack_min=7660
+I (158210) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=729 gap_max_us=29998 stack_min=7660
+I (163210) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=731 gap_max_us=29999 stack_min=7660
+I (168210) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=711 gap_max_us=29998 stack_min=7660
+I (173210) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=729 gap_max_us=29999 stack_min=7660
+I (178210) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=724 gap_max_us=29999 stack_min=7660
+I (183020) echoy_device: pcm_gain_milli=6000 clipped=0 accepted=4320480 nonzero=461578 peak=29490 pa=0 activations=1 write_max=7882us partial=0 write_errors=0 deadline_misses=0
+I (183020) echoy_device: internal=121303 PSRAM=12754896 owner_stack=8744 prepare=342268us render_max=3849us rejected=0 overflow=0 limited=234268 prep_stack=7988
+I (183210) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=731 gap_max_us=29999 stack_min=7660
+I (188210) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=732 gap_max_us=30000 stack_min=7660
