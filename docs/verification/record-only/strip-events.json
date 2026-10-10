@@ -1,0 +1,306 @@
+{
+  "transitions": [
+    {
+      "tile": "A",
+      "mode": "record_only",
+      "at_us": 1588530054000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "at_us": 1588532999000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "record_only",
+      "at_us": 1588533046000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "at_us": 1588533530000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "record_only",
+      "at_us": 1588537351000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "at_us": 1588538090000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "record_only",
+      "at_us": 1588538137000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "at_us": 1588539578000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "pause",
+      "at_us": 1588543392000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "at_us": 1588546009000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "pause",
+      "at_us": 1588546462000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "at_us": 1588546697000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "pause",
+      "at_us": 1588547131000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "at_us": 1588547181000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "pause",
+      "at_us": 1588547224000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "at_us": 1588549786000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "at_us": 1588549938000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "at_us": 1588549988000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "at_us": 1588550141000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "at_us": 1588553954000,
+      "duration_ms": 240,
+      "reduced_motion": 0
+    }
+  ],
+  "ready": [
+    {
+      "tile": "A",
+      "mode": "record_only",
+      "record": 1,
+      "play": 0,
+      "single": 0,
+      "at_us": 1588530061000
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1588533007000
+    },
+    {
+      "tile": "A",
+      "mode": "record_only",
+      "record": 1,
+      "play": 0,
+      "single": 0,
+      "at_us": 1588533055000
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1588533539000
+    },
+    {
+      "tile": "A",
+      "mode": "record_only",
+      "record": 1,
+      "play": 0,
+      "single": 0,
+      "at_us": 1588537357000
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1588538096000
+    },
+    {
+      "tile": "A",
+      "mode": "record_only",
+      "record": 1,
+      "play": 0,
+      "single": 0,
+      "at_us": 1588538143000
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1588539584000
+    },
+    {
+      "tile": "A",
+      "mode": "pause",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1588543392000
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "record": 1,
+      "play": 1,
+      "single": 0,
+      "at_us": 1588546016000
+    },
+    {
+      "tile": "A",
+      "mode": "pause",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1588546470000
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "record": 1,
+      "play": 1,
+      "single": 0,
+      "at_us": 1588546705000
+    },
+    {
+      "tile": "A",
+      "mode": "pause",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1588547138000
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "record": 1,
+      "play": 1,
+      "single": 0,
+      "at_us": 1588547189000
+    },
+    {
+      "tile": "A",
+      "mode": "pause",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1588547232000
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "record": 1,
+      "play": 1,
+      "single": 0,
+      "at_us": 1588549795000
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1588549945000
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "record": 1,
+      "play": 1,
+      "single": 0,
+      "at_us": 1588549996000
+    },
+    {
+      "tile": "A",
+      "mode": "cancel",
+      "record": 0,
+      "play": 0,
+      "single": 1,
+      "at_us": 1588550151000
+    },
+    {
+      "tile": "A",
+      "mode": "idle",
+      "record": 1,
+      "play": 1,
+      "single": 0,
+      "at_us": 1588553963000
+    }
+  ]
+}

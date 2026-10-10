@@ -209,6 +209,12 @@
         122,
         84
       ],
+      "record_empty": [
+        118,
+        378,
+        244,
+        84
+      ],
       "transport": [
         240,
         378,
@@ -223,18 +229,27 @@
       ]
     },
     "modes": {
+      "record_only": {
+        "record": false,
+        "record_empty": true,
+        "transport": false,
+        "strip_action": false
+      },
       "idle": {
         "record": true,
+        "record_empty": false,
         "transport": true,
         "strip_action": false
       },
       "cancel": {
         "record": false,
+        "record_empty": false,
         "transport": false,
         "strip_action": true
       },
       "pause": {
         "record": false,
+        "record_empty": false,
         "transport": false,
         "strip_action": true
       }
@@ -312,7 +327,7 @@
         ],
         "x_range": [
           123,
-          131
+          192
         ],
         "scale": [
           1,
@@ -329,7 +344,7 @@
           32
         ],
         "x_range": [
-          253,
+          192,
           261
         ],
         "scale": [

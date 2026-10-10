@@ -134,6 +134,7 @@ for name,x,color,low,high in [('record',-122,'#eee8df',-244,0),('play',122,'#e8e
 add('container','strip_divider',122,22,1,40,strip,bg_color='#d4d7c9',opacity={'default':255,'min':0,'max':255})
 rec=add('button','record',0,0,122,84,strip,callback='record_click',enabled=True,bg_color='#00000000',bind='record_visible',bind_target='visible')
 play=add('button','transport',122,0,122,84,strip,callback='transport_click',enabled=False,bg_color='#00000000',bind='transport_visible',bind_target='visible')
+empty=add('button','record_empty',0,0,244,84,strip,callback='record_click',enabled=False,hidden=True,bg_color='#00000000',bind='record_empty_visible',bind_target='visible')
 single=add('button','strip_action',0,0,244,84,strip,callback='strip_action_click',enabled=False,hidden=True,bg_color='#00000000',bind='strip_action_visible',bind_target='visible')
 
 # Page and locale layers are explicit visibility targets. A name alone does
@@ -277,8 +278,8 @@ contract['home_geometry']={
     'header_en':{'pulse':{'separator_x':103,'phrase_x':117},'voice':{'separator_x':102,'phrase_x':115},'dust':{'separator_x':93,'phrase_x':107},'harmony':{'separator_x':142,'phrase_x':155}},
 }
 contract['strip']={'bounds':[118,378,244,84], 'radius':23,
-    'hit_targets':{'record':[118,378,122,84],'transport':[240,378,122,84],'strip_action':[118,378,244,84]},
-    'modes':{'idle':{'record':True,'transport':True,'strip_action':False},'cancel':{'record':False,'transport':False,'strip_action':True},'pause':{'record':False,'transport':False,'strip_action':True}},
+    'hit_targets':{'record':[118,378,122,84],'record_empty':[118,378,244,84],'transport':[240,378,122,84],'strip_action':[118,378,244,84]},
+    'modes':{'record_only':{'record':False,'record_empty':True,'transport':False,'strip_action':False},'idle':{'record':True,'record_empty':False,'transport':True,'strip_action':False},'cancel':{'record':False,'record_empty':False,'transport':False,'strip_action':True},'pause':{'record':False,'record_empty':False,'transport':False,'strip_action':True}},
     'border':'strip_border', 'border_colors':{'idle':'#d2d9c9','cancel':'#d5a98d','pause':'#455b3b'},
     'tints':{'record':{'name':'strip_record_tint','x':[-244,0],'default_x':-122},'play':{'name':'strip_play_tint','x':[0,244],'default_x':122}},
     'tint_width':244, 'tint_boundary':'record.x + 244 == play.x', 'tint_alpha':'RGB888 preblend over #e7ecdf before set_color_rgb888; no unsupported packed-color alpha',
@@ -361,7 +362,7 @@ glyph_header.append('};')
 (UI/'strip'/'labels.h').write_text('\n'.join(glyph_header)+'\n')
 (UI/'strip'/'play-initial.png').unlink(missing_ok=True)
 contract['strip']['glyphs']={}
-for name,x,low,high in [('record',131,123,131),('play',253,253,261),('cancel',192,192,192),('pause',192,192,192)]:
+for name,x,low,high in [('record',131,123,192),('play',253,192,261),('cancel',192,192,192),('pause',192,192,192)]:
     source='single-placeholder.png' if name in ('cancel','pause') else name+'-zh.png'
     options={} if name in ('record','play') else dict(scalable=True,scale=.97,min_scale=.97,max_scale=1.0)
     add('image','strip_'+name+'_glyph',{'default':x,'min':low,'max':high} if low!=high else x,404,96,32,home,image='strip/'+source,codec='raw' if name in ('cancel','pause') else 'lossless',dynamic_image=True,bind='strip_'+name+'_glyph',bind_target='resource',hidden=True,**options)
@@ -517,7 +518,7 @@ for page_name in ('home','role_page','settings_page','display_page','guide_page'
 
 for obj in objects:
     if obj['type']=='button':
-        obj['disabled_color']='#f1efe8'; obj['disabled_opacity']=0 if obj['name'] in ('record','transport','strip_action') else 145
+        obj['disabled_color']='#f1efe8'; obj['disabled_opacity']=0 if obj['name'] in ('record','record_empty','transport','strip_action') else 145
     if obj['name'] in ('volume_knob','volume_fill','richness_knob','richness_fill'):
         y=obj['y']; obj['y']={'default':y,'min':0,'max':180}
     if obj['name'].startswith('step_'):

@@ -5,6 +5,7 @@ echoy_strip_state_t echoy_strip_compute(const echoy_snapshot_t *s, bool has_plan
     if (!s) {
         return out;
     }
+    out.mode = has_plan ? ECHOY_STRIP_IDLE : ECHOY_STRIP_RECORD_ONLY;
     if (s->phase == ECHOY_COUNT_IN || s->phase == ECHOY_RECORDING) {
         out.mode = ECHOY_STRIP_CANCEL;
     } else if (s->phase >= ECHOY_PREPARING) {
@@ -13,8 +14,8 @@ echoy_strip_state_t echoy_strip_compute(const echoy_snapshot_t *s, bool has_plan
     if (s->fault) {
         return out;
     }
-    out.single_enabled = out.mode != ECHOY_STRIP_IDLE;
-    if (out.mode == ECHOY_STRIP_IDLE && !s->plan_pending && !preparing) {
+    out.single_enabled = out.mode == ECHOY_STRIP_CANCEL || out.mode == ECHOY_STRIP_PAUSE;
+    if (!out.single_enabled && !s->plan_pending && !preparing) {
         out.record_enabled = !s->following;
         out.play_enabled = has_plan;
     }
@@ -40,7 +41,8 @@ enum {
     PLAY_B,
     BORDER_R,
     BORDER_G,
-    BORDER_B
+    BORDER_B,
+    PLAY_GLYPH_ALPHA
 };
 static double clamp(double x)
 {
@@ -83,14 +85,16 @@ static void colors(double *values, unsigned first, uint32_t rgb)
 }
 static void targets(echoy_strip_mode_t mode, double out[ECHOY_STRIP_TWEENS])
 {
-    bool idle = mode == ECHOY_STRIP_IDLE, cancel = mode == ECHOY_STRIP_CANCEL;
-    out[BOUNDARY] = idle ? 122 : cancel ? 244 : 0;
+    bool split = mode == ECHOY_STRIP_IDLE, empty = mode == ECHOY_STRIP_RECORD_ONLY;
+    bool idle = split || empty, cancel = mode == ECHOY_STRIP_CANCEL;
+    out[BOUNDARY] = split ? 122 : cancel || empty ? 244 : 0;
     out[RECORD_ALPHA] = mode == ECHOY_STRIP_PAUSE ? 0 : 1;
-    out[PLAY_ALPHA] = cancel ? 0 : 1;
+    out[PLAY_ALPHA] = cancel || empty ? 0 : 1;
     out[IDLE_ALPHA] = idle ? 1 : 0;
+    out[PLAY_GLYPH_ALPHA] = split ? 1 : 0;
     out[SINGLE_ALPHA] = idle ? 0 : 1;
-    out[DIVIDER_ALPHA] = idle ? 1 : 0;
-    out[SHIFT] = idle ? 0 : 8;
+    out[DIVIDER_ALPHA] = split ? 1 : 0;
+    out[SHIFT] = empty ? -61 : split ? 0 : 8;
     out[SCALE] = idle ? .97 : 1;
     colors(out, RECORD_R, cancel ? 0xf0e1d7 : 0xeee8df);
     colors(out, PLAY_R, mode == ECHOY_STRIP_PAUSE ? 0x455d38 : 0xe8ede1);
@@ -114,7 +118,7 @@ void echoy_strip_motion_to(echoy_strip_motion_t *m, echoy_strip_mode_t mode, boo
                            int64_t now)
 {
     static const int duration[ECHOY_STRIP_TWEENS] = {240, 200, 200, 130, 200, 150, 240, 240, 240,
-                                                     240, 240, 240, 240, 240, 240, 240, 240};
+                                                     240, 240, 240, 240, 240, 240, 240, 240, 130};
     double end[ECHOY_STRIP_TWEENS];
     targets(mode, end);
     for (unsigned i = 0; i < ECHOY_STRIP_TWEENS; i++) {
@@ -165,6 +169,7 @@ void echoy_strip_motion_frame(const echoy_strip_motion_t *m, int64_t now, echoy_
     out->record_alpha = v[RECORD_ALPHA];
     out->play_alpha = v[PLAY_ALPHA];
     out->idle_alpha = v[IDLE_ALPHA];
+    out->play_glyph_alpha = v[PLAY_GLYPH_ALPHA];
     out->single_alpha = v[SINGLE_ALPHA];
     out->divider_alpha = v[DIVIDER_ALPHA];
     out->shift = v[SHIFT];

@@ -225,6 +225,7 @@ static const view_default_t view_defaults[] = {
     {"progress_harmony", GSP_ECHOY_OBJ_KEY_PROGRESS_HARMONY, 0, 1, 11172669, 0, 301, 103, 255, 65536, NULL},
     {"progress_voice", GSP_ECHOY_OBJ_KEY_PROGRESS_VOICE, 0, 1, 4812193, 0, 301, 103, 255, 65536, NULL},
     {"record", GSP_ECHOY_OBJ_KEY_RECORD, 1, 1, 0, 0, 0, 0, 255, 65536, NULL},
+    {"record_empty", GSP_ECHOY_OBJ_KEY_RECORD_EMPTY, 0, 0, 0, 0, 0, 0, 255, 65536, NULL},
     {"record_icon", GSP_ECHOY_OBJ_KEY_RECORD_ICON, 1, 1, -1, 0, 32, 30, 255, 65536, NULL},
     {"record_icon_en", GSP_ECHOY_OBJ_KEY_RECORD_ICON_EN, 1, 1, -1, 0, 32, 22, 255, 65536, NULL},
     {"record_text", GSP_ECHOY_OBJ_KEY_RECORD_TEXT, 1, 1, 11166016, 0, 28, 58, 255, 65536, "录制"},

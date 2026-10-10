@@ -87,15 +87,16 @@ def main():
     from rpc_client import connect
     # Reserve a distinct local API port. The simulator fails rather than falling
     # back if another process wins the bind between reserve and start.
-    with socket.socket() as s:
+    with socket.socket() as s, socket.socket() as backend_socket:
         s.bind(('127.0.0.1',0));port=s.getsockname()[1]
+        backend_socket.bind(('127.0.0.1',0));backend_port=backend_socket.getsockname()[1]
     ready=out/'ready.json';ready.unlink(missing_ok=True)
     host_log=(out/'host.log').open('w');backend_log=(out/'backend.log').open('w')
     backend=None;host=None;checks=[]
     try:
         host=subprocess.Popen([str(args.sim),'--bundle',manifest['bundle'],
             '--api-json',str(Path(manifest['bundle']).with_name('bundle_gsp.api.json')),
-            '--backend-enable','--backend-required','--api-listen',f'tcp://127.0.0.1:{port}',
+            '--backend-listen',f'tcp://127.0.0.1:{backend_port}','--backend-required','--api-listen',f'tcp://127.0.0.1:{port}',
             '--headless','--fps','1000','--frames','0','--ready-file',str(ready)],stdout=host_log,stderr=subprocess.STDOUT)
         deadline=time.monotonic()+10
         while not ready.exists():
@@ -140,7 +141,9 @@ def main():
                     time.sleep(.01)
                 raise AssertionError(('Native strip properties did not become ready',mode,permissions,rows))
             def tap(name):
-                if name=='record':ready_strip('idle',record=1)
+                if name=='record':
+                    state=ready_strip(record=1)
+                    if state['mode']=='record_only':name='record_empty'
                 elif name=='transport':ready_strip('idle',play=1)
                 elif name=='strip_action':ready_strip(single=1)
                 return call('tap_object',{'name':name})
@@ -168,24 +171,50 @@ def main():
             if args.contract_only:
                 (out/'checks.json').write_text(json.dumps({'passed':checks,'scope':'v4 geometry and removed-target contract'},indent=2)+'\n')
                 print(json.dumps(checks,ensure_ascii=False));return
+            def assert_record_only(image):
+                # Brown Record ink is centered; green Play ink must be absent.
+                orange=[];green=[]
+                for y in range(405,436):
+                    for x in range(130,350):
+                        r,g,b=image.getpixel((x,y))
+                        if r>100 and r>g*1.4 and g>b*1.1:orange.append(x)
+                        if r<120 and g>r+10 and g>b+10:green.append(x)
+                assert orange and abs((min(orange)+max(orange))/2-240)<=4, orange[:5]
+                assert not green, 'Empty tile still displays Play'
+                assert image.getpixel((145,392))==image.getpixel((335,392)), 'Empty strip is still split'
+            ready_strip('record_only',record=1,play=0,single=0)
+            assert_record_only(initial)
+            tap('settings');time.sleep(.15);tap('language_en');time.sleep(.15);tap('settings_back');time.sleep(.3)
+            assert_record_only(Image.open(shot('empty-english')).convert('RGB'))
+            tap('settings');time.sleep(.15);tap('language_zh');time.sleep(.15);tap('settings_back');time.sleep(.3)
             pad();call('wait',{'frames':10});assert state_rows()[-1][0]==0
-            call('tap',{'x':300,'y':420});call('wait',{'frames':5})
-            assert state_rows()[-1][0]==0,'Empty Play must remain disabled'
-            checks.append('Ordinary pad touches audition only and empty Play remains disabled')
+            ready_strip('record_only',record=1)
+            # The former Play half now records too; Cancel then returns to one button.
+            n=len(state_rows());call('tap',{'x':300,'y':420});phase(1,after=n)
+            n=len(state_rows());tap('strip_action');phase(0,after=n)
+            ready_strip('record_only',record=1);time.sleep(.3)
+            assert_record_only(Image.open(shot('first-cancel')).convert('RGB'))
+            # A completely empty first recording must not create a Play action.
+            n=len(state_rows());tap('record');phase(1,after=n);row=phase(0,after=n,timeout=6)
+            assert row[1]==0
+            ready_strip('record_only',record=1);time.sleep(.3)
+            assert_record_only(Image.open(shot('first-empty-record')).convert('RGB'))
+            checks.append('Empty Chinese/English homes show centered full-width Record only; both halves record, first Cancel and empty recording preserve this state')
             # No frame wait between clicks: hit the newly active full width while morphing.
-            ready_strip('idle',record=1);time.sleep(.3);n=len(state_rows());strip_before=len(strip_events((out/'backend.log').read_text()));call('tap',{'x':179,'y':420});time.sleep(.04)
+            ready_strip('record_only',record=1);time.sleep(.3);n=len(state_rows());strip_before=len(strip_events((out/'backend.log').read_text()));call('tap',{'x':179,'y':420});time.sleep(.04)
             call('tap',{'x':346,'y':420});phase(0,after=n)
             rapid=state_rows()[n:];assert any(r[0]==1 for r in rapid),rapid
             modes=strip_events((out/'backend.log').read_text())[strip_before:]
-            entered=next(r for r in modes if r['mode']=='cancel');ended=next(r for r in modes if r['mode']=='idle')
+            entered=next(r for r in modes if r['mode']=='cancel');ended=next(r for r in modes if r['mode']=='record_only')
             assert entered.get('duration_ms')==(0 if args.reduced_motion else 240),entered
             assert 0<=ended['at_us']-entered['at_us']<240000,('Cancel was not exercised inside 240ms morph',modes)
             time.sleep(1.4);assert state_rows()[-1][0]==0
             checks.append('Right-end Cancel works within 240ms and no delayed count-in restarts')
+            capture_log_at=len((out/'backend.log').read_text())
             tap('record');phase(1);time.sleep(.27);before=shot('countin')
             assert Image.open(before).getpixel((370,301))[:3]==paper,'Count-in must not show recording progress'
             call('tap',{'x':64,'y':420});call('tap',{'x':416,'y':420})
-            assert not re.search(r'ECHOY_ROUTE route=(role_page|settings_page)',(out/'backend.log').read_text()),'Navigation was active during capture'
+            assert not re.search(r'ECHOY_ROUTE route=(role_page|settings_page)',(out/'backend.log').read_text()[capture_log_at:]),'Navigation was active during capture'
             call('feed_pointer',{'x':432,'y':196,'pressed':True})
             call('feed_pointer',{'x':432,'y':111,'pressed':True})
             call('feed_pointer',{'x':432,'y':111,'pressed':False})
@@ -201,13 +230,13 @@ def main():
             phase(0);assert all(row[0]!=5 for row in state_rows())
             time.sleep(.27);idle=Image.open(shot('one-shot-finished')).convert('RGB');assert not compact_message(idle,paper),'Steady idle must hide instructional text'
             checks.append('Capture retains leading silence, held input stays single, one-shot shows full Pause then returns idle')
-            # Request another finite audition through the existing settings row,
-            # then pause it using the far end of the full-width home control.
-            tap('settings')
+            # Audition now lives in the role gallery; preserve full-width home Pause coverage.
+            tap('role')
             deadline=time.monotonic()+4
-            while not re.findall(r'ECHOY_ROUTE route=(\w+)',(out/'backend.log').read_text())[-1]=='settings_page':
-                assert time.monotonic()<deadline,'Settings route did not open';time.sleep(.01)
-            n=len(state_rows());tap('settings_audition');phase(4,after=n)
+            while re.findall(r'ECHOY_ROUTE route=(\w+)',(out/'backend.log').read_text())[-1]!='role_page':
+                assert time.monotonic()<deadline,'Role route did not open';time.sleep(.01)
+            n=len(state_rows());tap('gallery_transport');phase(4,after=n)
+            tap('role_back');time.sleep(.15)
             n=len(state_rows());call('tap',{'x':346,'y':420});row=phase(0,after=n)
             assert row[1]==seed;shot('one-shot-paused')
             checks.append('Full-width Pause stops a finite audition without enabling a loop or recording')

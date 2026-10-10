@@ -5,7 +5,21 @@ int main(void)
 {
     echoy_snapshot_t s = {.phase = ECHOY_IDLE};
     echoy_strip_state_t v = echoy_strip_compute(&s, false, false);
-    assert(v.mode == ECHOY_STRIP_IDLE && v.record_enabled && !v.play_enabled && !v.single_enabled);
+    assert(v.record_enabled && !v.play_enabled && !v.single_enabled);
+    echoy_strip_motion_t empty_motion;
+    echoy_strip_frame_t empty_frame;
+    echoy_strip_motion_init(&empty_motion, v.mode, 0);
+    echoy_strip_motion_frame(&empty_motion, 0, &empty_frame);
+    /* An empty tile must devote the whole strip to its first recording. */
+    assert(empty_frame.boundary == 244 && empty_frame.divider_alpha == 0);
+    assert(131 - empty_frame.shift + 48 == 240);
+    assert(empty_frame.idle_alpha == 1 && empty_frame.play_glyph_alpha == 0);
+    s.following = true;
+    v = echoy_strip_compute(&s, false, false);
+    assert(v.mode == ECHOY_STRIP_RECORD_ONLY && !v.record_enabled && !v.play_enabled);
+    s.following = false;
+    v = echoy_strip_compute(&s, false, true);
+    assert(v.mode == ECHOY_STRIP_RECORD_ONLY && !v.record_enabled && !v.single_enabled);
     v = echoy_strip_compute(&s, true, false);
     assert(v.record_enabled && v.play_enabled);
     s.following = true;
@@ -36,6 +50,7 @@ int main(void)
     assert(echoy_model_cancel_record(m));
     echoy_model_get_snapshot(m, &s);
     assert(s.phase == ECHOY_IDLE && s.notice == ECHOY_NOTICE_CANCELLED);
+    assert(echoy_strip_compute(&s, false, false).mode == ECHOY_STRIP_RECORD_ONLY);
     assert(!echoy_model_cancel_record(m));
     echoy_model_tick(m, 10000000);
     echoy_model_get_snapshot(m, &s);
@@ -56,5 +71,19 @@ int main(void)
     echoy_strip_motion_to(&motion, ECHOY_STRIP_PAUSE, true, 400000);
     echoy_strip_motion_frame(&motion, 400000, &after);
     assert(after.boundary == 0 && !after.active && after.single_alpha == 1);
+    /* Returning from Cancel to an empty tile never briefly exposes Play. */
+    echoy_strip_motion_init(&motion, ECHOY_STRIP_RECORD_ONLY, 0);
+    echoy_strip_motion_to(&motion, ECHOY_STRIP_CANCEL, false, 0);
+    echoy_strip_motion_frame(&motion, 90000, &before);
+    assert(before.play_glyph_alpha == 0);
+    echoy_strip_motion_to(&motion, ECHOY_STRIP_RECORD_ONLY, false, 90000);
+    echoy_strip_motion_frame(&motion, 90000, &after);
+    assert(before.shift == after.shift && after.play_glyph_alpha == 0);
+    echoy_strip_motion_frame(&motion, 400000, &after);
+    assert(after.boundary == 244 && after.shift == -61 && after.play_glyph_alpha == 0);
+    /* A real phrase restores both halves, including reduced-motion mode. */
+    echoy_strip_motion_to(&motion, ECHOY_STRIP_IDLE, true, 400000);
+    echoy_strip_motion_frame(&motion, 400000, &after);
+    assert(after.boundary == 122 && after.play_glyph_alpha == 1 && !after.active);
     puts("PASS merged strip permissions and stale cancel never re-arms capture");
 }

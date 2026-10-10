@@ -471,7 +471,7 @@ static void show_strip(echoy_ui_handle_t u, const echoy_snapshot_t *s, int64_t n
 {
     bool preparing = u->density_dirty || (u->platform.read_control && u->external.preparing);
     echoy_strip_state_t v = echoy_strip_compute(s, current_plan(u)->count != 0, preparing);
-    static const char *mode_names[] = {"idle", "cancel", "pause"};
+    static const char *mode_names[] = {"idle", "cancel", "pause", "record_only"};
     int permissions =
         (int)v.record_enabled | ((int)v.play_enabled << 1) | ((int)v.single_enabled << 2);
     bool changed = u->strip_mode != (int)v.mode, preference = u->strip_reduced != u->reduced_motion;
@@ -486,9 +486,10 @@ static void show_strip(echoy_ui_handle_t u, const echoy_snapshot_t *s, int64_t n
         echoy_strip_motion_to(&u->strip_motion, v.mode, u->reduced_motion, now);
     }
     if (changed || permissions != u->strip_permissions) {
-        /* The full-width target must be hidden in idle: disabled-but-visible
-         * GSP buttons still intercept hits meant for the underlying halves. */
-        if (v.mode == ECHOY_STRIP_IDLE) {
+        /* Use separate Record and Cancel/Pause targets so a delayed Cancel
+         * event cannot start a new recording after returning to an empty tile.
+         * Hidden targets must not intercept the visible control underneath. */
+        if (v.mode == ECHOY_STRIP_IDLE || v.mode == ECHOY_STRIP_RECORD_ONLY) {
             SHOW(u, "strip_action", false);
             ENABLE(u, "strip_action", false);
         } else {
@@ -496,8 +497,10 @@ static void show_strip(echoy_ui_handle_t u, const echoy_snapshot_t *s, int64_t n
             SHOW(u, "strip_action", true);
         }
         ENABLE(u, "record", v.record_enabled);
+        ENABLE(u, "record_empty", v.record_enabled);
         ENABLE(u, "transport", v.play_enabled);
         SHOW(u, "record", v.mode == ECHOY_STRIP_IDLE);
+        SHOW(u, "record_empty", v.mode == ECHOY_STRIP_RECORD_ONLY);
         SHOW(u, "transport", v.mode == ECHOY_STRIP_IDLE);
         fprintf(stderr,
                 "ECHOY_STRIP_READY tile=%c mode=%s record=%d play=%d single=%d at_us=%lld\n",
@@ -528,7 +531,7 @@ static void show_strip(echoy_ui_handle_t u, const echoy_snapshot_t *s, int64_t n
     /* v4's more-specific idle glyph rule overrides button:disabled opacity.
      * Disabled halves retain full opacity while their real input stays blocked. */
     strip_glyph(u, 0, (unsigned)lround(255 * f.idle_alpha), 0xaa6140);
-    strip_glyph(u, 1, (unsigned)lround(255 * f.idle_alpha), 0x536648);
+    strip_glyph(u, 1, (unsigned)lround(255 * f.play_glyph_alpha), 0x536648);
     strip_glyph(u, 2, v.mode == ECHOY_STRIP_CANCEL ? (unsigned)lround(255 * f.single_alpha) : 0,
                 0xa36144);
     /* v4 replaces the single button content with Pause even while returning

@@ -27,6 +27,24 @@ simulation tick remove RPC stalls; hardware uses the shared C view/controller.
 Verification: `verification/v4/README.md`. The retained v4 comparison preview
 uses `build-sim-v4`; do not rebuild its bundle in place while it is running.
 
+### Empty home Record action (2026-10-10)
+
+At the user's request, a tile with no playable phrase now shows one centered
+Record action across the existing 244x84 middle strip. Role and Settings remain
+84x84. First Cancel and empty recording return to Record only; a real prepared
+phrase restores Record + Play. Capture still shows Cancel and playback shows
+Pause. This depends on actual plan availability, not a persisted first-run flag.
+Following/preparing/fault permissions and the musical model are unchanged.
+Separate native Record and Cancel/Pause targets prevent a delayed Cancel from
+arming recording. The record glyph uses its existing mask at the center; Play
+and the divider are absent until a phrase exists.
+
+Preview: `build-sim-record-only`, desk HTTP 18900, A/B/C 3234/3235/3236. A starts
+empty and silent; all older previews remain available. This refinement is not
+installed on hardware; the accepted physical package is still `7c08b632adf9`.
+Native input checks pass with normal/reduced motion and firmware builds with zero
+warnings. See `verification/record-only/README.md` for evidence and restart details.
+
 ### Harmony home refinement
 
 At the user's request, the shared C renderer now spreads the three Harmony home
