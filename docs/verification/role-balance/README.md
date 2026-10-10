@@ -174,8 +174,30 @@ verified image/commit and unchanged bootloader/partition hashes. The actual home
 screenshot is normal. Boot logs confirm 1000/1000/67/2380 milli role gains,
 global gain6000, and no audio output errors or deadline misses while idle.
 [Installation](paired-device-result.json), [artifact](paired-artifacts.json).
-Separate post-installation listening acceptance is pending. Startup also logged
+The user subsequently accepted the relative volume but reported Harmony
+distortion, investigated below. Startup also logged
 a BQ27220 profile-block read timeout. The existing BSP subsequently updated the
 profile, verified 26 fields, exited CFGUPDATE and reported the battery online.
 The battery path was not modified here; this recovered event is retained for
 separate battery validation.
+
+## Harmony distortion follow-up
+
+The user reports relative volume is now acceptable but Harmony has an audible
+clipping/distortion character. Do not equate zero integer overflow with clean
+acoustic output. On the same paired-match boot, seed `40aa` Harmony phrase 2/3
+banks show calibrated peaks .373146/.498966, consistent with gain2.38. Output
+errors and sample-clipping counters remain zero, but cumulative limiter activity
+increased across multiple roles and cannot be assigned solely to Harmony.
+
+The real DSP replay for matching .5-density plans gives: at UI .65, both phrases
+remain below .90 and do not engage the limiter; at .85, phrase3 engages it; at
+1.0 both engage it. The .5-density phrase3 pre-limiter peak grows from .875686
+at .65 to 1.347209 at 1.0. [Replay](harmony-distortion-levels.csv).
+The resumed session recovered the subsequent home screenshot and verified a
+fresh live capture: the slider was at full volume. Further listening still
+found distortion at about .64 without any new digital limiting, but improved
+at about .34. The user selected about .49 as the highest clean position for
+this phrase. A .60-ceiling output trial has now been installed; role gains
+remain as above. See [the follow-up](../harmony-headroom/README.md) for evidence,
+tests, installation and the separate physical listening verdict.

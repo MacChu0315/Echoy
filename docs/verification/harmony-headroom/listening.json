@@ -1,0 +1,46 @@
+{
+  "device_id": "4553502d49524953010030eda0f452a0",
+  "package": "ea1b10c28cd4",
+  "seed": "40aa",
+  "role": "harmony",
+  "phrase": 3,
+  "density": 0.5,
+  "slider_mapping": "volume = (249 - knob center y) / 111; screenshot quantization is approximate",
+  "observations": [
+    {
+      "capture_operation_id": "f4a2e409-5655-429c-9856-976fc3838f5c",
+      "boot_id": 16482991358666837799,
+      "knob_center_y": 138,
+      "estimated_volume": 1.0,
+      "nominal_pre_limiter_peak": 1.3472093,
+      "listening_provenance": "Original full-volume distortion report"
+    },
+    {
+      "capture_operation_id": "b7f2eb76-5c3a-4e73-99fc-c93505255717",
+      "boot_id": 16482991358666837799,
+      "knob_center_y": 178,
+      "estimated_volume": 0.6396396396396397,
+      "nominal_pre_limiter_peak": 0.8617284711711712,
+      "listening_provenance": "User: still clearly distorted"
+    },
+    {
+      "capture_operation_id": "7a7f1af3-bb4c-4330-8337-ce8de51b08c8",
+      "boot_id": 16482991358666837799,
+      "knob_center_y": 211,
+      "estimated_volume": 0.34234234234234234,
+      "nominal_pre_limiter_peak": 0.4612067873873874,
+      "listening_provenance": "User: markedly reduced or absent distortion"
+    },
+    {
+      "capture_operation_id": "7cca6b8a-27fc-4a2d-8214-3807ba432de7",
+      "boot_id": 16482991358666837799,
+      "knob_center_y": 195,
+      "estimated_volume": 0.4864864864864865,
+      "nominal_pre_limiter_peak": 0.655399118918919,
+      "listening_provenance": "User-selected highest clean listening level"
+    }
+  ],
+  "limited_samples_before_after_low_volume_tests": 767999,
+  "computer_listening": "Unavailable; not performed",
+  "interpretation": "Level-dependent board output distortion is consistent with observations; exact analog/driver/speaker cause is unmeasured. A single phrase does not establish a universal clean output limit."
+}

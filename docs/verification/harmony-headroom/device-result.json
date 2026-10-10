@@ -1,0 +1,65 @@
+{
+  "package": {
+    "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-release/echoy-harmony-headroom-44ad4e4a59ec.irisfw",
+    "sha256": "44ad4e4a59ecee4a865232d60dc730997011d0f368521276eb5a9c661decee8b"
+  },
+  "device_id": "4553502d49524953010030eda0f452a0",
+  "operation_id": "d0fd64fb-f4e4-4858-859c-963e28c3393c",
+  "status": "succeeded",
+  "validation": {
+    "boot_id": 11202007909105101612,
+    "healthy": true,
+    "validated": true,
+    "application_validation": {
+      "actual": "060a9054788be5a7c43054d6aef4592322f49275920a08c77a060f602bc3d6b5",
+      "actual_field": "firmware_sha256",
+      "expected": "060a9054788be5a7c43054d6aef4592322f49275920a08c77a060f602bc3d6b5",
+      "expected_field": "elf_sha256",
+      "mode": "elf_sha256"
+    },
+    "source_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "b09994f178da45158b715425b9c3e10e",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    },
+    "target_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "d0fd64fbf4e44858859c963e28c3393c",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    }
+  },
+  "role_gains": [
+    1,
+    1,
+    0.0672,
+    2.38
+  ],
+  "global_pcm_gain": 6,
+  "peak_ceiling": 0.6,
+  "home_screenshot_verified": true,
+  "startup_write_errors": 0,
+  "startup_deadline_misses": 0,
+  "post_install_listening": "User reports distortion markedly improved, but all four roles are too quiet; overall loudness acceptance remains open.",
+  "playback": {
+    "seed": "8234",
+    "harmony_phrase": 3,
+    "peak_pcm": 19660,
+    "clipped": 0,
+    "partial_writes": 0,
+    "write_errors": 0,
+    "deadline_misses": 0,
+    "observed_roles": [
+      "harmony",
+      "pulse",
+      "voice",
+      "dust"
+    ],
+    "maximum_render_conversion_us": 3918
+  }
+}

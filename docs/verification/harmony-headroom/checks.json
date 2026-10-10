@@ -1,0 +1,50 @@
+{
+  "cases": 240,
+  "clipped_samples": 0,
+  "maximum_sample_peak": 0.599993896298,
+  "unchanged_synthesis_banks": 96,
+  "unchanged_of_192_prior_wavs": 71,
+  "rms_change_db": {
+    "role0-volume0.65": {
+      "min": -2.434567484393909,
+      "median": -1.5255647390574034,
+      "max": -0.30729199798945306
+    },
+    "role0-volume1.00": {
+      "min": -2.876419656335434,
+      "median": -2.6415899561034077,
+      "max": -2.383400845895767
+    },
+    "role1-volume0.65": {
+      "min": -0.055803897632988056,
+      "median": 0.0,
+      "max": 0.0
+    },
+    "role1-volume1.00": {
+      "min": -1.0160801618436626,
+      "median": -0.35165985781052944,
+      "max": -0.031233517275486768
+    },
+    "role2-volume0.65": {
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+    },
+    "role2-volume1.00": {
+      "min": 0.0,
+      "median": 0.0,
+      "max": 0.0
+    },
+    "role3-volume0.65": {
+      "min": -1.595063693796637,
+      "median": -1.0179288886212872,
+      "max": -0.028343496912488768
+    },
+    "role3-volume1.00": {
+      "min": -2.2929553217661054,
+      "median": -2.0415012623048985,
+      "max": -0.9980692522941745
+    }
+  },
+  "maximum_true_peak_dbfs": -4.2
+}

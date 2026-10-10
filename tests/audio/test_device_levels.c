@@ -27,7 +27,7 @@ static double convert(double *peak, size_t *limited)
         assert(stats.clipped == 0);
         *limited += stats.limited;
         for (unsigned i = at; i < at + n; i++) {
-            assert(abs(output[i]) <= 29491);
+            assert(abs(output[i]) <= 19661);
             double value = output[i] / 32767.0;
             energy += value * value;
             if (fabs(value) > *peak) {
@@ -37,8 +37,36 @@ static double convert(double *peak, size_t *limited)
     }
     return sqrt(energy / FRAMES);
 }
+
+static void harmony_speaker_headroom(void)
+{
+    /* The observed 40aa answer distorts on the board at .64 UI volume even
+     * without digital limiting; the listening-selected clean peak was ~.65.
+     * Leave headroom below that observation, including at maximum UI volume. */
+    echoy_plan_t plan;
+    assert(echoy_compose_mask(0x40aa, ECHOY_HARMONY, 3, .5, &plan));
+    echoy_audio_loops_t *audio = NULL;
+    assert(echoy_audio_prepare(&plan, false, &audio) == ECHOY_AUDIO_OK);
+    const double volumes[] = {.35, .49, .65, 1};
+    for (unsigned v = 0; v < sizeof(volumes) / sizeof(*volumes); ++v) {
+        for (unsigned i = 0; i < FRAMES; ++i) {
+            float bank = audio->samples[ECHOY_AUDIO_FULL][i] *
+                         echoy_device_role_gains[ECHOY_HARMONY];
+            input[i] = (float)(bank * volumes[v] * .45);
+        }
+        double peak = 0;
+        size_t limited = 0;
+        double rms = convert(&peak, &limited);
+        assert(peak <= .60002 && rms > .05);
+        assert(v == 0 ? limited == 0 : limited > 0);
+    }
+    echoy_audio_free_loops(audio);
+    puts("PASS calibrated Harmony 40aa respects speaker headroom across UI volumes");
+}
+
 int main(void)
 {
+    harmony_speaker_headroom();
     const unsigned seeds[] = {0x0890, 0xffff, 0x5555, 1};
     echoy_audio_buffer_t *tap = NULL;
     assert(echoy_audio_render_cue(ECHOY_AUDIO_TAP, &tap) == ECHOY_AUDIO_OK);

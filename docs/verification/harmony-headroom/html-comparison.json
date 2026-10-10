@@ -1,0 +1,104 @@
+{
+  "browser": "151.0.7922.75",
+  "results": [
+    {
+      "name": "cue-capture",
+      "rms_percent": 1.4073271259462672e-05,
+      "peak_percent": 0.0,
+      "relative_error": 1.3039851648014637e-06,
+      "spectral_error": 7.29354707243745e-07,
+      "onset_samples": 0,
+      "correlation": 0.99999999999916,
+      "snr_db": 117.69454698928307,
+      "passed": true
+    },
+    {
+      "name": "cue-guide",
+      "rms_percent": 8.449946851118995e-05,
+      "peak_percent": 8.763439631742642e-05,
+      "relative_error": 1.32126666213111e-06,
+      "spectral_error": 1.0493551837729631e-06,
+      "onset_samples": 0,
+      "correlation": 0.9999999999994842,
+      "snr_db": 117.58019045763024,
+      "passed": true
+    },
+    {
+      "name": "cue-tap",
+      "rms_percent": -0.0008157427317967425,
+      "peak_percent": -0.0005880612007791441,
+      "relative_error": 4.688477870769918e-05,
+      "spectral_error": 1.3894170543505175e-05,
+      "onset_samples": 0,
+      "correlation": 0.9999999989341719,
+      "snr_db": 86.57936258970739,
+      "passed": true
+    },
+    {
+      "name": "harmony-40aa-2-foreground",
+      "rms_percent": -1.482904576910471e-07,
+      "peak_percent": -0.0006646925824527194,
+      "relative_error": 6.8875626529796025e-06,
+      "spectral_error": 5.7533805465020265e-06,
+      "onset_samples": 0,
+      "correlation": 0.9999999999762814,
+      "snr_db": 103.23868875091335,
+      "passed": true
+    },
+    {
+      "name": "harmony-40aa-2-full",
+      "rms_percent": 4.964570976540017e-07,
+      "peak_percent": -0.0006367804986306957,
+      "relative_error": 7.757235931311245e-06,
+      "spectral_error": 6.0062963023133166e-06,
+      "onset_samples": 0,
+      "correlation": 0.9999999999699137,
+      "snr_db": 102.20585999138603,
+      "passed": true
+    },
+    {
+      "name": "harmony-40aa-2-source",
+      "rms_percent": -8.402948004082589e-07,
+      "peak_percent": -0.00015294075633720539,
+      "relative_error": 2.7350099600354054e-05,
+      "spectral_error": 1.3045990933851898e-05,
+      "onset_samples": 0,
+      "correlation": 0.9999999996259862,
+      "snr_db": 91.26082175530908,
+      "passed": true
+    },
+    {
+      "name": "harmony-40aa-3-foreground",
+      "rms_percent": -2.333084392347473e-06,
+      "peak_percent": -0.0010234036955103498,
+      "relative_error": 9.53950628284065e-06,
+      "spectral_error": 7.559266422516893e-06,
+      "onset_samples": 0,
+      "correlation": 0.9999999999544994,
+      "snr_db": 100.40948203251443,
+      "passed": true
+    },
+    {
+      "name": "harmony-40aa-3-full",
+      "rms_percent": -2.701535883886663e-07,
+      "peak_percent": -0.0010092755263868547,
+      "relative_error": 1.0028430446759455e-05,
+      "spectral_error": 7.61622217302286e-06,
+      "onset_samples": 0,
+      "correlation": 0.9999999999497158,
+      "snr_db": 99.97534066491795,
+      "passed": true
+    },
+    {
+      "name": "harmony-40aa-3-source",
+      "rms_percent": -8.402948004082589e-07,
+      "peak_percent": -0.00015294075633720539,
+      "relative_error": 2.7350099600354054e-05,
+      "spectral_error": 1.3045990933851898e-05,
+      "onset_samples": 0,
+      "correlation": 0.9999999996259862,
+      "snr_db": 91.26082175530908,
+      "passed": true
+    }
+  ]
+}

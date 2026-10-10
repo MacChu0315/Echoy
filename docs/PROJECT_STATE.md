@@ -225,7 +225,7 @@ Use the official Mosaico workflow; generic IDF flash targets point at retained
 factory Recovery and are blocked. Let Recovery finish initialization before
 submitting updates on this board; do not blindly replay an uncertain operation.
 
-Current device package: `ea1b10c28cd4`, verified HEALTHY boot
+Previous paired-match package: `ea1b10c28cd4`, verified HEALTHY boot
 `16482991358666837799`. It retains the performance changes, hardware volume90,
 global gain6 and peak ceiling .90. Musical-bank gains are Pulse/Voice 1,
 Dust .0672 (about -23.45 dB), Harmony 2.38 (about +7.53 dB); cues are unchanged.
@@ -241,7 +241,8 @@ Harmony at nominal .65 matched Voice lowered to about .324 (knob y213), giving
 the desired relative level at about .099 (knob y238), giving
 `.22*.099099/.324324 ~= .067222`. These are quantized screenshot estimates and
 user listening provenance, not acoustic SPL measurements. Both results were
-installed together; a separate post-installation listening verdict is pending.
+installed together. The user reports relative volume is acceptable, but Harmony
+has audible clipping/distortion; sound-quality acceptance therefore remains open.
 
 192 compiled-profile cases include the actual matching seed: no clipping,
 max sample peak .899990844447, max measured true peak -0.8 dBFS. The 72 prior
@@ -261,3 +262,32 @@ discovery, transport and clock synchronization on two and three boards. Device
 export still has no hardware destination; IMU integration is also unfinished.
 Do not repeat the earlier mistake of treating UI-only or single-tile tests as
 completion of the whole musical prototype.
+
+## Current audio follow-up
+
+Current device package is `44ad4e4a59ec`, HEALTHY boot `11202007909105101612`.
+It retains hardware90, gain6, all role gains, UI and synthesis; only the device
+peak ceiling changes from .90 to .60. Image/commit/retained-layout verification
+and the actual home screenshot pass. The user reports markedly improved
+distortion, but all four roles are too quiet; loudness acceptance remains open.
+Playback seed `8234` reaches the new PCM ceiling 19,660 with no clipping,
+partial writes, output errors or estimated deadline misses. Next evaluate
+higher average output within this ceiling before another hardware trial.
+
+The resumed investigation recovered the missing volume evidence: Harmony Answer,
+seed `40aa`, density .5 had been at full volume. The user still heard distortion
+at an observed .640 volume, during playback with no increase in limiter counts
+and no output errors. At .342 they reported markedly less/no distortion, then
+selected .486 as the highest clean level for this phrase (inferred peak ~.655).
+This supports level-dependent board output distortion, but does not identify a
+particular analog component or establish a universal acoustic limit. Computer
+listening was unavailable. Exact-seed C versus frozen HTML checks pass 9/9.
+
+The .60 ceiling is a conservative listening trial with headroom below that
+selection; it may change dynamics and relative loudness at strong peaks.
+240 calibrated cases pass with no clipping, peak <= .599993897 and true peak
+<= -4.2 dBFS; raw synthesis banks are unchanged. PCM and band checks pass,
+including the reported-seed regression that fails on the old ceiling. Runtime
+checks pass 22/22 normally and with ASan/UBSan/LSan outside the ptrace sandbox.
+The official pinned-SDK bundle build/install pass. See
+`verification/harmony-headroom/README.md` for evidence and limitations.

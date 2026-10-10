@@ -43,5 +43,5 @@
   "home_screenshot_verified": true,
   "startup_write_errors": 0,
   "startup_deadline_misses": 0,
-  "post_install_listening": "pending"
+  "post_install_listening": "User says relative volume is acceptable, but Harmony has clearly audible clipping/distortion; not accepted for sound quality."
 }

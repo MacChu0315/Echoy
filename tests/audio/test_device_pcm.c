@@ -13,7 +13,7 @@ static void convert(echoy_device_pcm_t *s, const float *in, int16_t *out, size_t
     assert(echoy_device_pcm_convert(s, in, out, n, &stats));
     assert(stats.clipped == 0);
     for (size_t i = 0; i < n; i++) {
-        assert(abs(out[i]) <= 29491);
+        assert(abs(out[i]) <= 19661);
     }
 }
 int main(void)
@@ -41,7 +41,7 @@ int main(void)
     assert(echoy_device_pcm_convert(&a, source, whole, 24000, &stats));
     assert(stats.limited > 0 && stats.clipped == 0);
     for (unsigned i = 0; i < 24000; i++) {
-        assert(abs(whole[i]) <= 29491);
+        assert(abs(whole[i]) <= 19661);
     }
     echoy_device_pcm_reset(&b);
     for (unsigned at = 0; at < 24000;) {
@@ -61,7 +61,7 @@ int main(void)
     }
     source[0] = 1;
     convert(&a, source, whole, 24000);
-    assert(whole[24] > 29480);
+    assert(whole[24] >= 19659 && whole[24] <= 19661);
     assert(whole[23999] >= 1965 && whole[23999] <= 1967);
     /* Reset discards both pending sound and gain reduction after cancellation. */
     source[0] = .1f;

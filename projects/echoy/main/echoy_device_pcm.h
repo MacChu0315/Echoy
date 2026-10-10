@@ -10,7 +10,10 @@
  * from separate on-board listening matches against Voice. */
 extern const float echoy_device_role_gains[4];
 #define ECHOY_DEVICE_PCM_GAIN 6.0f
-#define ECHOY_DEVICE_PCM_CEILING .90f
+/* Board listening trial: Harmony remained distorted below digital clipping.
+ * Its clean selected peak was about .65; retain margin for the output chain.
+ * This bounds digital samples, not a guarantee of analog/acoustic linearity. */
+#define ECHOY_DEVICE_PCM_CEILING .60f
 #define ECHOY_DEVICE_PCM_LOOKAHEAD 24
 
 typedef struct {
