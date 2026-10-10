@@ -36,7 +36,7 @@
     "write_errors": 0,
     "deadline_misses": 0
   },
-  "listening_acceptance": "pending user feedback",
+  "listening_acceptance": "provisionally retain current volume; user requested no further loudness tuning for now, not full acoustic-quality acceptance",
   "playback": {
     "observed_at_device_ms": 93583,
     "seed": "a404",
@@ -55,5 +55,6 @@
     "write_max_us": 12116,
     "owner_stack_min_bytes": 8744,
     "last_prepare_us": 10654753
-  }
+  },
+  "user_feedback": "音量就先这样吧"
 }

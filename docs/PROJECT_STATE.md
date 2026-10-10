@@ -171,7 +171,7 @@ evidence above comes from physical user touches.
 The current device runs limiter trial `4ee7991a5d56`, hardware volume 90,
 device PCM gain 6 with .90 peak limiting and diagnostic RPC disabled. The
 one-reference-playback authorization has already been used.
-The user rejects musical loudness even at confirmed maximum UI volume. On
+The user rejected gain-3 musical loudness even at confirmed maximum UI volume. On
 2026-10-10 the user approved trying device-only loudness gain with peak limiting,
 including its effect on musical dynamics. They also explicitly authorized all
 subsequent Echoy upgrade-package installations on this same verified board,
@@ -185,7 +185,10 @@ and 2,304 mixtures with no clipping; RMS increases 3.25–6.02 dB over gain 3.
 adds 1 ms lookahead and clears its tail on pause/fault/reopen. Physical recording
 and repeated playback/pause were observed: peak 29,490, gain reduction active,
 zero clipping/output errors/deadline misses, render+conversion maximum 3,211 us.
-Listening acceptance is pending. See `verification/loudness-limiter/README.md`.
+On 2026-10-10 the user chose to keep the current volume for now ("音量就先这样吧").
+Retain this package and its output parameters; stop further loudness tuning unless
+requested. This is provisional retention, not a claim of complete acoustic-quality
+acceptance. See `verification/loudness-limiter/README.md`.
 Use the official Mosaico workflow; generic IDF flash targets point at retained
 factory Recovery and are blocked. Let Recovery finish initialization before
 submitting updates on this board; do not blindly replay an uncertain operation.

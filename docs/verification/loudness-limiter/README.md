@@ -65,4 +65,7 @@ errors or estimated deadline misses. Maximum combined render/conversion time
 was 3,211 us per 10 ms block; owner stack minimum was 8,744 bytes. PA was off at
 capture because the user had paused; three activations were retained. Phrase
 preparation still took 10,654,753 us and remains a separate unresolved issue.
-Listening feedback is pending; no additional reference tone was requested.
+The user subsequently said "音量就先这样吧" on 2026-10-10: retain this volume
+for now and stop further tuning. This is a provisional product decision, not
+confirmation that every aspect of sound quality passed. No additional reference
+tone was requested.
