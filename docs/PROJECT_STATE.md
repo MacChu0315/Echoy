@@ -45,12 +45,13 @@ top ink of the Chinese Volume/Simplicity labels. Home mark rows now move down
 exactly matching the two label tops. Gaps and all surrounding geometry remain
 unchanged. Three-row chords stay within y263–276; Dust is unchanged nearby.
 
-The current preview uses `build-sim-harmony-mark-height`: desk HTTP 18898,
+The Harmony comparison preview uses `build-sim-harmony-mark-height`: desk HTTP 18898,
 A/B/C views 3228/3229/3230. The earlier mark-spacing preview at 18897/3225–3227
 is retained to preserve the user's new recording, and v4 remains at 18896/3222–3224.
 The new A view contains a separate seed5 Harmony phrase2 example for review.
-The user accepted retaining the label-top alignment; these UI refinements have not been
-installed on hardware. Art/image and native GSP input tests pass, including
+The user accepted retaining the label-top alignment; these UI refinements were
+installed with settings package `7c08b632adf9` on 2026-10-10. Art/image and native
+GSP input tests pass, including
 bottom-control bounds, 33 unchanged cases outside Harmony home, and 54 generated
 plans with separate marks for every event. See `verification/harmony-layout/README.md`
 for the ribbon change and `verification/harmony-marks/README.md` for the current
@@ -72,14 +73,21 @@ brightness. Capture, preparation and playback keep it awake. Preferences are
 currently per running tile and reset on restart; no rhythm or preference
 persistence was added. The PC visual uses native GSP shading; firmware calls the
 public BSP brightness API from the UI owner, with no audio-thread I/O or flash
-writes. Physical brightness and power savings remain unverified.
+writes. The user confirmed physical brightness adjustment; measured power savings
+remain unverified.
 
 Preview: desk HTTP 18899, A/B/C views 3231/3232/3233, build `build-sim-settings`.
 A was left on Settings with an empty, silent rhythm. Older previews remain alive
-to preserve the user's recordings. The current UI refinements and new settings
-are not installed on hardware; the accepted audio firmware is unchanged.
-Final settings appearance awaits user review. Verification and restart commands
-are in `verification/settings/README.md`.
+to preserve the user's recordings. The user accepted the new preview and requested
+installation. Package
+`7c08b632adf9` is now installed on the same verified Mosaico, HEALTHY boot
+`16575296128339463175`, operation `b3127241-392a-4b71-af96-b00912b8dcfa`.
+Image identity, healthy acknowledgement, commit, bootloader and partition checks
+pass; the actual home screen is normal. Accepted speaker parameters from
+`7c431dacfd59` are unchanged. The user then confirmed the physical settings pages,
+touch and visible brightness adjustment are all normal. Automatic idle dimming
+was validated in the simulator; measured power savings remain unverified.
+Verification and restart commands are in `verification/settings/README.md`.
 
 ## PC application
 
@@ -332,7 +340,7 @@ the .60 ceiling, and prioritize louder/less-distorted playback over retaining
 the original bass weight. Rhythm and pitch remain unchanged; frozen HTML/shared
 synthesis remain the reference. This authorizes the bounded timbre change and
 its installation on the same board under the existing update authorization.
-The follow-up is now installed as current package `7c431dacfd59`, HEALTHY boot
+The audio follow-up was installed as package `7c431dacfd59`, HEALTHY boot
 `6467976503804649253`. It adds a device-only second-order 120 Hz high-pass,
 uses PCM drive18 with the same .60 ceiling/1 ms lookahead, and reduces limiter
 release to 40 ms. Musical trims are 1.6/.52/.0317/2.38; default-volume median
@@ -342,12 +350,13 @@ Startup identity/commit/retained-layout and home checks pass. Physical listening
 found no obvious distortion, but the user would prefer more loudness. A further
 local scan found gain18 -> gain48 gives only .75 dB median Harmony RMS at full
 volume, versus 8.52 dB for Dust, so no additional gain-only package was installed.
-Retain `7c431dacfd59` as the latest profile. The current package logs confirm
+Retain the audio profile established in `7c431dacfd59`. That package's logs confirm
 Harmony phrase 2 (Broken), and the user subsequently explicitly confirmed that
 phrase 3 (Answer), the original problematic expression, also has no obvious
 distortion at the same higher volume. Physical listening follow-up is closed
 for this trial. On 2026-10-10 the user decided to retain the current volume
-("音量上就先这样吧"). Keep package `7c431dacfd59` and its output parameters;
+("音量上就先这样吧"). Keep the output parameters from `7c431dacfd59`;
+the current UI package is `7c08b632adf9` with those same parameters;
 stop further loudness tuning unless requested. This is provisional retention,
 not a claim of measured acoustic performance or the absolute hardware limit.
 Any future substantial loudness improvement needs acoustic/output-chain

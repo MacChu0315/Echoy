@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "device_id": "4553502d49524953010030eda0f452a0",
+  "boot_id": 12726182862893018262,
+  "command": "device-status",
+  "device": {
+    "device_id": "4553502d49524953010030eda0f452a0",
+    "boot_id": 12726182862893018262,
+    "firmware_mode": "recovery",
+    "app_version": "0.1.2",
+    "firmware_sha256": "54f72372a819e6708e859e79cfe2540e51653e5d8ac1c143a357419e43039b22",
+    "layout_id": "mosaico-retained-recovery-2m-v1",
+    "stale": false,
+    "queue": {
+      "device_id": "4553502d49524953010030eda0f452a0",
+      "queued": [],
+      "running": []
+    }
+  }
+}

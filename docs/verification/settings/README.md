@@ -83,6 +83,38 @@ acceptance. Exact build artifacts are recorded in [artifacts.json](artifacts.jso
   default build, so use the artifact paths/hashes in this directory.
 - `sha256sum -c SHA256SUMS` inside `reference/v4`: all four frozen files pass.
 
-The new UI has not been installed on hardware. Physical brightness, wake behavior,
-power savings and visual acceptance remain to be checked. The currently installed
-and accepted speaker settings are unchanged.
+## Physical installation and acceptance (2026-10-10)
+
+The user accepted the preview and requested installation. Pinned SDK
+`system-update-bundle` passes with zero warnings (run
+`20261010-191939-system-update-bundle-2`). The 1,100,147-byte package
+`7c08b632adf9` includes the approved settings and Harmony home refinements.
+Audio/profile source files are unchanged from the accepted speaker trial.
+
+Official `mosaico.py iris system-update --bundle ... --device-id ... --endpoint ...`
+installed it on Mosaico `4553502d49524953010030eda0f452a0` through ready retained
+Vibe Mode, operation `b3127241-392a-4b71-af96-b00912b8dcfa`. The same board moved
+from application boot `6467976503804649253` through Recovery boot
+`12726182862893018262` to healthy application boot `16575296128339463175`.
+The new ELF identity, healthy acknowledgement, commit ID, unchanged bootloader
+hash and unchanged partition-table hash all pass. [Evidence](device-result.json).
+The earlier invocation combining `--bundle` with `--project` was rejected by
+CLI argument validation before any update was submitted; the supported bundle-only
+invocation performed the single successful write.
+
+`iris device-status`, `iris screenshot` and `iris logs --snapshot` confirm normal
+mode, crash count zero and the actual [home screen](installed-home.png). Startup
+logs show panel brightness 100%, musical gain milli 1600/520/31/2380, PCM gain
+milli 18000 and zero audio write/deadline errors. No UI errors were observed.
+The known GPIO ISR-already-installed and initial I2S-disable messages also appear;
+these were present before this update and did not prevent healthy startup.
+
+The user opened Settings and Display, then explicitly confirmed that the pages,
+touch and visible brightness changes are all normal ("都正常"). This is physical
+user acceptance, not a luminance or power measurement. Display preferences still
+reset on restart; "remember the last rhythm" remains excluded. The accepted
+speaker parameters are unchanged.
+
+After the user's acceptance, a follow-up capture found no available endpoint.
+No further reboot or write was attempted. The installation-time live status,
+screenshot and logs above remain the verified device evidence.

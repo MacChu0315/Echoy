@@ -23,5 +23,10 @@
     "path": "output/device-audio-ui-build/esp-idf/main/gsp_gen_bundle/bundle.gspb",
     "bytes": 371216,
     "sha256": "a1779b9924a8bcb6d665bf727606861284e2a962e2c03337c27ddb400bbcecf5"
+  },
+  {
+    "path": "output/device-release/echoy-settings-7c08b632adf9.irisfw",
+    "bytes": 1100147,
+    "sha256": "7c08b632adf90f47b56bdf1f7e5e54a59ed0f35be8a16450d9b1137930c314c5"
   }
 ]
