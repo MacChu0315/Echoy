@@ -1,0 +1,113 @@
+{
+  "scope": "仅本地离线测量，无播放、无安装，无生产/测试文件修改。",
+  "commands": [
+    "cc -std=c11 -O2 -Wall -Wextra -Werror -Iprojects/echoy/main output/role-balance/measure.c projects/echoy/main/echoy_audio.c projects/echoy/main/echoy_music.c projects/echoy/main/echoy_device_pcm.c -lm -o output/role-balance/measure",
+    "output/role-balance/measure output/role-balance",
+    "python3 output/role-balance/analyze.py"
+  ],
+  "ffmpeg_version": "ffmpeg version 4.4.2-0ubuntu0.22.04.1 Copyright (c) 2000-2021 the FFmpeg developers",
+  "controlled_setup": {
+    "sample_rate": 24000,
+    "ui_volumes": [
+      0.65,
+      1.0
+    ],
+    "device_gain": 6,
+    "ceiling": 0.9,
+    "mixer_multiplier": 0.45,
+    "seeds": [
+      "1134",
+      "1048",
+      "1085"
+    ],
+    "phrases": [
+      1,
+      2,
+      3
+    ],
+    "densities": [
+      0.5,
+      1.0
+    ],
+    "measured_seconds": 10,
+    "warmup_seconds": 2.5,
+    "pcm": "signed mono 16-bit",
+    "notes": "Steady-state single tile, no transport fade/tap mixing. Same FULL loops and device PCM converter; no playback and no physical acoustic measurement."
+  },
+  "case_count": 144,
+  "clipped_samples": 0.0,
+  "maximum_sample_peak": 0.899990844447,
+  "maximum_true_peak_dbfs": -0.4,
+  "density_1_minus_0_5_lu": {
+    "0.65": {
+      "Pulse": {
+        "min": -0.09999999999999787,
+        "median": 0.0,
+        "max": 0.0,
+        "std": 0.031426968052734774
+      },
+      "Voice": {
+        "min": -0.10000000000000142,
+        "median": 0.0,
+        "max": 0.0,
+        "std": 0.04714045207910384
+      },
+      "Dust": {
+        "min": -0.10000000000000142,
+        "median": 0.0,
+        "max": 0.10000000000000142,
+        "std": 0.07856742013183873
+      },
+      "Harmony": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0,
+        "std": 0.0
+      }
+    },
+    "1.0": {
+      "Pulse": {
+        "min": -0.6000000000000014,
+        "median": 0.0,
+        "max": 0.0,
+        "std": 0.1885618083164131
+      },
+      "Voice": {
+        "min": -0.1999999999999993,
+        "median": 0.0,
+        "max": 0.10000000000000142,
+        "std": 0.09558139185602926
+      },
+      "Dust": {
+        "min": 0.0,
+        "median": 0.1999999999999993,
+        "max": 0.5,
+        "std": 0.15634719199411426
+      },
+      "Harmony": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.10000000000000142,
+        "std": 0.0415739709641555
+      }
+    }
+  },
+  "observations": [
+    "同设置下Dust通常有更高的EBU R128加权响度。0.65音量相对Harmony中位+2.1LU、范围+0.8至+3.2；1.0音量中位+1.2LU、范围-0.1至+2.1。乐句差异明显，单一测试乐句不足以定固定增益。",
+    "Voice和Harmony在全部匹配样本数字LUFS只差0至0.2LU；RMS均约0.045。Harmony更小的峰值/crest不能当作平均声压小的证据。用户认为Harmony更轻，尚不能由这套数字测量归因，应保留扬声器频响、听感及包络瞬态影响的待验证部分。",
+    "0.65音量下Dust平均频谱能量约86.2%位于1–3kHz、8.1%位于3–6kHz；Harmony约76.0%位于300–1000Hz、24.0%位于100–300Hz。此差异解释K加权为何不把相同RMS视为相同响度，但不能代替具体speaker声学测量。",
+    "全音量时limiter令Pulse输出RMS相对无衰减的gain6下降中位1.81dB、Dust1.02dB，Voice/Harmony基本不降。0.65到1.0不是所有角色都保持线性倍率。limited_percent包括很小的release尾部衰减，不能直接解释为同等比例的听感压缩。"
+  ],
+  "minimal_strategy": [
+    "保持冻结HTML、共享合成归一化、UI音量映射、global gain6及ceiling0.9。设备端role校准只作为现有准备好的声音进入limiter之前的独立小幅乘数。",
+    "先把候选role trim离线送过当前真实limiter，对144组比较匹配LUFS、峰值及增益衰减；优先验证适度降低Dust是否能同时改善两档音量，不直接按一组测量写死系数。",
+    "Harmony相对Voice不应仅根据峰值或数字LUFS差自动提高数dB；使用相同seed/phrase/density、相同摆位和距离做受控听感或实机声学对比，再决定是否需speaker适配。",
+    "最终若实现，应将trim归属实际正在播放的role/prepared bank，随声音生效，不能读取已切换但尚未准备完成的UI角色去调旧声音。若不同role会混合，不能在混合后的PCM上对整个总线套当前role系数。",
+    "保留所有3个phrase、2档density、3个seed和2档volume验收；不得用增加总gain或放宽limiter解决角色差异。"
+  ],
+  "limitations": [
+    "这是数字输出测量，没有扬声器/箱体/功放/房间/距离校准。",
+    "单tile稳态FULL循环，按真实band中volume×0.45混音倍率输出；没有重放控制调度、起停fade或tap叠加。",
+    "EBU R128的K加权与门限是标准化数字指标，无法完整预测短打击声、和弦包络和小型speaker的主观响度。"
+  ]
+}

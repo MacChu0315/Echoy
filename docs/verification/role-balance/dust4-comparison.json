@@ -1,0 +1,1322 @@
+{
+  "profile_db": {
+    "Pulse": 0,
+    "Voice": 0,
+    "Dust": -4,
+    "Harmony": 1.5
+  },
+  "global_gain": 6,
+  "ceiling": 0.9,
+  "case_count": 144,
+  "clipped_samples": 0.0,
+  "maximum_sample_peak": 0.899990844447,
+  "maximum_true_peak_dbfs": -0.6,
+  "volumes": {
+    "0.65": {
+      "roles": {
+        "Pulse": {
+          "integrated_lufs": {
+            "min": -23.2,
+            "median": -21.7,
+            "max": -21.3,
+            "mean": -22.049999999999997,
+            "std": 0.6353039517515303
+          },
+          "device_rms": {
+            "min": 0.0686109305009,
+            "median": 0.07897496965789999,
+            "max": 0.078975017697,
+            "mean": 0.07779172455098332,
+            "std": 0.0032485048681059245
+          },
+          "device_peak": {
+            "min": 0.654225287637,
+            "median": 0.825525681326,
+            "max": 0.899990844447,
+            "mean": 0.7819418588485556,
+            "std": 0.08941054717601267
+          },
+          "true_peak_dbfs": {
+            "min": -3.6,
+            "median": -1.6,
+            "max": -0.9,
+            "mean": -2.122222222222222,
+            "std": 1.0063992777088224
+          },
+          "limiter_effect_db": {
+            "min": -0.06296995169761664,
+            "median": -1.8877666170632713e-06,
+            "max": 4.08946450767825e-06,
+            "mean": -0.003500342689652991,
+            "std": 0.01442349922520853
+          },
+          "limited_percent": {
+            "min": 0.0,
+            "median": 0.0,
+            "max": 63.695,
+            "mean": 3.538611111111111,
+            "std": 14.590067379095384
+          },
+          "change_lu": {
+            "min": 0.0,
+            "median": 0.0,
+            "max": 0.0,
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "change_rms_db": {
+            "min": 0.0,
+            "median": 0.0,
+            "max": 0.0,
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "clipped_samples": 0.0
+        },
+        "Voice": {
+          "integrated_lufs": {
+            "min": -22.7,
+            "median": -22.45,
+            "max": -22.4,
+            "mean": -22.516666666666666,
+            "std": 0.1343709624716428
+          },
+          "device_rms": {
+            "min": 0.0789749009059,
+            "median": 0.07897501095500001,
+            "max": 0.0789750909218,
+            "mean": 0.07897500342571112,
+            "std": 4.569714157966078e-08
+          },
+          "device_peak": {
+            "min": 0.399487289041,
+            "median": 0.49763481551600003,
+            "max": 0.626178777429,
+            "mean": 0.5003458764407777,
+            "std": 0.05542082078397845
+          },
+          "true_peak_dbfs": {
+            "min": -8.0,
+            "median": -6.05,
+            "max": -4.1,
+            "mean": -6.066666666666666,
+            "std": 0.9637888196533974
+          },
+          "limiter_effect_db": {
+            "min": -1.0929468094076233e-05,
+            "median": 1.0432525259879312e-06,
+            "max": 9.965313500851486e-06,
+            "mean": 4.076765796503362e-07,
+            "std": 5.037438935117901e-06
+          },
+          "limited_percent": {
+            "min": 0.0,
+            "median": 0.0,
+            "max": 0.0,
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "change_lu": {
+            "min": 0.0,
+            "median": 0.0,
+            "max": 0.0,
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "change_rms_db": {
+            "min": 0.0,
+            "median": 0.0,
+            "max": 0.0,
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "clipped_samples": 0.0
+        },
+        "Dust": {
+          "integrated_lufs": {
+            "min": -25.8,
+            "median": -24.45,
+            "max": -23.4,
+            "mean": -24.555555555555557,
+            "std": 0.6609943874549269
+          },
+          "device_rms": {
+            "min": 0.0420575435987,
+            "median": 0.049829816070850005,
+            "max": 0.0498299283054,
+            "mean": 0.04708319316561667,
+            "std": 0.003250776897479441
+          },
+          "device_peak": {
+            "min": 0.410718100528,
+            "median": 0.5779900509655,
+            "max": 0.674245429853,
+            "mean": 0.555348707880111,
+            "std": 0.08166364351891175
+          },
+          "true_peak_dbfs": {
+            "min": -7.6,
+            "median": -4.699999999999999,
+            "max": -3.1,
+            "mean": -5.094444444444445,
+            "std": 1.3858299648073804
+          },
+          "limiter_effect_db": {
+            "min": -1.1153370328180329e-05,
+            "median": 2.162926671669571e-06,
+            "max": 1.5077515925736454e-05,
+            "mean": 2.135940508804281e-06,
+            "std": 6.451836908867137e-06
+          },
+          "limited_percent": {
+            "min": 0.0,
+            "median": 0.0,
+            "max": 0.0,
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "change_lu": {
+            "min": -4.0,
+            "median": -4.0,
+            "max": -3.6999999999999993,
+            "mean": -3.933333333333333,
+            "std": 0.09428090415820628
+          },
+          "change_rms_db": {
+            "min": -3.999999107698887,
+            "median": -3.975116027622801,
+            "max": -3.780262809697233,
+            "mean": -3.9411748379925493,
+            "std": 0.07399521715927646
+          },
+          "clipped_samples": 0.0
+        },
+        "Harmony": {
+          "integrated_lufs": {
+            "min": -21.3,
+            "median": -21.1,
+            "max": -21.0,
+            "mean": -21.11111111111111,
+            "std": 0.11967032904743359
+          },
+          "device_rms": {
+            "min": 0.0938618998198,
+            "median": 0.09386197798915,
+            "max": 0.0938620421602,
+            "mean": 0.09386197594675555,
+            "std": 3.359059644685032e-08
+          },
+          "device_peak": {
+            "min": 0.316385387738,
+            "median": 0.435666982025,
+            "max": 0.694875942259,
+            "mean": 0.4605327853567222,
+            "std": 0.12228617289176592
+          },
+          "true_peak_dbfs": {
+            "min": -10.0,
+            "median": -7.25,
+            "max": -3.2,
+            "mean": -7.038888888888889,
+            "std": 2.2837928707619723
+          },
+          "limiter_effect_db": {
+            "min": -6.025307021283856e-06,
+            "median": 1.4172804947160026e-06,
+            "max": 7.3916954230989e-06,
+            "mean": 1.3107450229512596e-06,
+            "std": 3.160977577857919e-06
+          },
+          "limited_percent": {
+            "min": 0.0,
+            "median": 0.0,
+            "max": 0.0,
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "change_lu": {
+            "min": 1.5,
+            "median": 1.5,
+            "max": 1.5,
+            "mean": 1.5,
+            "std": 0.0
+          },
+          "change_rms_db": {
+            "min": 1.499990450146904,
+            "median": 1.4999993420106605,
+            "max": 1.5000101322730788,
+            "mean": 1.499999955554139,
+            "std": 5.0713795497132675e-06
+          },
+          "clipped_samples": 0.0
+        }
+      },
+      "matched_spread": [
+        {
+          "seed": "1048",
+          "phrase": 1.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -21.6,
+            "Voice": -22.4,
+            "Dust": -21.7,
+            "Harmony": -22.5
+          },
+          "after": {
+            "Pulse": -21.6,
+            "Voice": -22.4,
+            "Dust": -25.6,
+            "Harmony": -21.0
+          },
+          "before_range": 0.8999999999999986,
+          "after_range": 4.600000000000001
+        },
+        {
+          "seed": "1048",
+          "phrase": 1.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -21.6,
+            "Voice": -22.4,
+            "Dust": -21.6,
+            "Harmony": -22.5
+          },
+          "after": {
+            "Pulse": -21.6,
+            "Voice": -22.4,
+            "Dust": -25.5,
+            "Harmony": -21.0
+          },
+          "before_range": 0.8999999999999986,
+          "after_range": 4.5
+        },
+        {
+          "seed": "1048",
+          "phrase": 2.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -21.3,
+            "Voice": -22.4,
+            "Dust": -20.5,
+            "Harmony": -22.5
+          },
+          "after": {
+            "Pulse": -21.3,
+            "Voice": -22.4,
+            "Dust": -24.3,
+            "Harmony": -21.0
+          },
+          "before_range": 2.0,
+          "after_range": 3.3000000000000007
+        },
+        {
+          "seed": "1048",
+          "phrase": 2.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -21.4,
+            "Voice": -22.4,
+            "Dust": -20.4,
+            "Harmony": -22.5
+          },
+          "after": {
+            "Pulse": -21.4,
+            "Voice": -22.4,
+            "Dust": -24.2,
+            "Harmony": -21.0
+          },
+          "before_range": 2.1000000000000014,
+          "after_range": 3.1999999999999993
+        },
+        {
+          "seed": "1048",
+          "phrase": 3.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -21.3,
+            "Voice": -22.4,
+            "Dust": -20.5,
+            "Harmony": -22.5
+          },
+          "after": {
+            "Pulse": -21.3,
+            "Voice": -22.4,
+            "Dust": -24.5,
+            "Harmony": -21.0
+          },
+          "before_range": 2.0,
+          "after_range": 3.5
+        },
+        {
+          "seed": "1048",
+          "phrase": 3.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -21.3,
+            "Voice": -22.4,
+            "Dust": -20.5,
+            "Harmony": -22.5
+          },
+          "after": {
+            "Pulse": -21.3,
+            "Voice": -22.4,
+            "Dust": -24.5,
+            "Harmony": -21.0
+          },
+          "before_range": 2.0,
+          "after_range": 3.5
+        },
+        {
+          "seed": "1085",
+          "phrase": 1.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -23.2,
+            "Voice": -22.7,
+            "Dust": -21.8,
+            "Harmony": -22.8
+          },
+          "after": {
+            "Pulse": -23.2,
+            "Voice": -22.7,
+            "Dust": -25.8,
+            "Harmony": -21.3
+          },
+          "before_range": 1.3999999999999986,
+          "after_range": 4.5
+        },
+        {
+          "seed": "1085",
+          "phrase": 1.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -23.2,
+            "Voice": -22.7,
+            "Dust": -21.7,
+            "Harmony": -22.8
+          },
+          "after": {
+            "Pulse": -23.2,
+            "Voice": -22.7,
+            "Dust": -25.7,
+            "Harmony": -21.3
+          },
+          "before_range": 1.5,
+          "after_range": 4.399999999999999
+        },
+        {
+          "seed": "1085",
+          "phrase": 2.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -21.7,
+            "Voice": -22.7,
+            "Dust": -20.6,
+            "Harmony": -22.7
+          },
+          "after": {
+            "Pulse": -21.7,
+            "Voice": -22.7,
+            "Dust": -24.3,
+            "Harmony": -21.2
+          },
+          "before_range": 2.099999999999998,
+          "after_range": 3.1000000000000014
+        },
+        {
+          "seed": "1085",
+          "phrase": 2.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -21.7,
+            "Voice": -22.7,
+            "Dust": -20.7,
+            "Harmony": -22.7
+          },
+          "after": {
+            "Pulse": -21.7,
+            "Voice": -22.7,
+            "Dust": -24.5,
+            "Harmony": -21.2
+          },
+          "before_range": 2.0,
+          "after_range": 3.3000000000000007
+        },
+        {
+          "seed": "1085",
+          "phrase": 3.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -21.7,
+            "Voice": -22.7,
+            "Dust": -20.5,
+            "Harmony": -22.8
+          },
+          "after": {
+            "Pulse": -21.7,
+            "Voice": -22.7,
+            "Dust": -24.5,
+            "Harmony": -21.3
+          },
+          "before_range": 2.3000000000000007,
+          "after_range": 3.1999999999999993
+        },
+        {
+          "seed": "1085",
+          "phrase": 3.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -21.7,
+            "Voice": -22.7,
+            "Dust": -20.5,
+            "Harmony": -22.8
+          },
+          "after": {
+            "Pulse": -21.7,
+            "Voice": -22.7,
+            "Dust": -24.5,
+            "Harmony": -21.3
+          },
+          "before_range": 2.3000000000000007,
+          "after_range": 3.1999999999999993
+        },
+        {
+          "seed": "1134",
+          "phrase": 1.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -22.8,
+            "Voice": -22.4,
+            "Dust": -20.3,
+            "Harmony": -22.5
+          },
+          "after": {
+            "Pulse": -22.8,
+            "Voice": -22.4,
+            "Dust": -24.2,
+            "Harmony": -21.0
+          },
+          "before_range": 2.5,
+          "after_range": 3.1999999999999993
+        },
+        {
+          "seed": "1134",
+          "phrase": 1.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -22.8,
+            "Voice": -22.5,
+            "Dust": -20.2,
+            "Harmony": -22.5
+          },
+          "after": {
+            "Pulse": -22.8,
+            "Voice": -22.5,
+            "Dust": -24.2,
+            "Harmony": -21.0
+          },
+          "before_range": 2.6000000000000014,
+          "after_range": 3.1999999999999993
+        },
+        {
+          "seed": "1134",
+          "phrase": 2.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -22.4,
+            "Voice": -22.4,
+            "Dust": -19.4,
+            "Harmony": -22.6
+          },
+          "after": {
+            "Pulse": -22.4,
+            "Voice": -22.4,
+            "Dust": -23.4,
+            "Harmony": -21.1
+          },
+          "before_range": 3.200000000000003,
+          "after_range": 2.299999999999997
+        },
+        {
+          "seed": "1134",
+          "phrase": 2.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -22.4,
+            "Voice": -22.5,
+            "Dust": -19.5,
+            "Harmony": -22.6
+          },
+          "after": {
+            "Pulse": -22.4,
+            "Voice": -22.5,
+            "Dust": -23.5,
+            "Harmony": -21.1
+          },
+          "before_range": 3.1000000000000014,
+          "after_range": 2.3999999999999986
+        },
+        {
+          "seed": "1134",
+          "phrase": 3.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -22.4,
+            "Voice": -22.4,
+            "Dust": -20.4,
+            "Harmony": -22.6
+          },
+          "after": {
+            "Pulse": -22.4,
+            "Voice": -22.4,
+            "Dust": -24.4,
+            "Harmony": -21.1
+          },
+          "before_range": 2.200000000000003,
+          "after_range": 3.299999999999997
+        },
+        {
+          "seed": "1134",
+          "phrase": 3.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -22.4,
+            "Voice": -22.5,
+            "Dust": -20.4,
+            "Harmony": -22.6
+          },
+          "after": {
+            "Pulse": -22.4,
+            "Voice": -22.5,
+            "Dust": -24.4,
+            "Harmony": -21.1
+          },
+          "before_range": 2.200000000000003,
+          "after_range": 3.299999999999997
+        }
+      ],
+      "spread_before": {
+        "min": 0.8999999999999986,
+        "median": 2.0999999999999996,
+        "max": 3.200000000000003,
+        "mean": 2.072222222222223,
+        "std": 0.5998199318272819
+      },
+      "spread_after": {
+        "min": 2.299999999999997,
+        "median": 3.299999999999997,
+        "max": 4.600000000000001,
+        "mean": 3.4444444444444438,
+        "std": 0.6405052018369933
+      },
+      "improved": 2,
+      "worsened": 16,
+      "similar": 0,
+      "Harmony_minus_Voice": {
+        "min": 1.2999999999999972,
+        "median": 1.3999999999999986,
+        "max": 1.5,
+        "mean": 1.4055555555555541,
+        "std": 0.052411006289204094
+      },
+      "Dust_minus_Voice": {
+        "min": -3.200000000000003,
+        "median": -1.8499999999999996,
+        "max": -1.0,
+        "mean": -2.0388888888888896,
+        "std": 0.6378252014888731
+      }
+    },
+    "1.0": {
+      "roles": {
+        "Pulse": {
+          "integrated_lufs": {
+            "min": -21.1,
+            "median": -20.2,
+            "max": -19.5,
+            "mean": -20.17777777777778,
+            "std": 0.488257167615996
+          },
+          "device_rms": {
+            "min": 0.0895067468685,
+            "median": 0.09509610649985001,
+            "max": 0.115070585344,
+            "mean": 0.09899345453603334,
+            "std": 0.009318222272709889
+          },
+          "device_peak": {
+            "min": 0.899990844447,
+            "median": 0.899990844447,
+            "max": 0.899990844447,
+            "mean": 0.899990844447,
+            "std": 0.0
+          },
+          "true_peak_dbfs": {
+            "min": -0.9,
+            "median": -0.8,
+            "max": -0.8,
+            "mean": -0.8166666666666669,
+            "std": 0.03726779962499649
+          },
+          "limiter_effect_db": {
+            "min": -2.6544104517475864,
+            "median": -1.8127661326487046,
+            "max": -0.47223872417837515,
+            "mean": -1.680967883234633,
+            "std": 0.8376973988572299
+          },
+          "limited_percent": {
+            "min": 55.295,
+            "median": 70.42083333333333,
+            "max": 75.04833333333333,
+            "mean": 67.89629629629628,
+            "std": 6.316104674392875
+          },
+          "change_lu": {
+            "min": 0.0,
+            "median": 0.0,
+            "max": 0.0,
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "change_rms_db": {
+            "min": 0.0,
+            "median": 0.0,
+            "max": 0.0,
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "clipped_samples": 0.0
+        },
+        "Voice": {
+          "integrated_lufs": {
+            "min": -19.0,
+            "median": -18.75,
+            "max": -18.6,
+            "mean": -18.766666666666666,
+            "std": 0.14907119849998532
+          },
+          "device_rms": {
+            "min": 0.12028766346,
+            "median": 0.12150000416000001,
+            "max": 0.121500030442,
+            "mean": 0.12142479613766666,
+            "std": 0.00027767885777123914
+          },
+          "device_peak": {
+            "min": 0.614581743828,
+            "median": 0.7656025879695,
+            "max": 0.899990844447,
+            "mean": 0.7658331722634999,
+            "std": 0.07750679214557064
+          },
+          "true_peak_dbfs": {
+            "min": -4.2,
+            "median": -2.3,
+            "max": -0.9,
+            "mean": -2.3555555555555556,
+            "std": 0.8839445823643912
+          },
+          "limiter_effect_db": {
+            "min": -0.08710393646171079,
+            "median": 3.5401254738941546e-07,
+            "max": 2.5233257469972407e-06,
+            "mean": -0.0054007122167124486,
+            "std": 0.01995009328114278
+          },
+          "limited_percent": {
+            "min": 0.0,
+            "median": 0.0,
+            "max": 99.75666666666667,
+            "mean": 11.084074074074074,
+            "std": 31.350495763807125
+          },
+          "change_lu": {
+            "min": 0.0,
+            "median": 0.0,
+            "max": 0.0,
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "change_rms_db": {
+            "min": 0.0,
+            "median": 0.0,
+            "max": 0.0,
+            "mean": 0.0,
+            "std": 0.0
+          },
+          "clipped_samples": 0.0
+        },
+        "Dust": {
+          "integrated_lufs": {
+            "min": -22.0,
+            "median": -20.75,
+            "max": -19.7,
+            "mean": -20.87777777777778,
+            "std": 0.6536696035592324
+          },
+          "device_rms": {
+            "min": 0.0639992472594,
+            "median": 0.0764821511755,
+            "max": 0.0766613789112,
+            "mean": 0.0721209261195389,
+            "std": 0.005221198176962081
+          },
+          "device_peak": {
+            "min": 0.631885738701,
+            "median": 0.889217810602,
+            "max": 0.899990844447,
+            "mean": 0.8263089897354999,
+            "std": 0.0992351309602546
+          },
+          "true_peak_dbfs": {
+            "min": -3.9,
+            "median": -1.0,
+            "max": -0.6,
+            "mean": -1.6055555555555554,
+            "std": 1.1539652518464911
+          },
+          "limiter_effect_db": {
+            "min": -0.18583771015376435,
+            "median": -3.5264955381500554e-06,
+            "max": 6.4592376706974075e-06,
+            "mean": -0.039848177627611135,
+            "std": 0.06079110843651777
+          },
+          "limited_percent": {
+            "min": 0.0,
+            "median": 0.0,
+            "max": 99.75833333333334,
+            "mean": 39.47592592592593,
+            "std": 44.51486338757277
+          },
+          "change_lu": {
+            "min": -3.8000000000000007,
+            "median": -3.0999999999999996,
+            "max": -2.3000000000000007,
+            "mean": -3.0444444444444443,
+            "std": 0.49353849587806253
+          },
+          "change_rms_db": {
+            "min": -3.8407259335939488,
+            "median": -3.0302689503948814,
+            "max": -2.259809593939882,
+            "mean": -3.0358234761902696,
+            "std": 0.4991920769818133
+          },
+          "clipped_samples": 0.0
+        },
+        "Harmony": {
+          "integrated_lufs": {
+            "min": -17.8,
+            "median": -17.3,
+            "max": -17.2,
+            "mean": -17.38888888888889,
+            "std": 0.172848324290045
+          },
+          "device_rms": {
+            "min": 0.141112978201,
+            "median": 0.144402997518,
+            "max": 0.144403063075,
+            "mean": 0.14401430192083337,
+            "std": 0.0009378768136047865
+          },
+          "device_peak": {
+            "min": 0.486739707633,
+            "median": 0.670247505112,
+            "max": 0.899990844447,
+            "mean": 0.6885230058696666,
+            "std": 0.15647753301525144
+          },
+          "true_peak_dbfs": {
+            "min": -6.2,
+            "median": -3.45,
+            "max": -0.9,
+            "mean": -3.4555555555555553,
+            "std": 2.0166590143717684
+          },
+          "limiter_effect_db": {
+            "min": -0.20018618541009173,
+            "median": -1.3346517677214228e-06,
+            "max": 2.7815675221758266e-06,
+            "mean": -0.023598968589040183,
+            "std": 0.056989878545236954
+          },
+          "limited_percent": {
+            "min": 0.0,
+            "median": 0.0,
+            "max": 93.62666666666667,
+            "mean": 18.9037037037037,
+            "std": 35.595056823008385
+          },
+          "change_lu": {
+            "min": 1.3000000000000007,
+            "median": 1.5,
+            "max": 1.5,
+            "mean": 1.4777777777777779,
+            "std": 0.06285393610547067
+          },
+          "change_rms_db": {
+            "min": 1.2998131688190142,
+            "median": 1.499996636569743,
+            "max": 1.5000052998932636,
+            "mean": 1.4763999586117413,
+            "std": 0.05698964863378352
+          },
+          "clipped_samples": 0.0
+        }
+      },
+      "matched_spread": [
+        {
+          "seed": "1048",
+          "phrase": 1.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -20.2,
+            "Voice": -18.6,
+            "Dust": -18.8,
+            "Harmony": -18.8
+          },
+          "after": {
+            "Pulse": -20.2,
+            "Voice": -18.6,
+            "Dust": -22.0,
+            "Harmony": -17.3
+          },
+          "before_range": 1.5999999999999979,
+          "after_range": 4.699999999999999
+        },
+        {
+          "seed": "1048",
+          "phrase": 1.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -20.2,
+            "Voice": -18.6,
+            "Dust": -18.6,
+            "Harmony": -18.7
+          },
+          "after": {
+            "Pulse": -20.2,
+            "Voice": -18.6,
+            "Dust": -21.8,
+            "Harmony": -17.2
+          },
+          "before_range": 1.5999999999999979,
+          "after_range": 4.600000000000001
+        },
+        {
+          "seed": "1048",
+          "phrase": 2.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -20.5,
+            "Voice": -18.6,
+            "Dust": -18.3,
+            "Harmony": -18.8
+          },
+          "after": {
+            "Pulse": -20.5,
+            "Voice": -18.6,
+            "Dust": -20.7,
+            "Harmony": -17.3
+          },
+          "before_range": 2.1999999999999993,
+          "after_range": 3.3999999999999986
+        },
+        {
+          "seed": "1048",
+          "phrase": 2.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -21.1,
+            "Voice": -18.6,
+            "Dust": -17.8,
+            "Harmony": -18.7
+          },
+          "after": {
+            "Pulse": -21.1,
+            "Voice": -18.6,
+            "Dust": -20.6,
+            "Harmony": -17.2
+          },
+          "before_range": 3.3000000000000007,
+          "after_range": 3.900000000000002
+        },
+        {
+          "seed": "1048",
+          "phrase": 3.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -20.2,
+            "Voice": -18.7,
+            "Dust": -17.4,
+            "Harmony": -18.8
+          },
+          "after": {
+            "Pulse": -20.2,
+            "Voice": -18.7,
+            "Dust": -20.8,
+            "Harmony": -17.3
+          },
+          "before_range": 2.8000000000000007,
+          "after_range": 3.5
+        },
+        {
+          "seed": "1048",
+          "phrase": 3.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -20.2,
+            "Voice": -18.7,
+            "Dust": -17.4,
+            "Harmony": -18.8
+          },
+          "after": {
+            "Pulse": -20.2,
+            "Voice": -18.7,
+            "Dust": -20.8,
+            "Harmony": -17.3
+          },
+          "before_range": 2.8000000000000007,
+          "after_range": 3.5
+        },
+        {
+          "seed": "1085",
+          "phrase": 1.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -20.4,
+            "Voice": -18.9,
+            "Dust": -19.2,
+            "Harmony": -19.1
+          },
+          "after": {
+            "Pulse": -20.4,
+            "Voice": -18.9,
+            "Dust": -22.0,
+            "Harmony": -17.8
+          },
+          "before_range": 1.5,
+          "after_range": 4.199999999999999
+        },
+        {
+          "seed": "1085",
+          "phrase": 1.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -20.4,
+            "Voice": -18.9,
+            "Dust": -18.8,
+            "Harmony": -19.1
+          },
+          "after": {
+            "Pulse": -20.4,
+            "Voice": -18.9,
+            "Dust": -22.0,
+            "Harmony": -17.8
+          },
+          "before_range": 1.5999999999999979,
+          "after_range": 4.199999999999999
+        },
+        {
+          "seed": "1085",
+          "phrase": 2.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -20.8,
+            "Voice": -19.0,
+            "Dust": -18.5,
+            "Harmony": -19.0
+          },
+          "after": {
+            "Pulse": -20.8,
+            "Voice": -19.0,
+            "Dust": -20.8,
+            "Harmony": -17.5
+          },
+          "before_range": 2.3000000000000007,
+          "after_range": 3.3000000000000007
+        },
+        {
+          "seed": "1085",
+          "phrase": 2.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -20.8,
+            "Voice": -18.9,
+            "Dust": -18.3,
+            "Harmony": -19.0
+          },
+          "after": {
+            "Pulse": -20.8,
+            "Voice": -18.9,
+            "Dust": -20.9,
+            "Harmony": -17.5
+          },
+          "before_range": 2.5,
+          "after_range": 3.3999999999999986
+        },
+        {
+          "seed": "1085",
+          "phrase": 3.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -20.5,
+            "Voice": -19.0,
+            "Dust": -17.1,
+            "Harmony": -19.0
+          },
+          "after": {
+            "Pulse": -20.5,
+            "Voice": -19.0,
+            "Dust": -20.8,
+            "Harmony": -17.5
+          },
+          "before_range": 3.3999999999999986,
+          "after_range": 3.3000000000000007
+        },
+        {
+          "seed": "1085",
+          "phrase": 3.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -20.5,
+            "Voice": -19.0,
+            "Dust": -16.9,
+            "Harmony": -19.0
+          },
+          "after": {
+            "Pulse": -20.5,
+            "Voice": -19.0,
+            "Dust": -20.7,
+            "Harmony": -17.5
+          },
+          "before_range": 3.6000000000000014,
+          "after_range": 3.1999999999999993
+        },
+        {
+          "seed": "1134",
+          "phrase": 1.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -19.6,
+            "Voice": -18.6,
+            "Dust": -17.7,
+            "Harmony": -18.8
+          },
+          "after": {
+            "Pulse": -19.6,
+            "Voice": -18.6,
+            "Dust": -20.5,
+            "Harmony": -17.3
+          },
+          "before_range": 1.9000000000000021,
+          "after_range": 3.1999999999999993
+        },
+        {
+          "seed": "1134",
+          "phrase": 1.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -19.6,
+            "Voice": -18.8,
+            "Dust": -17.5,
+            "Harmony": -18.8
+          },
+          "after": {
+            "Pulse": -19.6,
+            "Voice": -18.8,
+            "Dust": -20.5,
+            "Harmony": -17.3
+          },
+          "before_range": 2.1000000000000014,
+          "after_range": 3.1999999999999993
+        },
+        {
+          "seed": "1134",
+          "phrase": 2.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -19.6,
+            "Voice": -18.6,
+            "Dust": -17.4,
+            "Harmony": -18.8
+          },
+          "after": {
+            "Pulse": -19.6,
+            "Voice": -18.6,
+            "Dust": -19.7,
+            "Harmony": -17.3
+          },
+          "before_range": 2.200000000000003,
+          "after_range": 2.3999999999999986
+        },
+        {
+          "seed": "1134",
+          "phrase": 2.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -19.6,
+            "Voice": -18.8,
+            "Dust": -17.3,
+            "Harmony": -18.8
+          },
+          "after": {
+            "Pulse": -19.6,
+            "Voice": -18.8,
+            "Dust": -19.8,
+            "Harmony": -17.3
+          },
+          "before_range": 2.3000000000000007,
+          "after_range": 2.5
+        },
+        {
+          "seed": "1134",
+          "phrase": 3.0,
+          "density": 0.5,
+          "before": {
+            "Pulse": -19.5,
+            "Voice": -18.7,
+            "Dust": -17.0,
+            "Harmony": -18.8
+          },
+          "after": {
+            "Pulse": -19.5,
+            "Voice": -18.7,
+            "Dust": -20.7,
+            "Harmony": -17.3
+          },
+          "before_range": 2.5,
+          "after_range": 3.3999999999999986
+        },
+        {
+          "seed": "1134",
+          "phrase": 3.0,
+          "density": 1.0,
+          "before": {
+            "Pulse": -19.5,
+            "Voice": -18.8,
+            "Dust": -17.0,
+            "Harmony": -18.8
+          },
+          "after": {
+            "Pulse": -19.5,
+            "Voice": -18.8,
+            "Dust": -20.7,
+            "Harmony": -17.3
+          },
+          "before_range": 2.5,
+          "after_range": 3.3999999999999986
+        }
+      ],
+      "spread_before": {
+        "min": 1.5,
+        "median": 2.3000000000000007,
+        "max": 3.6000000000000014,
+        "mean": 2.3722222222222222,
+        "std": 0.6126495786114932
+      },
+      "spread_after": {
+        "min": 2.3999999999999986,
+        "median": 3.3999999999999986,
+        "max": 4.699999999999999,
+        "mean": 3.5166666666666666,
+        "std": 0.5955856128401882
+      },
+      "improved": 2,
+      "worsened": 16,
+      "similar": 0,
+      "Harmony_minus_Voice": {
+        "min": 1.0999999999999979,
+        "median": 1.3999999999999986,
+        "max": 1.5,
+        "mean": 1.3777777777777775,
+        "std": 0.12272623352430333
+      },
+      "Dust_minus_Voice": {
+        "min": -3.3999999999999986,
+        "median": -2.0,
+        "max": -1.0,
+        "mean": -2.1111111111111107,
+        "std": 0.6548018265847811
+      }
+    }
+  },
+  "note": "Harmony +1.5 dB is a user-listening trial, not evidence of a numerical amplitude defect; no device sound played.",
+  "comparison_to_previous_minus2_trial": {
+    "0.65": {
+      "Pulse": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "Voice": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "Dust": {
+        "min": -2.0,
+        "median": -2.0,
+        "max": -2.0,
+        "mean": -2.0,
+        "std": 0.0
+      },
+      "Harmony": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "std": 0.0
+      }
+    },
+    "1.0": {
+      "Pulse": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "Voice": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "Dust": {
+        "min": -2.0,
+        "median": -1.6500000000000004,
+        "max": -1.3999999999999986,
+        "mean": -1.7166666666666672,
+        "std": 0.2061552812808831
+      },
+      "Harmony": {
+        "min": 0.0,
+        "median": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "std": 0.0
+      }
+    }
+  },
+  "arithmetic": "Current run uses actual float echoy_device_role_gains from production converter module. FULL sample * float gain is stored as float before double UI volume *0.45 mixing; conversion input cast back to float. Previous trial had all gain/volume arithmetic in double before that final float cast; only roundoff-level differences for unchanged Harmony.",
+  "profile_kind": "Physical-listening trial in response to confirmed latest-device Dust still too loud; not a universal numerical equal-loudness profile. Harmony+1.5dB remains an unaccepted listening trial.",
+  "checks": {
+    "cases": 144,
+    "samples_finite": true,
+    "zero_clipped_samples": true,
+    "ceiling_respected": true
+  },
+  "interpretation": {
+    "Dust_change": "Relative to the prior -2dB trial, measured Dust drops a median2.0LU at volume0.65 and1.65LU at volume1.0. It is now below Voice by a median1.85LU and2.0LU respectively in the digital metric; physical listening acceptance remains separate.",
+    "Safety": "All144 cases have zero clipped samples, sample peaks no higher than0.899990844447 and maximum true peak-0.6dBFS. Global gain6 and ceiling0.9 unchanged.",
+    "Cues": "This probe renders only prepared FULL music; no cues played. Production calibration scope remains the parent-owned immutable bank API."
+  }
+}

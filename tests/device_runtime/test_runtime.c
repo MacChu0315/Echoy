@@ -124,6 +124,17 @@ static void pause_clears_limiter_tail(void)
     stop(&d);
     puts("PASS pause clears delayed limiter PCM before the next board write");
 }
+static void calibration_failure(void)
+{
+    echoy_device_handle_t d;
+    start(&d);
+    atomic_store(&fake_calibration_failure,1);
+    assert(action(ECHOY_ACT_EXAMPLE,0));
+    until(ECHOY_AUDIO_FAULT,ECHOY_IDLE,-1);
+    assert(atomic_load(&fake_nonzero_blocks)==0);
+    stop(&d);
+    puts("PASS failed output calibration discards the new bank and stops audio");
+}
 static void overflow(void)
 {
     echoy_device_handle_t d;
@@ -418,6 +429,8 @@ int main(int argc, char **argv)
         fifo_cancel();
     else if (!strcmp(argv[1], "limiter_pause"))
         pause_clears_limiter_tail();
+    else if (!strcmp(argv[1], "calibration_failure"))
+        calibration_failure();
     else if (!strcmp(argv[1], "overflow"))
         overflow();
     else if (!strcmp(argv[1], "partial"))

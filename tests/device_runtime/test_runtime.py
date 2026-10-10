@@ -20,7 +20,7 @@ class DeviceRuntime(unittest.TestCase):
                  '-I'+str(HERE/'stubs'),'-I'+str(HERE),'-I'+str(main),
                  str(HERE/'test_runtime.c'),str(HERE/'fakes.c'),
                  *[str(main/(name+'.c')) for name in ['platform_device','echoy_band','echoy_model','echoy_music','echoy_arrange','echoy_audio','echoy_audio_probe','echoy_device_pcm']],
-                 '-Wl,--wrap=echoy_band_create','-Wl,--wrap=echoy_band_prepare_job','-lm','-o',str(cls.binary)]
+                 '-Wl,--wrap=echoy_band_create','-Wl,--wrap=echoy_band_prepare_job','-Wl,--wrap=echoy_band_calibrate_job','-lm','-o',str(cls.binary)]
         if os.environ.get('ECHOY_RUNTIME_SANITIZE')=='1':
             command[1:1]=['-fsanitize=address,undefined','-fno-omit-frame-pointer','-fno-pie','-no-pie']
         subprocess.run(command,check=True)
@@ -32,6 +32,7 @@ class DeviceRuntime(unittest.TestCase):
         self.assertIn('PASS ',result.stdout)
     def test_cache_unknown_battery_and_blocked_io(self):self.run_case('cache')
     def test_record_cancel_fifo(self):self.run_case('fifo')
+    def test_failed_calibration_cannot_play_uncalibrated_bank(self):self.run_case('calibration_failure')
     def test_pause_discards_delayed_pcm(self):self.run_case('limiter_pause')
     def test_overflow_fail_silent_and_recovery(self):self.run_case('overflow')
     def test_partial_write_and_recovery(self):self.run_case('partial')

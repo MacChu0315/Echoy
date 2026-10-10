@@ -2,6 +2,8 @@
 #include <math.h>
 #include <string.h>
 
+const float echoy_device_role_gains[4] = {1.0f, 1.0f, .6309573445f, 1.188502227f};
+
 void echoy_device_pcm_reset(echoy_device_pcm_t *state)
 {
     memset(state, 0, sizeof(*state));

@@ -18,6 +18,10 @@ const echoy_arrange_t *echoy_band_arrangement(const echoy_band_t *band);
 echoy_band_job_t *echoy_band_take_job(echoy_band_t *band);
 /* No access to band: safe on a worker while UI/audio continue. */
 bool echoy_band_prepare_job(echoy_band_job_t *job);
+/* Optional device output calibration on an owned, prepared job; once only,
+ * before finish_job. Gains follow Pulse/Voice/Dust/Harmony and must be 0..4.
+ * Scales musical FULL buffers only; shared synthesis and cue buffers are unchanged. */
+bool echoy_band_calibrate_job(echoy_band_job_t *job, const float role_gains[4]);
 /* Consumes and releases job even when stale/failed. */
 bool echoy_band_finish_job(echoy_band_t *band, echoy_band_job_t *job, int64_t now_us);
 void echoy_band_discard_job(echoy_band_job_t *job);

@@ -1,0 +1,45 @@
+{
+  "package": {
+    "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-release/echoy-dust-minus4-4db21a252792.irisfw",
+    "sha256": "4db21a252792d980507f95aae8ee25ad6ce76ede3dcf1af4e7dac9d3b50a20db"
+  },
+  "operation_id": "b23665b0-9768-4b90-bcea-76c836b15f78",
+  "status": "succeeded",
+  "validation": {
+    "boot_id": 6559752351850501042,
+    "healthy": true,
+    "application_validation": {
+      "actual": "c786d237005d964c219d64a0da393cf6caed50013e59d3efad8a28471c46c4e6",
+      "actual_field": "firmware_sha256",
+      "expected": "c786d237005d964c219d64a0da393cf6caed50013e59d3efad8a28471c46c4e6",
+      "expected_field": "elf_sha256",
+      "mode": "elf_sha256"
+    },
+    "source_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "92bcfd5b75da4a0687e810ef52c73960",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    },
+    "target_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "b23665b097684b90bcea76c836b15f78",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    }
+  },
+  "role_gains_milli": [
+    1000,
+    1000,
+    630,
+    1188
+  ],
+  "global_pcm_gain": 6,
+  "peak_ceiling": 0.9,
+  "home_screenshot_verified": true,
+  "listening_acceptance": "pending"
+}

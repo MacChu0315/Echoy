@@ -21,6 +21,7 @@ atomic_int fake_open_calls, fake_close_calls, fake_write_calls, fake_flush_calls
 atomic_int fake_partial_next, fake_open_failure, fake_close_failure, fake_flush_failure;
 atomic_int fake_task_failure, fake_health_stop_timeout, fake_event_tail_reads_after_delete;
 atomic_int fake_watermark_after_exit, fake_nonzero_blocks, fake_nonzero_since_flush;
+atomic_int fake_calibration_failure;
 atomic_int fake_probe_calls, fake_probe_failure;
 static atomic_int health_percent = -1;
 static atomic_bool hold_write, hold_create, hold_prepare, write_blocked, prepare_blocked, create_blocked;
@@ -427,4 +428,11 @@ bool __wrap_echoy_band_prepare_job(echoy_band_job_t *job)
     }
     atomic_store(&prepare_blocked, false);
     return __real_echoy_band_prepare_job(job);
+}
+
+bool __real_echoy_band_calibrate_job(echoy_band_job_t *job, const float gains[4]);
+bool __wrap_echoy_band_calibrate_job(echoy_band_job_t *job, const float gains[4])
+{
+    if (atomic_exchange(&fake_calibration_failure,0)) return false;
+    return __real_echoy_band_calibrate_job(job,gains);
 }

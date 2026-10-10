@@ -45,7 +45,7 @@ typedef struct {
 typedef struct {
     echoy_band_job_t *job;
     int64_t elapsed_us;
-    bool ok;
+    bool ok, calibration_failed;
 } prepared_t;
 typedef struct {
     float floating[BLOCK_FRAMES];
@@ -260,6 +260,9 @@ static void prepare_worker(void *arg)
     xEventGroupWaitBits(d->done, STARTED, pdFALSE, pdTRUE, portMAX_DELAY);
     echoy_band_t *band = atomic_load(&d->stopping) ? NULL : echoy_band_create();
     xQueueSend(d->startup, &band, portMAX_DELAY);
+    ESP_LOGI(TAG, "musical role gain milli: pulse=%u voice=%u dust=%u harmony=%u",
+             (unsigned)(echoy_device_role_gains[0]*1000), (unsigned)(echoy_device_role_gains[1]*1000),
+             (unsigned)(echoy_device_role_gains[2]*1000), (unsigned)(echoy_device_role_gains[3]*1000));
     while (!atomic_load(&d->stopping)) {
         char diagnostic[DIAGNOSTIC_BYTES];
         if (xQueueReceive(d->diagnostics, diagnostic, 0) == pdTRUE) {
@@ -273,9 +276,13 @@ static void prepare_worker(void *arg)
         }
         int64_t start = now_us(d);
         prepared_t result = {.job = job, .ok = echoy_band_prepare_job(job)};
+        if (result.ok) {
+            result.ok = echoy_band_calibrate_job(job, echoy_device_role_gains);
+            result.calibration_failed = !result.ok;
+        }
         result.elapsed_us = now_us(d) - start;
         if (!result.ok) {
-            ESP_LOGE(TAG, "synthesis preparation failed; existing plan retained");
+            ESP_LOGE(TAG, "sound preparation/calibration failed");
         }
         /* Only one job is in flight. The completion slot cannot be full. */
         if (xQueueSend(d->prepared, &result, 0) != pdTRUE) {
@@ -480,7 +487,12 @@ static void owner_worker(void *arg)
         if (xQueueReceive(d->prepared, &result, 0) == pdTRUE) {
             d->preparation_in_flight = false;
             d->last_prepare_us = result.elapsed_us;
-            echoy_band_finish_job(d->band, result.job, now_us(d));
+            if (result.calibration_failed) {
+                echoy_band_discard_job(result.job);
+                fail_audio(d, &audio, "musical output calibration", ESP_ERR_INVALID_RESPONSE);
+            } else {
+                echoy_band_finish_job(d->band, result.job, now_us(d));
+            }
         }
         if (d->band) {
             echoy_band_tick(d->band, now_us(d));

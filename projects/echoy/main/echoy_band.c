@@ -35,7 +35,7 @@ struct voice {
 struct echoy_band_job {
     echoy_arrange_job_t arrangement;
     struct bank *banks[N];
-    bool ok, staged;
+    bool ok, staged, calibrated;
 };
 struct echoy_band {
     echoy_arrange_t *arrange;
@@ -490,6 +490,22 @@ bool echoy_band_prepare_job(echoy_band_job_t *j)
         }
     }
     j->ok = true;
+    return true;
+}
+bool echoy_band_calibrate_job(echoy_band_job_t *j, const float role_gains[4])
+{
+    if (!j || !j->ok || j->staged || j->calibrated || !role_gains) return false;
+    for (unsigned role=0; role<4; ++role)
+        if (!isfinite(role_gains[role]) || role_gains[role] < 0 || role_gains[role] > 4)
+            return false;
+    for (int i=0; i<N; ++i) {
+        if (!j->banks[i]) continue;
+        echoy_audio_loops_t *loops=j->banks[i]->loops;
+        float gain=role_gains[j->arrangement.plans[i].music.role];
+        for (size_t at=0; at<loops->frames; ++at)
+            loops->samples[ECHOY_AUDIO_FULL][at] *= gain;
+    }
+    j->calibrated=true;
     return true;
 }
 bool echoy_band_finish_job(echoy_band_t *b, echoy_band_job_t *j, int64_t now)
