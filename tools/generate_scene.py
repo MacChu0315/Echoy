@@ -33,10 +33,10 @@ for weight in ['Regular','Medium','Bold']:
     source=Path('/usr/share/fonts/opentype/noto/NotoSansCJK-'+weight+'.ttc')
     dest=UI/'fonts'/('NotoSansSC-'+weight+'.otf')
     check_font_input(source,dest)
-    if not dest.exists():
+    if not dest.exists() or weight in ('Regular', 'Medium'):
         font=TTFont(source,fontNumber=2,recalcTimestamp=False)
         options=subset.Options(); options.recalc_timestamp=False
-        sub=subset.Subsetter(options=options); sub.populate(text=chars); sub.subset(font); font.save(dest)
+        sub=subset.Subsetter(options=options); sub.populate(text=chars+Path(__file__).read_text()); sub.subset(font); font.save(dest)
     fonts.append({'source':source.name,'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'file':dest.name,'sha256':hashlib.sha256(dest.read_bytes()).hexdigest()})
 for source in [Path('/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf'),Path('/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf'),Path('/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf')]:
     dest=UI/'fonts'/source.name;check_font_input(source,dest);shutil.copyfile(source,dest)
@@ -49,6 +49,8 @@ manifest_path.write_text(json.dumps(fonts,indent=2)+'\n')
 icon_line=next(x for x in text.splitlines() if x.startswith('const ICON='))
 icons=dict(re.findall(r"(\w+):'([^']*)'",icon_line))
 icons['pause']='<rect x="6.5" y="5" width="4" height="14" rx=".8" fill="currentColor" stroke="none"/><rect x="13.5" y="5" width="4" height="14" rx=".8" fill="currentColor" stroke="none"/>'
+icons['display']='<rect x="3" y="4" width="18" height="14" rx="3"/><path d="M9 21h6M12 18v3"/><circle cx="12" cy="11" r="3"/>'
+icons['info']='<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>'
 for name,path in icons.items():
     color='#fafbf3' if name in ('play','pause') else '#b26950' if name in ('record','cross') else '#5f7450'
     svg=f'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><g id="icon">{path.replace("currentColor",color)}</g></svg>'
@@ -406,118 +408,87 @@ for obj in objects:
     if obj['name']=='gallery_text':obj['font_charset']='试听一次暂停本机'
     if obj['name']=='gallery_text_en':obj['font_charset']='Hear once Pause this tile'
 
-# Settings: fixed native controls inside a clipped, movable content subtree.
-settings_page=route('settings')
-header('settings',settings_page,'设置','Settings')
-settings_head=locales('settings_header',settings_page)
-text_pair('settings_header_text',108,33,274,31,'设置','Settings',23,'#34392f',settings_head,en_size=21,weight=True,text_align='center')
-settings_content=scroll_area('settings',settings_page,432,350,702,24,108)
-settings_text=locales('settings',settings_content,w=426,h=702)
-settings_rows=[
-    ('audition','play','先听一次','Hear once','audition_click'),
-    ('record','record','录一段新的节奏','Record a new rhythm','record_click'),
-    ('guide','help','怎么玩','How to play','guide_click'),
-    ('info','wave','设备与实验说明','Device & experiment','info_click'),
-    ('export','download','导出本次节奏','Export this session','export_click'),
-]
-for i,(name,asset,zh,en,callback) in enumerate(settings_rows):
-    row=button('settings_'+name,0,i*96,426,84,settings_content,callback,bg_color='#ecefe5',border_color='#d9e0d0',border_width=1,radius=17)
-    icon('settings_'+name+'_icon',asset,20,31,22,22,row,tint='#576b47')
-    text_pair('settings_'+name+'_text',55,i*96+27,335 if name not in ('guide','info') else 300,30,zh,en,18,'#576b47',settings_text,en_size=16)
-    if name in ('guide','info'):icon('settings_'+name+'_next','next',384,31,22,22,row,tint='#576b47')
-for obj in objects:
-    if obj['name']=='settings_record_text':obj['font_charset']+='先拆开左侧，再录自己的节奏'
-    if obj['name']=='settings_record_text_en':obj['font_charset']+='Unlink left to record your rhythm'
-language_row=add('container','settings_language',0,480,426,114,settings_content,bg_color='#ecefe5',border_color='#d9e0d0',border_width=1,radius=17)
-text_pair('settings_language_text',20,522,190,30,'语言','Language',18,'#576b47',settings_text,en_size=16)
-for lang,x,word,font in [('zh',230,'中文',REGULAR),('en',322,'EN',LATIN)]:
-    b=button('language_'+lang,x,15,84,84,language_row,'lang_'+lang+'_click',bg_color='#e6ecdc',border_color='#c9d4bc',border_width=1,radius=13)
-    label('language_'+lang+'_label',0,28,84,28,word,17,'#34392f',b,font=font,text_align='center')
-remove=layer('settings_remove_group',settings_content,x=0,y=606,w=426,h=84,hidden=False,enabled=True)
-remove_button=button('settings_remove',0,0,426,84,remove,'remove_click',bg_color='#ecefe5',border_color='#d9e0d0',border_width=1,radius=17)
-icon('settings_remove_icon','cross',20,31,22,22,remove_button,tint='#576b47')
-remove_text=locales('settings_remove',remove,w=426,h=84)
-text_pair('settings_remove_text',55,27,350,30,'收起这台（模拟）','Put away this tile',18,'#576b47',remove_text,en_size=16)
-contract['scroll']['settings']['height']={'zh':702,'en':702,'hardware':606}
-
-# Match CSS line wrapping with the same pinned fonts. Explicit newline layout
-# avoids relying on dynamic text to reflow native labels at runtime.
-latin_cmap=TTFont(UI/LATIN).getBestCmap()
-def text_runs(content,font):
-    runs=[]
-    for character in content:
-        selected=(LATIN_BOLD if font==MEDIUM else LATIN) if font in (REGULAR,MEDIUM) and ord(character) in latin_cmap else font
-        if runs and runs[-1][0]==selected:runs[-1]=(selected,runs[-1][1]+character)
-        else:runs.append((selected,character))
-    return runs
-
-def text_width(content,font,size):
-    return sum(ImageFont.truetype(str(UI/run_font),size).getlength(run) for run_font,run in text_runs(content,font))
-
-def wrapped(content,font,size,width):
-    lines=[]
-    for paragraph in content.split('\n'):
-        if not paragraph:lines.append('');continue
-        tokens=re.findall(r'[A-Za-z0-9]+(?:[’\'-][A-Za-z0-9]+)*\s*|.',paragraph)
-        line=''
-        for token in tokens:
-            if line and text_width((line+token).rstrip(),font,size)>width:
-                lines.append(line.rstrip());line=token.lstrip()
-            else:line+=token
-        lines.append(line.rstrip())
-    return lines
-
-guide_source=text.split("if(guide)html=`",1)[1].split('`;\n  else html=',1)[0]
-guide_pairs=re.findall(r"this.t\('([^']*)','([^']*)'\)",guide_source)
-info_source=text.split('else html=`<h3>',1)[1].split('`;\n  return',1)[0]
-info_pairs=re.findall(r"this.t\('([^']*)','([^']*)'\)",info_source)
-assert len(guide_pairs)==5 and len(info_pairs)==6
-detail_defaults={}
-for name,title,pairs in [('guide',('怎么玩','How to play'),guide_pairs),('info',('设备与实验说明','Device & experiment'),info_pairs)]:
-    page=route(name);header(name,page,*title)
+# Approved settings revision; the frozen prototype and home controls stay intact.
+def settings_page(name,zh,en):
+    page=route(name); header(name,page,zh,en)
     heads=locales(name+'_header',page)
-    text_pair(name+'_header_text',108,33,274,31,*title,23,'#34392f',heads,en_size=21,weight=True,text_align='center',overflow='ellipsis')
-    content=scroll_area(name,page,410,345,1400,35,108)
-    copy=locales(name,content,w=410,h=1400)
-    detail_defaults[name]={}
-    for lang,language_index in [('zh',0),('en',1)]:
-        y=10
-        if name=='guide':blocks=[('heading',pairs[0][language_index]),('body',pairs[1][language_index]),('heading',pairs[2][language_index]),('body',pairs[3][language_index]),('body',pairs[4][language_index])]
-        else:blocks=[('heading',pairs[0][language_index]),('body',pairs[1][language_index]),('device',('本机 A · 72% · IMU 0°\n左 / 右扩展: none / none\n来自左侧: —' if lang=='zh' else 'Tile A · 72% · IMU 0°\nLeft / right slot: none / none\nFollowing: —')),('small',pairs[5][language_index])]
-        detail_defaults[name][lang]=[]
-        for index,(kind,content_text) in enumerate(blocks):
-            size=23 if kind=='heading' else 13 if kind=='small' else 17 if lang=='zh' else 16
-            font=(MEDIUM if lang=='zh' else LATIN_BOLD) if kind=='heading' else REGULAR if lang=='zh' else LATIN
-            # <small> is inline, so the parent's 30.6/28.8 px line strut
-            # determines its baseline spacing despite its own 21.45 px rule.
-            line_height=32.2 if kind=='heading' else 30.6 if lang=='zh' else 28.8
-            line_height=math.floor(line_height*64)/64
-            lines=wrapped(content_text,font,size,410)
-            height=len(lines)*line_height
-            metrics=ImageFont.truetype(str(UI/font),size);ascender,descender=metrics.getmetrics()
-            label_name=f'{name}_{kind}_{index}_{lang}'
-            corpus=content_text+(' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%·°—/:.-' if kind=='device' else '')
-            if kind=='device':
-                for line_index,line in enumerate(lines):
-                    line_name=label_name+'_line_'+str(line_index)
-                    label(line_name,0,round(y+line_index*line_height)-2,410,round(line_height),line,size,'#34392f',copy[lang],font=font,bind=line_name,bind_target='text',font_charset=corpus,text_align='left')
-            else:
-                # Individual native font runs match the HTML's Arial-first
-                # fallback: Latin digits/punctuation use Liberation Sans,
-                # while CJK glyphs use Noto. Every baseline is rounded once.
-                shift=(-3 if lang=='zh' else 3) if kind=='heading' else (6 if lang=='zh' else 7) if kind=='small' else 0 if lang=='zh' else 3
-                for line_index,line in enumerate(lines):
-                    x=0
-                    for run_index,(run_font,run_text) in enumerate(text_runs(line,font)):
-                        run_metrics=ImageFont.truetype(str(UI/run_font),size);run_ascent,run_descent=run_metrics.getmetrics()
-                        run_name=label_name if line_index==0 and run_index==0 else f'{label_name}_line_{line_index}_run_{run_index}'
-                        width=run_metrics.getlength(run_text)
-                        label(run_name,round(x),round(y+line_index*line_height)+shift+ascender-run_ascent,410-round(x),run_ascent+run_descent,run_text,size,'#4f6340' if kind=='heading' else '#8c987e' if kind=='small' else '#34392f',copy[lang],font=run_font,text_align='left',text_vertical_align='top')
-                        x+=width
-            detail_defaults[name][lang].append({'name':label_name,'text':'\n'.join(lines),'y':round(y),'height':round(height)})
-            y+=height+(13 if kind=='heading' else 18 if kind!='small' else 0)
-        contract['scroll'][name]['height'][lang]=round(y)
-        contract['scroll'][name]['height'][lang+'_max_scroll']=max(0,round(y)-345)
+    text_pair(name+'_header_text',108,33,274,31,zh,en,23,'#34392f',heads,en_size=21,weight=True,text_align='center')
+    return page
+
+settings_root=settings_page('settings','设置','Settings')
+settings_text=locales('settings',settings_root)
+for i,(name,asset,zh,en) in enumerate([
+    ('display','display','显示','Display'),
+    ('language',None,'语言','Language'),
+    ('guide','help','怎么玩','How to play'),
+    ('info','info','关于设备','About this tile')]):
+    y=108+i*88
+    style=dict(bg_color='#ecefe5',border_color='#d9e0d0',border_width=1,radius=17)
+    row=add('container','settings_language',24,y,432,78,settings_root,**style) if name=='language' else button('settings_'+name,24,y,432,78,settings_root,name+'_click',**style)
+    if asset:
+        icon('settings_'+name+'_icon',asset,20,28,22,22,row,tint='#576b47')
+        icon('settings_'+name+'_next','next',388,28,22,22,row,tint='#576b47')
+    text_pair('settings_'+name+'_text',79 if asset else 44,y+24,270 if asset else 175,30,zh,en,18,'#576b47',settings_text,en_size=17)
+    if name=='language':
+        for lang,x,word,font in [('zh',244,'中文',REGULAR),('en',336,'EN',LATIN)]:
+            b=button('language_'+lang,x,y+7,84,64,settings_root,'lang_'+lang+'_click',bg_color='#e6ecdc',border_color='#c9d4bc',border_width=1,radius=13)
+            selected=layer('language_'+lang+'_selected',b,w=84,h=64,hidden=lang=='en')
+            add('container','language_'+lang+'_selected_surface',0,0,84,64,selected,bg_color='#d6e1ca',border_color='#8a9c78',border_width=1,radius=13)
+            label('language_'+lang+'_label',0,18,84,28,word,17,'#34392f',b,font=font,text_align='center')
+
+display_page=settings_page('display','显示','Display')
+display_copy=locales('display',display_page)
+text_pair('display_brightness_text',42,120,230,30,'屏幕亮度','Brightness',18,'#576b47',display_copy)
+text_pair('display_percent',336,120,102,30,'100%','100%',18,'#576b47',display_copy,text_align='right')
+for obj in objects:
+    if obj['name'] in ('display_percent','display_percent_en'):obj['font_charset']='0123456789%'
+add('container','display_rail',62,190,356,6,display_page,bg_color='#c3cdb6',radius=3)
+add('container','display_knob',{'default':404,'min':48,'max':404},179,28,28,display_page,bg_color='#fafbf5',border_color='#93a382',border_width=1,radius=14)
+text_pair('display_soft',42,224,100,24,'柔和','Soft',14,'#7c886e',display_copy)
+text_pair('display_bright',338,224,100,24,'明亮','Bright',14,'#7c886e',display_copy,text_align='right')
+row=button('display_auto_dim',24,278,432,78,display_page,'auto_dim_click',bg_color='#ecefe5',border_color='#d9e0d0',border_width=1,radius=17)
+text_pair('display_auto_dim_text',44,300,264,32,'闲置时自动调暗','Dim when idle',18,'#576b47',display_copy)
+add('container','display_switch',342,24,66,30,row,bg_color='#718661',radius=15,bind='display_switch_color',bind_target='color')
+add('container','display_switch_knob',{'default':378,'min':345,'max':378},27,24,24,row,bg_color='#fafbf5',radius=12)
+text_pair('display_note_1',42,376,396,26,'静止 1 分钟后调暗，触摸恢复。','Dims after 1 minute. Touch to brighten.',15,'#7c886e',display_copy)
+for obj in objects:
+    if obj['name']=='display_note_1':obj['font_charset']+='亮度调整未成功，请再试一次。'
+    if obj['name']=='display_note_1_en':obj['font_charset']+='Could not set brightness. Please try again.'
+text_pair('display_note_2',42,405,396,26,'录制和播放时保持亮度。','Stays bright while recording or playing.',15,'#7c886e',display_copy)
+# A native overlay represents brightness on the simulator. Hardware uses its panel.
+# It is declared after the other pages below so it never covers future controls.
+
+guide_page=settings_page('guide','怎么玩','How to play')
+guide_copy=locales('guide',guide_page)
+steps=[
+    ('中央试奏','Try a sound','敲敲中央，先听听声音。','Tap the center to hear a sound.','不会改变已有节奏。','Your rhythm stays unchanged.'),
+    ('录下节奏','Record a rhythm','点“录制”，预备 2 拍后，','Tap Record. After 2 count-in beats,','在 4 拍内敲出你的节奏。','tap your rhythm over 4 beats.'),
+    ('换种回应','Choose a reply','在“角色”里选择声音和表达。','Choose a voice and expression in Role.','同一段节奏，也能有不同回应。','The same rhythm can reply differently.'),
+    ('循环播放','Keep it playing','点“播放”循环，点“暂停”停下。','Tap Play to loop; tap Pause to stop.','节奏保留，随时再来。','Your rhythm is ready for another go.')]
+for i,step in enumerate(steps):
+    y=108+i*86
+    label('guide_step_'+str(i),38,y+7,30,30,str(i+1),18,'#879571',guide_page,font=LATIN)
+    text_pair('guide_title_'+str(i),86,y,352,28,*step[:2],18,'#4f6340',guide_copy,weight=True)
+    for line in range(2):
+        text_pair('guide_body_'+str(i)+'_'+str(line),86,y+30+line*22,352,22,*step[2+line*2:4+line*2],15,'#637555',guide_copy,en_size=14)
+
+info_page=settings_page('info','关于设备','About this tile')
+info_copy=locales('info',info_page)
+label('info_brand',42,120,396,40,'Echoy',30,'#4f6340',info_page,font=LATIN_BOLD)
+text_pair('info_tagline',42,166,396,28,'让你的节奏，有个回应。','A reply to your rhythm.',17,'#7c886e',info_copy)
+for i,(name,zh,en,value,en_value) in enumerate([
+    ('platform','设备','Device','Mosaico','Mosaico'),
+    ('version','软件版本','Software','1.0.0','1.0.0'),
+    ('battery','电量','Battery','--%','--%')]):
+    y=232+i*66
+    add('container','info_divider_'+name,42,y-12,396,1,info_page,bg_color='#dce0d2')
+    text_pair('info_label_'+name,42,y,176,28,zh,en,16,'#7c886e',info_copy)
+    text_pair('info_value_'+name,208,y,230,28,value,en_value,17,'#34392f',info_copy,text_align='right')
+for obj in objects:
+    if obj['name'].startswith(('info_value_','info_label_battery')):
+        obj['font_charset']+=' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%._+-'
+        if not obj['name'].endswith('_en'):obj['font_charset']+='电脑模拟本地构建模拟电量未知'
+contract['detail_defaults']={}
 
 status_page=route('status')
 icon('status_art','wave',210,160,60,60,status_page,tint='#a9693f',scalable=True,min_scale=.85,max_scale=1.0)
@@ -532,16 +503,16 @@ text_pair('recover_text',36,398,408,32,'恢复到静止','Restore, stay silent',
 for obj in objects:
     if obj['name']=='problem_title':obj['font_charset']='暂时无法发声电量已耗尽准备声音'
     if obj['name']=='problem_title_en':obj['font_charset']='Audio unavailable Battery empty Preparing sound'
-contract['detail_defaults']=detail_defaults
+add('container','display_shade',0,0,480,480,paper,bg_color='#000000',radius=60,opacity={'default':0,'min':0,'max':204})
 
 # Later paint order must leave labels above surfaces. Locale groups and role
 # copy groups were declared before their shapes so move complete group trees
 # behind neither the buttons nor the Canvas targets. A stable topological
 # traversal also puts parents before children after home-label relocation.
-for page_name in ('home','role_page','settings_page','guide_page','info_page','status_page','settings_content'):
+for page_name in ('home','role_page','settings_page','display_page','guide_page','info_page','status_page'):
     page_index=next(i for i,obj in enumerate(objects) if obj['name']==page_name)
     children=[i for i,obj in enumerate(objects) if obj['parent']==page_index]
-    text_children=[i for i in children if any(i in pair.values() for pair in (home_text,role_text,settings_head,settings_text,status_text)) or objects[i]['name'].endswith(('_header_zh','_header_en'))]
+    text_children=[i for i in children if any(i in pair.values() for pair in (home_text,role_text,settings_text,display_copy,guide_copy,info_copy,status_text)) or objects[i]['name'].endswith(('_header_zh','_header_en'))]
     for i in text_children:objects[i]['_last']=True
 
 for obj in objects:
@@ -553,8 +524,6 @@ for obj in objects:
         obj['bind']=obj['name']+'_color'; obj['bind_target']='color'
 # Fill and progress colors follow the selected/committed role.
 for obj in objects:
-    if obj['name'].startswith('info_device_2_'):
-        obj['font_charset']=obj.get('font_charset',obj.get('text',''))+'ABC0123456789%'
     if obj['name'] == 'richness_fill':
         obj.update(bind=obj['name']+'_color',bind_target='color')
     if obj.get('callback'):contract['callbacks'].append(obj['callback'])

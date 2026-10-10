@@ -9,6 +9,9 @@ typedef struct {
     void *ctx;
     bool is_simulator;
     bool reduced_motion;
+    /* Runs on the UI owner, never the audio worker. NULL uses simulator shading. */
+    bool (*set_brightness)(void *ctx, unsigned percent);
+    const char *software_version;
     bool (*read_control)(void *ctx, echoy_control_view_t *out);
     bool (*perform_action)(void *ctx, echoy_action_t action, double value, int64_t now_us);
     unsigned battery_percent;

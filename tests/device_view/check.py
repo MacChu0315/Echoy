@@ -23,9 +23,11 @@ def main():
     manifest = snapshot_backend(args.build_dir.resolve(), out)
     sys.path.insert(0, str(Path(manifest["component_root"]) / "tools/sim_bridge"))
     from rpc_client import connect
-    with socket.socket() as sock:
+    with socket.socket() as sock, socket.socket() as backend_socket:
         sock.bind(("127.0.0.1", 0))
         port = sock.getsockname()[1]
+        backend_socket.bind(("127.0.0.1", 0))
+        backend_port = backend_socket.getsockname()[1]
     ready = out / "ready.json"
     processes = []
     with (out / "host.log").open("w") as host_log, (out / "backend.log").open("w") as backend_log:
@@ -42,7 +44,7 @@ def main():
             host = subprocess.Popen([
                 str(ROOT.parent / ".toolchains/gsp-sim-1.5.1/sim"),
                 "--bundle", manifest["bundle"], "--api-json", manifest["api"],
-                "--backend-enable", "--backend-required", "--api-listen", f"tcp://127.0.0.1:{port}",
+                "--backend-listen", f"tcp://127.0.0.1:{backend_port}", "--backend-required", "--api-listen", f"tcp://127.0.0.1:{port}",
                 "--headless", "--fps", "1000", "--frames", "0", "--ready-file", str(ready),
             ], stdout=host_log, stderr=subprocess.STDOUT)
             processes.append(host)
@@ -55,7 +57,7 @@ def main():
             until(lambda: "HEALTH_FIXTURE init=0" in (out / "backend.log").read_text(),
                   "unknown-battery UI must initialize successfully")
             objects = {o["name"]: o for o in json.loads(Path(manifest["api"]).read_text())["scenes"][0]["objects"]}
-            for name in ["battery_fill", *[x + "_battery_fill" for x in ["role", "settings", "guide", "info"]]]:
+            for name in ["battery_fill", *[x + "_battery_fill" for x in ["role", "settings", "display", "guide", "info"]]]:
                 assert any(p["key"] == "visible" for p in objects[name]["properties"]), name
             with connect(port=port) as api:
                 def call(method, params=None):
@@ -96,11 +98,20 @@ def main():
                 tap("role_back")
                 tap("settings")
                 shot("unknown-settings")
+                tap("settings_display")
+                display = shot("unknown-display")
+                call("feed_pointer", {"x": 240, "y": 193, "pressed": True})
+                call("wait", {"frames": 2})
+                call("feed_pointer", {"x": 240, "y": 193, "pressed": False})
+                settle()
+                until(lambda: "HEALTH_FIXTURE brightness=60" in (out / "backend.log").read_text(), "physical brightness adapter")
+                # Hardware calls the panel adapter; it must not also shade its framebuffer.
+                assert shot("display-panel-adapter").getpixel((240, 90)) == display.getpixel((240, 90))
+                tap("display_back")
                 tap("settings_guide")
                 shot("unknown-guide")
                 tap("guide_back")
-                # The info row straddles the initial viewport: tap its visible section.
-                call("tap", {"x": 220, "y": 423})
+                call("tap_object", {"name": "settings_info"})
                 settle()
                 shot("unknown-info")
                 assert "ECHOY_ROUTE route=info_page" in (out / "backend.log").read_text()
@@ -110,8 +121,8 @@ def main():
             log = (out / "backend.log").read_text()
             assert "ECHOY_UI_ERROR" not in log
             assert "last_error=0" in log and "cleanup=0" in log
-            result = {"passed": ["unknown battery initializes real C UI", "all five fill visibility bindings exist",
-                                 "unknown to 37 percent to unknown updates text and fill", "all five pages remain usable"],
+            result = {"passed": ["unknown battery initializes real C UI", "all six fill visibility bindings exist",
+                                 "unknown to 37 percent to unknown updates text and fill", "all six pages remain usable; brightness reaches panel adapter without framebuffer shading"],
                       "scope": "official GSP, production C UI, fixture health readings; no physical audio or battery"}
             (out / "checks.json").write_text(json.dumps(result, indent=2) + "\n")
             print(json.dumps(result, indent=2))

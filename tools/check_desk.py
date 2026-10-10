@@ -134,7 +134,7 @@ class DeskCheck:
                 if route == 'removed':
                     return all(low == high for low, high in image.crop((90, 110, 390, 350)).getextrema())
                 point = {'home': (48, 196), 'role': (28, 179), 'settings': (24, 150),
-                         'settings-bottom': (300, 260), 'status': (240, 190)}[route]
+                         'status': (240, 190)}[route]
                 red, green, blue = image.getpixel(point)
                 if route == 'home':
                     return red < 150 and green < 160 and blue < 140
@@ -142,8 +142,6 @@ class DeskCheck:
                     return 200 < red < 225 and 210 < green < 230 and 195 < blue < 216
                 if route == 'settings':
                     return 210 <= red < 226 and 210 < green < 231 and 198 < blue < 220
-                if route == 'settings-bottom':
-                    return 215 < red < 233 and 225 < green < 239 and 210 < blue < 223
                 return red > 140 and 70 < green < 150 and blue < 100
         self.until(visible, f'{tile} native {route} controls did not paint', timeout=3)
 
@@ -187,14 +185,9 @@ class DeskCheck:
         return bool(state.get('ready')) and not state.get('pending') and all(
             not t['plan_pending'] and not t['preparing'] for t in state['tiles'].values())
 
-    def export(self, name, native=False):
+    def export(self, name):
         before = self.status()['export_counter']
-        if native:
-            # Caller has scrolled settings to its lower bound. Compiled
-            # tap_object bounds are initial, so use the actual row position.
-            self.tap_at('A', 230, 182)
-        else:
-            self.command('export')
+        self.command('export')
         self.until(lambda s: s.get('export_counter', 0) > before, 'Session export did not finish')
         data = json.loads((self.control / 'session.json').read_text())
         assert set(data['tiles']) == set(TILES), data
@@ -239,8 +232,11 @@ class DeskCheck:
         hosts = {}
         for tile in TILES:
             ready_file = self.runtime / f'ready-{tile}.json'
+            with socket.socket() as backend_socket:
+                backend_socket.bind(('127.0.0.1', 0))
+                backend_port = backend_socket.getsockname()[1]
             hosts[tile] = self.start([str(self.args.sim), '--bundle', str(copied['bundle']),
-                '--api-json', str(copied['api']), '--backend-enable', '--backend-required',
+                '--api-json', str(copied['api']), '--backend-listen',f'tcp://127.0.0.1:{backend_port}', '--backend-required',
                 '--api-listen', 'tcp://127.0.0.1:0', '--headless', '--fps', '1000', '--frames', '0',
                 '--fail-on-error', '--ready-file', str(ready_file)], f'host-{tile}.log')
             self.until(lambda _: ready_file.exists(), f'Host {tile} readiness')
@@ -394,30 +390,22 @@ class DeskCheck:
             s['tiles']['B']['phase'] == 0, 'Native recover did not stay silent')
         self.visual_ready('B', 'home')
         assert self.status()['tiles']['C']['loop']
-        self.tap('C', 'settings'); self.visual_ready('C', 'settings')
-        self.drag('C', 430, 425, 115); self.drag('C', 430, 425, 250)
-        self.visual_ready('C', 'settings-bottom')
-        self.shot('C', 'remove-row')
-        self.tap_at('C', 230, 404)
-        self.until(lambda s: not s['tiles']['C']['present'] and not s['tiles']['C']['loop'], 'Native remove row did not put C away')
+        self.command('present C 0')
+        self.until(lambda s: not s['tiles']['C']['present'] and not s['tiles']['C']['loop'], 'Desktop put-away did not remove C')
         self.visual_ready('C', 'removed')
         self.command('present C 1')
         self.until(lambda s: self.stable(s) and s['tiles']['C']['present'] and
             not s['tiles']['C']['loop'] and s['tiles']['C']['phase'] == 0, 'Restored C autoplayed or did not settle')
         self.visual_ready('C', 'home')
-        self.passed('Fault recovery and native put-away/restore retain data and never autoplay')
+        self.passed('Fault recovery and desktop put-away/restore retain data and never autoplay')
 
-        self.tap('A', 'settings'); self.visual_ready('A', 'settings')
-        self.drag('A', 430, 425, 115); self.drag('A', 430, 425, 250)
-        self.visual_ready('A', 'settings-bottom')
-        exported = self.export('session', native=True)
+        exported = self.export('session')
         assert all(t['current']['full'] for t in exported['tiles'].values())
         assert exported['tiles']['B']['current'] == detached['tiles']['B']['current']
         assert exported['tiles']['C']['current']['rootSeed'] == detached['tiles']['C']['current']['rootSeed']
-        self.tap('A', 'settings_back'); self.visual_ready('A', 'home')
         for tile in TILES:
             self.shot(tile, 'final')
-        self.passed('Native settings Export contains all three actual full plans and preserved root seeds')
+        self.passed('Desktop Export contains all three actual full plans and preserved root seeds')
 
         self.until(lambda s: all(not t['loop'] and t['phase'] == 0 for t in s['tiles'].values()), 'Final playback did not stop')
         time.sleep(.25)
@@ -431,14 +419,10 @@ class DeskCheck:
         # Keep this before natural teardown, after the existing interaction and
         # paused-audio checks, so the regression uses all three real UI owners.
         self.tap('A', 'settings')
-        # The earlier native Export left A's remembered settings offset at its
-        # lower bound; wait for that actual layout before the clamped drag.
-        self.visual_ready('A', 'settings-bottom')
-        self.drag('A', 430, 425, 115); self.drag('A', 430, 425, 250)
-        self.visual_ready('A', 'settings-bottom')
+        self.visual_ready('A', 'settings')
         self.shot('A', 'language-before')
         previous = (self.output / 'desk.log').read_text().count('ECHOY_LOCALE en\n')
-        self.tap_at('A', 388, 293)
+        self.tap('A', 'language_en')
         self.until(lambda s: all(t.get('english') is True for t in s['tiles'].values()) and
             (self.output / 'desk.log').read_text().count('ECHOY_LOCALE en\n') >= previous + 3,
             'A language selection did not update all three native UI owners')

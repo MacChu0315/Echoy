@@ -426,8 +426,11 @@ def main(argv=None):
             endpoints = []
             for tile, port in zip(TILES, args.visual_ports):
                 ready = logs / f"{tile}-ready.json"
+                with socket.socket() as backend_socket:
+                    backend_socket.bind(("127.0.0.1", 0))
+                    backend_port = backend_socket.getsockname()[1]
                 command = [str(args.sim), "--bundle", str(args.bundle), "--api-json", str(args.bundle.with_name("bundle_gsp.api.json")),
-                           "--frames", "0", "--fps", "1000", "--idle-poll-ms", "1", "--backend-enable", "--backend-required", "--ready-file", str(ready)]
+                           "--frames", "0", "--fps", "1000", "--idle-poll-ms", "1", "--backend-listen", f"tcp://127.0.0.1:{backend_port}", "--backend-required", "--ready-file", str(ready)]
                 command += ["--headless"] if args.headless else ["--visual-listen", f"127.0.0.1:{port}"]
                 host = owned.start(command, logs / f"{tile}-host.log")
                 endpoints += [f"--endpoint-{tile}", wait_ready(host, ready)["backend"]]

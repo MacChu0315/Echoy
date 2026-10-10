@@ -6,6 +6,7 @@
 #include "esp_gsp_esp_lcd.h"
 #include "esp_iris.h"
 #include "esp_log.h"
+#include "esp_app_desc.h"
 #include "iris_ota_support.h"
 #include "iris_screen_mirror.h"
 #include "nvs_flash.h"
@@ -24,6 +25,12 @@
 static const char *TAG = "echoy";
 static echoy_ui_handle_t s_ui;
 static echoy_device_handle_t s_device;
+
+static bool set_brightness(void *ctx, unsigned percent)
+{
+    (void)ctx;
+    return bsp_display_brightness_set((int)percent) == ESP_OK;
+}
 
 /* UI/peripheral failures must not reboot-loop out of retained Recovery. */
 #define CHECK_START(operation)                                                                     \
@@ -74,6 +81,8 @@ void app_main(void)
     CHECK_START(iris_screen_mirror_attach(ui));
     echoy_platform_t platform;
     CHECK_START(echoy_device_start(&s_device, &platform));
+    platform.set_brightness = set_brightness;
+    platform.software_version = esp_app_get_description()->version;
     esp_gsp_err_t ui_error = echoy_ui_create(ui, &platform, &s_ui);
     if (ui_error == ESP_GSP_OK) {
         /* Accepting the image writes OTA/NVS metadata and can suspend cached

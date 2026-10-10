@@ -1,0 +1,27 @@
+[
+  {
+    "path": "projects/echoy/build-sim-settings/echoy_backend",
+    "bytes": 282688,
+    "sha256": "0fa53dbc383ad39cf6d0f76217be1ad894ac3c39ba9c89aa09125e249582dea4"
+  },
+  {
+    "path": "projects/echoy/build-sim-settings/echoy_desk",
+    "bytes": 352336,
+    "sha256": "e3eea4ea1edc7b5c2d9f91322277548fa0340ac7217b772cf09172d2c671b3f8"
+  },
+  {
+    "path": "projects/echoy/build-sim-settings/echoy_backend_assets/app.gspb",
+    "bytes": 371600,
+    "sha256": "a847203144e67cbe398ba359f957b4bf2f347196c23455f193080c1f9366428d"
+  },
+  {
+    "path": "output/device-audio-ui-build/echoy.bin",
+    "bytes": 1566576,
+    "sha256": "bb0e500fa89cc825080e652e5c73787ebd21c93ddf8a166a69b645be8bbadaf6"
+  },
+  {
+    "path": "output/device-audio-ui-build/esp-idf/main/gsp_gen_bundle/bundle.gspb",
+    "bytes": 371216,
+    "sha256": "a1779b9924a8bcb6d665bf727606861284e2a962e2c03337c27ddb400bbcecf5"
+  }
+]

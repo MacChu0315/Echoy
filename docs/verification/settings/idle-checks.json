@@ -1,0 +1,8 @@
+{
+  "passed": [
+    "61 seconds of playback remain bright",
+    "60 seconds idle dim to 20%",
+    "native touch restores brightness without starting playback"
+  ],
+  "scope": "production C UI in official GSP; physical panel not tested"
+}

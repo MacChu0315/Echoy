@@ -1,6 +1,7 @@
 #include "echoy_ui.h"
 #include "echoy_art.h"
 #include "echoy_art_image.h"
+#include "echoy_display.h"
 #include "echoy_strip.h"
 #include "echoy_strip_image.h"
 #include "echoy_view_cache.h"
@@ -19,8 +20,8 @@
 #define BAR_US INT64_C(2500000)
 #define BEAT_US INT64_C(625000)
 #define DRAW_US INT64_C(33333)
-typedef enum { HOME, ROLE, SETTINGS, GUIDE, INFO, STATUS, REMOVED } route_t;
-static const char *const routes[] = {"home",       "role_page", "settings_page",
+typedef enum { HOME, ROLE, SETTINGS, DISPLAY, GUIDE, INFO, STATUS, REMOVED } route_t;
+static const char *const routes[] = {"home", "role_page", "settings_page", "display_page",
                                      "guide_page", "info_page", "status_page"};
 static const char *const role_ids[] = {"pulse", "voice", "dust", "harmony"};
 static const echoy_role_t next_role[] = {ECHOY_VOICE, ECHOY_DUST, ECHOY_HARMONY, ECHOY_PULSE};
@@ -51,9 +52,12 @@ struct echoy_ui {
     echoy_plan_t capture_plan, gallery[3];
     route_t route;
     echoy_condition_t condition;
-    bool english, removed, pressed, scrolled;
+    bool english, removed, pressed;
+    echoy_display_t display;
+    int display_level;
+    bool display_failed;
     unsigned battery;
-    int drag, drag_y, drag_scroll, scroll[6];
+    int drag, drag_y;
     double volume, richness, drag_value;
     bool density_dirty;
     int64_t density_due_us;
@@ -133,7 +137,6 @@ static bool act(echoy_ui_handle_t u, echoy_action_t action, double value, int64_
         return false;
     }
 }
-static void set_scroll(echoy_ui_handle_t u, int value);
 static void read_state(echoy_ui_handle_t u, echoy_snapshot_t *out)
 {
     if (!u->platform.read_control) {
@@ -149,7 +152,6 @@ static void read_state(echoy_ui_handle_t u, echoy_snapshot_t *out)
     }
     if (u->english != u->external.english) {
         u->english = u->external.english;
-        set_scroll(u, u->route >= SETTINGS && u->route <= INFO ? u->scroll[u->route] : 0);
     }
     u->removed = !u->external.present;
     u->condition = u->external.condition;
@@ -184,47 +186,10 @@ static uint16_t source_mask(const echoy_plan_t *p)
     }
     return mask;
 }
-static int scroll_limit(echoy_ui_handle_t u)
-{
-    if (u->route == SETTINGS) {
-        return u->platform.is_simulator ? 352 : 256;
-    }
-    if (u->route == GUIDE) {
-        return u->english ? 184 : 115;
-    }
-    if (u->route == INFO) {
-        return u->english ? 34 : 22;
-    }
-    return 0;
-}
-static const char *scroll_object(route_t route)
-{
-    return route == SETTINGS ? "settings_content"
-           : route == GUIDE  ? "guide_content"
-                             : "info_content";
-}
-static void set_scroll(echoy_ui_handle_t u, int value)
-{
-    if (u->route < SETTINGS || u->route > INFO) {
-        return;
-    }
-    int limit = scroll_limit(u);
-    if (value > 0) {
-        value = 0;
-    }
-    if (value < -limit) {
-        value = -limit;
-    }
-    u->scroll[u->route] = value;
-    CHECK(u, echoy_view_y(u->view, scroll_object(u->route), value));
-}
 static void select_route(echoy_ui_handle_t u, route_t route)
 {
     u->route = route;
     u->frames_dirty = true;
-    if (route >= SETTINGS && route <= INFO) {
-        set_scroll(u, u->scroll[route]);
-    }
 }
 static void recover(echoy_ui_handle_t u)
 {
@@ -385,13 +350,13 @@ static void show_metadata(echoy_ui_handle_t u, const echoy_snapshot_t *s)
     const echoy_plan_t *plan = current_plan(u);
     echoy_role_t actual = plan->count ? plan->role : s->role;
     route_t route = u->removed ? REMOVED : u->condition != ECHOY_NORMAL ? STATUS : u->route;
-    for (unsigned i = 0; i < 6; i++) {
+    for (unsigned i = 0; i < sizeof(routes) / sizeof(routes[0]); i++) {
         SHOW(u, routes[i], route == (route_t)i);
     }
     static const char *const locale_groups[] = {
-        "home",         "role",           "settings_header", "settings", "settings_remove",
-        "guide_header", "guide",          "info_header",     "info",     "status_page",
-        "role_footer",  "settings_footer"};
+        "home", "role", "settings_header", "settings", "display_header", "display",
+        "guide_header", "guide", "info_header", "info", "status_page", "role_footer",
+        "settings_footer"};
     char name[96];
     for (size_t i = 0; i < sizeof(locale_groups) / sizeof(locale_groups[0]); i++) {
         snprintf(name, sizeof(name), "%s_zh", locale_groups[i]);
@@ -431,7 +396,8 @@ static void show_metadata(echoy_ui_handle_t u, const echoy_snapshot_t *s)
                  u->english ? "en" : "zh");
         COLOR(u, name, p == s->phrase ? accents[s->role] : 0x637555);
     }
-    SHOW(u, "settings_remove_group", u->platform.is_simulator);
+    SHOW(u, "language_zh_selected", !u->english);
+    SHOW(u, "language_en_selected", u->english);
     char battery[12];
     const bool battery_unknown = u->platform.read_control && u->external.battery_unknown;
     if (battery_unknown) {
@@ -441,34 +407,22 @@ static void show_metadata(echoy_ui_handle_t u, const echoy_snapshot_t *s)
     }
     TEXT(u, "battery_text", battery);
     SHOW(u, "battery_fill", !battery_unknown);
-    const char *headers[] = {"role", "settings", "guide", "info"};
-    for (unsigned i = 0; i < 4; i++) {
+    const char *headers[] = {"role", "settings", "display", "guide", "info"};
+    for (unsigned i = 0; i < sizeof(headers) / sizeof(headers[0]); i++) {
         snprintf(name, sizeof(name), "%s_battery_text", headers[i]);
         TEXT(u, name, battery);
         snprintf(name, sizeof(name), "%s_battery_fill", headers[i]);
         SHOW(u, name, !battery_unknown);
     }
-    local_text(u, "settings_record_text",
-               s->following
-                   ? tr(u, "先拆开左侧，再录自己的节奏", "Unlink left to record your rhythm")
-                   : tr(u, "录一段新的节奏", "Record a new rhythm"));
-    ENABLE(u, "settings_record",
-           !s->following && !s->fault && !s->plan_pending && !capturing(s->phase));
-    char detail[128];
-    snprintf(name, sizeof(name), "info_device_2_%s_line_0", u->english ? "en" : "zh");
-    snprintf(detail, sizeof(detail),
-             u->english ? "Tile %c · %s · IMU %s" : "本机 %c · %s · IMU %s",
-             'A' + (u->platform.read_control ? u->external.tile : 0), battery,
-             u->platform.read_control && u->external.imu_unknown ? "—" : "0°");
-    TEXT(u, name, detail);
-    snprintf(name, sizeof(name), "info_device_2_%s_line_2", u->english ? "en" : "zh");
-    if (u->platform.read_control && u->external.source >= 0) {
-        snprintf(detail, sizeof(detail), u->english ? "Following: %c" : "来自左侧: %c",
-                 'A' + u->external.source);
-        TEXT(u, name, detail);
-    } else {
-        TEXT(u, name, tr(u, "来自左侧: —", "Following: —"));
-    }
+    local_text(u, "info_value_platform",
+               u->platform.is_simulator ? tr(u, "电脑模拟", "Simulator") : "Mosaico");
+    local_text(u, "info_value_version", u->platform.software_version
+                                            ? u->platform.software_version
+                                            : tr(u, "本地构建", "Local build"));
+    local_text(u, "info_label_battery", u->platform.is_simulator
+                                            ? tr(u, "模拟电量", "Simulated battery")
+                                            : tr(u, "电量", "Battery"));
+    local_text(u, "info_value_battery", battery);
 }
 static uint32_t blend(uint32_t foreground, double alpha)
 {
@@ -682,6 +636,33 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
         CHECK(u, echoy_view_value(u->view, key, value));
     }
 }
+static void show_display(echoy_ui_handle_t u, const echoy_snapshot_t *s, int64_t now)
+{
+    bool active = u->pressed || capturing(s->phase) || s->phase == ECHOY_PREPARING ||
+                  s->phase == ECHOY_PREVIEW || s->phase == ECHOY_PLAYING || s->plan_pending ||
+                  (u->platform.read_control && u->external.preparing);
+    unsigned level = echoy_display_level(&u->display, now, active);
+    if (u->display_level != (int)level) {
+        u->display_failed = u->platform.set_brightness &&
+                            !u->platform.set_brightness(u->platform.ctx, level);
+        if (!u->platform.set_brightness && u->platform.is_simulator) {
+            CHECK(u, echoy_view_opacity(u->view, "display_shade", (100 - level) * 255 / 100));
+        }
+        u->display_level = (int)level;
+        fprintf(stderr, "ECHOY_DISPLAY brightness=%u effective=%u auto_dim=%d ok=%d\n",
+                u->display.brightness, level, u->display.auto_dim, !u->display_failed);
+    }
+    char percent[8];
+    snprintf(percent, sizeof(percent), "%u%%", u->display.brightness);
+    local_text(u, "display_percent", percent);
+    CHECK(u, echoy_view_x(u->view, "display_knob", 48 + (u->display.brightness - 20) * 356 / 80));
+    CHECK(u, echoy_view_x(u->view, "display_switch_knob", u->display.auto_dim ? 378 : 345));
+    COLOR(u, "display_switch", u->display.auto_dim ? 0x718661 : 0xb6c1aa);
+    local_text(u, "display_note_1",
+               u->display_failed
+                   ? tr(u, "亮度调整未成功，请再试一次。", "Could not set brightness. Please try again.")
+                   : tr(u, "静止 1 分钟后调暗，触摸恢复。", "Dims after 1 minute. Touch to brighten."));
+}
 static void refresh(echoy_ui_handle_t u, int64_t now, bool force)
 {
     if (u->gallery_inflight && !atomic_load_explicit(&u->images_pending, memory_order_acquire)) {
@@ -695,6 +676,7 @@ static void refresh(echoy_ui_handle_t u, int64_t now, bool force)
     if (s.fault && u->condition == ECHOY_NORMAL) {
         u->condition = ECHOY_AUDIO_FAULT;
     }
+    show_display(u, &s, now);
     show_strip(u, &s, now);
     prepare_graphics(u, &s, now);
     u->frames_dirty |= s.committed_revision != u->last_committed;
@@ -835,9 +817,11 @@ static void pointer(esp_gsp_handle_t gsp, int32_t x, int32_t y, bool pressed, vo
     echoy_snapshot_t s;
     read_state(u, &s);
     int64_t now = now_us(u);
+    if (pressed) {
+        echoy_display_touch(&u->display, now);
+    }
     if (pressed && !u->pressed) {
         u->drag = 0;
-        u->scrolled = false;
         u->drag_y = y;
         if (u->condition == ECHOY_NORMAL && !u->removed) {
             if (u->route == HOME) {
@@ -851,22 +835,17 @@ static void pointer(esp_gsp_handle_t gsp, int32_t x, int32_t y, bool pressed, vo
                            act(u, ECHOY_ACT_TAP, 0, now)) {
                     u->last_hit_us = now;
                 }
-            } else if (u->route >= SETTINGS && u->route <= INFO &&
-                       x >= (u->route == SETTINGS ? 24 : 35) &&
-                       x < (u->route == SETTINGS ? 456 : 445) && y >= 108 &&
-                       y < (u->route == SETTINGS ? 458 : 453)) {
-                u->drag = 3;
-                u->drag_scroll = u->scroll[u->route];
+            } else if (u->route == DISPLAY && x >= 36 && x < 444 && y >= 160 && y < 230) {
+                u->drag = 4;
             }
         }
     }
     if (pressed && u->drag) {
-        if (u->drag == 3) {
-            if (abs(y - u->drag_y) > 4) {
-                u->scrolled = true;
-            }
-            if (u->scrolled) {
-                set_scroll(u, u->drag_scroll + y - u->drag_y);
+        if (u->drag == 4) {
+            int position = x < 62 ? 0 : x > 418 ? 356 : x - 62;
+            echoy_display_set_brightness(&u->display, 20 + (position * 80 + 178) / 356);
+            if (u->display_failed) {
+                u->display_level = -1;
             }
         } else {
             double value = u->drag_value + (u->drag_y - y) / 180.0;
@@ -902,11 +881,7 @@ static void event(esp_gsp_handle_t gsp, const esp_gsp_event_t *e, void *ctx)
     int64_t now = now_us(u);
     echoy_snapshot_t s;
     read_state(u, &s);
-    /* Suppress only the current drag. A completed gesture must not reject a
-     * subsequent click delivered before its pointer samples by sim_bridge. */
-    if (u->pressed && u->scrolled) {
-        return;
-    }
+    echoy_display_touch(&u->display, now);
     if (gsp_echoy_event_is_recover_click(e)) {
         recover(u);
         refresh(u, now, true);
@@ -919,7 +894,7 @@ static void event(esp_gsp_handle_t gsp, const esp_gsp_event_t *e, void *ctx)
         &s, current_plan(u)->count != 0,
         u->density_dirty || (u->platform.read_control && u->external.preparing));
     if (gsp_echoy_event_is_record_click(e)) {
-        if ((u->route == SETTINGS || strip.record_enabled) && act(u, ECHOY_ACT_RECORD, 0, now)) {
+        if ((u->route == HOME && strip.record_enabled) && act(u, ECHOY_ACT_RECORD, 0, now)) {
             select_route(u, HOME);
         }
     } else if (gsp_echoy_event_is_strip_action_click(e)) {
@@ -939,12 +914,18 @@ static void event(esp_gsp_handle_t gsp, const esp_gsp_event_t *e, void *ctx)
             select_route(u, ROLE);
         } else if (gsp_echoy_event_is_settings_click(e)) {
             select_route(u, SETTINGS);
+        } else if (gsp_echoy_event_is_display_click(e)) {
+            select_route(u, DISPLAY);
+        } else if (gsp_echoy_event_is_auto_dim_click(e)) {
+            u->display.auto_dim = !u->display.auto_dim;
+            u->display_level = -1;
         } else if (gsp_echoy_event_is_guide_click(e)) {
             select_route(u, GUIDE);
         } else if (gsp_echoy_event_is_info_click(e)) {
             select_route(u, INFO);
         } else if (gsp_echoy_event_is_back_click(e)) {
-            select_route(u, u->route == GUIDE || u->route == INFO ? SETTINGS : HOME);
+            select_route(u, u->route == DISPLAY || u->route == GUIDE || u->route == INFO
+                                ? SETTINGS : HOME);
         } else if (gsp_echoy_event_is_prev_role_click(e)) {
             act(u, ECHOY_ACT_ROLE, previous_role[s.role], now);
         } else if (gsp_echoy_event_is_next_role_click(e)) {
@@ -960,7 +941,6 @@ static void event(esp_gsp_handle_t gsp, const esp_gsp_event_t *e, void *ctx)
             if (u->platform.perform_action) {
                 act(u, ECHOY_ACT_LANGUAGE, u->english, now);
             }
-            set_scroll(u, u->scroll[u->route]);
             u->frames_dirty = true;
         } else if (gsp_echoy_event_is_audition_click(e)) {
             if (u->route == ROLE && s.phase >= ECHOY_PREPARING) {
@@ -971,16 +951,6 @@ static void event(esp_gsp_handle_t gsp, const esp_gsp_event_t *e, void *ctx)
                 }
                 act(u, ECHOY_ACT_AUDITION, 0, now);
             }
-        } else if (gsp_echoy_event_is_remove_click(e) && u->platform.is_simulator) {
-            act(u, ECHOY_ACT_PAUSE, 0, now);
-            u->removed = true;
-            if (u->platform.set_removed) {
-                u->platform.set_removed(u->platform.ctx, true);
-            }
-        } else if (gsp_echoy_event_is_export_click(e)) {
-            bool ok = u->platform.export_session &&
-                      u->platform.export_session(u->platform.ctx, &s, current_plan(u), u->volume);
-            fprintf(stderr, "ECHOY_EXPORT ok=%s\n", ok ? "true" : "false");
         }
     }
     u->frames_dirty = true;
@@ -999,6 +969,8 @@ esp_gsp_err_t echoy_ui_create(esp_gsp_handle_t gsp, const echoy_platform_t *plat
     }
     u->gsp = gsp;
     u->platform = *platform;
+    echoy_display_init(&u->display, now_us(u));
+    u->display_level = -1;
     u->volume = .65;
     u->richness = .5;
     u->battery = platform->battery_percent;

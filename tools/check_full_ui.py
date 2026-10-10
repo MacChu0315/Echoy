@@ -25,8 +25,9 @@ def main():
     assert_v4_geometry(json.loads(Path(manifest['api']).read_text()))
     sys.path.insert(0, str(Path(manifest['component_root'])/'tools/sim_bridge'))
     from rpc_client import connect
-    with socket.socket() as s:
+    with socket.socket() as s, socket.socket() as backend_socket:
         s.bind(('127.0.0.1', 0)); port = s.getsockname()[1]
+        backend_socket.bind(('127.0.0.1', 0)); backend_port = backend_socket.getsockname()[1]
     ready = out/'ready.json'; ready.unlink(missing_ok=True)
     processes = []; checks = []
     def until(test, message, timeout=8):
@@ -40,7 +41,7 @@ def main():
         os.chmod(control, 0o700)
         try:
             sim=ROOT.parent/'.toolchains/gsp-sim-1.5.1/sim'
-            host=subprocess.Popen([str(sim),'--bundle',manifest['bundle'],'--api-json',str(Path(manifest['bundle']).with_name('bundle_gsp.api.json')),'--backend-enable','--backend-required','--api-listen',f'tcp://127.0.0.1:{port}','--headless','--fps','1000','--frames','0','--ready-file',str(ready)],stdout=hf,stderr=subprocess.STDOUT)
+            host=subprocess.Popen([str(sim),'--bundle',manifest['bundle'],'--api-json',str(Path(manifest['bundle']).with_name('bundle_gsp.api.json')),'--backend-listen',f'tcp://127.0.0.1:{backend_port}','--backend-required','--api-listen',f'tcp://127.0.0.1:{port}','--headless','--fps','1000','--frames','0','--ready-file',str(ready)],stdout=hf,stderr=subprocess.STDOUT)
             processes.append(host); until(ready.exists,'host readiness')
             info=json.loads(ready.read_text()); assert info['pid']==host.pid
             env={**os.environ,'ECHOY_SIM_CONTROL_DIR':control,'ECHOY_SIM_SEED':'44a0'}
@@ -104,17 +105,22 @@ def main():
                 assert any(int(events)>int(anchors) for _,_,anchors,events in plans)
                 checks.append('All four roles and twelve expressions commit real generated plans and render gallery images')
                 tap('role_back');route('home');tap('settings');route('settings_page');shot('settings-top-zh')
-                tap('settings_guide');route('guide_page');before=shot('guide-top-zh');drag(230,418,170);after=shot('guide-bottom-zh')
-                assert ImageChops.difference(before,after).getbbox();route('guide_page');tap('guide_back');route('settings_page')
-                # Info is visible after a partial scroll; scrolling must not activate rows.
-                drag(430,420,280);route('settings_page');tap_at(230,298);route('info_page');shot('info-zh');tap('info_back');route('settings_page')
-                drag(430,425,135);route('settings_page');shot('settings-bottom-zh')
-                tap_at(230,182);until(lambda:(Path(control)/'session.json').exists(),'export')
-                exported=json.loads((Path(control)/'session.json').read_text());(out/'session.json').write_text(json.dumps(exported,ensure_ascii=False,indent=2)+'\n')
-                tile=exported['tiles']['A'];assert len(tile['ownSeed'])==4;assert len(tile['current']['full'])>=4
-                tap_at(388,293);until(lambda:'ECHOY_LOCALE en' in log(),'English locale');assert 'ECHOY_LOCALE en' in log();shot('settings-bottom-en')
-                drag(430,145,440);drag(430,145,300);route('settings_page');shot('settings-top-en')
-                tap('settings_guide');route('guide_page');shot('guide-top-en');drag(230,420,170);shot('guide-bottom-en');tap('guide_back');route('settings_page')
+                tap('settings_display');route('display_page');bright=shot('display-zh')
+                drag(240,193,193)
+                until(lambda:'ECHOY_DISPLAY brightness=60 effective=60' in log(),'brightness control')
+                dim=shot('display-60')
+                assert sum(dim.getpixel((240,90))) < sum(bright.getpixel((240,90))) * .7
+                drag(418,193,193);until(lambda:'ECHOY_DISPLAY brightness=100 effective=100' in log(),'brightness restore')
+                tap('display_auto_dim');until(lambda:'auto_dim=0 ok=1' in log(),'idle dim disabled')
+                shot('display-auto-off');tap('display_back');route('settings_page')
+                tap('settings_guide');route('guide_page');before=shot('guide-zh');drag(230,418,170);after=shot('guide-after-drag')
+                assert ImageChops.difference(before,after).getbbox() is None
+                tap('guide_back');route('settings_page')
+                tap('settings_info');route('info_page');shot('info-zh');tap('info_back');route('settings_page')
+                tap('language_en');until(lambda:'ECHOY_LOCALE en' in log(),'English locale');shot('settings-en')
+                tap('settings_display');route('display_page');shot('display-en');tap('display_back');route('settings_page')
+                tap('settings_guide');route('guide_page');shot('guide-en');tap('guide_back');route('settings_page')
+                tap('settings_info');route('info_page');shot('info-en');tap('info_back');route('settings_page')
                 tap('settings_back');route('home');shot('home-en')
                 tap('role');route('role_page')
                 for r in ['pulse','voice','dust','harmony']:
@@ -130,15 +136,12 @@ def main():
                 tap('role_back');route('home')
                 (out/'home-header-captures.json').write_text(json.dumps(home_headers,indent=2)+'\n')
                 checks.append('All twelve expressions have Chinese/English v4 home header captures and hidden steady-state captions')
-                checks.append('Menus, bounded scrolling, Chinese/English text and real session export work through pointer input')
+                checks.append('Four settings entries and one-screen guides work in Chinese/English; brightness and idle-dim switch respond to real pointer input')
                 for state in ['fault','loading','empty']:
                     command(state);route('status_page');shot('status-'+state)
                     tap('recover');route('home')
                 checks.append('Mock fault/loading/empty states recover to a paused home')
-                tap('settings');drag(430,425,115);drag(430,425,250);route('settings_page');tap_at(230,404);route('removed');shot('removed')
-                assert json.loads((Path(control)/'status.json').read_text())['removed']
-                command('restore');route('home');shot('restored');assert not json.loads((Path(control)/'status.json').read_text())['removed']
-                checks.append('Put-away and external restore preserve the phrase')
+                # Export and put-away are tested at the outer desktop in check_desk.py.
                 code=backend.wait(timeout=a.duration_ms/1000+5);assert code==0,code
                 call('quit');assert host.wait(timeout=6)==0
             logs=log()+(out/'host.log').read_text()

@@ -46,6 +46,12 @@ static int64_t clock_us(void *ctx)
     (void)ctx;
     return (int64_t)gsp_sim_bridge_time_ms() * 1000;
 }
+static bool brightness(void *ctx, unsigned percent)
+{
+    (void)ctx;
+    fprintf(stderr, "HEALTH_FIXTURE brightness=%u\n", percent);
+    return true;
+}
 static bool read_view(void *ctx, echoy_control_view_t *out)
 {
     (void)ctx;
@@ -77,6 +83,8 @@ esp_gsp_err_t gsp_bridge_app_init(esp_gsp_handle_t gsp)
         view.state.fault = true;
     }
     echoy_platform_t platform = {.now_us = clock_us,
+                                 .set_brightness = brightness,
+                                 .software_version = "1.0.0",
                                  .read_control = read_view,
                                  .perform_action = action,
                                  .is_simulator = false};

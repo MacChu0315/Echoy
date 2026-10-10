@@ -3,6 +3,7 @@ idf_component_register(
         "platform_device.c" "board_audio.c" "board_health.c"
         "echoy_audio_probe.c" "echoy_audio_diagnostics.c"
         "echoy_device_pcm.c"
+        "echoy_display.c"
     INCLUDE_DIRS "."
     REQUIRES esp_iris esp-mosaico-bsp esp_mosaico_app_recovery
         esp_mosaico_gsp_bundle esp_mosaico_gsp_iris freertos nvs_flash

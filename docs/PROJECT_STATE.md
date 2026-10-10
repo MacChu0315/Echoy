@@ -56,6 +56,31 @@ plans with separate marks for every event. See `verification/harmony-layout/READ
 for the ribbon change and `verification/harmony-marks/README.md` for the current
 mark-spacing and label-alignment evidence and current preview restart command.
 
+## Settings refinement (2026-10-10)
+
+The user approved simplifying settings to Display, Language, How to play, and
+About this tile, explicitly excluding "remember the last rhythm". The shared C
+UI now presents these four entries on one screen. Home Record and role-gallery
+Hear once remain; Export and Put away remain on the outer PC desktop rather than
+inside the tile. The four-step guide and device information replace prototype
+and experiment prose. Simulator battery readings are labelled as simulated;
+hardware uses its existing validated battery view and actual app version.
+
+Display brightness ranges from 20–100%, initially 100%. Automatic dimming is on
+by default: 60 seconds of inactivity dims to 20%; touch restores the selected
+brightness. Capture, preparation and playback keep it awake. Preferences are
+currently per running tile and reset on restart; no rhythm or preference
+persistence was added. The PC visual uses native GSP shading; firmware calls the
+public BSP brightness API from the UI owner, with no audio-thread I/O or flash
+writes. Physical brightness and power savings remain unverified.
+
+Preview: desk HTTP 18899, A/B/C views 3231/3232/3233, build `build-sim-settings`.
+A was left on Settings with an empty, silent rhythm. Older previews remain alive
+to preserve the user's recordings. The current UI refinements and new settings
+are not installed on hardware; the accepted audio firmware is unchanged.
+Final settings appearance awaits user review. Verification and restart commands
+are in `verification/settings/README.md`.
+
 ## PC application
 
 The audible three-tile entry is `tools/desk_preview.py` (HTTP 18896, native GSP

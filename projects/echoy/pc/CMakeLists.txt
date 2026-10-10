@@ -26,6 +26,7 @@ gsp_add_backend(echoy_backend
     SCENES ../ui/main.json)
 
 target_link_libraries(echoy_backend PRIVATE m)
+target_sources(echoy_backend PRIVATE ../main/echoy_display.c)
 
 find_package(Threads REQUIRED)
 add_executable(echoy_desk desk_main.c
@@ -33,6 +34,7 @@ add_executable(echoy_desk desk_main.c
     ../main/echoy_view_cache.c ../main/echoy_art.c ../main/echoy_art_image.c
     ../main/echoy_band.c ../main/echoy_audio.c ../main/echoy_arrange.c)
 add_dependencies(echoy_desk echoy_backend_bundle)
+target_sources(echoy_desk PRIVATE ../main/echoy_display.c)
 target_include_directories(echoy_desk PRIVATE ../main "${CMAKE_CURRENT_BINARY_DIR}/echoy_backend_assets")
 target_link_libraries(echoy_desk PRIVATE esp_gsp::sim_bridge Threads::Threads m)
 target_compile_options(echoy_desk PRIVATE -Wall -Wextra)

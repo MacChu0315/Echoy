@@ -1,0 +1,21 @@
+{
+  "binary": {
+    "source": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/projects/echoy/build-sim-settings/echoy_desk",
+    "sha256": "66bc283ec4b8f15119b245edf019b38e079fdef8a30dbbdac3a4fb4a4596b22b"
+  },
+  "bundle": {
+    "source": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/projects/echoy/build-sim-settings/echoy_backend_assets/app.gspb",
+    "sha256": "fc52d494c97f065257270949aafbaf2606828fbef86748812697060a8050d42c"
+  },
+  "api": {
+    "source": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/projects/echoy/build-sim-settings/echoy_backend_assets/bundle_gsp.api.json",
+    "sha256": "6cb9367129228d5dc5972db1ca94969c67ace0e3ab68a53f38a0683d23dc5b01"
+  },
+  "command": [
+    "tools/check_desk.py",
+    "--build-dir",
+    "projects/echoy/build-sim-settings",
+    "--output",
+    "output/settings/desk-ports"
+  ]
+}
