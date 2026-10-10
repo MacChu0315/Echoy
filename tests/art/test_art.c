@@ -127,7 +127,7 @@ static void pitched_art(echoy_art_frame_t frame)
     uint16_t *harmony = render(echoy_art_draw, &frame);
     CHECK(harmony[167 * WIDTH + 12] != color(0xf1efe8));
     /* Canvas defaults to miter joins: the closed ribbons have pointed tips. */
-    CHECK(harmony[48 * WIDTH + 12] != color(0xf1efe8));
+    CHECK(harmony[33 * WIDTH + 12] != color(0xf1efe8));
     changed.events[0].note_count = 1;
     changed.events[0].harmony[0] = 59;
     uint16_t *single = render(echoy_art_draw, &frame);

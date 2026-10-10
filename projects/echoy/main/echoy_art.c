@@ -458,9 +458,13 @@ static void harmony(const raster_t *r, const echoy_art_frame_t *frame,
     const bool held = frame->active && current;
     static const int fallback[] = {50, 57, 65};
     const double *waves[] = {harmony_wave_0, harmony_wave_1, harmony_wave_2};
+    /* Spread the home ribbons around the same middle line. Compact role cards
+     * retain their original spacing; the note-duration marks stay below. */
+    const float row_gap = frame->width == 300 && frame->height == 204 ? 44 : 29;
     for (unsigned row = 0; row < 3; ++row) {
         int tone = current && current->harmony_count > row ? current->harmony[row] : fallback[row];
-        float center = 49 + row * 29, arch = 16 + tone % 12 * .5f + (held ? energy * 2 : 0);
+        float center = 78 + ((int)row - 1) * row_gap;
+        float arch = 16 + tone % 12 * .5f + (held ? energy * 2 : 0);
         point_t points[PATH_POINTS];
         for (unsigned i = 0; i < 136; ++i) {
             points[i] = (point_t){15 + i * 2, center - harmony_arch[i] * arch + waves[row][i]};

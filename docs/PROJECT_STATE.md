@@ -24,8 +24,22 @@ The user explicitly confirmed touch/mouse acceptance; do not claim native
 Tab/Enter focus support. The desk propagates system reduced-motion changes to
 all three C views. Linux native loopback ACK hints and the direct host's high
 simulation tick remove RPC stalls; hardware uses the shared C view/controller.
-Verification: `verification/v4/README.md`. Current live preview uses
-`build-sim-v4`; do not rebuild its bundle in place while it is running.
+Verification: `verification/v4/README.md`. The retained v4 comparison preview
+uses `build-sim-v4`; do not rebuild its bundle in place while it is running.
+
+### Harmony home refinement
+
+At the user's request, the shared C renderer now spreads the three Harmony home
+ribbons from 29 to 44 px vertical spacing, retaining the middle position, curves
+and playback animation. Bottom controls retain their exact sizes; role cards,
+other roles and rhythm-duration marks are unchanged. The frozen v4 reference is
+untouched. The new interactive preview uses `build-sim-harmony-spacing`: desk
+HTTP 18897, A/B/C views 3225/3226/3227. The old preview remains at 18896/3222–3224.
+The new A view is paused on a playable Harmony phrase2 example. Visual feedback
+is pending; no hardware installation of this UI change has occurred.
+Art/image and native GSP input tests pass, including exact bottom-control bounds
+and 33 unchanged comparison cases outside Harmony home artwork. See
+`verification/harmony-layout/README.md` for evidence and the restart command.
 
 ## PC application
 
