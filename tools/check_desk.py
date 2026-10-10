@@ -310,6 +310,20 @@ class DeskCheck:
         pad_pcm = pcm_statistics(live, *self.windows['ordinary-pad'])
         assert pad_pcm['nonzero'] > 100 and pad_pcm['peak'] > 100, pad_pcm
         self.passed('Native pointer pad tap produces nonzero PCM and stays outside recording')
+        # The first-use reminder also runs against the actual shared band/audio owner.
+        with Image.open(self.output / 'initial-A.png') as image:
+            caption = image.convert('RGB').crop((24, 338, 456, 365))
+        self.pad('A')
+        time.sleep(.15)
+        with Image.open(self.shot('A', 'second-try')) as image:
+            assert ImageChops.difference(caption, image.convert('RGB').crop((24, 338, 456, 365))).getbbox() is None
+        self.pad('A')
+        time.sleep(.15)
+        with Image.open(self.shot('A', 'third-try-reminder')) as image:
+            assert ImageChops.difference(caption, image.convert('RGB').crop((24, 338, 456, 365))).getbbox()
+        state = self.status()['tiles']['A']
+        assert state['seed'] == 0 and state['phase'] == 0 and not state['loop'] and state['events'] == 0
+        self.passed('The third native pad try shows a reminder with real C audio, without creating a phrase or playback permission')
 
         start = self.mark('example-before')['sample_index']
         self.command('example A')

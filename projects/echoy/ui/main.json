@@ -837,7 +837,7 @@
       "fg_color": "#7c886e",
       "bind": "status",
       "bind_target": "text",
-      "font_charset": "中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续",
+      "font_charset": "中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续点录制，再敲一遍，就能留下节奏。",
       "text_align": "center",
       "hidden": true
     },
@@ -948,7 +948,7 @@
       "hidden": true,
       "bind": "capture_status",
       "bind_target": "text",
-      "font_charset": "中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续"
+      "font_charset": "中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续点录制，再敲一遍，就能留下节奏。"
     },
     {
       "type": "layer",
@@ -1003,7 +1003,7 @@
       "hidden": true,
       "bind": "capture_status_voice",
       "bind_target": "text",
-      "font_charset": "中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续"
+      "font_charset": "中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续点录制，再敲一遍，就能留下节奏。"
     },
     {
       "type": "layer",
@@ -1058,7 +1058,7 @@
       "hidden": true,
       "bind": "capture_status_dust",
       "bind_target": "text",
-      "font_charset": "中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续"
+      "font_charset": "中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续点录制，再敲一遍，就能留下节奏。"
     },
     {
       "type": "layer",
@@ -1113,7 +1113,7 @@
       "hidden": true,
       "bind": "capture_status_harmony",
       "bind_target": "text",
-      "font_charset": "中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续"
+      "font_charset": "中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续点录制，再敲一遍，就能留下节奏。"
     },
     {
       "type": "container",
@@ -1420,7 +1420,7 @@
       "fg_color": "#7c886e",
       "bind": "status_en",
       "bind_target": "text",
-      "font_charset": "Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original kept No notes captured; original kept Preparation failed; current sound continues",
+      "font_charset": "Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original kept No notes captured; original kept Preparation failed; current sound continues Tap Record, then tap again to keep your rhythm.",
       "text_align": "center",
       "hidden": true,
       "font": "fonts/LiberationSans-Regular.ttf"
@@ -1503,7 +1503,7 @@
       "hidden": true,
       "bind": "capture_status_en",
       "bind_target": "text",
-      "font_charset": "Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original kept No notes captured; original kept Preparation failed; current sound continues",
+      "font_charset": "Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original kept No notes captured; original kept Preparation failed; current sound continues Tap Record, then tap again to keep your rhythm.",
       "font": "fonts/LiberationSans-Regular.ttf"
     },
     {
@@ -1559,7 +1559,7 @@
       "hidden": true,
       "bind": "capture_status_voice_en",
       "bind_target": "text",
-      "font_charset": "Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original kept No notes captured; original kept Preparation failed; current sound continues",
+      "font_charset": "Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original kept No notes captured; original kept Preparation failed; current sound continues Tap Record, then tap again to keep your rhythm.",
       "font": "fonts/LiberationSans-Regular.ttf"
     },
     {
@@ -1602,7 +1602,7 @@
       "hidden": true,
       "bind": "capture_status_dust_en",
       "bind_target": "text",
-      "font_charset": "Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original kept No notes captured; original kept Preparation failed; current sound continues",
+      "font_charset": "Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original kept No notes captured; original kept Preparation failed; current sound continues Tap Record, then tap again to keep your rhythm.",
       "font": "fonts/LiberationSans-Regular.ttf"
     },
     {
@@ -1645,7 +1645,7 @@
       "hidden": true,
       "bind": "capture_status_harmony_en",
       "bind_target": "text",
-      "font_charset": "Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original kept No notes captured; original kept Preparation failed; current sound continues",
+      "font_charset": "Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original kept No notes captured; original kept Preparation failed; current sound continues Tap Record, then tap again to keep your rhythm.",
       "font": "fonts/LiberationSans-Regular.ttf"
     },
     {

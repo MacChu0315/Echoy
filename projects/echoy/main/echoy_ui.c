@@ -20,6 +20,8 @@
 #define BAR_US INT64_C(2500000)
 #define BEAT_US INT64_C(625000)
 #define DRAW_US INT64_C(33333)
+#define TRIAL_HINT_TAPS 3u
+#define TRIAL_HINT_US INT64_C(4000000)
 typedef enum { HOME, ROLE, SETTINGS, DISPLAY, GUIDE, INFO, STATUS, REMOVED } route_t;
 static const char *const routes[] = {"home", "role_page", "settings_page", "display_page",
                                      "guide_page", "info_page", "status_page"};
@@ -62,6 +64,8 @@ struct echoy_ui {
     bool density_dirty;
     int64_t density_due_us;
     int64_t last_hit_us, last_draw_us;
+    unsigned trial_taps;
+    int64_t record_hint_until_us;
 #ifdef ESP_PLATFORM
     int64_t perf_tick_at, perf_log_at, perf_tick_max, perf_gap_max;
 #endif
@@ -544,6 +548,14 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
 {
     const echoy_plan_t *plan = current_plan(u);
     bool cap = capturing(s->phase), busy = s->phase >= ECHOY_PREPARING;
+    /* Once Record has been used or a phrase exists, first-use guidance is done. */
+    if (plan->count || s->phase != ECHOY_IDLE) {
+        u->trial_taps = TRIAL_HINT_TAPS;
+        u->record_hint_until_us = 0;
+    }
+    if (s->following) {
+        u->record_hint_until_us = 0;
+    }
     char status[128] = {0};
     if (cap) {
         if (s->phase == ECHOY_COUNT_IN) {
@@ -574,7 +586,10 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
     } else if (s->phase == ECHOY_PLAYING && now < s->start_us) {
         strcpy(status, tr(u, "等共同拍点开始", "Waiting for the shared beat"));
     } else if (!plan->count) {
-        strcpy(status, tr(u, "中央试奏 · 录制才保存", "Tap to try · Record to keep"));
+        strcpy(status, now < u->record_hint_until_us
+                           ? tr(u, "点录制，再敲一遍，就能留下节奏。",
+                                "Tap Record, then tap again to keep your rhythm.")
+                           : tr(u, "中央试奏 · 录制才保存", "Tap to try · Record to keep"));
     }
     if (s->notice == ECHOY_NOTICE_CANCELLED) {
         strcpy(status, tr(u, "已取消，原节奏保留", "Cancelled; original rhythm kept"));
@@ -837,6 +852,13 @@ static void pointer(esp_gsp_handle_t gsp, int32_t x, int32_t y, bool pressed, vo
                 } else if (x >= 90 && x < 390 && y >= 89 && y < 293 &&
                            act(u, ECHOY_ACT_TAP, 0, now)) {
                     u->last_hit_us = now;
+                    echoy_strip_state_t strip = echoy_strip_compute(
+                        &s, current_plan(u)->count != 0,
+                        u->density_dirty || (u->platform.read_control && u->external.preparing));
+                    if (strip.mode == ECHOY_STRIP_RECORD_ONLY && strip.record_enabled &&
+                        u->trial_taps < TRIAL_HINT_TAPS && ++u->trial_taps == TRIAL_HINT_TAPS) {
+                        u->record_hint_until_us = now + TRIAL_HINT_US;
+                    }
                 }
             } else if (u->route == DISPLAY && x >= 36 && x < 444 && y >= 160 && y < 230) {
                 u->drag = 4;

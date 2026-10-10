@@ -73,8 +73,8 @@ def add(kind,name,x,y,w,h,parent=-1,**kw):
 # Runtime glyphs are scoped to the actual UI text, never HTML/CSS/JavaScript.
 # GSP embeds one font pack per (font,size); an all-source corpus at every size
 # makes even the old home-only scene almost fill the 1 MiB UI partition.
-home_status_zh='中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续'
-home_status_en='Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original kept No notes captured; original kept Preparation failed; current sound continues'
+home_status_zh='中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续点录制，再敲一遍，就能留下节奏。'
+home_status_en='Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original kept No notes captured; original kept Preparation failed; current sound continues Tap Record, then tap again to keep your rhythm.'
 role_names_zh='脉冲声线微尘和声'
 phrase_names_zh='重音切分留白短句轻答长线颗粒点缀余韵短和弦分解接句'
 phrase_names_en='Accent Syncopation Space Short phrase Light reply Long line Grains Touches Trails Short chords Arpeggio Answer'

@@ -187,8 +187,38 @@ def main():
             tap('settings');time.sleep(.15);tap('language_en');time.sleep(.15);tap('settings_back');time.sleep(.3)
             assert_record_only(Image.open(shot('empty-english')).convert('RGB'))
             tap('settings');time.sleep(.15);tap('language_zh');time.sleep(.15);tap('settings_back');time.sleep(.3)
-            pad();call('wait',{'frames':10});assert state_rows()[-1][0]==0
+            status_box=(24,338,456,365)
+            baseline=initial.crop(status_box)
+            # Holding or moving an existing press must not count as extra taps.
+            pad(hold=.15);pad();time.sleep(.1)
+            twice=Image.open(shot('try-twice')).convert('RGB')
+            assert ImageChops.difference(twice.crop(status_box),baseline).getbbox() is None
+            third_at=time.monotonic();pad()
+            reminder=Image.open(shot('try-third-reminder')).convert('RGB')
+            assert ImageChops.difference(reminder.crop(status_box),baseline).getbbox(), 'Third try must show the recording reminder'
+            assert state_rows()[-1][0]==0 and state_rows()[-1][1]==0, 'Reminder must not record or create a phrase'
             ready_strip('record_only',record=1)
+            if not args.reduced_motion:
+                tap('settings');time.sleep(.15);tap('language_en');time.sleep(.15);tap('settings_back');time.sleep(.2)
+                english=Image.open(shot('try-third-english')).convert('RGB')
+                english_baseline=Image.open(out/'empty-english.png').convert('RGB').crop(status_box)
+                assert ImageChops.difference(english.crop(status_box),english_baseline).getbbox(), 'Reminder must localize without resetting its lifetime'
+                tap('settings');time.sleep(.15);tap('language_zh');time.sleep(.15);tap('settings_back');time.sleep(.2)
+                pad()
+                while time.monotonic()<third_at+4.25:time.sleep(.04)
+                expired=Image.open(shot('try-reminder-expired')).convert('RGB')
+                assert ImageChops.difference(expired.crop(status_box),baseline).getbbox() is None, 'Further tries extended the reminder'
+                pad();pad();pad()
+                again=Image.open(shot('try-no-repeat')).convert('RGB')
+                assert ImageChops.difference(again.crop(status_box),baseline).getbbox() is None, 'Reminder repeated in the same run'
+            else:
+                # Starting Record consumes/dismisses the reminder, including a quick Cancel.
+                n=len(state_rows());tap('record');phase(1,after=n)
+                n=len(state_rows());tap('strip_action');phase(0,after=n);time.sleep(.3)
+                cancelled=Image.open(shot('try-reminder-cancelled')).convert('RGB')
+                pad();pad();pad()
+                assert ImageChops.difference(Image.open(shot('try-after-record')).convert('RGB').crop(status_box),cancelled.crop(status_box)).getbbox() is None
+            checks.append('Only the third accepted empty-pad tap shows a four-second reminder; no auto-recording, hold overcount, repeat, or reappearance after Record')
             # The former Play half now records too; Cancel then returns to one button.
             n=len(state_rows());call('tap',{'x':300,'y':420});phase(1,after=n)
             n=len(state_rows());tap('strip_action');phase(0,after=n)

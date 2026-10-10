@@ -45,6 +45,24 @@ installed on hardware; the accepted physical package is still `7c08b632adf9`.
 Native input checks pass with normal/reduced motion and firmware builds with zero
 warnings. See `verification/record-only/README.md` for evidence and restart details.
 
+### Third trial-tap reminder (2026-10-10)
+
+The user chose a reminder after the third trial-pad tap before recording. The
+existing status line now shows "点录制，再敲一遍，就能留下节奏。" for four seconds,
+with an English equivalent. Only accepted new presses while empty and Record is
+available count; holding a press does not add taps. The reminder never records,
+saves a phrase, grants playback, or extends its lifetime on subsequent taps.
+It appears at most once per running tile. Starting Record or acquiring a real
+phrase ends first-use guidance, so cancelling recording does not re-arm it.
+No persistence or audio behavior changed.
+
+Latest preview: `build-sim-third-tap`, desk HTTP 18901, A/B/C 3237/3238/3239. A is
+left empty with the reminder unused. The record-only preview at 18900/3234–3236
+remains available for comparison. Native checks verify timing, both languages,
+normal/reduced motion and recording/cancellation; firmware builds with zero
+warnings. This remains a preview; installed hardware is still `7c08b632adf9`.
+Evidence and restart instructions: `verification/third-tap/README.md`.
+
 ### Harmony home refinement
 
 At the user's request, the shared C renderer now spreads the three Harmony home
