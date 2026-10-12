@@ -48,7 +48,7 @@ warnings. See `verification/record-only/README.md` for evidence and restart deta
 ### Third trial-tap reminder (2026-10-10)
 
 The user chose a reminder after the third trial-pad tap before recording. The
-existing status line now shows "点录制，再敲一遍，就能留下节奏。" for four seconds,
+initial status-line version showed "点录制，再敲一遍，就能留下节奏。" for four seconds,
 with an English equivalent. Only accepted new presses while empty and Record is
 available count; holding a press does not add taps. The reminder never records,
 saves a phrase, grants playback, or extends its lifetime on subsequent taps.
@@ -78,19 +78,38 @@ Evidence and restart instructions: `verification/third-tap/README.md`.
 Following physical feedback that the status-line text was too small, the same
 third-tap reminder now appears in a native 300x128 panel centered over the pad.
 Chinese uses two lines of 22px medium text (previously 13px); English reuses the
-existing 18px bold font. The original wording, third-tap trigger, four-second
-lifetime and once-per-run rule remain. The panel has no input handler, so trial
+existing 18px bold font. The original wording, third-tap trigger and once-per-run rule remain. The lifetime
+is now three seconds per the timing refinement below. The panel has no input handler, so trial
 sound continues and the bottom Record action remains available. Recording or
 obtaining a phrase dismisses it. No music or persistence changes were made.
 Native normal/reduced-motion tests and actual shared C audio checks pass, including
 continued sound while the popup is visible; the pinned SDK bundle builds with
-zero warnings. Package `a859d454627f` is installed on the same verified Mosaico,
+zero warnings. Package `a859d454627f` was installed on the same verified Mosaico,
 HEALTHY boot `11406880910400298043`, operation
 `a0daa59b-0a52-4577-8b40-eb147e3be642`. Identity, commit, bootloader/partition checks
 and the actual Record-only home pass; the same new boot remains normal after a
 minute with no UI or audio write errors. Physical readability feedback is pending.
 Evidence is in `verification/reminder-popup/README.md`. Existing live previews still show the
 previous inline reminder; the new simulator build is `build-sim-reminder-popup`.
+
+### Three-second timings (2026-10-12)
+
+The user requested a three-second popup and a recording countdown starting at
+"预备-3". The popup now expires after three seconds. Preparation uses three
+one-second counts (3, 2, 1), with matching guide cues; recording still uses four
+625 ms beats (2.5 seconds). The existing 60 ms audio scheduling lead is retained,
+so capture starts 3.06 seconds after the Record event. UI, model and scheduler
+share the preparation constants; the guide copy now says three seconds.
+`AGENTS.md` reflects this explicit user-approved departure from the frozen
+prototype's two musical preparation beats. No rhythm format, synthesis, speaker
+profile or persisted data changes were introduced.
+
+Model and cue timing regressions, 22 device-runtime tests, normal/reduced-motion
+native input and the standalone three-device audio regression pass. A concurrent
+desktop run recorded one late audio block while all tiles were idle; the identical
+binary passed alone without relaxing checks. Host scheduling cause is not proven.
+Build `build-sim-three-seconds` and package `9ef37e48c8b0` are ready; installation is
+in progress. Evidence: `verification/three-seconds/README.md`.
 
 ### Harmony home refinement
 

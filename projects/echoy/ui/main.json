@@ -942,7 +942,7 @@
       "fg_color": "#7c886e",
       "bind": "status",
       "bind_target": "text",
-      "font_charset": "中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续",
+      "font_charset": "中央试奏 · 录制才保存准备录制预备-1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续",
       "text_align": "center",
       "hidden": true
     },
@@ -1046,14 +1046,14 @@
       "y": 339,
       "w": 432,
       "h": 23,
-      "text": "预备 · 2",
+      "text": "预备-3",
       "font_size": 13,
       "fg_color": "#a46848",
       "text_align": "center",
       "hidden": true,
       "bind": "capture_status",
       "bind_target": "text",
-      "font_charset": "中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续"
+      "font_charset": "中央试奏 · 录制才保存准备录制预备-1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续"
     },
     {
       "type": "layer",
@@ -1101,14 +1101,14 @@
       "y": 339,
       "w": 432,
       "h": 23,
-      "text": "预备 · 2",
+      "text": "预备-3",
       "font_size": 13,
       "fg_color": "#a46848",
       "text_align": "center",
       "hidden": true,
       "bind": "capture_status_voice",
       "bind_target": "text",
-      "font_charset": "中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续"
+      "font_charset": "中央试奏 · 录制才保存准备录制预备-1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续"
     },
     {
       "type": "layer",
@@ -1156,14 +1156,14 @@
       "y": 339,
       "w": 432,
       "h": 23,
-      "text": "预备 · 2",
+      "text": "预备-3",
       "font_size": 13,
       "fg_color": "#a46848",
       "text_align": "center",
       "hidden": true,
       "bind": "capture_status_dust",
       "bind_target": "text",
-      "font_charset": "中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续"
+      "font_charset": "中央试奏 · 录制才保存准备录制预备-1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续"
     },
     {
       "type": "layer",
@@ -1211,14 +1211,14 @@
       "y": 339,
       "w": 432,
       "h": 23,
-      "text": "预备 · 2",
+      "text": "预备-3",
       "font_size": 13,
       "fg_color": "#a46848",
       "text_align": "center",
       "hidden": true,
       "bind": "capture_status_harmony",
       "bind_target": "text",
-      "font_charset": "中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续"
+      "font_charset": "中央试奏 · 录制才保存准备录制预备-1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续"
     },
     {
       "type": "container",
@@ -1601,7 +1601,7 @@
       "y": 340,
       "w": 432,
       "h": 23,
-      "text": "Ready · 2",
+      "text": "Ready · 3",
       "font_size": 12,
       "fg_color": "#a46848",
       "text_align": "center",
@@ -1657,7 +1657,7 @@
       "y": 340,
       "w": 432,
       "h": 23,
-      "text": "Ready · 2",
+      "text": "Ready · 3",
       "font_size": 12,
       "fg_color": "#a46848",
       "text_align": "center",
@@ -1700,7 +1700,7 @@
       "y": 340,
       "w": 432,
       "h": 23,
-      "text": "Ready · 2",
+      "text": "Ready · 3",
       "font_size": 12,
       "fg_color": "#a46848",
       "text_align": "center",
@@ -1743,7 +1743,7 @@
       "y": 340,
       "w": 432,
       "h": 23,
-      "text": "Ready · 2",
+      "text": "Ready · 3",
       "font_size": 12,
       "fg_color": "#a46848",
       "text_align": "center",
@@ -4967,13 +4967,13 @@
       "y": 224,
       "w": 352,
       "h": 22,
-      "text": "点“录制”，预备 2 拍后，",
+      "text": "点“录制”，预备 3 秒后，",
       "font_size": 15,
       "fg_color": "#637555",
       "font": "fonts/NotoSansSC-Regular.otf",
       "bind": "guide_body_1_0",
       "bind_target": "text",
-      "font_charset": "点“录制”，预备 2 拍后，"
+      "font_charset": "点“录制”，预备 3 秒后，"
     },
     {
       "type": "label",
@@ -5171,13 +5171,13 @@
       "y": 224,
       "w": 352,
       "h": 22,
-      "text": "Tap Record. After 2 count-in beats,",
+      "text": "Tap Record. After 3 seconds,",
       "font_size": 14,
       "fg_color": "#637555",
       "font": "fonts/LiberationSans-Regular.ttf",
       "bind": "guide_body_1_0_en",
       "bind_target": "text",
-      "font_charset": "Tap Record. After 2 count-in beats,"
+      "font_charset": "Tap Record. After 3 seconds,"
     },
     {
       "type": "label",

@@ -12,26 +12,32 @@ static echoy_snapshot_t snap(echoy_model_handle_t m)
 static void record_seed(echoy_model_handle_t m)
 {
     assert(echoy_model_record(m, 0));
-    echoy_model_tap(m, 1310000 + 625000);
-    echoy_model_tick(m, 3810000);
+    echoy_model_tap(m, 3060000 + 625000);
+    echoy_model_tick(m, 5560000);
     assert(snap(m).seed == (1u << 4));
 }
 
 static void count_in_and_leading_silence(void)
 {
     echoy_model_handle_t m = echoy_model_create();
-    assert(m);
-    assert(echoy_model_record(m, 0));
+    assert(m && echoy_model_record(m, 0));
     assert(snap(m).phase == ECHOY_COUNT_IN);
+    /* Three real seconds of preparation, after the existing 60 ms cue lead. */
+    assert(snap(m).capture_at_us == 3060000);
     echoy_model_tap(m, 100000);
-    assert(snap(m).pending_seed == 0);
-    echoy_model_tick(m, 1310000);
+    echoy_model_tick(m, 1310000); /* The former start must still be preparation. */
+    assert(snap(m).phase == ECHOY_COUNT_IN && snap(m).pending_seed == 0);
+    echoy_model_tap(m, 3059999);
+    echoy_model_tick(m, 3059999);
+    assert(snap(m).phase == ECHOY_COUNT_IN && snap(m).pending_seed == 0);
+    echoy_model_tick(m, 3060000);
     assert(snap(m).phase == ECHOY_RECORDING);
-    echoy_model_tap(m, 1935000);
-    echoy_model_tick(m, 3810000);
+    echoy_model_tap(m, 3685000);
+    echoy_model_tick(m, 5559999);
+    assert(snap(m).phase == ECHOY_RECORDING);
+    echoy_model_tick(m, 5560000);
     assert(snap(m).seed == (1u << 4));
-    assert(snap(m).phase == ECHOY_PREPARING);
-    assert(!snap(m).continuous);
+    assert(snap(m).phase == ECHOY_PREPARING && !snap(m).continuous);
     echoy_model_delete(m);
 }
 
@@ -50,12 +56,13 @@ static void empty_and_cancel_keep_seed(void)
     echoy_model_handle_t m = echoy_model_create();
     record_seed(m);
     echoy_model_pause(m);
-    assert(echoy_model_record(m, 5000000));
-    echoy_model_tick(m, 8810000);
+    assert(echoy_model_record(m, 7000000));
+    echoy_model_tick(m, 12560000);
     assert(snap(m).phase == ECHOY_IDLE && snap(m).seed == (1u << 4));
-    assert(echoy_model_record(m, 10000000));
-    echoy_model_tap(m, 11310000);
-    assert(echoy_model_record(m, 11320000));
+    assert(echoy_model_record(m, 15000000));
+    echoy_model_tap(m, 18060000);
+    assert(snap(m).pending_seed == 1);
+    assert(echoy_model_record(m, 18070000));
     assert(snap(m).phase == ECHOY_IDLE && snap(m).seed == (1u << 4));
     assert(snap(m).pending_seed == 0);
     echoy_model_delete(m);
@@ -65,14 +72,14 @@ static void quantization_boundaries_and_duplicates(void)
 {
     echoy_model_handle_t m = echoy_model_create();
     assert(echoy_model_record(m, 0));
-    echoy_model_tap(m, 1309999);
+    echoy_model_tap(m, 3059999);
     assert(snap(m).pending_seed == 0);
-    echoy_model_tap(m, 1310000);
-    echoy_model_tap(m, 1310001);
-    echoy_model_tap(m, 1388125);
-    echoy_model_tap(m, 3809999);
-    echoy_model_tap(m, 3810000);
-    echoy_model_tick(m, 3810000);
+    echoy_model_tap(m, 3060000);
+    echoy_model_tap(m, 3060001);
+    echoy_model_tap(m, 3138125);
+    echoy_model_tap(m, 5559999);
+    echoy_model_tap(m, 5560000);
+    echoy_model_tick(m, 5560000);
     assert(snap(m).seed == ((1u << 0) | (1u << 1) | (1u << 15)));
     echoy_model_delete(m);
 }
@@ -82,14 +89,14 @@ static void preview_once_and_stale_prepare(void)
     echoy_model_handle_t m = echoy_model_create();
     record_seed(m);
     uint32_t token = snap(m).generation;
-    assert(echoy_model_prepare_done(m, token, 4000000));
+    assert(echoy_model_prepare_done(m, token, 6000000));
     assert(snap(m).phase == ECHOY_PREVIEW);
-    echoy_model_tick(m, 6550000);
+    echoy_model_tick(m, 8550000);
     assert(snap(m).phase == ECHOY_IDLE);
-    assert(echoy_model_transport(m, 7000000));
+    assert(echoy_model_transport(m, 9000000));
     token = snap(m).generation;
     echoy_model_pause(m);
-    assert(!echoy_model_prepare_done(m, token, 7100000));
+    assert(!echoy_model_prepare_done(m, token, 9100000));
     assert(snap(m).phase == ECHOY_IDLE);
     echoy_model_delete(m);
 }
@@ -99,15 +106,15 @@ static void pause_keeps_clock_and_resume_aligns(void)
     echoy_model_handle_t m = echoy_model_create();
     record_seed(m);
     echoy_model_pause(m);
-    assert(echoy_model_transport(m, 4000000));
-    assert(echoy_model_prepare_done(m, snap(m).generation, 4000000));
-    assert(snap(m).phase == ECHOY_PLAYING && snap(m).start_us == 4050000);
+    assert(echoy_model_transport(m, 6000000));
+    assert(echoy_model_prepare_done(m, snap(m).generation, 6000000));
+    assert(snap(m).phase == ECHOY_PLAYING && snap(m).start_us == 6050000);
     int64_t origin = snap(m).clock_origin_us;
     echoy_model_pause(m);
     assert(snap(m).clock_origin_us == origin);
-    assert(echoy_model_transport(m, 8000000));
-    assert(echoy_model_prepare_done(m, snap(m).generation, 8000000));
-    assert(snap(m).start_us == 9050000 && snap(m).clock_origin_us == origin);
+    assert(echoy_model_transport(m, 10000000));
+    assert(echoy_model_prepare_done(m, snap(m).generation, 10000000));
+    assert(snap(m).start_us == 11050000 && snap(m).clock_origin_us == origin);
     echoy_model_delete(m);
 }
 
@@ -116,16 +123,16 @@ static void fault_and_left_neighbor_cancel(void)
     echoy_model_handle_t m = echoy_model_create();
     record_seed(m);
     echoy_model_pause(m);
-    assert(echoy_model_record(m, 5000000));
+    assert(echoy_model_record(m, 7000000));
     echoy_model_set_following(m, true);
     assert(snap(m).phase == ECHOY_IDLE && snap(m).seed == (1u << 4));
-    assert(!echoy_model_record(m, 6000000));
+    assert(!echoy_model_record(m, 8000000));
     echoy_model_set_following(m, false);
-    assert(echoy_model_transport(m, 7000000));
+    assert(echoy_model_transport(m, 9000000));
     uint32_t token = snap(m).generation;
     echoy_model_set_fault(m, true);
-    assert(!echoy_model_tap(m, 7000100));
-    assert(!echoy_model_prepare_done(m, token, 7000200));
+    assert(!echoy_model_tap(m, 9000100));
+    assert(!echoy_model_prepare_done(m, token, 9000200));
     echoy_model_set_fault(m, false);
     assert(snap(m).phase == ECHOY_IDLE && snap(m).seed == (1u << 4));
     echoy_model_delete(m);
@@ -135,7 +142,7 @@ static void composed_reply_and_role_memory(void)
 {
     echoy_model_handle_t m = echoy_model_create();
     record_seed(m);
-    assert(echoy_model_prepare_done(m, snap(m).generation, 4000000));
+    assert(echoy_model_prepare_done(m, snap(m).generation, 6000000));
     const echoy_plan_t *plan = echoy_model_get_plan(m);
     assert(plan && plan->source_count == 1 && plan->count > 1);
     assert(plan->source[0].step == 4);
@@ -143,16 +150,16 @@ static void composed_reply_and_role_memory(void)
         assert(plan->events[i].step >= 4);
     }
     echoy_model_pause(m);
-    assert(echoy_model_select_role(m, ECHOY_HARMONY, 5000000));
+    assert(echoy_model_select_role(m, ECHOY_HARMONY, 7000000));
     assert(snap(m).phrase == 2);
-    echoy_model_tick(m, 5050000);
-    assert(echoy_model_select_phrase(m, 3, 5100000));
-    echoy_model_tick(m, 5150000);
-    assert(echoy_model_select_role(m, ECHOY_VOICE, 5200000));
+    echoy_model_tick(m, 7050000);
+    assert(echoy_model_select_phrase(m, 3, 7100000));
+    echoy_model_tick(m, 7150000);
+    assert(echoy_model_select_role(m, ECHOY_VOICE, 7200000));
     assert(snap(m).phrase == 1);
-    assert(echoy_model_select_role(m, ECHOY_HARMONY, 5300000));
+    assert(echoy_model_select_role(m, ECHOY_HARMONY, 7300000));
     assert(snap(m).phrase == 3);
-    echoy_model_tick(m, 5350000);
+    echoy_model_tick(m, 7350000);
     assert(echoy_model_get_plan(m)->role == ECHOY_HARMONY);
     echoy_model_delete(m);
 }
@@ -162,19 +169,19 @@ static void configuration_commits_at_bar_boundary(void)
     echoy_model_handle_t m = echoy_model_create();
     record_seed(m);
     echoy_model_pause(m);
-    assert(echoy_model_transport(m, 4000000));
-    assert(echoy_model_prepare_done(m, snap(m).generation, 4000000));
-    assert(echoy_model_select_role(m, ECHOY_VOICE, 5000000));
-    assert(snap(m).plan_pending && snap(m).apply_at_us == 6550000);
+    assert(echoy_model_transport(m, 6000000));
+    assert(echoy_model_prepare_done(m, snap(m).generation, 6000000));
+    assert(echoy_model_select_role(m, ECHOY_VOICE, 7000000));
+    assert(snap(m).plan_pending && snap(m).apply_at_us == 8550000);
     assert(echoy_model_get_plan(m)->role == ECHOY_PULSE);
-    echoy_model_tick(m, 6549999);
+    echoy_model_tick(m, 8549999);
     assert(echoy_model_get_plan(m)->role == ECHOY_PULSE);
-    echoy_model_tick(m, 6550000);
+    echoy_model_tick(m, 8550000);
     assert(echoy_model_get_plan(m)->role == ECHOY_VOICE);
-    assert(snap(m).phase == ECHOY_PLAYING && snap(m).clock_origin_us == 4050000);
-    assert(echoy_model_set_density(m, 1.0, 7000000));
+    assert(snap(m).phase == ECHOY_PLAYING && snap(m).clock_origin_us == 6050000);
+    assert(echoy_model_set_density(m, 1.0, 9000000));
     echoy_model_pause(m);
-    echoy_model_tick(m, 9050000);
+    echoy_model_tick(m, 11050000);
     assert(snap(m).phase == ECHOY_IDLE && echoy_model_get_plan(m)->density == 1.0);
     echoy_model_delete(m);
 }
@@ -183,12 +190,12 @@ static void preview_keeps_old_plan_until_its_end(void)
 {
     echoy_model_handle_t m = echoy_model_create();
     record_seed(m);
-    assert(echoy_model_prepare_done(m, snap(m).generation, 4000000));
-    assert(echoy_model_select_phrase(m, 3, 5000000));
-    assert(snap(m).apply_at_us == 6550000);
-    echoy_model_tick(m, 6000000);
+    assert(echoy_model_prepare_done(m, snap(m).generation, 6000000));
+    assert(echoy_model_select_phrase(m, 3, 7000000));
+    assert(snap(m).apply_at_us == 8550000);
+    echoy_model_tick(m, 8000000);
     assert(echoy_model_get_plan(m)->phrase == 1 && snap(m).phase == ECHOY_PREVIEW);
-    echoy_model_tick(m, 6550000);
+    echoy_model_tick(m, 8550000);
     assert(echoy_model_get_plan(m)->phrase == 3 && snap(m).phase == ECHOY_IDLE);
     echoy_model_delete(m);
 }

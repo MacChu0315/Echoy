@@ -24,17 +24,47 @@ static double energy(echoy_band_t *b, int64_t at, size_t n)
     free(v);
     return e;
 }
+static void three_second_cues_and_unchanged_recording_beats(void)
+{
+    echoy_band_t *b = echoy_band_create();
+    assert(b && echoy_band_action(b, ECHOY_TILE_A, ECHOY_ACT_RECORD, 0, 0));
+    const size_t n = 144000; /* Six seconds, including silence after the four recording beats. */
+    float *pcm = calloc(n, sizeof(*pcm));
+    assert(pcm);
+    echoy_band_render(b, 0, pcm, n);
+    /* Three 1-second preparation cues, then four unchanged 625 ms recording beats. */
+    const size_t starts[] = {1440, 25440, 49440, 73440, 88440, 103440, 118440};
+    for (size_t cue = 0; cue < 7; cue++) {
+        double power = 0;
+        unsigned crossings = 0;
+        for (size_t i = 0; i < 720; i++) power += pcm[starts[cue] + i] * pcm[starts[cue] + i];
+        assert(power > .00001);
+        for (size_t i = 1; i < 480; i++)
+            crossings += pcm[starts[cue] + i - 1] <= 0 && pcm[starts[cue] + i] > 0;
+        assert(cue == 3 ? (crossings >= 29 && crossings <= 31)
+                        : (crossings >= 20 && crossings <= 22));
+    }
+    for (size_t i = 0; i < n; i++) {
+        bool inside = false;
+        for (size_t cue = 0; cue < 7; cue++)
+            inside |= i >= starts[cue] && i < starts[cue] + 720;
+        if (!inside) assert(pcm[i] == 0); /* No leftover old-tempo preparation cues. */
+    }
+    free(pcm);
+    echoy_band_delete(b);
+}
+
 static void merged_cancel_stops_future_audio(void)
 {
     echoy_band_t*b=echoy_band_create();assert(b);
     assert(echoy_band_action(b,ECHOY_TILE_A,ECHOY_ACT_RECORD,0,0));
     assert(echoy_band_action(b,ECHOY_TILE_A,ECHOY_ACT_CANCEL_RECORD,0,40000));
     assert(!echoy_band_action(b,ECHOY_TILE_A,ECHOY_ACT_CANCEL_RECORD,0,50000));
-    assert(energy(b,60000,60000)==0); /* all six queued cues are gone */
-    assert(echoy_band_action(b,ECHOY_TILE_A,ECHOY_ACT_RECORD,0,3000000));
-    assert(energy(b,3060000,600)>0); /* the real guide is audible before Cancel */
-    assert(echoy_band_action(b,ECHOY_TILE_A,ECHOY_ACT_CANCEL_RECORD,0,3100000));
-    assert(energy(b,3140000,60000)==0);
+    assert(energy(b,60000,144000)==0); /* all seven queued cues are gone */
+    assert(echoy_band_action(b,ECHOY_TILE_A,ECHOY_ACT_RECORD,0,7000000));
+    assert(energy(b,7060000,600)>0); /* the real guide is audible before Cancel */
+    assert(echoy_band_action(b,ECHOY_TILE_A,ECHOY_ACT_CANCEL_RECORD,0,7100000));
+    assert(energy(b,7140000,144000)==0);
     echoy_control_view_t view;echoy_band_read(b,ECHOY_TILE_A,&view);
     assert(view.state.phase==ECHOY_IDLE&&view.state.seed==0&&view.state.notice==ECHOY_NOTICE_CANCELLED);
     echoy_band_delete(b);
@@ -42,6 +72,7 @@ static void merged_cancel_stops_future_audio(void)
 
 int main(void)
 {
+    three_second_cues_and_unchanged_recording_beats();
     merged_cancel_stops_future_audio();
     echoy_band_t *b = echoy_band_create();
     assert(b);

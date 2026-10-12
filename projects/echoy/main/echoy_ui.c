@@ -21,7 +21,7 @@
 #define BEAT_US INT64_C(625000)
 #define DRAW_US INT64_C(33333)
 #define TRIAL_HINT_TAPS 3u
-#define TRIAL_HINT_US INT64_C(4000000)
+#define TRIAL_HINT_US INT64_C(3000000)
 typedef enum { HOME, ROLE, SETTINGS, DISPLAY, GUIDE, INFO, STATUS, REMOVED } route_t;
 static const char *const routes[] = {"home", "role_page", "settings_page", "display_page",
                                      "guide_page", "info_page", "status_page"};
@@ -564,14 +564,15 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
     char status[128] = {0};
     if (cap) {
         if (s->phase == ECHOY_COUNT_IN) {
-            int beat = (int)((s->capture_at_us - now + BEAT_US - 1) / BEAT_US);
-            if (beat > 2) {
-                beat = 2;
+            int remaining = (int)((s->capture_at_us - now + ECHOY_COUNT_IN_STEP_US - 1) /
+                                  ECHOY_COUNT_IN_STEP_US);
+            if (remaining > ECHOY_COUNT_IN_STEPS) {
+                remaining = ECHOY_COUNT_IN_STEPS;
             }
-            if (beat < 1) {
-                beat = 1;
+            if (remaining < 1) {
+                remaining = 1;
             }
-            snprintf(status, sizeof(status), u->english ? "Ready · %d" : "预备 · %d", beat);
+            snprintf(status, sizeof(status), u->english ? "Ready · %d" : "预备-%d", remaining);
         } else {
             int beat = (int)((now - s->capture_at_us) / BEAT_US) + 1;
             if (beat > 4) {

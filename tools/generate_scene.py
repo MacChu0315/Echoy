@@ -73,7 +73,7 @@ def add(kind,name,x,y,w,h,parent=-1,**kw):
 # Runtime glyphs are scoped to the actual UI text, never HTML/CSS/JavaScript.
 # GSP embeds one font pack per (font,size); an all-source corpus at every size
 # makes even the old home-only scene almost fill the 1 MiB UI partition.
-home_status_zh='中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续'
+home_status_zh='中央试奏 · 录制才保存准备录制预备-1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续'
 home_status_en='Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original kept No notes captured; original kept Preparation failed; current sound continues'
 role_names_zh='脉冲声线微尘和声'
 phrase_names_zh='重音切分留白短句轻答长线颗粒点缀余韵短和弦分解接句'
@@ -99,7 +99,7 @@ add('container','battery_tip',420,41,1,4,home,bg_color='#78836c')
 add('container','battery_fill',402,40,9,6,home,bg_color='#78836c',bind='battery_fill_visible',bind_target='visible')
 dyn('battery_text',428,31,23,22,'72%',12,'#78836c',home,font='fonts/DejaVuSansMono.ttf')
 dyn('status',24,339,432,23,'中央试奏 · 录制才保存',13,'#7c886e',home,text_align='center',hidden=True)
-label('capture_status',24,339,432,23,'预备 · 2',13,'#a46848',home,text_align='center',hidden=True,bind='capture_status',bind_target='text',font_charset=charset)
+label('capture_status',24,339,432,23,'预备-3',13,'#a46848',home,text_align='center',hidden=True,bind='capture_status',bind_target='text',font_charset=charset)
 for name,x,color,default,top,bottom in [('volume',16,'#657756',65,'','音量'),('richness',400,'#d95535',50,'丰富','简洁')]:
     p=add('container',name, x,89,64,207,home,bg_color='#e7ebdf',border_color='#d8dece',border_width=1,radius=24)
     if top:label(name+'_top',0,13,64,24,top,14,'#67785a',p,text_align='center')
@@ -214,7 +214,7 @@ home_en={
     'identity_separator':('·',17,'·'),
     'phrase_title':('Accent',16,phrase_names_en),
     'status':('Tap to try · Record to keep',12,home_status_en),
-    'capture_status':('Ready · 2',12,home_status_en),
+    'capture_status':('Ready · 3',12,home_status_en),
     'volume_bottom':('Volume',14,'Volume'),
     'richness_top':('Rich',14,'Rich'),
     'richness_bottom':('Simple',14,'Simple'),
@@ -463,7 +463,7 @@ guide_page=settings_page('guide','怎么玩','How to play')
 guide_copy=locales('guide',guide_page)
 steps=[
     ('中央试奏','Try a sound','敲敲中央，先听听声音。','Tap the center to hear a sound.','不会改变已有节奏。','Your rhythm stays unchanged.'),
-    ('录下节奏','Record a rhythm','点“录制”，预备 2 拍后，','Tap Record. After 2 count-in beats,','在 4 拍内敲出你的节奏。','tap your rhythm over 4 beats.'),
+    ('录下节奏','Record a rhythm','点“录制”，预备 3 秒后，','Tap Record. After 3 seconds,','在 4 拍内敲出你的节奏。','tap your rhythm over 4 beats.'),
     ('换种回应','Choose a reply','在“角色”里选择声音和表达。','Choose a voice and expression in Role.','同一段节奏，也能有不同回应。','The same rhythm can reply differently.'),
     ('循环播放','Keep it playing','点“播放”循环，点“暂停”停下。','Tap Play to loop; tap Pause to stop.','节奏保留，随时再来。','Your rhythm is ready for another go.')]
 for i,step in enumerate(steps):

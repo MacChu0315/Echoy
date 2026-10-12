@@ -18,8 +18,8 @@
 - Dependency revisions and tool versions are recorded in `docs/dependencies.json`.
   Use GSP 1.5.1 / GSPC 0.6.1 and the pinned ESP32-S31 SDK, not arbitrary latest tools.
 - Recording captures touch timestamps, not microphone audio. Preserve initial
-  silence, two count-in beats, four recording beats, cancel/empty-record behavior,
-  one-shot reply and explicit per-device continuous-play permission.
+  silence, three one-second preparation counts, four recording beats,
+  cancel/empty-record behavior, one-shot reply and explicit per-device continuous-play permission.
 - Preserve the retained Vibe Mode/Recovery partition and integration contract.
   Device writes use the official `mosaico.py` workflow and current user authorization.
   Never infer physical audio, wireless or timing acceptance from PC results.

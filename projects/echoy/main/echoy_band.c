@@ -313,9 +313,16 @@ bool echoy_band_action(echoy_band_t *b, echoy_tile_id_t id, echoy_action_t actio
             echoy_arrange_mute(b->arrange, id);
             echoy_model_get_snapshot(v->model, &s);
             if (s.phase == ECHOY_COUNT_IN) {
-                for (int i = 0; i < 6; i++) {
-                    if (!cue(b, id, i == 2 ? ECHOY_AUDIO_CAPTURE_START : ECHOY_AUDIO_GUIDE,
-                             s.capture_at_us + (i - 2) * INT64_C(625000), true)) {
+                for (int i = 0; i < ECHOY_COUNT_IN_STEPS; i++) {
+                    if (!cue(b, id, ECHOY_AUDIO_GUIDE,
+                             s.capture_at_us - (ECHOY_COUNT_IN_STEPS - i) * ECHOY_COUNT_IN_STEP_US,
+                             true)) {
+                        ok = false;
+                    }
+                }
+                for (int i = 0; i < 4; i++) {
+                    if (!cue(b, id, i == 0 ? ECHOY_AUDIO_CAPTURE_START : ECHOY_AUDIO_GUIDE,
+                             s.capture_at_us + i * INT64_C(625000), true)) {
                         ok = false;
                     }
                 }

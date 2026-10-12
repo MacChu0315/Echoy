@@ -3,6 +3,10 @@
 #include <stdint.h>
 #include "echoy_music.h"
 
+/* Preparation uses wall-clock seconds; the four recording beats keep their tempo. */
+#define ECHOY_COUNT_IN_STEPS 3
+#define ECHOY_COUNT_IN_STEP_US INT64_C(1000000)
+
 typedef struct echoy_model *echoy_model_handle_t;
 typedef enum {
     ECHOY_IDLE,

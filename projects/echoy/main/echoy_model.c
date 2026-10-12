@@ -134,7 +134,7 @@ bool echoy_model_record(echoy_model_handle_t m, int64_t now)
     }
     echoy_model_pause(m);
     s->notice = ECHOY_NOTICE_NONE;
-    s->capture_at_us = now + RECORD_LEAD_US + 2 * BEAT_US;
+    s->capture_at_us = now + RECORD_LEAD_US + ECHOY_COUNT_IN_STEPS * ECHOY_COUNT_IN_STEP_US;
     s->phase = ECHOY_COUNT_IN;
     return true;
 }

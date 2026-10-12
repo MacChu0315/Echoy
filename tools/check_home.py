@@ -214,7 +214,7 @@ def main():
                 tap('settings');time.sleep(.15);tap('language_zh');time.sleep(.15);tap('settings_back');time.sleep(.2)
                 pad()
                 assert record_hint_visible(Image.open(shot('try-popup-during-taps')).convert('RGB')), 'Continued tapping obscured the popup'
-                while time.monotonic()<third_at+4.25:time.sleep(.04)
+                while time.monotonic()<third_at+3.25:time.sleep(.04)
                 expired=Image.open(shot('try-reminder-expired')).convert('RGB')
                 assert not record_hint_visible(expired), 'Further tries extended the popup'
                 pad();pad();pad()
@@ -228,7 +228,7 @@ def main():
                 assert not record_hint_visible(cancelled), 'Record/Cancel must dismiss the popup'
                 pad();pad();pad()
                 assert ImageChops.difference(Image.open(shot('try-after-record')).convert('RGB').crop(status_box),cancelled.crop(status_box)).getbbox() is None
-            checks.append('Only the third accepted empty-pad tap shows a large four-second popup; no auto-recording, hold overcount, repeat, or reappearance after Record')
+            checks.append('Only the third accepted empty-pad tap shows a large three-second popup; no auto-recording, hold overcount, repeat, or reappearance after Record')
             # The former Play half now records too; Cancel then returns to one button.
             n=len(state_rows());call('tap',{'x':300,'y':420});phase(1,after=n)
             n=len(state_rows());tap('strip_action');phase(0,after=n)
@@ -251,7 +251,7 @@ def main():
             time.sleep(1.4);assert state_rows()[-1][0]==0
             checks.append('Right-end Cancel works within 240ms and no delayed count-in restarts')
             capture_log_at=len((out/'backend.log').read_text())
-            tap('record');phase(1);time.sleep(.27);before=shot('countin')
+            record_wall=time.monotonic();n=len(state_rows());tap('record');countin=phase(1,after=n);time.sleep(.27);before=shot('countin-3')
             assert Image.open(before).getpixel((370,301))[:3]==paper,'Count-in must not show recording progress'
             call('tap',{'x':64,'y':420});call('tap',{'x':416,'y':420})
             assert not re.search(r'ECHOY_ROUTE route=(role_page|settings_page)',(out/'backend.log').read_text()[capture_log_at:]),'Navigation was active during capture'
@@ -260,7 +260,16 @@ def main():
             call('feed_pointer',{'x':432,'y':111,'pressed':False})
             after=shot('countin-richness-locked');box=(400,89,464,296)
             assert ImageChops.difference(Image.open(before).crop(box),Image.open(after).crop(box)).getbbox() is None
-            phase(2);time.sleep(.7);pad(hold=.4);recording=Image.open(shot('recording-leading-silence')).convert('RGB')
+            countdown_images=[Image.open(before).convert('RGB').crop(status_box)]
+            for second,number in [(1.3,2),(2.3,1)]:
+                while time.monotonic()<record_wall+second:time.sleep(.02)
+                assert state_rows()[-1][0]==1, 'Recording began before the three-second countdown ended'
+                countdown_images.append(Image.open(shot('countin-'+str(number))).convert('RGB').crop(status_box))
+            assert all(ImageChops.difference(countdown_images[i],countdown_images[j]).getbbox() for i,j in [(0,1),(1,2),(0,2)])
+            started=phase(2)
+            assert 3060000<=started[3]-countin[3]<=3350000, (countin,started)
+            checks.append('Three distinct preparation numbers last one second each; capture begins after three seconds plus the retained 60 ms scheduling lead')
+            time.sleep(.7);pad(hold=.4);recording=Image.open(shot('recording-leading-silence')).convert('RGB')
             assert max(abs(a-b) for a,b in zip(recording.getpixel((370,301)),paper))>8
             assert sum(r>140 and r>g*1.6 for r,g,b in recording.crop((96,315,388,330)).getdata())>5
             row=phase(4);seed=row[1];assert seed and seed&15==0 and seed.bit_count()==1,hex(seed)
