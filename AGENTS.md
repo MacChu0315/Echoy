@@ -24,9 +24,11 @@
   Device writes use the official `mosaico.py` workflow and current user authorization.
   Never infer physical audio, wireless or timing acceptance from PC results.
 - The user authorizes subsequent Echoy upgrade-package installations on the
-  verified Mosaico `4553502d49524953010030eda0f452a0` (`/dev/ttyACM0`) without
-  per-package confirmation. Verify identity/artifact, retain Recovery and use
-  the official workflow. This is not authorization for remote repository writes.
+  verified Mosaicos `4553502d49524953010030eda0f452a0` (initially `/dev/ttyACM0`)
+  and `4553502d49524953010030eda0f40c6c` (initially `/dev/ttyACM1`), including
+  dual-device test versions, without per-package confirmation. Verify each
+  identity/artifact, retain Recovery and use the official workflow; USB port
+  names may change. This is not authorization for remote repository writes.
 - Approved audio trial: device-only loudness gain with peak limiting may change
   musical dynamics. Preserve the frozen HTML and musical rules. Numerical
   synthesis optimizations must pass the existing HTML audio comparison budgets;

@@ -375,6 +375,28 @@ comparisons to prior C; audio behavior/ownership/performance and sanitizer check
 21 runtime cases and full official GSP pointer flows in an isolated build.
 See `verification/performance/README.md` for scope, measurements and artifacts.
 
+## Two-board baseline (2026-10-12)
+
+The user authorized installing Echoy and subsequent dual-device test versions on
+the second board `4553502d49524953010030eda0f40c6c` (initially `/dev/ttyACM1`).
+Package `1d57c5719989` replaced its `fruit_slice` application through the official
+system-update workflow, operation `33f48138-97df-4354-9a6c-2073e6cded8f`.
+HEALTHY boot `2867820668781932022` has the expected ELF identity, unchanged
+bootloader and verified Echoy partition layout. The real home screenshot passes;
+at 87.5 seconds the same boot has crash count zero and idle audio reports zero
+partial writes, write errors and estimated deadline misses. The original board
+remains on boot `5127593241566643399` with the identical firmware; it was not
+updated or restarted. Both boards still run independently. Second-board touch
+and listening, then physical discovery, musical-state transport and playback
+clock synchronization remain to be implemented/accepted as applicable.
+
+The second board also reproduced the retained Recovery 0.1.2 startup watchdog
+reset before writing. Crash metadata was preserved; no valid Core Dump existed.
+The installer waited for a stable ready Recovery boot and submitted one update.
+Existing low-level GPIO/I2S startup messages and a display scheduling warning
+are retained in the evidence, not classified as new application failures.
+See `verification/second-device/README.md` for identities, verification and limits.
+
 ## Remaining physical integration
 
 The retained output calibration was accepted provisionally on `4ee7991a5d56`: hardware volume 90,
