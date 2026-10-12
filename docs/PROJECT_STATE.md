@@ -65,7 +65,7 @@ Package `86406d956f52` is now installed, HEALTHY boot `9542740490602219176`, ope
 `ca0930e9-fa6c-4215-8045-99b05123c247`. Identity, healthy/commit, bootloader/partition
 checks and the real single-Record home pass. Audio parameters are unchanged.
 The user confirmed the reminder appears, but found the bottom text too small and
-requested a larger automatically dismissed popup; its implementation is described below.
+requested a larger automatically dismissed popup; the installed follow-up is described below.
 
 Before the write, old Vibe Mode 0.1.2 had one startup interrupt-watchdog reset;
 logs and crash metadata were preserved, with no valid Core Dump. A stable Recovery
@@ -84,8 +84,12 @@ sound continues and the bottom Record action remains available. Recording or
 obtaining a phrase dismisses it. No music or persistence changes were made.
 Native normal/reduced-motion tests and actual shared C audio checks pass, including
 continued sound while the popup is visible; the pinned SDK bundle builds with
-zero warnings. Device delivery is in progress. Evidence is in
-`verification/reminder-popup/README.md`. Existing live previews still show the
+zero warnings. Package `a859d454627f` is installed on the same verified Mosaico,
+HEALTHY boot `11406880910400298043`, operation
+`a0daa59b-0a52-4577-8b40-eb147e3be642`. Identity, commit, bootloader/partition checks
+and the actual Record-only home pass; the same new boot remains normal after a
+minute with no UI or audio write errors. Physical readability feedback is pending.
+Evidence is in `verification/reminder-popup/README.md`. Existing live previews still show the
 previous inline reminder; the new simulator build is `build-sim-reminder-popup`.
 
 ### Harmony home refinement
@@ -417,7 +421,7 @@ phrase 3 (Answer), the original problematic expression, also has no obvious
 distortion at the same higher volume. Physical listening follow-up is closed
 for this trial. On 2026-10-10 the user decided to retain the current volume
 ("音量上就先这样吧"). Keep the output parameters from `7c431dacfd59`;
-the current UI package is `86406d956f52` with those same parameters;
+the current UI package is `a859d454627f` with those same parameters;
 stop further loudness tuning unless requested. This is provisional retention,
 not a claim of measured acoustic performance or the absolute hardware limit.
 Any future substantial loudness improvement needs acoustic/output-chain

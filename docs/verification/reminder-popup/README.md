@@ -50,4 +50,20 @@ python3 tools/desk_preview.py --build-dir projects/echoy/build-sim-reminder-popu
   --no-build --no-browser --port 18902 --visual-ports 3240,3241,3242
 ```
 
-Physical installation and acceptance are pending at this implementation checkpoint.
+## Physical installation (2026-10-12)
+
+The follow-up package `a859d454627f` is installed on the same verified Mosaico
+`4553502d49524953010030eda0f452a0`, using the official update workflow and the
+user's ongoing same-device update authorization. Operation
+`a0daa59b-0a52-4577-8b40-eb147e3be642` succeeded from Recovery boot
+`6479646384073322565` to HEALTHY application boot `11406880910400298043`.
+There was no extra Recovery reset during this follow-up. Image identity,
+healthy/commit evidence and unchanged bootloader/partition-table hashes pass.
+[Device evidence](device-result.json), [actual home](installed-home.png).
+
+`iris device-status`, `iris screenshot` and `iris logs --snapshot` confirm normal
+mode on the same new boot after one minute, crash count zero, ready Record-only
+controls and no UI/audio write/deadline errors. Musical gains and PCM gain are
+unchanged. The previously observed GPIO ISR/I2S initialization messages still
+appear; they did not prevent healthy startup. The popup was left unused for the
+user to trigger with three physical taps; physical readability acceptance is pending.

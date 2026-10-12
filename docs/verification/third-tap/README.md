@@ -87,4 +87,6 @@ was submitted and succeeded. This old Recovery startup issue is not fixed here.
 
 The user confirmed that the reminder appeared on the physical device, but found
 the bottom text too small. They requested a larger automatically dismissed popup;
-that follow-up is pending. The installed wording and audio parameters remain unchanged.
+that follow-up was subsequently implemented and installed as `a859d454627f` (see
+[popup verification](../reminder-popup/README.md)). The wording and audio parameters
+remain unchanged.
