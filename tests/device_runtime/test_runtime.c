@@ -421,10 +421,47 @@ static void probe_partial(void)
     assert(p.error==ESP_ERR_TIMEOUT&&p.frames_accepted<24000);
     until(ECHOY_AUDIO_FAULT,ECHOY_IDLE,0);stop(&d);puts("PASS partial reference write faults without replay");
 }
+static void linked_snapshot_queue(void)
+{
+    echoy_device_handle_t d;
+    start(&d);
+    board_link_update_t *update = calloc(1, sizeof(*update));
+    assert(update);
+    update->attached = update->following = update->valid = update->clock_started = true;
+    update->clock_origin_us = esp_timer_get_time() + 150000;
+    assert(echoy_compose_mask(0x1128,ECHOY_VOICE,2,.5,&update->plan));
+    block_writer();
+    assert(echoy_device_link_receive(d,update));
+    memset(&update->plan,0,sizeof(update->plan)); /* admission must copy the complete snapshot */
+    echoy_control_view_t cached;
+    assert(echoy_device_link_read(d,&cached));
+    fake_hold_write(false);
+    int64_t end=esp_timer_get_time()+2000000;
+    do {
+        cached=view();
+        if(cached.source==ECHOY_TILE_B && cached.plan.count) break;
+        fake_sleep_ms(1);
+    } while(esp_timer_get_time()<end);
+    assert(cached.state.following && cached.source==ECHOY_TILE_B && cached.plan.count);
+    assert(cached.state.phase==ECHOY_IDLE && atomic_load(&fake_nonzero_blocks)==0);
+    size_t count=cached.plan.count;
+    memset(update,0,sizeof(*update));
+    assert(echoy_device_link_receive(d,update));
+    end=esp_timer_get_time()+2000000;
+    do {cached=view();if(!cached.state.following && cached.source==ECHOY_TILE_NONE) break;fake_sleep_ms(1);}
+    while(esp_timer_get_time()<end);
+    assert(!cached.state.following && cached.source==ECHOY_TILE_NONE && cached.plan.count==count);
+    assert(cached.state.phase==ECHOY_IDLE && atomic_load(&fake_nonzero_blocks)==0);
+    free(update);
+    stop(&d);
+    puts("PASS network snapshots are copied off audio, attach stays silent, detach retains phrase");
+}
 int main(int argc, char **argv)
 {
     assert(argc == 2);
-    if (!strcmp(argv[1], "cache"))
+    if (!strcmp(argv[1], "link"))
+        linked_snapshot_queue();
+    else if (!strcmp(argv[1], "cache"))
         unknown_and_cache();
     else if (!strcmp(argv[1], "fifo"))
         fifo_cancel();

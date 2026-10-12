@@ -6,6 +6,11 @@ dependencies:
   esp_iris:
     version: "*"
     override_path: "../../../../esp-mosaico-vibe/submodule/esp-mosaico-utils/ESP-Iris/components/esp_iris"
+  mosaico_network:
+    version: "*"
+    override_path: "../../../../esp-mosaico-vibe/submodule/esp-mosaico-bsp/components/mosaico_network"
   espressif/esp-gsp: "==1.5.1"
   # The BSP display adapter uses headers deprecated by LVGL 9.6.
   lvgl/lvgl: "==9.5.0"
+  # Preserve the previously validated battery driver when resolving link components.
+  espressif/bq27220: "==0.1.2"

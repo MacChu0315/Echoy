@@ -399,6 +399,38 @@ See `verification/second-device/README.md` for identities, verification and limi
 
 ## Remaining physical integration
 
+### Prepared dual-device implementation (2026-10-12, not installed)
+
+Physical linking is now implemented locally for two upright, horizontally joined
+boards: magnetic contact confirmation, full-phrase wireless transport and mapped
+bar clocks feed the existing shared C arrangement/audio owner. Each board keeps
+explicit Play permission; detach retains the exact committed phrase. Radio/RF
+startup finishes before audio activation. Existing UI and output voicing are
+unchanged. The pinned BSP's network/interaction/peer components are used, with
+the existing battery driver explicitly retained at 0.1.2.
+
+Prepared package `7951d5c491a0`, ELF
+`9fc5ef6a4ff95d148414f295d7ef8088774ad2f70daf3447f53c43b31d52d3a9`,
+is at `output/device-release/echoy-dual-device-7951d5c491a0.irisfw`.
+Both physical devices still run `1d57c5719989`: the user was asked to separate
+the boards on a nonmetal surface before startup magnetic calibration, and that
+physical-readiness response is pending. Installation authorization already
+covers both Device IDs; do not ask for it again. After readiness, use the official
+workflow and `output/dual-device/package.json`, verify healthy boots and both
+baseline-ready logs, then request actual horizontal assembly/listening.
+
+Local verification passes: codec 11,236 round trips/232 rejected inputs, host
+transport/clock tests, 23 runtime cases, existing band/calibration tests, 864
+plans/1,552 transitions against the frozen reference, CTest 2/2, and 13 native GSP
+desk checks with real PCM and zero late blocks/clipping. Relevant sanitizer runs
+also pass outside ptrace. The final pinned-SDK bundle build passes with the
+expected factory-partition size warning (the package targets the much larger
+`ota_0` partition and preserves Recovery). Physical radio, magnets, audio timing
+and memory headroom remain unverified. Only two upright horizontal boards are
+supported; playing edits propagate after transfer/preparation and are not a
+simultaneous same-bar transaction. See `verification/dual-device/README.md` for
+implementation, artifact identities, test commands and acceptance boundaries.
+
 The retained output calibration was accepted provisionally on `4ee7991a5d56`: hardware volume 90,
 device PCM gain 6 with .90 peak limiting and diagnostic RPC disabled. The
 one-reference-playback authorization has already been used.
@@ -456,8 +488,9 @@ and reported the battery online. Battery code was not changed here; retain this
 recovered startup observation for later battery validation.
 
 Next: validate single-device touch, speaker, battery and
-resource watermarks on hardware. Then implement/accept physical neighbor
-discovery, transport and clock synchronization on two and three boards. Device
+resource watermarks on hardware, then install and accept the prepared two-board
+discovery, transport and clock integration above. Three-board hardware support
+still needs implementation/acceptance. Device
 export still has no hardware destination; IMU integration is also unfinished.
 Do not repeat the earlier mistake of treating UI-only or single-tile tests as
 completion of the whole musical prototype.

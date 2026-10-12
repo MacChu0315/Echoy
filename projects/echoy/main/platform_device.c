@@ -53,6 +53,8 @@ typedef struct {
 } pcm_block_t;
 struct echoy_device {
     QueueHandle_t commands, startup, jobs, prepared, diagnostics;
+    QueueHandle_t link_updates;
+    board_link_update_t *link_staging;
     SemaphoreHandle_t view_lock;
     EventGroupHandle_t done;
     TaskHandle_t owner_task, prepare_task;
@@ -118,6 +120,28 @@ static bool perform_action(void *ctx, echoy_action_t action, double value, int64
         return false;
     }
     return true;
+}
+bool echoy_device_link_read(void *ctx, echoy_control_view_t *out)
+{
+    struct echoy_device *d = ctx;
+    return d && !atomic_load(&d->stopping) && read_control(d, out);
+}
+bool echoy_device_link_receive(void *ctx, const board_link_update_t *update)
+{
+    struct echoy_device *d = ctx;
+    return d && update && !atomic_load(&d->stopping) &&
+           xQueueOverwrite(d->link_updates, update) == pdTRUE;
+}
+static void process_link(struct echoy_device *d)
+{
+    if (!d->band || xQueueReceive(d->link_updates, d->link_staging, 0) != pdTRUE) return;
+    const board_link_update_t *u = d->link_staging;
+    int64_t now = now_us(d);
+    bool ok = echoy_band_set_upstream(d->band, u->attached && u->following,
+                                      u->valid ? &u->plan : NULL, u->clock_started,
+                                      u->clock_origin_us, u->looping, now);
+    if (ok && u->attached && !u->following) ok = echoy_band_establish_clock(d->band, now);
+    if (!ok) ++d->rejected_actions;
 }
 esp_err_t echoy_device_probe_get(echoy_device_handle_t d, echoy_device_diagnostics_t *out)
 {
@@ -430,6 +454,7 @@ static void owner_worker(void *arg)
     }
     while (!atomic_load(&d->stopping)) {
         update_health(d);
+        process_link(d);
         bool flush = process_commands(d, &audio);
         echoy_condition_t desired = d->audio_fault     ? ECHOY_AUDIO_FAULT
                                     : d->battery_empty ? ECHOY_BATTERY_EMPTY
@@ -595,6 +620,8 @@ static void release_context(struct echoy_device *d)
     if (d->diagnostics) {
         vQueueDelete(d->diagnostics);
     }
+    if (d->link_updates) vQueueDelete(d->link_updates);
+    free(d->link_staging);
     if (d->view_lock) {
         vSemaphoreDelete(d->view_lock);
     }
@@ -639,11 +666,13 @@ esp_err_t echoy_device_start(echoy_device_handle_t *out, echoy_platform_t *platf
     d->jobs = xQueueCreate(1, sizeof(echoy_band_job_t *));
     d->prepared = xQueueCreate(1, sizeof(prepared_t));
     d->diagnostics = xQueueCreate(1, DIAGNOSTIC_BYTES);
+    d->link_updates = xQueueCreate(1, sizeof(board_link_update_t));
+    d->link_staging = heap_caps_calloc(1, sizeof(*d->link_staging), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
     d->view_lock = xSemaphoreCreateMutex();
     d->done = xEventGroupCreate();
     d->block = heap_caps_calloc(1, sizeof(*d->block), MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
     if (!d->commands || !d->startup || !d->jobs || !d->prepared || !d->diagnostics ||
-        !d->view_lock || !d->done || !d->block) {
+        !d->view_lock || !d->done || !d->block || !d->link_updates || !d->link_staging) {
         release_context(d);
         return ESP_ERR_NO_MEM;
     }

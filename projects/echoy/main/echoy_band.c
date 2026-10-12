@@ -48,6 +48,7 @@ struct echoy_band {
     echoy_band_job_t *ready;
     uint64_t issued;
     bool english, reduced_motion;
+    bool upstream_connected;
     int64_t render_until;
     /* Owner-only scratch: keep the 7 KiB empty plan off embedded task stacks. */
     echoy_plan_t empty_plan;
@@ -253,6 +254,72 @@ void echoy_band_delete(echoy_band_t *b)
 const echoy_arrange_t *echoy_band_arrangement(const echoy_band_t *b)
 {
     return b ? b->arrange : NULL;
+}
+static bool sync_clock(echoy_band_t *b, echoy_tile_id_t clock, int64_t origin, bool started, int64_t now)
+{
+    const echoy_arrange_clock_t *old = echoy_arrange_get_clock(b->arrange, clock);
+    if (!old || origin < 0) return false;
+    int64_t delta = 0;
+    if (old->started && started) {
+        /* Equivalent origins separated by whole bars must not move playback. */
+        delta = (origin - old->origin_us) % BAR;
+        if (delta > BAR / 2) delta -= BAR;
+        if (delta < -BAR / 2) delta += BAR;
+    }
+    if (!echoy_arrange_clock_sync(b->arrange, clock, origin, started, now)) return false;
+    for (int i = 0; i < N; ++i) {
+        if (echoy_arrange_get_tile(b->arrange, i)->clock_id != clock) continue;
+        struct voice *v = &b->voices[i];
+        for (unsigned j = 0; j < RECORDS; ++j) {
+            struct playback *p = &v->play[j];
+            if (p->bank && p->loop) {
+                bool running = p->at <= now;
+                p->at += delta;
+                /* Keep an active loop active: represent its corrected phase
+                 * using an earlier equivalent bar, not a new future start. */
+                if (running && p->at > now) p->at -= BAR;
+            }
+        }
+        echoy_model_sync_clock(v->model, origin, started);
+        const echoy_arrange_pending_t *pending = echoy_arrange_get_pending(b->arrange);
+        if (pending && (pending->job.changed_mask & (1u << i)))
+            echoy_model_set_external_pending(v->model, true, pending->at_us);
+    }
+    return true;
+}
+
+bool echoy_band_establish_clock(echoy_band_t *b, int64_t now)
+{
+    if (!b || now < 0 || now > INT64_MAX - 150000) return false;
+    echoy_tile_id_t clock = echoy_arrange_get_tile(b->arrange, ECHOY_TILE_A)->clock_id;
+    const echoy_arrange_clock_t *c = echoy_arrange_get_clock(b->arrange, clock);
+    return c->started || sync_clock(b, clock, now + 150000, true, now);
+}
+
+bool echoy_band_set_upstream(echoy_band_t *b, bool connected, const echoy_plan_t *plan,
+                             bool started, int64_t origin, bool playing, int64_t now)
+{
+    if (!b || now < 0 || (started && origin < 0)) return false;
+    if (!connected) {
+        if (!b->upstream_connected) return true;
+        if (!echoy_band_set_edges(b, NULL, 0, now) ||
+            !echoy_arrange_set_present(b->arrange, ECHOY_TILE_B, false)) return false;
+        b->upstream_connected = false;
+        return true;
+    }
+    if (!b->upstream_connected) {
+        /* An earlier peer's partial transfer cannot become the new upstream. */
+        b->empty_plan = (echoy_plan_t){.role=ECHOY_PULSE,.phrase=1,.density=.5,.duration=2.5};
+        if (!echoy_arrange_import(b->arrange, ECHOY_TILE_B, plan ? plan : &b->empty_plan) ||
+            !echoy_arrange_set_present(b->arrange, ECHOY_TILE_B, true)) return false;
+        const echoy_arrange_edge_t edge = {ECHOY_TILE_B,ECHOY_TILE_A};
+        if (!echoy_band_set_edges(b, &edge, 1, now)) return false;
+        b->upstream_connected = true;
+    } else if (plan && !echoy_arrange_import(b->arrange, ECHOY_TILE_B, plan)) {
+        return false;
+    }
+    if (!echoy_arrange_peer_loop(b->arrange, ECHOY_TILE_B, playing)) return false;
+    return !started || sync_clock(b, ECHOY_TILE_B, origin, true, now);
 }
 bool echoy_band_set_edges(echoy_band_t *b, const echoy_arrange_edge_t *edges, size_t count,
                           int64_t now)

@@ -30,6 +30,7 @@ class DeviceRuntime(unittest.TestCase):
         result=subprocess.run([str(self.binary),name],capture_output=True,text=True,timeout=10)
         self.assertEqual(result.returncode,0,result.stdout+'\n'+result.stderr)
         self.assertIn('PASS ',result.stdout)
+    def test_link_snapshots_preserve_audio_owner_and_silence(self):self.run_case('link')
     def test_cache_unknown_battery_and_blocked_io(self):self.run_case('cache')
     def test_record_cancel_fifo(self):self.run_case('fifo')
     def test_failed_calibration_cannot_play_uncalibrated_bank(self):self.run_case('calibration_failure')

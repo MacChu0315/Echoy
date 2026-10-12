@@ -4,9 +4,10 @@ idf_component_register(
         "echoy_audio_probe.c" "echoy_audio_diagnostics.c"
         "echoy_device_pcm.c"
         "echoy_display.c"
+        "board_link.c" "echoy_link_codec.c"
     INCLUDE_DIRS "."
     REQUIRES esp_iris esp-mosaico-bsp esp_mosaico_app_recovery
         esp_mosaico_gsp_bundle esp_mosaico_gsp_iris freertos nvs_flash
-    PRIV_REQUIRES esp_timer esp-gsp esp_display_present esp_lcd esp_driver_i2s esp_driver_gpio esp_driver_i2c esp_codec_dev)
+    PRIV_REQUIRES esp_timer esp-gsp esp_display_present esp_lcd esp_driver_i2s esp_driver_gpio esp_driver_i2c esp_codec_dev mosaico_network mosaico_interaction mosaico_peer_link)
 include("${MOSAICO_UTILS_ROOT}/mosaico-tools/cmake/gsp_bundle.cmake")
 mosaico_gsp_add_ui_bundle(${COMPONENT_LIB} "../ui/main.json")

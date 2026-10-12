@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 #include "board_audio.h"
+#include "board_link.h"
 #include "echoy_ui.h"
 #include "esp_err.h"
 
@@ -27,6 +28,9 @@ typedef struct {
  * no hardware access. Start pauses music; one-second test never resumes it. */
 esp_err_t echoy_device_probe_request(echoy_device_handle_t device, bool start);
 esp_err_t echoy_device_probe_get(echoy_device_handle_t device, echoy_device_diagnostics_t *out);
+/* Link-worker callbacks: cached reads and copied latest-state admission only. */
+bool echoy_device_link_read(void *device, echoy_control_view_t *out);
+bool echoy_device_link_receive(void *device, const board_link_update_t *update);
 
 /* Firmware lifecycle only. BSP power/I2C must already be initialized. GSP
  * callbacks receive only nonblocking queue admission and a cached loading view.

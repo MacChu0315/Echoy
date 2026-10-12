@@ -487,6 +487,42 @@ dependencies:
       path: ../../../esp-mosaico-vibe/submodule/esp-mosaico-bsp/components/mosaico_boot_splash
       type: local
     version: 0.1.0
+  mosaico_interaction:
+    dependencies:
+    - name: idf
+      version: '>=5.5'
+    source:
+      path: ../../../esp-mosaico-vibe/submodule/esp-mosaico-bsp/components/mosaico_interaction
+      type: local
+    targets:
+    - esp32s31
+    version: 0.3.0
+  mosaico_network:
+    dependencies:
+    - name: idf
+      version: '>=6.2'
+    - name: mosaico_interaction
+      override_path: ../mosaico_interaction
+    - name: mosaico_peer_link
+      override_path: ../mosaico_peer_link
+    source:
+      path: ../../../esp-mosaico-vibe/submodule/esp-mosaico-bsp/components/mosaico_network
+      type: local
+    targets:
+    - esp32s31
+    version: 0.2.0
+  mosaico_peer_link:
+    dependencies:
+    - name: idf
+      version: '>=5.5'
+    - name: mosaico_interaction
+      override_path: ../mosaico_interaction
+    source:
+      path: ../../../esp-mosaico-vibe/submodule/esp-mosaico-bsp/components/mosaico_peer_link
+      type: local
+    targets:
+    - esp32s31
+    version: 0.4.0
   tangyumei3535/bmm150_sensorapi:
     component_hash: fe12d09c0ff06fabe9f4ae8fcc54b8b0ee59b936650bd26e8a3742e282fa4465
     dependencies:
@@ -504,9 +540,11 @@ dependencies:
 direct_dependencies:
 - esp-mosaico-bsp
 - esp_iris
+- espressif/bq27220
 - espressif/esp-gsp
 - idf
 - lvgl/lvgl
-manifest_hash: 0f2f2d1fe74c50564246d113b35c3db6711d75bcfa48cfe2768bf82038956ab3
+- mosaico_network
+manifest_hash: 1e12fbe1bb113a0dfabbe12d0fea2931926ec4fe3ab338e889d454cd72227498
 target: esp32s31
 version: 3.0.0

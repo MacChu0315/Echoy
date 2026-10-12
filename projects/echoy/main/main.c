@@ -85,6 +85,11 @@ void app_main(void)
     platform.software_version = esp_app_get_description()->version;
     esp_gsp_err_t ui_error = echoy_ui_create(ui, &platform, &s_ui);
     if (ui_error == ESP_GSP_OK) {
+        /* Radio initialization may write RF calibration/NVS. Finish it before
+         * activating the uninterrupted speaker sample clock. */
+        ui_error = board_link_start(echoy_device_link_read, echoy_device_link_receive, s_device);
+    }
+    if (ui_error == ESP_GSP_OK) {
         /* Accepting the image writes OTA/NVS metadata and can suspend cached
          * I2S interrupts. Complete it before starting the sample clock, never
          * by lengthening the audio timeout or hiding an interrupted stream. */
@@ -103,6 +108,10 @@ void app_main(void)
             return;
         }
         s_ui = NULL;
+        if (board_link_stop(5000) != ESP_OK) {
+            ESP_LOGE(TAG, "link shutdown pending; retaining callback context");
+            return;
+        }
         esp_err_t stop_error = echoy_device_stop(&s_device, 5000);
         if (stop_error != ESP_OK) {
             ESP_LOGE(TAG, "runtime shutdown pending: %s", esp_err_to_name(stop_error));
@@ -111,7 +120,7 @@ void app_main(void)
     }
 
     ESP_LOGI(TAG,
-             "Echoy single-device controller ready at %dx%d RGB565; speaker initializes silently",
+             "Echoy physical link controller ready at %dx%d RGB565; speaker initializes silently",
              BSP_LCD_H_RES, BSP_LCD_V_RES);
 #if CONFIG_ECHOY_AUDIO_DIAGNOSTICS
     CHECK_START(echoy_audio_diagnostics_register(s_device));

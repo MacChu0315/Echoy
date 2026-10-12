@@ -60,4 +60,6 @@ void echoy_model_apply_external(echoy_model_handle_t model, const echoy_plan_t *
                                 uint32_t revision, bool following, int64_t origin_us,
                                 bool clock_started);
 void echoy_model_set_external_pending(echoy_model_handle_t model, bool pending, int64_t at_us);
+/* Clock corrections must preserve pending plans, captures and playback permission. */
+void echoy_model_sync_clock(echoy_model_handle_t model, int64_t origin_us, bool started);
 bool echoy_model_start_external(echoy_model_handle_t model, uint32_t generation, int64_t start_us);

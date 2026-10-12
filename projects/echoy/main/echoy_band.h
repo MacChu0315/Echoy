@@ -12,6 +12,13 @@ bool echoy_band_action(echoy_band_t *band, echoy_tile_id_t tile, echoy_action_t 
                        double value, int64_t now_us);
 bool echoy_band_set_edges(echoy_band_t *band, const echoy_arrange_edge_t *edges, size_t count,
                           int64_t now_us);
+/* Hardware: local A follows an inaudible B replica of the physical left tile.
+ * NULL plan means a connected peer has not delivered a complete snapshot yet.
+ * origin_us is already translated to this device's monotonic timeline. */
+bool echoy_band_set_upstream(echoy_band_t *band, bool connected, const echoy_plan_t *plan,
+                             bool clock_started, int64_t origin_us, bool playing, int64_t now_us);
+/* Establish a shared clock on a connected left tile, without starting playback. */
+bool echoy_band_establish_clock(echoy_band_t *band, int64_t now_us);
 void echoy_band_tick(echoy_band_t *band, int64_t now_us);
 bool echoy_band_read(echoy_band_t *band, echoy_tile_id_t tile, echoy_control_view_t *out);
 const echoy_arrange_t *echoy_band_arrangement(const echoy_band_t *band);

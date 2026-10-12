@@ -29,6 +29,11 @@
   dual-device test versions, without per-package confirmation. Verify each
   identity/artifact, retain Recovery and use the official workflow; USB port
   names may change. This is not authorization for remote repository writes.
+- Physical linking uses the pinned BSP's magnetic classifier and ESP-NOW network.
+  Start radio/RF initialization before audio activation; network and sensor I/O
+  stay off the audio owner. Keep boards separated on a nonmetal surface during
+  startup magnetic calibration, then wait for the baseline-ready logs before
+  testing a horizontal seam. Never substitute radio proximity for physical contact.
 - Approved audio trial: device-only loudness gain with peak limiting may change
   musical dynamics. Preserve the frozen HTML and musical rules. Numerical
   synthesis optimizations must pass the existing HTML audio comparison budgets;

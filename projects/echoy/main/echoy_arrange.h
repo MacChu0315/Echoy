@@ -77,6 +77,13 @@ const echoy_arrange_edge_t *echoy_arrange_get_edges(const echoy_arrange_t *model
 
 bool echoy_arrange_set_seed(echoy_arrange_t *model, echoy_tile_id_t tile,
                             const echoy_seed_note_t *notes, size_t count);
+/* Device adapter: an inaudible upstream replica supplies an already validated
+ * complete phrase. The portable compiler still produces the local accompaniment. */
+bool echoy_arrange_import(echoy_arrange_t *model, echoy_tile_id_t tile,
+                          const echoy_plan_t *plan);
+bool echoy_arrange_clock_sync(echoy_arrange_t *model, echoy_tile_id_t clock,
+                              int64_t origin_us, bool started, int64_t now_us);
+bool echoy_arrange_peer_loop(echoy_arrange_t *model, echoy_tile_id_t tile, bool playing);
 /* Patches follow the prototype's order: role/memory first, then phrase, then
  * density. An invalid phrase after a valid role leaves that role change in
  * place, without advancing revision, just as the original JS exception does.

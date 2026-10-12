@@ -12,11 +12,14 @@ struct echoy_arrange {
     echoy_arrange_edge_t edges[ECHOY_ARRANGE_MAX_EDGES];
     echoy_arrange_edge_t wanted[ECHOY_ARRANGE_MAX_EDGES];
     echoy_arrange_tile_t tiles[ECHOY_ARRANGE_TILE_COUNT];
+    bool external[ECHOY_ARRANGE_TILE_COUNT];
+    echoy_arrange_plan_t imported[ECHOY_ARRANGE_TILE_COUNT];
     echoy_arrange_clock_t clocks[ECHOY_ARRANGE_TILE_COUNT];
     /* Retain JS clock arithmetic between calls; the public scheduler uses
      * rounded microseconds. This also preserves ceil behavior at boundaries. */
     double origin_seconds[ECHOY_ARRANGE_TILE_COUNT], pending_seconds;
     bool has_pending;
+    echoy_tile_id_t pending_clock;
     echoy_arrange_pending_t pending;
 };
 
@@ -331,6 +334,64 @@ static uint8_t changes(const echoy_arrange_t *m, const echoy_arrange_job_t *job)
     return mask;
 }
 
+bool echoy_arrange_import(echoy_arrange_t *m, echoy_tile_id_t id, const echoy_plan_t *plan)
+{
+    if (!m || !valid_tile(id) || !valid_music(plan) || plan->phrase < 1 ||
+        plan->phrase > 3 || !isfinite(plan->density) || plan->density < 0 ||
+        plan->density > 1 || !isfinite(plan->duration) || plan->duration != BAR_SECONDS ||
+        ((plan->source_count == 0) != (plan->count == 0))) return false;
+    /* The wire codec validates individual notes before this owner-only call. */
+    echoy_arrange_plan_t *p = &m->imported[id];
+    bool same = m->external[id] && p->valid == (plan->source_count != 0) &&
+                p->music.role == plan->role && p->music.phrase == plan->phrase &&
+                p->music.density == plan->density && p->music.source_count == plan->source_count &&
+                p->music.count == plan->count;
+    for (size_t i = 0; same && i < plan->source_count; ++i)
+        same = p->music.source[i].step == plan->source[i].step &&
+               p->music.source[i].velocity == plan->source[i].velocity &&
+               p->music.source[i].kind == plan->source[i].kind;
+    for (size_t i = 0; same && i < plan->count; ++i)
+        same = same_note(&p->music.events[i], &plan->events[i]);
+    if (same) return true;
+    m->external[id] = true;
+    p->valid = plan->source_count != 0;
+    p->source = ECHOY_TILE_NONE;
+    p->music = *plan;
+    m->tiles[id].role = plan->role;
+    m->tiles[id].phrase = plan->phrase;
+    m->tiles[id].density = plan->density;
+    echoy_arrange_invalidate(m);
+    return true;
+}
+
+bool echoy_arrange_clock_sync(echoy_arrange_t *m, echoy_tile_id_t id,
+                              int64_t origin_us, bool started, int64_t now_us)
+{
+    if (!m || !valid_tile(id) || origin_us < 0 || now_us < 0) return false;
+    bool phase_changed = (origin_us - m->clocks[id].origin_us) % ECHOY_ARRANGE_BAR_US != 0;
+    m->clocks[id] = (echoy_arrange_clock_t){origin_us, started};
+    m->origin_seconds[id] = (double)origin_us / 1000000.0;
+    if (m->has_pending && m->pending_clock == id && phase_changed) {
+        /* A correction received after synthesis must also move its queued
+         * replacement. Choose the nearest new bar, keeping the render lead. */
+        double origin = m->origin_seconds[id];
+        double old_at = m->pending_seconds;
+        double at = origin + floor((old_at - origin) / BAR_SECONDS + .5) * BAR_SECONDS;
+        double earliest = (double)now_us / 1000000.0 + .045;
+        if (at < earliest) at += ceil((earliest - at) / BAR_SECONDS) * BAR_SECONDS;
+        if (!microseconds(at, &m->pending.at_us)) return false;
+        m->pending_seconds = at;
+    }
+    return true;
+}
+
+bool echoy_arrange_peer_loop(echoy_arrange_t *m, echoy_tile_id_t id, bool playing)
+{
+    if (!m || !valid_tile(id) || !m->external[id]) return false;
+    m->tiles[id].loop = playing && m->tiles[id].present;
+    return true;
+}
+
 static bool compile_tile(const echoy_arrange_t *m, echoy_arrange_job_t *job, echoy_tile_id_t id,
                           const echoy_tile_id_t parents[3], bool visited[3], bool visiting[3])
 {
@@ -340,6 +401,10 @@ static bool compile_tile(const echoy_arrange_t *m, echoy_arrange_job_t *job, ech
     const echoy_arrange_tile_t *d = &m->tiles[id];
     echoy_arrange_plan_t *p = &job->plans[id];
     if (!d->present) { visited[id] = true; visiting[id] = false; return true; }
+    if (m->external[id]) {
+        *p = m->imported[id]; job->clock_id[id] = id;
+        visited[id] = true; visiting[id] = false; return true;
+    }
     echoy_tile_id_t parent = parents[id];
     if (parent != ECHOY_TILE_NONE && !compile_tile(m, job, parent, parents, visited, visiting)) return false;
     const echoy_arrange_plan_t *up = parent == ECHOY_TILE_NONE ? NULL : &job->plans[parent];
@@ -399,8 +464,10 @@ bool echoy_arrange_stage(echoy_arrange_t *m, const echoy_arrange_job_t *job, int
         }
     }
     double now = (double)now_us / 1000000.0, at = now + .045;
+    m->pending_clock = ECHOY_TILE_NONE;
     if (driver != ECHOY_TILE_NONE) {
         echoy_tile_id_t clock = job->clock_id[driver] == ECHOY_TILE_NONE ? m->tiles[driver].clock_id : job->clock_id[driver];
+        m->pending_clock = clock;
         double origin = m->origin_seconds[clock];
         at = origin + ceil((now + .12 - origin) / BAR_SECONDS) * BAR_SECONDS;
     }

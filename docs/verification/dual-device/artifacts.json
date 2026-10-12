@@ -1,0 +1,117 @@
+{
+  "package": {
+    "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-release/echoy-dual-device-7951d5c491a0.irisfw",
+    "sha256": "7951d5c491a0e983993e6b6b13548343f4524f4489dc5b61218404d7ffc3aa07"
+  },
+  "inspection": {
+    "schema": "esp-iris-system-update/v1",
+    "manifest_sha256": "5cb6e912c9b4e3b6f096c48ce9eae9e05ee407bd4518372a6a4a323e797c8f48",
+    "key_id": null,
+    "chip_id": 32,
+    "flash_size": 16777216,
+    "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+    "components": [
+      {
+        "id": 1,
+        "kind": "partition_table",
+        "flags": 0,
+        "target_offset": 32768,
+        "size": 4096,
+        "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+        "file": "partition-table.bin"
+      },
+      {
+        "id": 2,
+        "kind": "application",
+        "flags": 0,
+        "target_offset": 2162688,
+        "size": 2078784,
+        "sha256": "a7695444bd3ee3b1bac622a4df0a1f71f8499871259b8530f17e45b3f451b747",
+        "file": "ota_0.bin"
+      },
+      {
+        "id": 3,
+        "kind": "data",
+        "flags": 0,
+        "target_offset": 15728640,
+        "size": 380560,
+        "sha256": "16dd35bec54d4427fd18ede442919f352e94d1306ee04fcde80ceaac71a9648b",
+        "file": "ui_apps.bin"
+      }
+    ],
+    "signature_verified": false,
+    "release": "1.0.0",
+    "minimum_recovery_version": "0.1"
+  },
+  "build_run": "20261012-122158-system-update-bundle-2",
+  "installed": false,
+  "note": "Awaiting separated-board readiness. Firmware and local tests complete; no physical wireless or sound acceptance yet.",
+  "echoy.bin": {
+    "bytes": 2078784,
+    "sha256": "a7695444bd3ee3b1bac622a4df0a1f71f8499871259b8530f17e45b3f451b747"
+  },
+  "echoy.elf": {
+    "bytes": 19496184,
+    "sha256": "9fc5ef6a4ff95d148414f295d7ef8088774ad2f70daf3447f53c43b31d52d3a9"
+  },
+  "ui_apps.bin": {
+    "bytes": 380560,
+    "sha256": "16dd35bec54d4427fd18ede442919f352e94d1306ee04fcde80ceaac71a9648b"
+  },
+  "bootloader/bootloader.bin": {
+    "bytes": 21936,
+    "sha256": "41b37a19705df47d10886d757bc5a97bc4d444e125b94e39abf9ea02757c91ea"
+  },
+  "source_files": {
+    "projects/echoy/main/CMakeLists.txt": "b327d4be7df2c690fc12410d8aa5863da98aedc64006b9d578b3a1552e1e90b2",
+    "projects/echoy/main/board_audio.c": "b4cb1b8c973ab8e1626394de3ce65654b46644f30d8ebab1ba9a5f83bd14b25c",
+    "projects/echoy/main/board_audio.h": "0f84137529cdf0b729b505d09a927f5edad44bca137dcda847024d085c2cbf7a",
+    "projects/echoy/main/board_display.c": "0eeee9efaae4a89af4ff8469098a3a0ce63f7fd2cc2c23fb98e027b7f7794af6",
+    "projects/echoy/main/board_display.h": "9b162dbe679d672e3b32101714db2ab1516089cff6deec388a7394b0190e7feb",
+    "projects/echoy/main/board_health.c": "1b51eb1b762680bf602a2fe1d6abeb2d2cd6a6413548e69a7d9bd028bfe4b803",
+    "projects/echoy/main/board_health.h": "827a9b17a087afb8ca828b9d80186a0e647d65b1542c58f63b3700fd51cfe3b3",
+    "projects/echoy/main/board_link.c": "6e8d0a7869b98a24a72feae9e846014368db1bfb00e60e456f78e3003cc41fd5",
+    "projects/echoy/main/board_link.h": "821772381dd8abb41e28ab38dd36cd8f04635e766c14f9c9a4ffb41025542244",
+    "projects/echoy/main/echoy_arrange.c": "fe0e8b775fb8bd88ac327c36a3f31cc0a6ead362eb2e5c00cc76e91dd2ce56d3",
+    "projects/echoy/main/echoy_arrange.h": "511c155df4b5ac7d5237dfaafbe2c7f380097ba9f5f73a0f9f7df97e322da9c9",
+    "projects/echoy/main/echoy_art.c": "78995d9210a6507124f9df02bee23b631ecdd12ffd9dcee154e404c3a156a0b0",
+    "projects/echoy/main/echoy_art.h": "6122467a64179b8c5047905bd407dcb053814c379218054e307026fc06b4bb78",
+    "projects/echoy/main/echoy_art_blend.h": "63790672150c10537346d5c464a65ddea5d21d39aab144827303f9d29b7b67ab",
+    "projects/echoy/main/echoy_art_frame.h": "acb4b5dfcfeda7668a551a7f50f19867d8225ebec578d26b1fe362ed42edd003",
+    "projects/echoy/main/echoy_art_image.c": "d046f9e12ad27dd72723fe0e7f390abbb614446d473fc52ddd109501bb7dc553",
+    "projects/echoy/main/echoy_art_image.h": "2b57b9809b7147c3d1746bb6f7a354b26676489b4746b067890cbec2fa551f43",
+    "projects/echoy/main/echoy_art_tables.h": "4f71d75797d669b5464cf67d7d13ce5cd203ceea98a767e3390dac0b39dd051f",
+    "projects/echoy/main/echoy_audio.c": "91b2f8a3fb391e13f0f3df5004616a10491501344af4a7a313ecc493a969ede6",
+    "projects/echoy/main/echoy_audio.h": "43e33b664f03d31424f13199a7d0ad9396ca8e1179706fc334491862b67b035e",
+    "projects/echoy/main/echoy_audio_diagnostics.c": "17e908e27fa43cea37d9c907375f93faf593d24a40c0cd85e88e36bb5b6f0d40",
+    "projects/echoy/main/echoy_audio_diagnostics.h": "1b049a97933e5298983f055e7ed2091d28340dc68abeb8faf5c6c9c913b33b34",
+    "projects/echoy/main/echoy_audio_probe.c": "45d4a9f577be177540767c998ab60f113ba9591f7123ceb38799f860f12cab5c",
+    "projects/echoy/main/echoy_audio_probe.h": "a2993dee3735038c7bc8ed1ac03295d67a830f4084ec461ea473ce5d5e4a2741",
+    "projects/echoy/main/echoy_band.c": "f25e47105a403db46ca7a4145490b2ba4480eedfc78191c89e7af83c7c9d88f4",
+    "projects/echoy/main/echoy_band.h": "8f466e26a5fe8241d28821fae0462d762390eedba85456e5caca42186b769578",
+    "projects/echoy/main/echoy_control.h": "0d330bf94549369485417d2b6e5c0b342b3c7049bba3c065ca8e4d36b62772a5",
+    "projects/echoy/main/echoy_device_pcm.c": "f888c952ad5ae1c774f552020efed20f2227edb11bcc53c74aed5b012cf10c6a",
+    "projects/echoy/main/echoy_device_pcm.h": "4433aaa5d0ddbf0420ca33ba7de635de4be52aecd11998ac4f83c110c693ebf3",
+    "projects/echoy/main/echoy_display.c": "bc388dc32184e3cce1a72aa6f9b88cb5cb757c5bbf986b042073f0f4a3c4e7e1",
+    "projects/echoy/main/echoy_display.h": "0e8c5cd3aff6ee8d39ac5b1a11be28f4c93b1764b09c6e9c6adf98bd13e14bdb",
+    "projects/echoy/main/echoy_link_codec.c": "8fdf823a71f75467e72a83a1d771312f5038628a9c4d6c98ceb517c3bca0b66d",
+    "projects/echoy/main/echoy_link_codec.h": "434e7db076932f616288e9f7eb1d9d47b0952c2bf7aad550542170e23535322c",
+    "projects/echoy/main/echoy_model.c": "941250f21e84caa9e9d550ace79a4f12d0d18c977ea0f890ab105d4b5528d384",
+    "projects/echoy/main/echoy_model.h": "342fe2c5dd3e566b65cb031960e1dcd9be21a00634ca407c552a886de43e2d8a",
+    "projects/echoy/main/echoy_music.c": "b4dd6f3449dbb56c1122453c10c2461afc7872df2fd1c4ef7819f37925f96e33",
+    "projects/echoy/main/echoy_music.h": "369dd3803b89ccb9cce7f0f94d76313fdceaa5f8f7250b3152c1a88f48f77500",
+    "projects/echoy/main/echoy_strip.c": "82083db15d25ba7880fdd466936ace19af714e53bf080848aa3926f37d1bb8bd",
+    "projects/echoy/main/echoy_strip.h": "403012ffbbdb050f9ad4113893d9eba2ce861d2ce6d47efe80619d260fb741ec",
+    "projects/echoy/main/echoy_strip_image.c": "2487e078bef043c8c2cd59467418239b839b98a8cd5cba05f15406362b0df9b2",
+    "projects/echoy/main/echoy_strip_image.h": "fe218bd397accde0526ebc5c6aeeff9d01f545b9aae4475f05a7d09b75fbce96",
+    "projects/echoy/main/echoy_ui.c": "163bb3163a71490c430d8ca8284b021fa4742d7a8f11a14d826535bfa76b5e16",
+    "projects/echoy/main/echoy_ui.h": "1d100eb6d7caaf19e4235b356cd0e480358a11649db3bd15c22a4cb3d2957ae8",
+    "projects/echoy/main/echoy_view_cache.c": "4711e84df13a2f897fa8843ef1cba7d72e4eb6aea358d7e381c4fdaded969e39",
+    "projects/echoy/main/echoy_view_cache.h": "2913e7bcaaa8bfbdbb9acb01f6c1b4671beaca3bd0fa81e342590fc2d925727b",
+    "projects/echoy/main/echoy_view_keys.h": "75664b95c88b302d9eee1682161ffde8d00a2d19c509d09639643606547765e1",
+    "projects/echoy/main/idf_component.yml": "9d610352e907bfcfb6574cc34490742ed1cb6d1133e46a77ab1364ac7fb020db",
+    "projects/echoy/main/main.c": "37aff9ccc69a694d16c75f2e8ff4b4bdecfa390c1d91701846931dd90f648a3c",
+    "projects/echoy/main/platform_device.c": "7d7c22644aca5f3523db13f9275dfb49e470f56486f6dc60311f77bae36d88da",
+    "projects/echoy/main/platform_device.h": "b13b75ffab578fe55dec7178026271076510bac26b66f9bc93a7494fa7c07b33"
+  }
+}
