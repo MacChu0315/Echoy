@@ -429,14 +429,37 @@ static void linked_snapshot_queue(void)
     assert(update);
     update->attached = update->following = update->valid = update->clock_started = true;
     update->clock_origin_us = esp_timer_get_time() + 150000;
+    update->connection_generation=1; update->session=123; update->transaction=7;
+    update->command=ECHOY_LINK_OFFER;
     assert(echoy_compose_mask(0x1128,ECHOY_VOICE,2,.5,&update->plan));
     block_writer();
     assert(echoy_device_link_receive(d,update));
     memset(&update->plan,0,sizeof(update->plan)); /* admission must copy the complete snapshot */
-    echoy_control_view_t cached;
-    assert(echoy_device_link_read(d,&cached));
+    echoy_link_view_t link;
+    assert(echoy_device_link_read(d,&link));
     fake_hold_write(false);
     int64_t end=esp_timer_get_time()+2000000;
+    do {
+        assert(echoy_device_link_read(d,&link));
+        if (link.offer_ready && link.offered_transaction==7) break;
+        fake_sleep_ms(1);
+    } while (esp_timer_get_time()<end);
+    assert(link.offer_ready && link.offered_transaction==7);
+    assert(!view().plan.count); /* prepare is not publication */
+    update->command=ECHOY_LINK_ARM;
+    update->revision=link.offered_revision;
+    update->commit_at_us=esp_timer_get_time()+400000;
+    assert(echoy_device_link_receive(d,update));
+    do {
+        assert(echoy_device_link_read(d,&link));
+        if (link.armed_transaction==7) break;
+        fake_sleep_ms(1);
+    } while (esp_timer_get_time()<end);
+    assert(link.armed_transaction==7);
+    update->command=ECHOY_LINK_COMMIT;
+    assert(echoy_device_link_receive(d,update));
+    echoy_control_view_t cached;
+    end=esp_timer_get_time()+2000000;
     do {
         cached=view();
         if(cached.source==ECHOY_TILE_B && cached.plan.count) break;
@@ -446,6 +469,7 @@ static void linked_snapshot_queue(void)
     assert(cached.state.phase==ECHOY_IDLE && atomic_load(&fake_nonzero_blocks)==0);
     size_t count=cached.plan.count;
     memset(update,0,sizeof(*update));
+    update->connection_generation=2;
     assert(echoy_device_link_receive(d,update));
     end=esp_timer_get_time()+2000000;
     do {cached=view();if(!cached.state.following && cached.source==ECHOY_TILE_NONE) break;fake_sleep_ms(1);}

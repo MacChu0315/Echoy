@@ -548,6 +548,8 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
 {
     const echoy_plan_t *plan = current_plan(u);
     bool cap = capturing(s->phase), busy = s->phase >= ECHOY_PREPARING;
+    echoy_cooperation_t cooperation = u->platform.read_control ? u->external.cooperation
+                                                              : ECHOY_COOP_SOLO;
     /* Once Record has been used or a phrase exists, first-use guidance is done. */
     if (plan->count || s->phase != ECHOY_IDLE) {
         u->trial_taps = TRIAL_HINT_TAPS;
@@ -561,7 +563,7 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
                 !(u->platform.read_control && u->external.preparing) &&
                 now < u->record_hint_until_us;
     SHOW(u, "record_hint_popup", hint);
-    char status[128] = {0};
+    char status[192] = {0};
     if (cap) {
         if (s->phase == ECHOY_COUNT_IN) {
             int remaining = (int)((s->capture_at_us - now + ECHOY_COUNT_IN_STEP_US - 1) /
@@ -591,18 +593,48 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
                            : tr(u, "试听一次 · 结束自动停", "One reply · Stops at the end"));
     } else if (s->phase == ECHOY_PLAYING && now < s->start_us) {
         strcpy(status, tr(u, "等共同拍点开始", "Waiting for the shared beat"));
-    } else if (!plan->count) {
+    } else if (!plan->count && cooperation != ECHOY_COOP_WAITING &&
+               cooperation != ECHOY_COOP_FOLLOWING && cooperation != ECHOY_COOP_RECOVERING) {
         strcpy(status, tr(u, "中央试奏 · 录制才保存", "Tap to try · Record to keep"));
     }
-    if (s->notice == ECHOY_NOTICE_CANCELLED) {
+    if (!cap && s->notice == ECHOY_NOTICE_CANCELLED) {
         strcpy(status, tr(u, "已取消，原节奏保留", "Cancelled; original rhythm kept"));
     }
-    if (s->notice == ECHOY_NOTICE_EMPTY) {
+    if (!cap && s->notice == ECHOY_NOTICE_EMPTY) {
         strcpy(status, tr(u, "没有录入，原节奏保留", "No notes captured; original kept"));
     }
-    if (u->platform.read_control && u->external.preparation_failed) {
+    if (!cap && u->platform.read_control && u->external.preparation_failed) {
         strcpy(status, tr(u, "新声音没有准备好，原来的继续",
                           "Preparation failed; current sound continues"));
+    }
+    /* The existing status line carries both the local operation and the link.
+     * Never replace capture progress or a cancel/failure notice with link text. */
+    const char *link_status = NULL;
+    switch (cooperation) {
+    case ECHOY_COOP_CONNECTED:
+        link_status = tr(u, "已连接", "Connected");
+        break;
+    case ECHOY_COOP_WAITING:
+        link_status = plan->count ? tr(u, "已连接 · 等待左侧乐句", "Connected · Waiting for left phrase")
+                                  : tr(u, "已连接 · 等待左侧录制", "Connected · Waiting for left recording");
+        break;
+    case ECHOY_COOP_DEFERRED:
+        link_status = s->phase == ECHOY_PREVIEW
+                          ? tr(u, "结束后加入", "Join when done")
+                          : tr(u, "录完后加入", "Join after recording");
+        break;
+    case ECHOY_COOP_FOLLOWING:
+        link_status = tr(u, "跟随左侧", "Following left");
+        break;
+    case ECHOY_COOP_RECOVERING:
+        link_status = tr(u, "连接恢复中", "Reconnecting");
+        break;
+    case ECHOY_COOP_SOLO:
+        break;
+    }
+    if (link_status) {
+        size_t used = strlen(status);
+        snprintf(status + used, sizeof(status) - used, "%s%s", used ? " · " : "", link_status);
     }
     if (status[0]) {
         local_text(u, "status", status);

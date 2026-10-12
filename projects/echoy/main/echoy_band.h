@@ -2,6 +2,7 @@
 #include "echoy_arrange.h"
 #include "echoy_audio.h"
 #include "echoy_control.h"
+#include "echoy_coop.h"
 typedef struct echoy_band echoy_band_t;
 typedef struct echoy_band_job echoy_band_job_t;
 typedef struct {
@@ -24,6 +25,9 @@ bool echoy_band_set_upstream(echoy_band_t *band, bool connected, const echoy_pla
                              bool clock_started, int64_t origin_us, bool playing, int64_t now_us);
 /* Establish a shared clock on a connected left tile, without starting playback. */
 bool echoy_band_establish_clock(echoy_band_t *band, int64_t now_us);
+/* Serialized PCM/control owner; copied snapshots cross into the link worker. */
+bool echoy_band_link_update(echoy_band_t *band, const echoy_link_update_t *update, int64_t now_us);
+bool echoy_band_link_read(echoy_band_t *band, echoy_link_view_t *out);
 void echoy_band_tick(echoy_band_t *band, int64_t now_us);
 bool echoy_band_read(echoy_band_t *band, echoy_tile_id_t tile, echoy_control_view_t *out);
 const echoy_arrange_t *echoy_band_arrangement(const echoy_band_t *band);

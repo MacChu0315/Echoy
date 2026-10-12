@@ -1,0 +1,39 @@
+{
+  "package": {
+    "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-release/echoy-cooperation-ace57f3ff2b0.irisfw",
+    "sha256": "ace57f3ff2b08583de345c248474bb60e4a62b921f5da523641cb7bcbd67e013"
+  },
+  "devices": [
+    {
+      "device_id": "4553502d49524953010030eda0f452a0",
+      "boot_id": "6968030823019921606",
+      "operation_id": "0c47f6c4-e554-45d3-bd41-cb3fdf9d336b",
+      "firmware_sha256": "79e4f1701d3775e379d160ee4ce0bf3816d0b82d0fa3bb362fd6d9731b440acd",
+      "healthy": true,
+      "validated": true,
+      "application_crash_count": 0,
+      "baseline_ready": true,
+      "retained_bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+      "recovery_crash_count": 1,
+      "recovery_reset_reason": 5,
+      "evidence_dir": "output/dual-device/cooperation-first"
+    },
+    {
+      "device_id": "4553502d49524953010030eda0f40c6c",
+      "boot_id": "9645677825573746719",
+      "operation_id": "b8a34b86-6b57-490a-9f0e-17a0b2ac5877",
+      "firmware_sha256": "79e4f1701d3775e379d160ee4ce0bf3816d0b82d0fa3bb362fd6d9731b440acd",
+      "healthy": true,
+      "validated": true,
+      "application_crash_count": 0,
+      "baseline_ready": true,
+      "retained_bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+      "recovery_crash_count": 1,
+      "recovery_reset_reason": 5,
+      "evidence_dir": "output/dual-device/cooperation-second"
+    }
+  ],
+  "scope": "Verified official installation, identities, healthy boots, retained layout and bootloader, separated magnetic baselines and actual homes. New cooperative interactions await physical acceptance."
+}

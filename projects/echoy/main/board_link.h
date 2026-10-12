@@ -1,17 +1,13 @@
 #pragma once
 
-#include "echoy_control.h"
+#include "echoy_coop.h"
 #include "esp_err.h"
 
-typedef struct {
-    bool attached, following, valid, clock_started, looping;
-    int64_t clock_origin_us;
-    echoy_plan_t plan;
-} board_link_update_t;
+typedef echoy_link_update_t board_link_update_t;
 
 /* Both callbacks run on the link worker. They must copy their inputs/outputs;
  * returning false requests a later retry. Neither callback may block audio. */
-typedef bool (*board_link_read_fn)(void *ctx, echoy_control_view_t *out);
+typedef bool (*board_link_read_fn)(void *ctx, echoy_link_view_t *out);
 typedef bool (*board_link_receive_fn)(void *ctx, const board_link_update_t *update);
 
 /* Process-lifetime singleton. Wi-Fi/NVS/RF initialization is synchronous, so

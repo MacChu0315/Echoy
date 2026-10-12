@@ -61,6 +61,8 @@ struct echoy_device {
     board_health_handle_t health;
     echoy_band_t *band; /* Exclusively owned by audio/control after startup handoff. */
     echoy_control_view_t cache, staging;
+    echoy_link_view_t link_cache, link_view_staging;
+    int64_t next_link_publish_us;
     pcm_block_t *block;
     atomic_bool stopping, queue_fault, accepting, owner_exited, prepare_exited, activated;
     bool audio_fault, fatal, preparation_in_flight, battery_empty;
@@ -123,10 +125,14 @@ static bool perform_action(void *ctx, echoy_action_t action, double value, int64
     }
     return true;
 }
-bool echoy_device_link_read(void *ctx, echoy_control_view_t *out)
+bool echoy_device_link_read(void *ctx, echoy_link_view_t *out)
 {
     struct echoy_device *d = ctx;
-    return d && !atomic_load(&d->stopping) && read_control(d, out);
+    if (!d || !out || atomic_load(&d->stopping)) return false;
+    xSemaphoreTake(d->view_lock, portMAX_DELAY);
+    *out=d->link_cache;
+    xSemaphoreGive(d->view_lock);
+    return true;
 }
 bool echoy_device_link_receive(void *ctx, const board_link_update_t *update)
 {
@@ -139,10 +145,7 @@ static void process_link(struct echoy_device *d)
     if (!d->band || xQueueReceive(d->link_updates, d->link_staging, 0) != pdTRUE) return;
     const board_link_update_t *u = d->link_staging;
     int64_t now = now_us(d);
-    bool ok = echoy_band_set_upstream(d->band, u->attached && u->following,
-                                      u->valid ? &u->plan : NULL, u->clock_started,
-                                      u->clock_origin_us, u->looping, now);
-    if (ok && u->attached && !u->following) ok = echoy_band_establish_clock(d->band, now);
+    bool ok = echoy_band_link_update(d->band, u, now);
     if (!ok) ++d->rejected_actions;
 }
 esp_err_t echoy_device_probe_get(echoy_device_handle_t d, echoy_device_diagnostics_t *out)
@@ -207,8 +210,11 @@ static void finish_probe(struct echoy_device *d, echoy_probe_phase_t phase, esp_
 }
 static void publish(struct echoy_device *d)
 {
+    int64_t now=now_us(d);
+    bool link_due=now>=d->next_link_publish_us;
     if (d->band) {
         echoy_band_read(d->band, ECHOY_TILE_A, &d->staging);
+        if (link_due) echoy_band_link_read(d->band,&d->link_view_staging);
     }
     board_health_snapshot_t health;
     bool known = d->health && board_health_get(d->health, &health) == ESP_OK && health.valid;
@@ -220,6 +226,11 @@ static void publish(struct echoy_device *d)
     xSemaphoreTake(d->view_lock, portMAX_DELAY);
     d->cache = d->staging;
     d->probe_cache = d->probe;
+    if (link_due) {
+        d->link_view_staging.available=d->band && d->condition==ECHOY_NORMAL;
+        d->link_cache=d->link_view_staging;
+        d->next_link_publish_us=now+50000;
+    }
     xSemaphoreGive(d->view_lock);
 }
 static void set_condition(struct echoy_device *d, echoy_condition_t condition)

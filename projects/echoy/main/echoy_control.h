@@ -7,6 +7,14 @@ typedef enum {
     ECHOY_BATTERY_EMPTY
 } echoy_condition_t;
 typedef enum {
+    ECHOY_COOP_SOLO,
+    ECHOY_COOP_CONNECTED,
+    ECHOY_COOP_WAITING,
+    ECHOY_COOP_DEFERRED,
+    ECHOY_COOP_FOLLOWING,
+    ECHOY_COOP_RECOVERING
+} echoy_cooperation_t;
+typedef enum {
     ECHOY_COMMAND_NONE,
     ECHOY_COMMAND_RESTORE,
     ECHOY_COMMAND_AUDIO_FAULT,
@@ -41,4 +49,5 @@ typedef struct {
     bool battery_unknown, imu_unknown;
     int tile, source, clock;
     echoy_condition_t condition;
+    echoy_cooperation_t cooperation;
 } echoy_control_view_t;

@@ -94,12 +94,17 @@ bool echoy_arrange_set_present(echoy_arrange_t *model, echoy_tile_id_t tile, boo
 /* Validate the entire ordered chain before filtering absent endpoints. */
 bool echoy_arrange_set_edges(echoy_arrange_t *model,
                              const echoy_arrange_edge_t *edges, size_t count);
+bool echoy_arrange_edges_valid(const echoy_arrange_edge_t *edges, size_t count);
 /* Equivalent to ArrangeModel.change(): cancel pending and reject old jobs. */
 uint64_t echoy_arrange_invalidate(echoy_arrange_t *model);
 
 bool echoy_arrange_compile(const echoy_arrange_t *model, echoy_arrange_job_t *job);
 bool echoy_arrange_stage(echoy_arrange_t *model, const echoy_arrange_job_t *job,
                          int64_t now_us);
+/* A negotiated wireless boundary is fixed once armed, not retimed by a later
+ * clock estimate. Cancellation does not change the requested musical revision. */
+bool echoy_arrange_stage_at(echoy_arrange_t *model, const echoy_arrange_job_t *job, int64_t at_us);
+void echoy_arrange_unstage(echoy_arrange_t *model);
 /* True includes a due edge-only commit with changed_mask == 0. */
 bool echoy_arrange_commit(echoy_arrange_t *model, int64_t now_us,
                           echoy_arrange_commit_t *result);

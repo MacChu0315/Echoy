@@ -19,6 +19,7 @@ struct echoy_arrange {
      * rounded microseconds. This also preserves ceil behavior at boundaries. */
     double origin_seconds[ECHOY_ARRANGE_TILE_COUNT], pending_seconds;
     bool has_pending;
+    bool pending_fixed;
     echoy_tile_id_t pending_clock;
     echoy_arrange_pending_t pending;
 };
@@ -267,9 +268,9 @@ bool echoy_arrange_set_present(echoy_arrange_t *m, echoy_tile_id_t id, bool pres
     return true;
 }
 
-bool echoy_arrange_set_edges(echoy_arrange_t *m, const echoy_arrange_edge_t *edges, size_t count)
+bool echoy_arrange_edges_valid(const echoy_arrange_edge_t *edges, size_t count)
 {
-    if (!m || (!edges && count) || count > ECHOY_ARRANGE_MAX_EDGES) return false;
+    if ((!edges && count) || count > ECHOY_ARRANGE_MAX_EDGES) return false;
     echoy_tile_id_t parents[3] = {ECHOY_TILE_NONE, ECHOY_TILE_NONE, ECHOY_TILE_NONE};
     echoy_tile_id_t children[3] = {ECHOY_TILE_NONE, ECHOY_TILE_NONE, ECHOY_TILE_NONE};
     for (size_t i = 0; i < count; ++i) {
@@ -286,6 +287,11 @@ bool echoy_arrange_set_edges(echoy_arrange_t *m, const echoy_arrange_edge_t *edg
             seen |= 1u << id; id = parents[id];
         }
     }
+    return true;
+}
+bool echoy_arrange_set_edges(echoy_arrange_t *m, const echoy_arrange_edge_t *edges, size_t count)
+{
+    if (!m || !echoy_arrange_edges_valid(edges, count)) return false;
     echoy_arrange_edge_t filtered[ECHOY_ARRANGE_MAX_EDGES];
     size_t length = 0;
     for (size_t i = 0; i < count; ++i) {
@@ -371,7 +377,7 @@ bool echoy_arrange_clock_sync(echoy_arrange_t *m, echoy_tile_id_t id,
     bool phase_changed = (origin_us - m->clocks[id].origin_us) % ECHOY_ARRANGE_BAR_US != 0;
     m->clocks[id] = (echoy_arrange_clock_t){origin_us, started};
     m->origin_seconds[id] = (double)origin_us / 1000000.0;
-    if (m->has_pending && m->pending_clock == id && phase_changed) {
+    if (m->has_pending && !m->pending_fixed && m->pending_clock == id && phase_changed) {
         /* A correction received after synthesis must also move its queued
          * replacement. Choose the nearest new bar, keeping the render lead. */
         double origin = m->origin_seconds[id];
@@ -475,7 +481,21 @@ bool echoy_arrange_stage(echoy_arrange_t *m, const echoy_arrange_job_t *job, int
     if (!microseconds(at, &at_us)) return false;
     m->pending.job = *job; m->pending.job.changed_mask = mask;
     m->pending.at_us = at_us; m->pending_seconds = at; m->has_pending = true;
+    m->pending_fixed = false;
     return true;
+}
+
+bool echoy_arrange_stage_at(echoy_arrange_t *m, const echoy_arrange_job_t *job, int64_t at_us)
+{
+    if (at_us < 0 || !echoy_arrange_stage(m, job, 0)) return false;
+    m->pending.at_us = at_us;
+    m->pending_seconds = (double)at_us / 1000000.0;
+    m->pending_fixed = true;
+    return true;
+}
+void echoy_arrange_unstage(echoy_arrange_t *m)
+{
+    if (m) { m->has_pending = false; m->pending_fixed = false; }
 }
 
 bool echoy_arrange_commit(echoy_arrange_t *m, int64_t now_us, echoy_arrange_commit_t *result)

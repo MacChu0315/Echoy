@@ -496,12 +496,14 @@ static bool status_locked(struct desk *d, const struct desk_snapshot *s)
         fprintf(f,
                 ",\"clock\":\"%c\",\"clock_origin_us\":%lld,\"start_us\":%lld,\"loop\":%s,"
                 "\"events\":%zu,\"preparing\":%s,\"plan_pending\":%s,\"prepare_failed\":%s,"
-                "\"density\":%.17g,\"apply_at_us\":%lld,\"english\":%s,\"reduced_motion\":%s}",
+                "\"density\":%.17g,\"apply_at_us\":%lld,\"english\":%s,\"reduced_motion\":%s,"
+                "\"cooperation\":%d,\"capture_at_us\":%lld}",
                 'A' + v.clock, (long long)v.state.clock_origin_us, (long long)v.state.start_us,
                 v.state.continuous ? "true" : "false", v.plan.count, v.preparing ? "true" : "false",
                 v.state.plan_pending ? "true" : "false", v.preparation_failed ? "true" : "false",
                 v.state.density, (long long)v.state.apply_at_us, v.english ? "true" : "false",
-                v.reduced_motion ? "true" : "false");
+                v.reduced_motion ? "true" : "false", v.cooperation,
+                (long long)v.state.capture_at_us);
     }
     fprintf(f,
             "},\"frames_rendered\":%llu,\"audio_origin_us\":%lld,\"status_at_us\":%lld,\"edges\":",

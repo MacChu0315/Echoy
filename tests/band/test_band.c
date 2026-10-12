@@ -153,18 +153,23 @@ int main(void)
     prepare(b, capture + 2500000);
     echoy_band_read(b, ECHOY_TILE_A, &a);
     assert(a.state.phase == ECHOY_PREVIEW && !a.state.plan_pending);
-    /* Replacing a pending automatic reply by a linked job must stay silent. */
+    /* A new link waits for the original one-shot reply, then joins silently. */
     echoy_band_tick(b, capture + 6000000);
     assert(echoy_band_action(b, ECHOY_TILE_B, ECHOY_ACT_EXAMPLE, 0, capture + 6000000));
-    echoy_band_job_t *stale = echoy_band_take_job(b);
-    assert(stale);
+    echoy_band_job_t *reply = echoy_band_take_job(b);
+    assert(reply);
     assert(echoy_band_set_edges(b, &edge, 1, capture + 6010000));
-    assert(echoy_band_prepare_job(stale));
-    assert(!echoy_band_finish_job(b, stale, capture + 6020000));
-    prepare(b, capture + 6030000);
+    assert(echoy_band_prepare_job(reply));
+    assert(echoy_band_finish_job(b, reply, capture + 6020000));
+    echoy_band_tick(b, capture + 6065000);
+    echoy_band_read(b, ECHOY_TILE_B, &v);
+    assert(v.cooperation == ECHOY_COOP_DEFERRED && v.state.phase == ECHOY_PREVIEW);
+    int64_t joined = v.state.start_us + ECHOY_ARRANGE_BAR_US;
+    echoy_band_tick(b, joined);
+    prepare(b, joined);
     echoy_band_read(b, ECHOY_TILE_B, &v);
     assert(v.source == ECHOY_TILE_A && v.state.phase == ECHOY_IDLE);
-    assert(echoy_band_action(b, ECHOY_TILE_A, ECHOY_ACT_LANGUAGE, 1, capture + 7000000));
+    assert(echoy_band_action(b, ECHOY_TILE_A, ECHOY_ACT_LANGUAGE, 1, joined + 50000));
     for (int i = 0; i < 3; i++) {
         echoy_band_read(b, i, &v);
         assert(v.english);

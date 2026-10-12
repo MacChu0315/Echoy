@@ -1,113 +1,119 @@
-#include <assert.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
-#include "../../../projects/echoy/main/board_link.c"
+#include "fake_hardware.h"
 
-/* Test the real adapter's private wire/queue logic against the pinned public
- * BSP headers. Only the radio, OS, sensor hardware and timer are replaced. */
-static int64_t fake_now;
-static esp_err_t send_error, stop_error, sensor_error;
-static unsigned sends, stop_calls, callback_count;
-static bool have_packet, accept_update = true;
-static mosaico_network_message_t packet;
-static board_link_t *packet_sender;
-static echoy_control_view_t local_view;
+static unsigned callback_count;
+static bool accept_update = true;
 static board_link_update_t last_update;
 
-struct fake_queue { unsigned count, size, used, at; unsigned char data[]; };
-QueueHandle_t xQueueCreate(unsigned count, unsigned size)
-{
-    struct fake_queue *q = calloc(1, sizeof(*q) + count * size);
-    assert(q);
-    q->count = count;
-    q->size = size;
-    return q;
-}
-BaseType_t xQueueSend(QueueHandle_t q, const void *item, TickType_t timeout)
-{
-    (void)timeout;
-    if (q->used == q->count) return pdFALSE;
-    memcpy(q->data + ((q->at + q->used) % q->count) * q->size, item, q->size);
-    q->used++;
-    return pdTRUE;
-}
-BaseType_t xQueueReceive(QueueHandle_t q, void *out, TickType_t timeout)
-{
-    (void)timeout;
-    if (!q->used) return pdFALSE;
-    memcpy(out, q->data + q->at * q->size, q->size);
-    q->at = (q->at + 1) % q->count;
-    q->used--;
-    return pdTRUE;
-}
-BaseType_t xQueueReset(QueueHandle_t q) { q->used = q->at = 0; return pdTRUE; }
-void vQueueDelete(QueueHandle_t q) { free(q); }
-BaseType_t xTaskCreate(TaskFunction_t fn, const char *name, unsigned stack, void *ctx,
-                       unsigned priority, TaskHandle_t *out)
-{
-    (void)fn; (void)name; (void)stack; (void)ctx; (void)priority; (void)out;
-    return pdPASS;
-}
-void vTaskDelay(TickType_t delay) { fake_now += (int64_t)delay * 10000; }
-void vTaskDelete(TaskHandle_t task) { (void)task; }
-int64_t esp_timer_get_time(void) { return fake_now; }
-const char *esp_err_to_name(esp_err_t error) { (void)error; return "test"; }
-void fake_log(const char *tag, const char *format, ...) { (void)tag; (void)format; }
+typedef struct {
+    echoy_link_view_t view;
+    board_link_update_t desired;
+    echoy_plan_t offered;
+    bool queued, consume, prepare, fail, reject_read;
+    unsigned begin_count, arm_count, commit_count, aborted_count;
+    int64_t applied_at;
+} owner_t;
 
-const mosaico_mag_calibration_t MOSAICO_MAG_CALIBRATION_S31_V1 = {0};
-esp_err_t bsp_magnetometer_init_all(void) { return sensor_error; }
-esp_err_t bsp_magnetometer_deinit(bsp_magnetometer_t id) { (void)id; return ESP_OK; }
-esp_err_t bsp_magnetometer_read(bsp_magnetometer_t id, struct bmm150_mag_data *data)
-{ (void)id; (void)data; return sensor_error; }
-esp_err_t mosaico_mag_classifier_init(mosaico_mag_classifier_t *c, const mosaico_mag_calibration_t *p)
-{ (void)c; (void)p; return ESP_OK; }
-esp_err_t mosaico_mag_classifier_process(mosaico_mag_classifier_t *c,
-    const mosaico_mag_sample_t *s, mosaico_mag_classification_t *o)
-{ (void)c; (void)s; (void)o; return ESP_OK; }
-esp_err_t mosaico_mag_presence_tracker_init(mosaico_mag_presence_tracker_t *t,
-    const mosaico_mag_presence_config_t *c, mosaico_mag_presence_event_cb_t cb, void *ctx)
-{ (void)c; t->event_cb = cb; t->user_ctx = ctx; return ESP_OK; }
-void mosaico_mag_presence_tracker_reset(mosaico_mag_presence_tracker_t *t) { t->attached_mask = 0; }
-esp_err_t mosaico_mag_presence_tracker_process(mosaico_mag_presence_tracker_t *t,
-    const mosaico_mag_classification_t *c) { (void)t; (void)c; return ESP_OK; }
-mosaico_edge_mask_t mosaico_edge_to_mask(mosaico_edge_t edge)
-{ return edge >= MOSAICO_EDGE_TOP && edge <= MOSAICO_EDGE_LEFT ? 1u << (edge - 1) : 0; }
-const char *mosaico_edge_to_string(mosaico_edge_t edge) { (void)edge; return "edge"; }
-esp_err_t mosaico_network_start(const mosaico_network_config_t *c, mosaico_network_handle_t *out)
-{ assert(c->network_id == LINK_NETWORK_ID && c->manage_wifi); *out = (void *)1; return ESP_OK; }
-esp_err_t mosaico_network_stop(mosaico_network_handle_t h)
-{ (void)h; stop_calls++; return stop_error; }
-esp_err_t mosaico_network_set_contact(mosaico_network_handle_t h, mosaico_edge_t e,
-                                     bool present, uint32_t ms)
-{ (void)h; (void)e; (void)present; (void)ms; return ESP_OK; }
-esp_err_t mosaico_network_send(mosaico_network_handle_t handle, uint64_t destination,
-                               uint16_t service, const void *p, size_t length)
+static bool read_view(void *ctx, echoy_link_view_t *out)
 {
-    sends++;
-    if (send_error != ESP_OK) return send_error;
-    assert(!have_packet && length <= sizeof(packet.payload));
-    board_link_t *h = (void *)handle;
-    packet_sender = h;
-    packet.source_id = h->following ? 2 : 1;
-    packet.destination_id = destination;
-    packet.service_id = service;
-    packet.payload_len = (uint8_t)length;
-    memcpy(packet.payload, p, length);
-    have_packet = true;
-    return ESP_OK;
+    owner_t *o = ctx;
+    if (o->reject_read) return false;
+    *out = o->view;
+    return true;
 }
-
-static bool read_view(void *ctx, echoy_control_view_t *out)
-{ (void)ctx; *out = local_view; return true; }
 static bool receive_update(void *ctx, const board_link_update_t *update)
-{ (void)ctx; callback_count++; if (accept_update) last_update = *update; return accept_update; }
+{
+    owner_t *o = ctx;
+    callback_count++;
+    if (!accept_update) return false;
+    last_update = *update;
+    if (o) { o->desired = *update; o->queued = true; }
+    return true;
+}
 
-static board_link_t *node(bool following)
+/* The test owner models asynchronous snapshot admission, with independently
+ * controlled preparation. Actual compilation/PCM coverage lives in band tests. */
+static void owner_tick(owner_t *o, int64_t now)
+{
+    if (o->consume && o->queued) {
+        const board_link_update_t *u = &o->desired;
+        o->queued = false;
+        if (!u->attached) {
+            o->view.offered_transaction = o->view.armed_transaction = o->view.authorized_transaction = 0;
+        } else switch (u->command) {
+        case ECHOY_LINK_BEGIN:
+        case ECHOY_LINK_OFFER:
+            if (o->view.offered_transaction != u->transaction) {
+                o->begin_count++;
+                o->view.offered_transaction = u->transaction;
+                o->view.offered_revision = u->command == ECHOY_LINK_BEGIN ? u->revision : 71;
+                o->view.armed_transaction = o->view.authorized_transaction = 0;
+                o->view.offer_ready = false;
+                o->offered = u->command == ECHOY_LINK_BEGIN ?
+                    (u->revision ? o->view.proposal : o->view.current) : u->plan;
+            }
+            break;
+        case ECHOY_LINK_ARM:
+            if (o->view.offered_transaction == u->transaction && o->view.offer_ready &&
+                o->view.offered_revision == u->revision && now < u->commit_at_us) {
+                if (o->view.armed_transaction != u->transaction) o->arm_count++;
+                o->view.armed_transaction = u->transaction;
+                o->view.armed_revision = u->revision;
+                o->view.armed_at_us = u->commit_at_us;
+            }
+            break;
+        case ECHOY_LINK_COMMIT:
+            if (o->view.armed_transaction == u->transaction && o->view.armed_revision == u->revision &&
+                o->view.armed_at_us == u->commit_at_us && now < u->commit_at_us) {
+                if (o->view.authorized_transaction != u->transaction) o->commit_count++;
+                o->view.authorized_transaction = u->transaction;
+            }
+            break;
+        case ECHOY_LINK_ABORT:
+            o->aborted_count++;
+            if (u->failed) o->view.failed_transaction = u->transaction;
+            if (o->view.committed_transaction != u->transaction) {
+                o->view.armed_transaction = o->view.authorized_transaction = 0;
+                o->view.offer_ready = false;
+                o->view.offered_transaction = 0;
+            }
+            break;
+        default: break;
+        }
+    }
+    if (o->view.offered_transaction && !o->view.armed_transaction) {
+        o->view.offer_ready = o->prepare && !o->view.deferred && !o->fail;
+        o->view.offer_failed = o->fail;
+    }
+    if (o->view.authorized_transaction && now >= o->view.armed_at_us &&
+        o->view.committed_transaction != o->view.authorized_transaction) {
+        o->view.committed_transaction = o->view.authorized_transaction;
+        o->view.current = o->offered;
+        o->view.proposal_pending = false;
+        o->applied_at = o->view.armed_at_us;
+    }
+}
+
+static owner_t *new_owner(bool proposal)
+{
+    owner_t *o = calloc(1, sizeof(*o));
+    assert(o);
+    o->consume = o->prepare = true;
+    o->view.available = o->view.clock_started = o->view.looping = true;
+    o->view.clock_origin_us = 700000;
+    o->view.requested_revision = 11;
+    assert(echoy_compose_mask(0x1111, ECHOY_HARMONY, 2, 0.7, &o->view.current));
+    assert(echoy_compose_mask(0x5555, ECHOY_VOICE, 3, 0.3, &o->view.proposal));
+    o->view.proposal_pending = proposal;
+    o->view.proposal_ready = proposal;
+    o->view.proposal_revision = proposal ? 11 : 0;
+    return o;
+}
+
+static board_link_t *node(bool following, owner_t *owner)
 {
     board_link_t *h = calloc(1, sizeof(*h));
     assert(h);
+    h->ctx = owner;
     h->read = read_view;
     h->receive = receive_update;
     h->network = (void *)h;
@@ -127,212 +133,415 @@ static void delivered(board_link_t *h, uint16_t service, bool success, int64_t n
 {
     link_event_t e = {
         .received_us = now,
-        .event = {.type = success ? MOSAICO_NETWORK_EVENT_MESSAGE_DELIVERED :
-                                   MOSAICO_NETWORK_EVENT_MESSAGE_FAILED,
+        .event = {.type = success ? MOSAICO_NETWORK_EVENT_MESSAGE_DELIVERED : MOSAICO_NETWORK_EVENT_MESSAGE_FAILED,
                   .data.delivery = {.service_id = service, .destination_id = h->peer,
                                     .error = success ? ESP_OK : ESP_FAIL}},
     };
     process_event(h, &e);
 }
 
+static uint32_t drop_kinds;
+static unsigned duplicate_packets;
 static void step(board_link_t *sender, board_link_t *recipient, int64_t physical)
 {
     fake_now = physical + (sender->following ? 200000 : 0);
+    read_local(sender, fake_now);
+    deliver_update(sender);
+    owner_tick(sender->ctx, fake_now);
     send_next(sender, fake_now);
     if (!have_packet) return;
     assert(packet_sender == sender);
-    receive_message(recipient, &packet, physical + 1000 + (recipient->following ? 200000 : 0));
+    if (!(drop_kinds & (1u << packet.payload[1]))) {
+        receive_message(recipient, &packet, physical + 1000 + (recipient->following ? 200000 : 0));
+        if (duplicate_packets) {
+            receive_message(recipient, &packet, physical + 2000 + (recipient->following ? 200000 : 0));
+        }
+    }
     delivered(sender, packet.service_id, true, fake_now + 2000);
     have_packet = false;
 }
-
-static void fixture(void)
+static void run_pair(board_link_t *a, board_link_t *b, int64_t start, int64_t end)
 {
-    memset(&local_view, 0, sizeof(local_view));
-    assert(echoy_compose_mask(0x1111, ECHOY_HARMONY, 2, 0.7, &local_view.plan));
-    local_view.state.clock_started = true;
-    local_view.state.clock_origin_us = 700000;
-    local_view.state.phase = ECHOY_PLAYING;
-    local_view.state.continuous = true;
+    for (int64_t now = start; now < end; now += 10000) {
+        step(b, a, now); step(a, b, now + 2000);
+    }
+}
+static void free_pair(board_link_t *a, board_link_t *b)
+{
+    free(a->ctx); free(b->ctx); free(a); free(b);
+    drop_kinds = duplicate_packets = 0;
+}
+static void same_plan(const echoy_plan_t *a, const echoy_plan_t *b)
+{
+    uint8_t left[ECHOY_LINK_PLAN_MAX_BYTES], right[ECHOY_LINK_PLAN_MAX_BYTES];
+    size_t size = echoy_link_plan_encode(a, left, sizeof(left));
+    assert(size && size == echoy_link_plan_encode(b, right, sizeof(right)));
+    assert(!memcmp(left, right, size));
 }
 
-static void test_complete_roundtrip_and_metadata(void)
+static void test_prepare_bar_commit_and_no_autoplay(void)
 {
-    fixture();
-    board_link_t *a = node(false), *b = node(true);
-    read_local(a, 1000000);
-    assert(a->tx.size > LINK_CHUNK_BYTES);
-    for (int64_t now = 1000000; now < 6000000; now += 10000) {
-        step(b, a, now);
-        step(a, b, now + 2000);
-    }
-    assert(b->clock.valid && b->rx.complete && b->update.valid);
-    assert(b->clock.best_rtt <= 3000);
+    owner_t *oa = new_owner(true), *ob = new_owner(false);
+    ob->prepare = false;
+    ob->view.looping = false;
+    board_link_t *a = node(false, oa), *b = node(true, ob);
+    run_pair(a, b, 1000000, 4000000);
+    assert(b->clock.valid && b->rx.complete && b->view.offered_transaction == a->transaction.id);
     assert(llabs(b->clock.offset - 200000) <= 1000);
     assert(llabs(b->update.clock_origin_us - 900000) <= 1000);
-    assert(b->update.looping && b->update.plan.count == local_view.plan.count);
-    uint8_t original[ECHOY_LINK_PLAN_MAX_BYTES], received[ECHOY_LINK_PLAN_MAX_BYTES];
-    size_t n = echoy_link_plan_encode(&local_view.plan, original, sizeof(original));
-    assert(n == echoy_link_plan_encode(&b->update.plan, received, sizeof(received)));
-    assert(!memcmp(original, received, n));
-    uint32_t revision = a->tx.revision;
-    local_view.state.phase = ECHOY_IDLE;
-    local_view.state.continuous = false;
-    read_local(a, 6000000);
-    assert(a->tx.revision == revision);
-    step(a, b, 6010000);
-    assert(!b->update.looping && b->update.valid);
-    /* Disconnection retains the owned phrase; valid=false asks the control
-     * owner to stop following without replacing it. */
-    detach(b);
-    assert(!b->update.attached && !b->update.valid);
-    assert(b->update.plan.count == local_view.plan.count);
-    free(a); free(b);
+    same_plan(&ob->offered, &oa->view.proposal);
+    assert(!oa->arm_count && !ob->arm_count && !oa->commit_count && !ob->commit_count);
+    assert(oa->view.current.role == ECHOY_HARMONY && ob->view.current.role == ECHOY_HARMONY);
+    ob->prepare = true;
+    duplicate_packets = 1;
+    run_pair(a, b, 4000000, 10000000);
+    assert(a->transaction.phase == TX_DONE && b->transaction.phase == TX_DONE);
+    assert(oa->arm_count == 1 && ob->arm_count == 1 && oa->commit_count == 1 && ob->commit_count == 1);
+    assert(oa->applied_at == 5700000 && llabs(ob->applied_at - oa->applied_at - 200000) <= 1000);
+    same_plan(&oa->view.current, &ob->view.current);
+    assert(!ob->view.looping);
+    free_pair(a, b);
 }
 
-static void test_stop_and_wait_and_retry(void)
+static void test_deferral_latest_source_and_baseline(void)
 {
-    fixture();
-    board_link_t *a = node(false);
+    owner_t *oa = new_owner(false), *ob = new_owner(false);
+    ob->view.deferred = true;
+    board_link_t *a = node(false, oa), *b = node(true, ob);
+    run_pair(a, b, 1000000, 2000000);
+    assert(!a->update.hold_changes && !oa->begin_count && !ob->begin_count);
+    /* Independent source commits while the recorder is outside cooperation. */
+    oa->view.current = oa->view.proposal;
+    oa->view.requested_revision++;
+    run_pair(a, b, 2000000, 3000000);
+    ob->view.deferred = false;
+    run_pair(a, b, 3000000, 8000000);
+    assert(a->transaction.phase == TX_DONE && a->transaction.revision == 0);
+    same_plan(&ob->view.current, &oa->view.current);
+    assert(ob->view.current.role == ECHOY_VOICE);
+    free_pair(a, b);
+}
+
+static void test_persistent_owner_commands_and_failures(void)
+{
+    owner_t *oa = new_owner(true), *ob = new_owner(false);
+    oa->consume = false;
+    board_link_t *a = node(false, oa), *b = node(true, ob);
+    run_pair(a, b, 1000000, 4000000);
+    assert(a->update.command == ECHOY_LINK_BEGIN && !oa->arm_count && !ob->arm_count);
+    oa->consume = true;
+    ob->fail = true;
+    run_pair(a, b, 4000000, 6000000);
+    assert(a->transaction.phase == TX_ABORTED && b->transaction.phase == TX_ABORTED);
+    assert(a->update.recovering && !a->update.hold_changes);
+    assert(!oa->applied_at && !ob->applied_at);
+    free_pair(a, b);
+}
+
+static void test_lost_arm_and_commit_ack_fail_closed(void)
+{
+    for (unsigned kind = WIRE_ARM; kind <= WIRE_COMMIT; kind++) {
+        owner_t *oa = new_owner(true), *ob = new_owner(false);
+        board_link_t *a = node(false, oa), *b = node(true, ob);
+        drop_kinds = 1u << kind;
+        run_pair(a, b, 1000000, 7000000);
+        assert(a->transaction.phase == TX_ABORTED && a->update.recovering);
+        assert(!oa->applied_at && !ob->applied_at && !oa->commit_count);
+        free_pair(a, b);
+    }
+    owner_t *oa = new_owner(true), *ob = new_owner(false);
+    ob->prepare = false;
+    board_link_t *a = node(false, oa), *b = node(true, ob);
+    run_pair(a, b, 1000000, 33000000);
+    assert(a->transaction.phase == TX_ABORTED && b->transaction.phase == TX_ABORTED);
+    assert(!oa->applied_at && !ob->applied_at);
+    free_pair(a, b);
+}
+
+
+static void test_stale_fragments_crc_repair_and_delivery_identity(void)
+{
+    owner_t *oa = new_owner(true), *ob = new_owner(false);
+    ob->prepare = false;
+    board_link_t *a = node(false, oa), *b = node(true, ob);
+    a->peer_seen = true; a->peer_seen_at = 1000000;
     read_local(a, 1000000);
     send_next(a, 1000000);
     assert(have_packet && packet.payload[1] == WIRE_META);
+    mosaico_network_message_t meta = packet;
+    receive_message(b, &meta, 1201000);
     unsigned before = sends;
     send_next(a, 1100000);
     assert(sends == before);
-    uint16_t previous = packet.service_id;
-    have_packet = false;
-    delivered(a, previous, true, 1005000);
-    send_next(a, 1010000);
-    assert(packet.payload[1] == WIRE_CHUNK && a->tx.offset == 0);
-    uint16_t current = packet.service_id;
-    have_packet = false;
-    delivered(a, previous, true, 1015000);
-    assert(a->pending.active && a->tx.offset == 0);
-    delivered(a, current, true, 1016000);
-    assert(a->tx.offset == LINK_CHUNK_BYTES);
-    send_next(a, 1020000);
-    current = packet.service_id;
-    have_packet = false;
-    delivered(a, current, false, 1025000);
-    assert(a->tx.offset == 0 && a->tx.active && !a->pending.active);
-    before = sends;
-    send_next(a, 1100000);
-    assert(sends == before);
-    send_next(a, 1800000);
-    assert(have_packet && packet.payload[1] == WIRE_META);
-    have_packet = false;
-    delivered(a, packet.service_id, true, 1805000);
-    send_next(a, 1810000);
-    assert(packet.payload[1] == WIRE_CHUNK);
-    have_packet = false;
-    /* A full-transfer request cannot let an ACK for the old transfer skip its
-     * first bytes, even though its plan revision is unchanged. */
-    uint32_t generation = a->tx.transfer;
-    mosaico_network_message_t want = {.source_id = a->peer, .service_id = LINK_SERVICE_BASE,
-                                     .payload_len = 16};
-    want.payload[0] = LINK_WIRE_VERSION;
-    want.payload[1] = WIRE_WANT;
-    put32(want.payload + 4, a->session);
-    receive_message(a, &want, 1820000);
-    assert(a->tx.transfer != generation && a->tx.offset == 0);
-    delivered(a, packet.service_id, true, 1821000);
-    assert(a->tx.offset == 0);
-    free(a);
-}
-
-static void test_reject_partial_mixed_and_bad_clock(void)
-{
-    fixture();
-    board_link_t *a = node(false), *b = node(true);
-    read_local(a, 1000000);
-    send_next(a, 1000000);
-    mosaico_network_message_t meta = packet;
-    receive_message(b, &meta, 1201000);
     have_packet = false;
     delivered(a, meta.service_id, true, 1002000);
     send_next(a, 1010000);
+    assert(have_packet && packet.payload[1] == WIRE_CHUNK);
     mosaico_network_message_t chunk = packet;
+    uint16_t service = chunk.service_id;
     have_packet = false;
-    uint32_t revision = b->rx.revision;
-    put32(chunk.payload + 8, revision + 1);
-    receive_message(b, &chunk, 1210000);
-    assert(b->rx.offset == 0 && !b->update.valid);
-    put32(chunk.payload + 8, revision);
     put32(chunk.payload + 4, b->session + 1);
     receive_message(b, &chunk, 1211000);
-    assert(b->rx.offset == 0);
+    assert(!b->rx.offset);
     put32(chunk.payload + 4, b->session);
+    put32(chunk.payload + 8, b->rx.revision + 1);
     receive_message(b, &chunk, 1212000);
-    assert(b->rx.offset == LINK_CHUNK_BYTES && !b->update.valid);
-    put32(meta.payload + 8, revision + 1);
-    receive_message(b, &meta, 1213000);
-    assert(b->rx.offset == 0 && b->rx.revision == revision + 1);
-    receive_message(b, &chunk, 1214000);
-    assert(b->rx.offset == 0);
-    put32(meta.payload + 8, revision);
-    receive_message(b, &meta, 1215000);
-    assert(b->rx.revision == revision + 1);
-    /* A queued/retransmitted ping with high RTT cannot establish sync. */
-    b->clock.waiting = true;
-    b->clock.pending_sequence = 10;
-    b->clock.t1 = 1000000;
+    assert(!b->rx.offset);
+    put32(chunk.payload + 8, b->rx.revision);
+    chunk.payload[20] ^= 0x80;
+    receive_message(b, &chunk, 1213000);
+    assert(b->rx.offset == LINK_CHUNK_BYTES);
+    delivered(a, meta.service_id, true, 1015000);
+    assert(a->pending.active && !a->tx.offset);
+    delivered(a, service, true, 1016000);
+    assert(a->tx.offset == LINK_CHUNK_BYTES);
+    for (int64_t now = 1020000; now < 3000000 && a->tx.active; now += 10000) {
+        send_next(a, now);
+        if (!have_packet) continue;
+        receive_message(b, &packet, now + 201000);
+        delivered(a, packet.service_id, true, now + 2000);
+        have_packet = false;
+    }
+    assert(!a->tx.active && !b->rx.complete && !b->rx.offset && !b->update.valid);
+    run_pair(a, b, 3000000, 7000000);
+    assert(b->rx.complete && b->clock.valid);
+    same_plan(&b->received_plan, &oa->view.proposal);
+    /* New transaction admission invalidates partial data from older T. */
+    put32(meta.payload + 8, b->rx.revision + 1);
+    uint32_t id = get32(meta.payload + 8);
+    receive_message(b, &meta, 7210000);
+    assert(b->rx.revision == id && !b->rx.complete && !b->rx.offset);
+    chunk.payload[20] ^= 0x80;
+    receive_message(b, &chunk, 7211000);
+    assert(!b->rx.offset);
+    put32(meta.payload + 8, id - 1);
+    receive_message(b, &meta, 7212000);
+    assert(b->rx.revision == id);
+    free_pair(a, b);
+}
+
+static void test_withdraw_ready_and_latest_root_request(void)
+{
+    owner_t *oa = new_owner(true), *ob = new_owner(false);
+    board_link_t *a = node(false, oa), *b = node(true, ob);
+    /* Delay ARM so the right owner's independent edit replaces readiness. */
+    drop_kinds = 1u << WIRE_ARM;
+    run_pair(a, b, 1000000, 1700000);
+    assert(a->transaction.phase == TX_REMOTE_ARM);
+    uint64_t old_revision = a->transaction.peer_revision;
+    ob->view.offered_revision++;
+    ob->prepare = false;
+    run_pair(a, b, 1700000, 2000000);
+    assert(a->transaction.phase == TX_PREPARING && a->transaction.peer_revision != old_revision);
+    assert(!oa->arm_count && !ob->arm_count);
+    ob->prepare = true;
+    drop_kinds = 0;
+    run_pair(a, b, 2000000, 7000000);
+    assert(a->transaction.phase == TX_DONE && b->transaction.phase == TX_DONE);
+    free_pair(a, b);
+
+    oa = new_owner(true); ob = new_owner(false); ob->prepare = false;
+    a = node(false, oa); b = node(true, ob);
+    run_pair(a, b, 1000000, 2500000);
+    uint32_t old_id = a->transaction.id;
+    assert(echoy_compose_mask(0x2222, ECHOY_DUST, 1, .5, &oa->view.proposal));
+    oa->view.requested_revision = oa->view.proposal_revision = 12;
+    run_pair(a, b, 2500000, 4000000);
+    assert(a->transaction.id != old_id && b->transaction.id == a->transaction.id);
+    same_plan(&ob->offered, &oa->view.proposal);
+    ob->prepare = true;
+    run_pair(a, b, 4000000, 9000000);
+    assert(a->transaction.phase == TX_DONE && oa->view.current.role == ECHOY_DUST);
+    assert(oa->commit_count == 1 && ob->commit_count == 1);
+    free_pair(a, b);
+}
+
+
+static void test_owner_rejects_arm_after_cached_ready(void)
+{
+    owner_t *oa = new_owner(true), *ob = new_owner(false);
+    board_link_t *a = node(false, oa), *b = node(true, ob);
+    drop_kinds = 1u << WIRE_ARM;
+    run_pair(a, b, 1000000, 1700000);
+    assert(a->transaction.phase == TX_REMOTE_ARM && b->view.offer_ready);
+    mosaico_network_message_t arm = {.source_id = b->peer, .service_id = LINK_SERVICE_BASE,
+                                     .payload_len = 32};
+    arm.payload[0] = LINK_WIRE_VERSION; arm.payload[1] = WIRE_ARM;
+    put32(arm.payload + 4, b->session); put32(arm.payload + 8, b->transaction.id);
+    put64(arm.payload + 12, b->view.offered_revision); put_time(arm.payload + 20, a->transaction.at);
+    receive_message(b, &arm, 1900000);
+    assert(b->transaction.phase == TX_REMOTE_ARM && b->update.command == ECHOY_LINK_ARM);
+    ob->view.offered_revision++;
+    ob->prepare = false;
+    owner_tick(ob, 1901000);
+    read_local(b, 1950000);
+    assert(b->transaction.phase == TX_PREPARING && b->update.command != ECHOY_LINK_ARM);
+    run_pair(a, b, 1800000, 2100000);
+    ob->prepare = true; drop_kinds = 0;
+    run_pair(a, b, 2100000, 7000000);
+    assert(a->transaction.phase == TX_DONE && b->transaction.phase == TX_DONE);
+    free_pair(a, b);
+}
+
+static void test_callback_backpressure_arm_not_authorization(void)
+{
+    owner_t *oa = new_owner(true), *ob = new_owner(false);
+    board_link_t *a = node(false, oa), *b = node(true, ob);
+    drop_kinds = 1u << WIRE_COMMIT;
+    run_pair(a, b, 1000000, 1900000);
+    assert(oa->arm_count && ob->arm_count && !oa->commit_count && !ob->commit_count);
+    assert(b->view.armed_transaction == a->transaction.id);
+    assert(!oa->applied_at && !ob->applied_at);
+    /* Queue admission alone cannot turn an ARM into COMMIT authorization. */
+    ob->consume = false;
+    drop_kinds = 0;
+    run_pair(a, b, 1900000, 2200000);
+    assert(b->update.command == ECHOY_LINK_COMMIT && !oa->commit_count);
+    assert(!b->view.authorized_transaction && !oa->applied_at && !ob->applied_at);
+    ob->consume = true;
+    run_pair(a, b, 2200000, 6000000);
+    assert(a->transaction.phase == TX_DONE && b->transaction.phase == TX_DONE);
+    free_pair(a, b);
+
+    oa = new_owner(true); ob = new_owner(false);
+    a = node(false, oa); b = node(true, ob);
+    accept_update = false;
+    run_pair(a, b, 1000000, 2000000);
+    assert(a->publish_pending && b->publish_pending && !oa->begin_count && !ob->begin_count);
+    accept_update = true;
+    run_pair(a, b, 2000000, 8000000);
+    assert(a->transaction.phase == TX_DONE && b->transaction.phase == TX_DONE);
+    free_pair(a, b);
+}
+
+static void test_final_authorization_partition_is_bounded(void)
+{
+    owner_t *oa = new_owner(true), *ob = new_owner(false);
+    board_link_t *a = node(false, oa), *b = node(true, ob);
+    /* Stop returning status only once receiver consumed authorization. */
+    int64_t now;
+    for (now = 1000000; now < 3000000 && !ob->view.authorized_transaction; now += 10000)
+        run_pair(a, b, now, now + 10000);
+    assert(ob->view.authorized_transaction && !oa->view.authorized_transaction);
+    drop_kinds = UINT32_MAX;
+    run_pair(a, b, now, 36000000);
+    assert(a->transaction.phase == TX_ABORTED && b->transaction.phase == TX_ABORTED);
+    assert(a->update.recovering && b->update.recovering);
+    assert(!a->update.hold_changes && !oa->applied_at);
+    /* The final authorization can have reached only one side at a partition;
+     * this is explicitly recovered, never reported as an atomic success. */
+    assert(ob->applied_at && oa->view.current.role == ECHOY_HARMONY);
+    free_pair(a, b);
+}
+
+
+
+
+static void test_revision_zero_requires_compiled_canonical_plan(void)
+{
+    owner_t *oa = new_owner(false);
+    oa->view.requested_revision = 0;
+    oa->view.proposal_pending = true;
+    oa->view.proposal_revision = 0;
+    memset(&oa->view.proposal, 0, sizeof(oa->view.proposal));
+    board_link_t *a = node(false, oa);
+    a->peer_seen = true;
+    a->peer_seen_at = 1000000;
+    read_local(a, 1000000);
+    assert(!a->transaction.id && !a->tx.size && a->update.command == ECHOY_LINK_NONE);
+    oa->view.proposal = (echoy_plan_t){.role = ECHOY_PULSE, .phrase = 1, .density = .5, .duration = 2.5};
+    read_local(a, 1100000);
+    assert(a->transaction.id && a->transaction.phase == TX_PREPARING);
+    assert(a->transaction.revision == 0 && a->tx.size && a->update.command == ECHOY_LINK_BEGIN);
+    free(oa); free(a);
+}
+
+static void test_unavailable_owner_cannot_claim_ready(void)
+{
+    owner_t *oa = new_owner(true), *ob = new_owner(false);
+    ob->view.available = false;
+    board_link_t *a = node(false, oa), *b = node(true, ob);
+    run_pair(a, b, 1000000, 4000000);
+    assert(!oa->arm_count && !ob->arm_count && !oa->applied_at && !ob->applied_at);
+    ob->view.available = true;
+    run_pair(a, b, 4000000, 9000000);
+    assert(a->transaction.phase == TX_DONE && b->transaction.phase == TX_DONE);
+    free_pair(a, b);
+}
+
+static void test_empty_source_bad_clock_and_send_errors(void)
+{
+    owner_t *oa = new_owner(false), *ob = new_owner(false);
+    memset(&oa->view.current, 0, sizeof(oa->view.current));
+    oa->view.current.phrase = 1; oa->view.current.duration = 2.5;
+    board_link_t *a = node(false, oa), *b = node(true, ob);
+    b->clock.waiting = true; b->clock.pending_sequence = 10; b->clock.t1 = 1000000;
     uint8_t pong[36] = {0};
     put32(pong + 8, 10); put_time(pong + 12, 1000000);
     put_time(pong + 20, 810000); put_time(pong + 28, 820000);
     receive_pong(b, pong, 1300000);
-    assert(!b->clock.valid && b->clock.samples == 0);
-    /* A verified complete plan still cannot publish before clock handshake. */
-    b->rx.complete = b->rx.clock_started = true;
-    b->rx.complete_revision = b->rx.revision;
-    b->received_plan = local_view.plan;
-    publish_received(b);
-    assert(!b->update.valid);
-    b->clock.valid = true;
-    b->clock.offset = -2000000;
-    b->rx.origin = 100000;
-    publish_received(b);
-    assert(b->update.valid && b->update.clock_origin_us == 600000);
-    free(a); free(b);
+    assert(!b->clock.valid && !b->clock.samples);
+    a->peer_seen = true; a->peer_seen_at = 1000000;
+    read_local(a, 1000000);
+    send_error = ESP_FAIL;
+    send_next(a, 1000000);
+    assert(!have_packet && !a->pending.active);
+    unsigned before = sends;
+    send_next(a, 1200000);
+    assert(sends == before);
+    send_error = ESP_OK;
+    run_pair(a, b, 1800000, 8000000);
+    assert(a->transaction.phase == TX_DONE && b->transaction.phase == TX_DONE);
+    assert(!ob->view.current.count && !ob->view.current.source_count);
+    b->rx.origin = 100000; b->clock.offset = -2000000;
+    publish_attachment(b);
+    assert(b->update.clock_origin_us == 600000);
+    free_pair(a, b);
 }
 
 static void test_contact_queue_and_lifecycle(void)
 {
-    board_link_t *h = node(false);
+    owner_t *owner = new_owner(false);
+    board_link_t *h = node(false, owner);
+    uint32_t generation = h->update.connection_generation;
+    link_event_t lost = {.event = {.type = MOSAICO_NETWORK_EVENT_NEIGHBOR_DETACHED,
+        .data.neighbor = {.peer_id = h->peer, .session_id = h->session, .local_edge = h->edge}}};
+    process_event(h, &lost);
+    assert(!h->update.attached && h->update.recovering && h->update.connection_generation > generation);
+    mosaico_mag_presence_event_t after_radio_release = {.attached_mask = 0};
+    presence_event(&after_radio_release, h);
+    assert(!h->update.attached && !h->update.recovering);
     detach(h);
     h->contacts = 0;
     mosaico_network_neighbor_event_t neighbor = {
-        .peer_id = 2, .session_id = 123, .local_edge = MOSAICO_EDGE_RIGHT,
-        .peer_edge = MOSAICO_EDGE_LEFT,
+        .peer_id = 2, .session_id = 123, .local_edge = MOSAICO_EDGE_RIGHT, .peer_edge = MOSAICO_EDGE_LEFT,
     };
-    attach(h, &neighbor);
-    assert(!h->attached); /* Radio proximity alone is not attachment. */
+    attach(h, &neighbor); assert(!h->attached);
     h->contacts = MOSAICO_EDGE_MASK_RIGHT;
     neighbor.relative_rotation = 180;
-    attach(h, &neighbor);
-    assert(!h->attached);
+    attach(h, &neighbor); assert(!h->attached);
     neighbor.relative_rotation = 0;
+    attach(h, &neighbor); assert(h->attached);
+    mosaico_mag_presence_event_t released = {.attached_mask = 0};
+    presence_event(&released, h);
+    assert(!h->attached && !h->update.recovering);
+    h->contacts = MOSAICO_EDGE_MASK_RIGHT;
     attach(h, &neighbor);
-    assert(h->attached);
-    sensor_error = ESP_FAIL;
-    sample_sensors(h, 1000000);
+    sensor_error = ESP_FAIL; sample_sensors(h, 1000000);
     assert(!h->attached && !h->sensors_ready && !h->contacts);
     sensor_error = ESP_OK;
     h->events = xQueueCreate(1, sizeof(link_event_t));
     mosaico_network_event_t e = {.type = MOSAICO_NETWORK_EVENT_NEIGHBOR_DETACHED};
-    network_event(&e, h);
-    network_event(&e, h);
+    network_event(&e, h); network_event(&e, h);
     assert(atomic_load(&h->overflow));
-    vQueueDelete(h->events);
-    free(h);
+    vQueueDelete(h->events); free(h); free(owner);
     assert(board_link_start(NULL, receive_update, NULL) == ESP_ERR_INVALID_ARG);
     assert(board_link_start(read_view, receive_update, NULL) == ESP_OK);
     h = instance;
     assert(h && h->publish_pending && !h->update.attached);
     assert(board_link_start(read_view, receive_update, NULL) == ESP_ERR_INVALID_STATE);
     unsigned stopped = stop_calls;
-    assert(board_link_stop(0) == ESP_ERR_TIMEOUT && instance == h);
-    assert(stop_calls == stopped);
+    assert(board_link_stop(0) == ESP_ERR_TIMEOUT && instance == h && stop_calls == stopped);
     atomic_store(&h->worker_exited, true);
     stop_error = ESP_FAIL;
     assert(board_link_stop(100) == ESP_FAIL && instance == h);
@@ -341,58 +550,21 @@ static void test_contact_queue_and_lifecycle(void)
     assert(board_link_stop(0) == ESP_OK);
 }
 
-static void test_crc_empty_and_callback_retry(void)
-{
-    fixture();
-    board_link_t *a = node(false), *b = node(true);
-    read_local(a, 1000000);
-    send_next(a, 1000000);
-    receive_message(b, &packet, 1201000);
-    delivered(a, packet.service_id, true, 1002000);
-    have_packet = false;
-    for (int64_t now = 1010000; a->tx.active && now < 4000000; now += 10000) {
-        send_next(a, now);
-        if (!have_packet) continue;
-        if (packet.payload[1] == WIRE_CHUNK && get16(packet.payload + 18) == 0) {
-            packet.payload[20] ^= 0x80;
-        }
-        receive_message(b, &packet, now + 201000);
-        delivered(a, packet.service_id, true, now + 2000);
-        have_packet = false;
-    }
-    assert(!a->tx.active && !b->rx.complete && !b->update.valid && b->rx.offset == 0);
-    /* An explicit empty source is a complete, valid plan after handshake. */
-    memset(&local_view.plan, 0, sizeof(local_view.plan));
-    local_view.plan.phrase = 1;
-    local_view.plan.duration = 2.5;
-    read_local(a, 4000000);
-    for (int64_t now = 4000000; now < 8000000; now += 10000) {
-        step(b, a, now);
-        step(a, b, now + 2000);
-    }
-    assert(b->rx.complete && b->update.valid && b->clock.valid);
-    assert(!b->update.plan.count && !b->update.plan.source_count);
-    assert(b->publish_pending);
-    accept_update = false;
-    unsigned before = callback_count;
-    deliver_update(b);
-    deliver_update(b);
-    assert(b->publish_pending && callback_count == before + 2);
-    accept_update = true;
-    deliver_update(b);
-    assert(!b->publish_pending && last_update.valid && !last_update.plan.count);
-    deliver_update(b);
-    assert(callback_count == before + 3);
-    free(a); free(b);
-}
-
 int main(void)
 {
-    test_complete_roundtrip_and_metadata();
-    test_stop_and_wait_and_retry();
-    test_reject_partial_mixed_and_bad_clock();
+    test_prepare_bar_commit_and_no_autoplay();
+    test_deferral_latest_source_and_baseline();
+    test_persistent_owner_commands_and_failures();
+    test_lost_arm_and_commit_ack_fail_closed();
+    test_stale_fragments_crc_repair_and_delivery_identity();
+    test_withdraw_ready_and_latest_root_request();
+    test_owner_rejects_arm_after_cached_ready();
+    test_callback_backpressure_arm_not_authorization();
+    test_final_authorization_partition_is_bounded();
+    test_revision_zero_requires_compiled_canonical_plan();
+    test_unavailable_owner_cannot_claim_ready();
+    test_empty_source_bad_clock_and_send_errors();
     test_contact_queue_and_lifecycle();
-    test_crc_empty_and_callback_retry();
-    puts("board_link: plan/clock roundtrip, pacing/retry, CRC/stale/partial rejection, empty plans, callback retry, contact gating and stop pass");
+    puts("board_link: v2 proposed-plan/common-bar commit; deferred and paused peers; owner acknowledgements; stale/CRC/retry; revision supersession; partitions/timeouts; physical contact and checked stop pass");
     return 0;
 }

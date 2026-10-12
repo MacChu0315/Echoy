@@ -29,7 +29,7 @@ typedef struct {
 esp_err_t echoy_device_probe_request(echoy_device_handle_t device, bool start);
 esp_err_t echoy_device_probe_get(echoy_device_handle_t device, echoy_device_diagnostics_t *out);
 /* Link-worker callbacks: cached reads and copied latest-state admission only. */
-bool echoy_device_link_read(void *device, echoy_control_view_t *out);
+bool echoy_device_link_read(void *device, echoy_link_view_t *out);
 bool echoy_device_link_receive(void *device, const board_link_update_t *update);
 
 /* Firmware lifecycle only. BSP power/I2C must already be initialized. GSP

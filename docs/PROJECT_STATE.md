@@ -220,8 +220,9 @@ also occurs outside the audio lock. Playback output uses installed `paplay`.
 Confirmed behavior includes tap audition, recording cues, repeated identical
 recordings, one-shot replies, linked full phrases/pitches, independent looping,
 boundary changes, exact detach retention, fault recovery and remove/restore.
-New neighbors never auto-start, replaced automatic-preview jobs stay cancelled,
-and language selection updates all three product screens.
+New neighbors never auto-start, explicit cancellation stays effective, and
+language selection updates all three product screens. The cooperation refinement
+below now defers new incoming edges during an existing recorded reply.
 
 Verification and concrete limits are recorded in `verification/audio-linked/README.md`.
 The supplied HTML remains the oracle, including actual Chrome offline sound.
@@ -409,9 +410,9 @@ startup finishes before audio activation. Existing UI and output voicing are
 unchanged. The pinned BSP's network/interaction/peer components are used, with
 the existing battery driver explicitly retained at 0.1.2.
 
-The user confirmed separated placement. Current package `2822d40910b0`, ELF
+The user confirmed separated placement. The previously accepted package `2822d40910b0`, ELF
 `8cf4eecdfb15e6dd73cd5a7b9a6b84fc355d0a128927be5c7e9cb813104a554f`,
-is installed on both authorized Device IDs. Immutable package:
+was installed on both authorized Device IDs. Immutable package:
 `output/device-release/echoy-dual-active-2822d40910b0.irisfw`.
 First board HEALTHY boot `3411308831530673249`, operation
 `2c440ef6-d3ef-4dc2-ac66-85aeadace29d`; second board HEALTHY boot
@@ -442,10 +443,9 @@ phrase/playback. Logs also show continued right-side output after detach, follow
 by the user's pause; final screens retain both phrases. Do not repeat these
 accepted basic steps just to recover context.
 
-The user correctly noted there is no persistent "跟随" text on the home screen.
-Following currently controls recording permission and upstream phrase reception;
-the text indicator has not been implemented or approved. No UI or firmware was
-changed during this read-only physical acceptance step.
+The user noted the missing persistent "跟随" text during that acceptance. The
+cooperation refinement below now implements the explicitly approved status
+feedback; those earlier observations describe the previous firmware.
 Earlier metadata timeout/reconnection events were observed; their cause is not
 established. Clock estimate RTTs were 13.5–73.9 ms, without a measured acoustic
 offset/drift bound. Long-duration RF/load robustness remains open. Evidence and
@@ -461,9 +461,41 @@ expected factory-partition size warning (the package targets the much larger
 `ota_0` partition and preserves Recovery). Basic actual radio transfer/contact
 and listening now pass within the scope above; precision timing and sustained
 memory/radio load are not accepted yet. Only two upright horizontal boards are
-supported; playing edits propagate after transfer/preparation and are not a
-simultaneous same-bar transaction. See `verification/dual-device/README.md` for
+supported. That accepted v1 firmware propagated edits after transfer/preparation;
+the v2 refinement below implements shared future-bar transactions. See
+`verification/dual-device/README.md` for
 implementation, artifact identities, test commands and acceptance boundaries.
+
+### Cooperation refinement installed; new physical checks pending
+
+The four user-approved decisions are implemented against the unchanged v4 HTML.
+New contact during count-in/recording/original preparation/reply waits for that
+local operation; Cancel/Pause and detach still work. Wireless v2 prepares full
+proposals and both actual sound banks before a common future-bar commit. Old
+PCM continues while preparing or after failure; paused devices never auto-start.
+Failure/peer-loss waits are bounded, and session/job fences reject stale work.
+The existing home line now shows connected, waiting, deferred, following and
+recovering states; empty followers no longer show the contradictory save hint.
+Detach ownership, no reboot memory, bottom geometry, audio profile and recording
+sequence are unchanged. Both peers must use the v2 coordination firmware.
+
+24 recording/link boundaries, 11 real two-owner transport/PCM cases, protocol and
+relevant sanitizers pass. The 864-plan/1,552-transition HTML oracle, 96 exact PCM
+windows, 23 device runtime cases, 6 new native GSP flows and 13 existing desk
+checks also pass. Build `build-sim-cooperation-v2` is isolated from older live
+previews. Native evidence and commands: `verification/cooperation/README.md`.
+Package `ace57f3ff2b0` is now installed on both authorized Device IDs. ELF:
+`79e4f1701d3775e379d160ee4ce0bf3816d0b82d0fa3bb362fd6d9731b440acd`.
+First/second HEALTHY boots are `6968030823019921606` / `9645677825573746719`;
+operations `0c47f6c4-e554-45d3-bd41-cb3fdf9d336b` /
+`b8a34b86-6b57-490a-9f0e-17a0b2ac5877`. Live image, retained bootloader/layout,
+real homes and separated magnetic baselines pass, with zero application crashes.
+The known Recovery startup watchdog occurred before both writes; saved metadata
+had no valid core and stable Recovery was verified before each single update.
+The first new physical question (two empty devices joining, then the left's first
+recording reaching the silent right) is pending. Recording-join boundaries and
+common updates still require physical checks; precise acoustic timing and
+sustained RF/memory load remain separate from the accepted basic flow.
 
 The retained output calibration was accepted provisionally on `4ee7991a5d56`: hardware volume 90,
 device PCM gain 6 with .90 peak limiting and diagnostic RPC disabled. The
@@ -560,7 +592,7 @@ phrase 3 (Answer), the original problematic expression, also has no obvious
 distortion at the same higher volume. Physical listening follow-up is closed
 for this trial. On 2026-10-10 the user decided to retain the current volume
 ("音量上就先这样吧"). Keep the output parameters from `7c431dacfd59`;
-the current dual-device package is `2822d40910b0` with those same parameters;
+the current dual-device package is `ace57f3ff2b0` with those same parameters;
 stop further loudness tuning unless requested. This is provisional retention,
 not a claim of measured acoustic performance or the absolute hardware limit.
 Any future substantial loudness improvement needs acoustic/output-chain
