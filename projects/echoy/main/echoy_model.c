@@ -71,7 +71,7 @@ echoy_model_handle_t echoy_model_create(void)
         m->state.phrase = 1;
         m->state.density = .5;
         for (unsigned i = 0; i < 4; ++i) {
-            m->memories[i] = i == ECHOY_HARMONY ? 2 : 1;
+            m->memories[i] = 1;
         }
         if (!echoy_compose_mask(0, ECHOY_PULSE, 1, .5, &m->current)) {
             free(m);

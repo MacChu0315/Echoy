@@ -624,7 +624,7 @@ esp_err_t echoy_device_start(echoy_device_handle_t *out, echoy_platform_t *platf
     atomic_init(&d->probe_sequence, 0);
     d->condition = ECHOY_LOADING;
     d->cache = (echoy_control_view_t){
-        .memories = {1, 1, 1, 2},
+        .memories = {1, 1, 1, 1},
         .present = true,
         .source = ECHOY_TILE_NONE,
         .volume = .65,

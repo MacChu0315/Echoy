@@ -115,6 +115,24 @@ normal after 77 seconds with crash count zero and unchanged audio parameters.
 Physical timing feedback is pending. The simulator build is `build-sim-three-seconds`;
 no new long-running desktop was started. Evidence: `verification/three-seconds/README.md`.
 
+### Consistent default expressions (2026-10-12)
+
+The user requested consistent initial selection. All roles now start at their
+first/left expression: Pulse Accent, Voice Short phrase, Dust Grains, Harmony
+Short chords. Harmony no longer initially selects the middle Arpeggio expression.
+Per-role manual selections are still remembered within the running session;
+restart restores the defaults. Standalone model, shared arrangement (including
+initial Harmony tile B) and hardware loading cache use the same defaults.
+No musical algorithms, speaker profile, timing or persistent format changed.
+
+Model/shared-band memory checks, 864 reference linked plans and 1,552 reference
+state transitions (normal and sanitizer), 22 device-runtime tests and all native
+Chinese/English role pages pass. The frozen HTML is intact; only the oracle test's
+initial defaults are adapted to this approved change. Package `1d57c5719989` is
+prepared; device installation is in progress. Evidence:
+`verification/default-expressions/README.md`. Simulator build:
+`build-sim-default-expressions` (no new long-running desktop started).
+
 ### Harmony home refinement
 
 At the user's request, the shared C renderer now spreads the three Harmony home

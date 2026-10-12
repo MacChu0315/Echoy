@@ -193,9 +193,9 @@ echoy_arrange_t *echoy_arrange_create(void)
     for (int i = 0; i < ECHOY_ARRANGE_TILE_COUNT; ++i) {
         echoy_arrange_tile_t *d = &m->tiles[i];
         d->id = d->clock_id = (echoy_tile_id_t)i;
-        d->role = roles[i]; d->phrase = i == ECHOY_TILE_B ? 2 : 1;
+        d->role = roles[i]; d->phrase = 1;
         d->density = .5; d->present = i == ECHOY_TILE_A; d->use_own = true;
-        for (int role = ECHOY_PULSE; role <= ECHOY_HARMONY; ++role) d->memories[role] = role == ECHOY_HARMONY ? 2 : 1;
+        for (int role = ECHOY_PULSE; role <= ECHOY_HARMONY; ++role) d->memories[role] = 1;
         d->current.source = ECHOY_TILE_NONE;
     }
     return m;

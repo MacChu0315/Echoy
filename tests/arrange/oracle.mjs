@@ -25,6 +25,18 @@ for (const exportName of ['PulseLab', 'ReplyAB', 'RoleAccompaniment', 'ArrangeMo
   vm.runInContext(baseline.slice(start, end), context, { timeout: 2000 });
 }
 const ids = ['A', 'B', 'C'], roles = ['pulse', 'voice', 'dust', 'harmony'];
+// Approved product exception: all roles now start at expression 1. Only initial
+// state is adapted; the frozen file and all linked-music algorithms are unchanged.
+function initialModel() {
+  const m = new context.ArrangeModel();
+  for (const id of ids) {
+    const d = m.tiles[id];
+    assert(!d.current && d.ownSeed.length === 0);
+    d.phrase = 1;
+    for (const role of roles) d.memories[role] = 1;
+  }
+  return m;
+}
 const kinds = ['kick', 'rim', 'hat', 'tone', 'grain', 'chord'];
 const layers = ['anchor', 'echo', 'ending', 'support', 'detail'];
 const articulations = [undefined, 'short', 'broken', 'answer'];
@@ -101,7 +113,7 @@ try {
     processC.on('error', reject); processC.on('close', code => resolveRun(code));
   });
   const lines = createInterface({ input: processC.stdout, crlfDelay: Infinity })[Symbol.asyncIterator]();
-  let model = new context.ArrangeModel(), saved = [null, null, null, null];
+  let model = initialModel(), saved = [null, null, null, null];
   async function exchange(command) {
     processC.stdin.write(command + '\n');
     const response = await lines.next();
@@ -114,7 +126,7 @@ try {
   async function operation(op, ...args) {
     let command = op, ok = true, value = null, committed = null, printedJob = null;
     try {
-      if (op === 'R') { model = new context.ArrangeModel(); saved = [null, null, null, null]; }
+      if (op === 'R') { model = initialModel(); saved = [null, null, null, null]; }
       else if (op === 'S') { command += ` ${args[0]} ${rawText(args[1])}`; ok = model.setSeed(ids[args[0]], args[1]); }
       else if (op === 'C') {
         const [id, patch] = args;

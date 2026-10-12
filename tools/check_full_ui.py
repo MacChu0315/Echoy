@@ -79,6 +79,8 @@ def main():
                 checks.append('Role-page Hear once completes once and returns to idle')
                 gallery_images=[]; home_headers=[]
                 for r in ['pulse','voice','dust','harmony']:
+                    until(lambda: re.findall(r'ECHOY_PLAN revision=\d+ role=(\w+) phrase=(\d+)',log())[-1] == (r,'1'), 'Initial expression must be first: '+r)
+                    shot('default-'+r)
                     for phrase in [1,2,3]:
                         previous_revision=int(re.findall(r'ECHOY_PLAN revision=(\d+)',log())[-1])
                         tap(f'phrase_{phrase}')
@@ -103,7 +105,7 @@ def main():
                 plans=re.findall(r'ECHOY_PLAN revision=\d+ role=(\w+) phrase=(\d+) anchors=(\d+) events=(\d+)',log())
                 assert len({(r,p) for r,p,_,_ in plans})==12,plans
                 assert any(int(events)>int(anchors) for _,_,anchors,events in plans)
-                checks.append('All four roles and twelve expressions commit real generated plans and render gallery images')
+                checks.append('All four roles first open on expression 1, remember later selections, and render all twelve generated expression plans')
                 tap('role_back');route('home');tap('settings');route('settings_page');shot('settings-top-zh')
                 tap('settings_display');route('display_page');bright=shot('display-zh')
                 drag(240,193,193)
@@ -124,6 +126,7 @@ def main():
                 tap('settings_back');route('home');shot('home-en')
                 tap('role');route('role_page')
                 for r in ['pulse','voice','dust','harmony']:
+                    until(lambda: re.findall(r'ECHOY_PLAN revision=\d+ role=(\w+) phrase=(\d+)',log())[-1] == (r,'3'), 'Role must remember the user selection: '+r)
                     for phrase in [1,2,3]:
                         old=int(re.findall(r'ECHOY_PLAN revision=(\d+)',log())[-1]);tap(f'phrase_{phrase}')
                         until(lambda: int(re.findall(r'ECHOY_PLAN revision=(\d+)',log())[-1])>old, f'English {r}/{phrase} commit')

@@ -1,0 +1,10 @@
+{
+  "passed": [
+    "Role-page Hear once completes once and returns to idle",
+    "All four roles first open on expression 1, remember later selections, and render all twelve generated expression plans",
+    "All twelve expressions have Chinese/English v4 home header captures and hidden steady-state captions",
+    "Four settings entries and one-screen guides work in Chinese/English; brightness and idle-dim switch respond to real pointer input",
+    "Mock fault/loading/empty states recover to a paused home"
+  ],
+  "scope": "native UI and musical data; no audio/hardware acceptance"
+}

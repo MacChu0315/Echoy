@@ -34,7 +34,7 @@ esp_gsp_err_t __wrap_esp_gsp_component_set_property(esp_gsp_handle_t g, gsp_comp
 static echoy_control_view_t view = {
     .state = {.role = ECHOY_PULSE, .phrase = 1, .density = .5},
     .plan = {.role = ECHOY_PULSE, .phrase = 1, .density = .5, .duration = 2.5},
-    .memories = {1, 1, 1, 2},
+    .memories = {1, 1, 1, 1},
     .present = true,
     .source = -1,
     .volume = .65,

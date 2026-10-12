@@ -276,6 +276,7 @@ static void loading_cache_contract(void)
     assert(v.plan.role == ECHOY_PULSE && v.plan.phrase == 1 && v.plan.duration == 2.5);
     for (int role = ECHOY_PULSE; role <= ECHOY_HARMONY; ++role) {
         echoy_plan_t gallery;
+        assert(v.memories[role] == 1);
         /* The real UI generates its gallery even while the status page is shown. */
         assert(echoy_compose_mask(v.state.seed, role, v.memories[role], v.state.density, &gallery));
     }

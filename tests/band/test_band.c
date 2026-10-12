@@ -54,6 +54,35 @@ static void three_second_cues_and_unchanged_recording_beats(void)
     echoy_band_delete(b);
 }
 
+static void default_expressions_and_role_memory(void)
+{
+    echoy_band_t *b = echoy_band_create();
+    assert(b);
+    prepare(b, 0);
+    echoy_control_view_t v;
+    for (int tile = 0; tile < 3; tile++) {
+        assert(echoy_band_read(b, (echoy_tile_id_t)tile, &v));
+        assert(v.state.phrase == 1);
+        for (int role = 0; role < 4; role++) assert(v.memories[role] == 1);
+    }
+    int64_t now = 100000;
+    for (int role = ECHOY_PULSE; role <= ECHOY_HARMONY; role++) {
+        assert(echoy_band_action(b, ECHOY_TILE_A, ECHOY_ACT_ROLE, role, now));
+        prepare(b, now);
+        assert(echoy_band_read(b, ECHOY_TILE_A, &v) && v.state.phrase == 1);
+        assert(echoy_band_action(b, ECHOY_TILE_A, ECHOY_ACT_PHRASE, 3, now + 100000));
+        prepare(b, now + 100000);
+        now += 200000;
+    }
+    for (int role = ECHOY_PULSE; role <= ECHOY_HARMONY; role++) {
+        assert(echoy_band_action(b, ECHOY_TILE_A, ECHOY_ACT_ROLE, role, now));
+        prepare(b, now);
+        assert(echoy_band_read(b, ECHOY_TILE_A, &v) && v.state.phrase == 3);
+        now += 100000;
+    }
+    echoy_band_delete(b);
+}
+
 static void merged_cancel_stops_future_audio(void)
 {
     echoy_band_t*b=echoy_band_create();assert(b);
@@ -72,6 +101,7 @@ static void merged_cancel_stops_future_audio(void)
 
 int main(void)
 {
+    default_expressions_and_role_memory();
     three_second_cues_and_unchanged_recording_beats();
     merged_cancel_stops_future_audio();
     echoy_band_t *b = echoy_band_create();

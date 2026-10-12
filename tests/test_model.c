@@ -41,6 +41,28 @@ static void count_in_and_leading_silence(void)
     echoy_model_delete(m);
 }
 
+static void default_expressions_and_role_memory(void)
+{
+    echoy_model_handle_t m = echoy_model_create();
+    assert(m);
+    int64_t now = 0;
+    for (int role = ECHOY_PULSE; role <= ECHOY_HARMONY; role++) {
+        assert(echoy_model_select_role(m, (echoy_role_t)role, now));
+        echoy_model_tick(m, now + 50000);
+        assert(snap(m).phrase == 1);
+        assert(echoy_model_select_phrase(m, 3, now + 100000));
+        echoy_model_tick(m, now + 150000);
+        now += 200000;
+    }
+    for (int role = ECHOY_PULSE; role <= ECHOY_HARMONY; role++) {
+        assert(echoy_model_select_role(m, (echoy_role_t)role, now));
+        echoy_model_tick(m, now + 50000);
+        assert(snap(m).phrase == 3); /* Defaults never replace a user's later selection. */
+        now += 100000;
+    }
+    echoy_model_delete(m);
+}
+
 static void ordinary_taps_do_not_record(void)
 {
     echoy_model_handle_t m = echoy_model_create();
@@ -151,7 +173,7 @@ static void composed_reply_and_role_memory(void)
     }
     echoy_model_pause(m);
     assert(echoy_model_select_role(m, ECHOY_HARMONY, 7000000));
-    assert(snap(m).phrase == 2);
+    assert(snap(m).phrase == 1);
     echoy_model_tick(m, 7050000);
     assert(echoy_model_select_phrase(m, 3, 7100000));
     echoy_model_tick(m, 7150000);
@@ -225,6 +247,7 @@ static void managed_plan_waits_for_audio_and_external_clock(void)
 
 int main(void)
 {
+    default_expressions_and_role_memory();
     managed_plan_waits_for_audio_and_external_clock();
     puts("PASS external plan preparation and clock");
     count_in_and_leading_silence();
