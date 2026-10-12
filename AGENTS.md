@@ -44,3 +44,6 @@
   actual PCM scheduler. A UI-only backend, scene render or separately recreated
   browser sound model is insufficient. Keep audio timing independent of GSP RPC
   and file I/O; preserve immutable preparation jobs and cancellation generations.
+- The PCM owner must not wait for UI/link cached-state readers. Publish without
+  blocking and retry on a later block; keep the output deadline and explicit
+  pause/recovery semantics intact.

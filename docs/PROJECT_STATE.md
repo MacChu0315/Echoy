@@ -466,7 +466,7 @@ the v2 refinement below implements shared future-bar transactions. See
 `verification/dual-device/README.md` for
 implementation, artifact identities, test commands and acceptance boundaries.
 
-### Cooperation interactions pass; audio deadline diagnosis blocks stable delivery
+### Cooperation and audio-publication fixes; hardware retest in progress
 
 The four user-approved decisions are implemented against the unchanged v4 HTML.
 New contact during count-in/recording/original preparation/reply waits for that
@@ -484,7 +484,7 @@ relevant sanitizers pass. The 864-plan/1,552-transition HTML oracle, 96 exact PC
 windows, 23 device runtime cases, 6 new native GSP flows and 13 existing desk
 checks also pass. Build `build-sim-cooperation-v2` is isolated from older live
 previews. Native evidence and commands: `verification/cooperation/README.md`.
-Package `ace57f3ff2b0` is now installed on both authorized Device IDs. ELF:
+The initial cooperation package `ace57f3ff2b0` was installed on both authorized Device IDs. ELF:
 `79e4f1701d3775e379d160ee4ce0bf3816d0b82d0fa3bb362fd6d9731b440acd`.
 First/second HEALTHY boots are `6968030823019921606` / `9645677825573746719`;
 operations `0c47f6c4-e554-45d3-bd41-cb3fdf9d336b` /
@@ -501,19 +501,56 @@ Both devices recorded one audio deadline miss; the right fault was captured live
 after contact with unchanged render/mix/conversion maxima 8,916/7,624/1,430 us.
 Do not claim stable hardware acceptance or a proven whole-device reboot. The
 left error was in a dropped-log interval. Owner control/scheduling costs were not
-measured; lightweight timing diagnosis is now in progress without changing audio
-parameters, deadlines or playback semantics. Reports/evidence are retained in
+measured then; the subsequent trace and repair below preserve audio parameters,
+deadlines and playback semantics. Reports/evidence are retained in
 `verification/cooperation/physical-acceptance.json`.
 
-Right-only diagnostic package `29a3cb61a5a0` is now installed, HEALTHY boot
+Right-only diagnostic package `29a3cb61a5a0` was then installed, HEALTHY boot
 `13509464675950450897`, operation `51501961-9b96-4def-9c58-ebcdba0e7863`, ELF
 `83eaa386833d4ef389fe63a822d49e062b863bb422ee3a1e5fff65bc36478050`. Left remains
-on `ace57f3ff2b0`. The new 16-round owner trace freezes current/previous control,
-mutex, render and write timings on a deadline miss, then logs four lines after
-closing audio. All 24 runtime cases and ASan/UBSan pass; the SDK build passes and
-UI-data hash is identical. This is diagnosis, not an audio fix. Reproduction
-while playing and detaching/reattaching twice is pending; preserve an error page
-until the four trace lines are saved. See `verification/cooperation/README.md`.
+on `ace57f3ff2b0`. The 16-round owner trace freezes current/previous control,
+mutex, render and write timings on a deadline miss. On the user's return, both
+Boot IDs/images were verified unchanged. The first right-side Role click
+reproduced a deadline failure: publisher lock wait 16,806 us, publication 17,026 us,
+late by 1,841 us; all earlier control stages completed within 93 us. Previous
+rounds had ordinary ~10 ms render/write cycles. Evidence:
+`verification/cooperation/publish-lock-trace.json`. This establishes blocking
+`view_lock` publication as the cause of the captured right-side failure.
+
+The local fix now uses a zero-wait publication attempt: a busy reader keeps its
+coherent previous cache, and the owner retries next block without delaying PCM.
+Two new tests hold UI/link readers for 80 ms: old code stops advancing output;
+new code keeps PCM and immediate Pause, then publishes fresh state after release.
+All 26 runtime cases pass normally and with ASan/UBSan. Not installed yet.
+
+The user's empty-right waiting report also has a concrete failure path: left is
+on its audio error page (deadline count increased to 2), right received no complete
+source plan and transaction 13 timed out before any common bar. Its current
+screen is Reconnecting. The same-connection recovery gap and repeated ABORT rejection before OFFER
+are now fixed locally. Recovery uses the existing WANT format only after an
+owner-ready transition or validated traffic after real silence; attempts remain
+30 seconds. Duplicate messages and a failed baseline marker cannot start retries.
+Pre-BEGIN failure cannot release a held source candidate into playback. Deferred
+recording and already-authorized jobs stay protected. The right never needs to
+record before following.
+
+18 real transport/PCM cases (33,039,014 assertions), 24 deferred cases, protocol,
+calibration and relevant sanitizer checks pass. All 26 runtime cases and the
+fresh native 6-flow/46-caption check pass; frozen HTML hashes remain intact.
+The pinned SDK package `f13fd6428d8b` preserves UI data and Recovery layout.
+It is installed on the first device, HEALTHY boot `7368647184006517658`, operation
+`1d41206d-1d5c-461e-8ebc-a7afd7abf3a7`, ELF
+`f57805292875250767cf6f76a111a6d6a3914775438b5d90cd791768ef651420`.
+Home, retained bootloader, separated calibration and 90 seconds of idle PCM pass
+with zero deadline misses. Right still runs diagnostic `29a3cb61a5a0`: two software
+enter-recovery attempts returned device error 0x101 (ESP_ERR_NO_MEM), while live
+status confirmed the same normal boot and empty operation queue; no bundle write
+was submitted. The pinned recovery helper selects factory, then allocates a
+2,048-byte restart task; allocation failed and it requests rollback of the boot
+selection. User was asked to power on only the right while holding AI to enter
+existing Vibe Mode. Preserve the package/identity checks and resume from verified
+Recovery; do not repeat an unknown write or replace base firmware. Both-device
+retest remains pending. See `verification/cooperation/README.md`.
 
 The retained output calibration was accepted provisionally on `4ee7991a5d56`: hardware volume 90,
 device PCM gain 6 with .90 peak limiting and diagnostic RPC disabled. The

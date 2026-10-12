@@ -512,6 +512,11 @@ bool echoy_band_link_update(echoy_band_t *b, const echoy_link_update_t *u, int64
     struct cooperation *c=b->cooperation;
     if (c->generation && u->connection_generation!=c->generation &&
         (int32_t)(u->connection_generation-c->generation)<=0) return false;
+    bool failed_held_source=u->command==ECHOY_LINK_ABORT && u->failed && !u->following &&
+        u->attached && c->active && !c->follower && u->session==c->session &&
+        c->hold && !b->deferred[0] && c->candidate_exists &&
+        c->candidate_revision==u->revision &&
+        !(c->authorized && c->committed!=c->authorized);
     bool new_session=u->attached && (!c->active || u->session!=c->session || u->following!=c->follower);
     bool leaving=c->active && (!u->attached || new_session);
     if (leaving) {
@@ -544,7 +549,11 @@ bool echoy_band_link_update(echoy_band_t *b, const echoy_link_update_t *u, int64
     }
     if (u->command==ECHOY_LINK_NONE) return true;
     if (!u->transaction) return false;
-    if (u->transaction==c->aborted) return u->command==ECHOY_LINK_ABORT;
+    if (u->transaction==c->aborted) {
+        if (u->command!=ECHOY_LINK_ABORT) return false;
+        if (u->failed) c->failed=u->transaction;
+        return true;
+    }
     if (c->last_transaction && u->transaction!=c->last_transaction &&
         (int32_t)(u->transaction-c->last_transaction)<=0) return false;
     if (u->command==ECHOY_LINK_BEGIN || u->command==ECHOY_LINK_OFFER) {
@@ -559,6 +568,12 @@ bool echoy_band_link_update(echoy_band_t *b, const echoy_link_update_t *u, int64
         c->last_transaction=u->transaction;
         c->failed=0;
         c->bound_revision=u->revision;
+        if (u->command==ECHOY_LINK_BEGIN && c->candidate_failed) {
+            /* A fresh recovery transaction retries this failed immutable job;
+             * normal ready/armed revisions keep their existing preparation. */
+            b->issued=UINT64_MAX;
+            c->candidate_ready=c->candidate_failed=false;
+        }
         if (u->command==ECHOY_LINK_OFFER) {
             c->incoming=true;
             if (!b->deferred[0]) discard_candidate(b,false);
@@ -566,6 +581,17 @@ bool echoy_band_link_update(echoy_band_t *b, const echoy_link_update_t *u, int64
                                          u->looping,now)) return false;
             if (!b->deferred[0]) b->issued=UINT64_MAX;
         }
+        return true;
+    }
+    if (u->command==ECHOY_LINK_ABORT && u->transaction!=c->offered) {
+        /* META may arrive without a complete OFFER. Acknowledge that aborted
+         * transaction without cancelling an older authorized commit or the
+         * independent recording/preparation of a deferred receiver. */
+        c->aborted=c->last_transaction=u->transaction;
+        if (u->failed) c->failed=u->transaction;
+        /* BEGIN can be overwritten in the latest slot by its failed ABORT.
+         * That leader candidate was already held for the joint transaction. */
+        if (failed_held_source) discard_candidate(b,true);
         return true;
     }
     if (u->transaction!=c->offered) return false;

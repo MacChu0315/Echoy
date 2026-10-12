@@ -437,6 +437,77 @@ static void test_final_authorization_partition_is_bounded(void)
 
 
 
+
+static void test_recovery_request_deduplicates_and_needs_fresh_event(void)
+{
+    owner_t *oa = new_owner(true), *ob = new_owner(false);
+    ob->prepare = false;
+    board_link_t *a = node(false, oa), *b = node(true, ob);
+    run_pair(a, b, 1000000, 33000000);
+    assert(a->transaction.phase == TX_ABORTED && b->transaction.phase == TX_ABORTED);
+    uint32_t aborted = a->transaction.id;
+    run_pair(a, b, 33000000, 43000000);
+    assert(a->transaction.id == aborted && !a->recovery_requested && !b->recovery_requested);
+    assert(a->update.command == ECHOY_LINK_NONE && b->update.command == ECHOY_LINK_NONE);
+    mosaico_network_message_t want = {.source_id = a->peer, .service_id = LINK_SERVICE_BASE,
+                                     .payload_len = 16};
+    want.payload[0] = LINK_WIRE_VERSION; want.payload[1] = WIRE_WANT;
+    put32(want.payload + 4, a->session); put32(want.payload + 8, aborted);
+    put32(want.payload + 12, a->tx.crc);
+    receive_message(a, &want, 43000000);
+    read_local(a, 43000000);
+    uint32_t restarted = a->transaction.id;
+    assert(restarted != aborted && !a->recovery_requested);
+    int64_t began = a->transaction.began;
+    for (unsigned i = 0; i < 8; ++i) receive_message(a, &want, 43001000 + i * 1000);
+    assert(a->transaction.id == restarted && a->transaction.began == began && !a->recovery_requested);
+    ob->prepare = true;
+    run_pair(a, b, 43010000, 49000000);
+    assert(a->transaction.phase == TX_DONE && b->transaction.phase == TX_DONE);
+    free_pair(a, b);
+}
+
+
+static void test_abort_traffic_is_not_a_new_outage(void)
+{
+    owner_t *oa = new_owner(true), *ob = new_owner(false);
+    ob->prepare = false;
+    board_link_t *a = node(false, oa), *b = node(true, ob);
+    run_pair(a, b, 1000000, 33000000);
+    assert(b->transaction.phase == TX_ABORTED && !b->recovery_requested);
+    mosaico_network_message_t aborted = {.source_id = b->peer, .service_id = LINK_SERVICE_BASE,
+                                        .payload_len = 32};
+    aborted.payload[0] = LINK_WIRE_VERSION; aborted.payload[1] = WIRE_ABORT;
+    put32(aborted.payload + 4, b->session); put32(aborted.payload + 8, b->transaction.id);
+    aborted.payload[28] = 1;
+    for (int64_t now = 34000000; now <= 38000000; now += 1000000)
+        receive_message(b, &aborted, now);
+    b->clock.waiting = true; b->clock.pending_sequence = 17; b->clock.t1 = 39000000;
+    uint8_t pong[36] = {0};
+    put32(pong + 8, 17); put_time(pong + 12, 39000000);
+    put_time(pong + 20, 38800000); put_time(pong + 28, 38801000);
+    receive_pong(b, pong, 39002000);
+    assert(!b->recovery_requested && b->update.command == ECHOY_LINK_NONE);
+    free_pair(a, b);
+}
+
+static void test_first_peer_after_startup_outage_recovers(void)
+{
+    owner_t *oa = new_owner(true), *ob = new_owner(false);
+    oa->view.requested_revision = ob->view.requested_revision = 0;
+    oa->view.proposal_pending = ob->view.proposal_pending = false;
+    fake_now = 0;
+    board_link_t *a = node(false, oa), *b = node(true, ob);
+    drop_kinds = UINT32_MAX;
+    run_pair(a, b, 1000000, 33000000);
+    assert(!a->peer_seen && !b->peer_seen);
+    assert(a->transaction.phase == TX_ABORTED && b->transaction.phase == TX_ABORTED);
+    drop_kinds = 0;
+    run_pair(a, b, 33000000, 39000000);
+    assert(a->transaction.phase == TX_DONE && b->transaction.phase == TX_DONE);
+    free_pair(a, b);
+}
+
 static void test_revision_zero_requires_compiled_canonical_plan(void)
 {
     owner_t *oa = new_owner(false);
@@ -561,6 +632,9 @@ int main(void)
     test_owner_rejects_arm_after_cached_ready();
     test_callback_backpressure_arm_not_authorization();
     test_final_authorization_partition_is_bounded();
+    test_recovery_request_deduplicates_and_needs_fresh_event();
+    test_abort_traffic_is_not_a_new_outage();
+    test_first_peer_after_startup_outage_recovers();
     test_revision_zero_requires_compiled_canonical_plan();
     test_unavailable_owner_cannot_claim_ready();
     test_empty_source_bad_clock_and_send_errors();

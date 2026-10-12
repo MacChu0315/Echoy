@@ -37,13 +37,13 @@ Examples: [waiting](waiting.png), [deferred count-in](deferred-count-in.png),
 | Command | Result |
 | --- | --- |
 | `sh tests/cooperation/run_deferred.sh` | 24 boundary cases, 420,054 assertions |
-| `sh tests/cooperation/run_transactions.sh` | 11 real two-owner transport/PCM cases, 11,389,072 assertions |
+| `sh tests/cooperation/run_transactions.sh` | 18 real two-owner transport/PCM cases, 33,039,014 assertions |
 | `sh tests/board_link/run.sh` | v2 transfer, handshake, loss, readiness, supersession and stop checks |
 | `sh tests/band/run.sh` | shared controller and unchanged calibration checks |
 | `sh tests/linked_device/run.sh`; `sh tests/linked_device/run_clock.sh` | upstream ownership, clock refresh, staged boundaries and exact detach retention |
 | `sh tests/arrange/run.sh` | 864 plans and 1,552 transitions against frozen HTML, also ASan/UBSan |
 | `sh tests/render_active/run.sh` | 96 bit-identical PCM comparisons to the previous mixer |
-| `python3 tests/device_runtime/test_runtime.py` | 23 lifecycle, output, cancellation, cache and copied transaction cases |
+| `python3 tests/device_runtime/test_runtime.py` | 26 lifecycle, output, cancellation, cache contention and copied transaction cases |
 | `python3 tools/check_cooperation_ui.py --build-dir projects/echoy/build-sim-cooperation-v2 --output <new-output>` | 46 real C caption/visibility assertions and 6 native GSP flows; [results](ui-checks.json) |
 | `python3 tools/check_desk.py --build-dir projects/echoy/build-sim-cooperation-v2 --output <new-output>` | 13 native GSP/actual PCM checks; [results](desk-checks.json) |
 | `sha256sum -c SHA256SUMS` from `reference/v4` | all four frozen files unchanged |
@@ -89,8 +89,8 @@ This is not a stable-delivery acceptance. [Reports and evidence](physical-accept
 Both devices still report the installed Boot IDs and crash count zero; neither
 has a valid core dump. Each recorded one audio output deadline miss. The right
 failure was captured live after contact: cumulative render/mix/conversion maxima
-were unchanged at 8,916/7,624/1,430 us. Pre-render owner operations and scheduling
-are not yet timed, so the cause is unresolved. The first left error fell in a
+were unchanged at 8,916/7,624/1,430 us. At that stage pre-render owner operations and scheduling
+were not timed. The later trace below establishes the captured right-side cause. The first left error fell in a
 log-loss gap. No claim is made that the user's observed screen was a hardware
 reboot, or that sound synthesis alone caused either deadline miss.
 
@@ -113,10 +113,56 @@ metadata, four-line output only after close and absence of unexecuted stages.
 All 24 runtime cases pass normally and with ASan/UBSan. Pinned SDK build passes
 with the same factory-size warning; UI-data hash is unchanged.
 
-Only the right device now runs diagnostic package `29a3cb61a5a0`, boot
+The right device was then updated to diagnostic package `29a3cb61a5a0`, boot
 `13509464675950450897`, operation `51501961-9b96-4def-9c58-ebcdba0e7863`, ELF
 `83eaa386833d4ef389fe63a822d49e062b863bb422ee3a1e5fff65bc36478050`.
 Its real home, healthy state, retained bootloader and separated magnetic baseline
 pass. Left remains on `ace57f3ff2b0`. [Diagnostic delivery](diagnostic-device.json).
-Reproduction requested: both play, detach/reattach twice with about eight seconds
-between; leave any error page untouched for evidence. The cause remains unresolved.
+The user's first Role click reproduced the fault on return. Concatenating Iris
+stdout chunks gives the complete four rows, including command/transaction fields:
+[publisher-lock trace](publish-lock-trace.json). The failing owner round spent
+16,806 us waiting for `view_lock` during a 17,026 us publication, exceeding its
+PCM presentation time by 1,841 us. Earlier control stages totaled only 93 us,
+and previous rounds completed render/write in about 10 ms. No new render was
+attempted in the failing round. Boot IDs remained unchanged.
+
+A local fix changes owner publication to a zero-wait mutex attempt; if a cached
+reader is busy, old coherent snapshots stay available and the next block retries.
+UI/link readers cannot stall PCM. New regression cases hold each real cached-read
+path for 80 ms: both fail on the previous implementation, pass with continuous
+output and immediate Pause after the fix, and receive fresh state after release.
+All 26 runtime cases pass normally and with ASan/UBSan. Hardware fix validation
+is pending.
+
+The simultaneous empty-follower report is distinct: the left was in audio fault,
+no complete source plan reached the right, and transaction 13 timed out before
+ARM. Investigation also found same-session recovery and pre-OFFER ABORT handling
+gaps. Both gaps now have regression fixes: pre-OFFER ABORT is acknowledged once,
+including failure escalation and protection for deferred jobs/authorized commits.
+A failed held leader candidate cannot slip through if ABORT supersedes BEGIN.
+Recovery reuses existing WANT messages after owner readiness returns or a fresh
+peer response follows actual silence. Matching control messages count as live
+traffic. New attempts retain the 30-second limit; duplicate WANT/ABORT, unchanged
+failed baseline markers and continuous heartbeats do not cause automatic retries.
+The wire version and layout remain v2. Local changes/Pause while armed retain
+previous behavior.
+
+The expanded 18-case transport suite passes normally and with ASan/UBSan;
+24 deferred/owner cases and protocol/calibration checks also pass. The 26 runtime
+cases include both 80 ms reader-contention regressions. Independent native build
+`build-sim-cooperation-lockfix` passes 46 C visibility/caption assertions and all
+six GSP flows ([fresh UI results](lockfix-ui-checks.json)). Frozen v4 hashes pass.
+SDK build log:
+`.codex-runs/idf-low-noise-build/20261012-194345-system-update-bundle-2991222/raw.log`.
+The candidate package is `f13fd6428d8b`; UI-data and retained partition hashes
+match the previous installation. Hardware installation/retest is in progress.
+
+Delivery note: first board now runs `f13fd6428d8b`, boot `7368647184006517658`,
+operation `1d41206d-1d5c-461e-8ebc-a7afd7abf3a7`; idle PCM remained error-free for
+90 seconds. Right-board software mode entry failed twice with device RPC error
+`0x101` (`ESP_ERR_NO_MEM`), despite normal read access and unchanged Boot ID. The
+helper could not allocate its 2,048-byte delayed restart task. No update bundle
+was submitted. User-assisted AI-button entry to the retained Vibe Mode was
+requested. Raw evidence lives in `output/dual-device/cooperation-lockfix-second/`
+and `.codex-runs/mosaico/20261012T114920Z-enter-recovery/` /
+`20261012T115205Z-enter-recovery/`.

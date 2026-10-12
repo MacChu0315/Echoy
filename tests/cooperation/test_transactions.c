@@ -486,12 +486,224 @@ static void wireless_empty_pair_gets_first_phrase(bool recording, bool cold)
     destroy_pair(p);
 }
 
+
+
+static void baseline_timeout_does_not_invent_a_recovery_event(void)
+{
+    pair_t *p = calloc(1, sizeof(*p));
+    CHECK(p);
+    real_owner_t *a = fresh_owner(false), *b = fresh_owner(true);
+    CHECK(echoy_band_action(a->band, ECHOY_TILE_A, ECHOY_ACT_TRANSPORT, 0, 3100000));
+    service_owner(a, 3200000);
+    b->prepare = false;
+    p->left = real_node(a, false); p->right = real_node(b, true); p->now = 4000000;
+    expect_pcm(a, false); expect_pcm(b, true);
+    advance_pair(p, 7000000);
+    uint32_t failed = p->left->transaction.id;
+    CHECK(failed && p->left->transaction.revision == 0 && p->left->transaction.phase == TX_PREPARING);
+    advance_pair(p, 41000000);
+    CHECK(p->left->transaction.phase == TX_ABORTED && p->left->transaction.id == failed);
+    CHECK(!p->left->recovery_requested && !p->right->recovery_requested);
+    advance_pair(p, 44000000);
+    CHECK(p->left->transaction.id == failed && p->left->transaction.phase == TX_ABORTED);
+    destroy_pair(p);
+}
+
+static void incomplete_offer_abort_is_acknowledged_once(void)
+{
+    pair_t *p = fresh_pair(true);
+    real_owner_t *a = p->left->ctx, *b = p->right->ctx;
+    echoy_plan_t old_a = a->state.plan, old_b = b->state.plan;
+    expect_pcm(a, false); expect_pcm(b, false);
+    p->dropped = 1u << WIRE_CHUNK;
+    CHECK(echoy_band_action(a->band, ECHOY_TILE_A, ECHOY_ACT_ROLE, ECHOY_VOICE, p->now));
+    advance_pair(p, p->now + 32000000);
+    uint32_t failed = p->left->transaction.id;
+    CHECK(p->left->transaction.phase == TX_ABORTED && p->right->transaction.phase == TX_ABORTED);
+    CHECK(b->link.offered_transaction != failed); /* No complete OFFER reached this owner. */
+    CHECK(b->link.failed_transaction == failed);
+    CHECK(p->left->update.command == ECHOY_LINK_NONE && p->right->update.command == ECHOY_LINK_NONE);
+    unsigned rejected = b->rejected;
+    advance_pair(p, p->now + 1000000);
+    CHECK(b->rejected == rejected);
+    equal_plan(&a->state.plan, &old_a); equal_plan(&b->state.plan, &old_b);
+    CHECK(a->pcm.energy > 1e-6 && b->pcm.energy > 1e-6);
+    destroy_pair(p);
+}
+
+static void fresh_transport_recovers_without_replug_and_queues_edits(void)
+{
+    pair_t *p = fresh_pair(false);
+    real_owner_t *a = p->left->ctx, *b = p->right->ctx;
+    echoy_plan_t old_a = a->state.plan, old_b = b->state.plan, next_a, local_b, next_b;
+    expect_pcm(a, false); expect_pcm(b, true);
+    p->dropped = UINT32_MAX;
+    CHECK(echoy_band_action(a->band, ECHOY_TILE_A, ECHOY_ACT_ROLE, ECHOY_VOICE, p->now));
+    advance_pair(p, p->now + 32000000);
+    uint32_t failed = p->left->transaction.id;
+    CHECK(p->left->transaction.phase == TX_ABORTED && p->right->transaction.phase == TX_ABORTED);
+    equal_plan(&a->state.plan, &old_a); equal_plan(&b->state.plan, &old_b);
+    p->dropped = 0;
+    int64_t limit = p->now + 8000000;
+    while (p->now < limit && (p->left->transaction.id == failed ||
+                              p->left->transaction.phase < TX_REMOTE_ARM ||
+                              p->left->transaction.phase >= TX_DONE))
+        advance_pair(p, p->now + BLOCK_US);
+    uint32_t recovering = p->left->transaction.id;
+    CHECK(recovering != failed && p->left->transaction.phase >= TX_REMOTE_ARM &&
+          p->left->transaction.phase < TX_DONE);
+    int64_t at = p->left->transaction.at;
+    CHECK(echoy_compose(old_a.source, old_a.source_count, ECHOY_VOICE, 1, .5, &next_a));
+    CHECK(echoy_compose(old_a.source, old_a.source_count, old_b.role, old_b.phrase, old_b.density, &local_b));
+    CHECK(echoy_arrange_linked(&local_b, &next_a, &next_b));
+    expect_next(a, &next_a, at);
+    while (p->now < at - 200000 && a->link.armed_transaction != recovering)
+        advance_pair(p, p->now + BLOCK_US);
+    CHECK(a->link.armed_transaction == recovering && b->link.armed_transaction == recovering);
+    CHECK(echoy_band_action(a->band, ECHOY_TILE_A, ECHOY_ACT_DENSITY, .8, p->now));
+    CHECK(echoy_band_action(b->band, ECHOY_TILE_A, ECHOY_ACT_PHRASE, 3, p->now + b->offset));
+    CHECK(echoy_band_action(b->band, ECHOY_TILE_A, ECHOY_ACT_PAUSE, 0, p->now + b->offset));
+    advance_pair(p, at + 30000);
+    CHECK(a->link.committed_transaction == recovering && b->link.committed_transaction == recovering);
+    equal_plan(&a->state.plan, &next_a); equal_plan(&b->state.plan, &next_b);
+    CHECK(a->pcm.after && !b->state.state.continuous);
+    a->pcm.enabled = false; /* The separately queued next revision is checked below. */
+    advance_pair(p, at + 7000000);
+    CHECK(p->left->transaction.phase == TX_DONE && p->right->transaction.phase == TX_DONE);
+    CHECK(a->state.plan.density == .8 && b->state.plan.phrase == 3);
+    CHECK(!b->state.state.continuous && b->state.state.phase == ECHOY_IDLE);
+    destroy_pair(p);
+}
+
+static void available_owner_recovers_without_replug(bool source_fault)
+{
+    pair_t *p = fresh_pair(false);
+    real_owner_t *a = p->left->ctx, *b = p->right->ctx;
+    b->prepare = false;
+    CHECK(echoy_band_action(a->band, ECHOY_TILE_A, ECHOY_ACT_ROLE, ECHOY_VOICE, p->now));
+    advance_pair(p, p->now + 1000000);
+    CHECK(echoy_band_action(a->band, ECHOY_TILE_A, ECHOY_ACT_PAUSE, 0, p->now));
+    real_owner_t *faulted = source_fault ? a : b;
+    CHECK(echoy_band_action(faulted->band, ECHOY_TILE_A, ECHOY_ACT_CONDITION,
+                           ECHOY_AUDIO_FAULT, p->now + faulted->offset));
+    advance_pair(p, p->now + 31000000);
+    uint32_t failed = p->left->transaction.id;
+    CHECK(p->left->transaction.phase == TX_ABORTED && p->right->transaction.phase == TX_ABORTED);
+    a->pcm.enabled = a->pcm.silent = b->pcm.enabled = b->pcm.silent = true;
+    b->prepare = true;
+    CHECK(echoy_band_action(faulted->band, ECHOY_TILE_A, ECHOY_ACT_CONDITION,
+                           ECHOY_NORMAL, p->now + faulted->offset));
+    advance_pair(p, p->now + 8000000);
+    CHECK(p->left->transaction.id != failed);
+    CHECK(p->left->transaction.phase == TX_DONE && p->right->transaction.phase == TX_DONE);
+    CHECK(a->state.plan.role == ECHOY_VOICE && b->state.plan.count);
+    CHECK(!a->state.state.continuous && !b->state.state.continuous);
+    CHECK(a->state.state.phase == ECHOY_IDLE && b->state.state.phase == ECHOY_IDLE);
+    destroy_pair(p);
+}
+
+
+static void unoffered_abort_preserves_authorized_commit(void)
+{
+    pair_t *p = fresh_pair(true);
+    real_owner_t *a = p->left->ctx, *b = p->right->ctx;
+    uint32_t old = a->link.committed_transaction;
+    CHECK(echoy_band_action(a->band, ECHOY_TILE_A, ECHOY_ACT_ROLE, ECHOY_VOICE, p->now));
+    int64_t limit = p->now + 5000000;
+    while (p->now < limit && (!a->link.authorized_transaction ||
+           a->link.authorized_transaction == old ||
+           b->link.authorized_transaction != a->link.authorized_transaction))
+        advance_pair(p, p->now + BLOCK_US);
+    uint32_t authorized = a->link.authorized_transaction;
+    int64_t at = a->link.armed_at_us;
+    CHECK(authorized != old && at > p->now);
+    echoy_link_update_t *abort = calloc(1, sizeof(*abort));
+    CHECK(abort);
+    *abort = b->desired;
+    abort->command = ECHOY_LINK_ABORT;
+    abort->transaction = authorized + 1;
+    abort->failed = true;
+    CHECK(echoy_band_link_update(b->band, abort, p->now + b->offset));
+    refresh(b);
+    CHECK(b->link.failed_transaction == abort->transaction);
+    CHECK(b->link.authorized_transaction == authorized && b->link.armed_transaction == authorized);
+    CHECK(echoy_band_link_update(b->band, abort, p->now + b->offset));
+    free(abort);
+    advance_pair(p, at + 500000);
+    CHECK(a->link.committed_transaction == authorized && b->link.committed_transaction == authorized);
+    CHECK(a->state.plan.role == ECHOY_VOICE && b->state.plan.count);
+    destroy_pair(p);
+}
+
+static void unoffered_abort_preserves_deferred_recording_job(void)
+{
+    real_owner_t *o = fresh_owner(false);
+    CHECK(echoy_band_action(o->band, ECHOY_TILE_A, ECHOY_ACT_RECORD, 0, 4000000));
+    refresh(o);
+    int64_t capture = o->state.state.capture_at_us;
+    uint32_t generation = o->state.state.generation;
+    echoy_link_update_t *abort = calloc(1, sizeof(*abort));
+    CHECK(abort);
+    *abort = (echoy_link_update_t){.attached = true, .following = true,
+        .connection_generation = 1, .session = 17};
+    CHECK(echoy_band_link_update(o->band, abort, 4001000));
+    service_owner(o, capture + 312500);
+    CHECK(echoy_band_action(o->band, ECHOY_TILE_A, ECHOY_ACT_TAP, 0, capture + 312500));
+    service_owner(o, capture + 1250000);
+    CHECK(echoy_band_action(o->band, ECHOY_TILE_A, ECHOY_ACT_TAP, 0, capture + 1250000));
+    echoy_band_tick(o->band, capture + 2500000);
+    echoy_band_job_t *job = echoy_band_take_job(o->band);
+    CHECK(job);
+    abort->command = ECHOY_LINK_ABORT; abort->transaction = 123;
+    CHECK(echoy_band_link_update(o->band, abort, capture + 2500000));
+    abort->failed = true; /* Later link loss may upgrade a deferred cancellation. */
+    CHECK(echoy_band_link_update(o->band, abort, capture + 2500000));
+    CHECK(echoy_band_link_update(o->band, abort, capture + 2500000));
+    CHECK(echoy_band_prepare_job(job));
+    CHECK(echoy_band_finish_job(o->band, job, capture + 2510000));
+    service_owner(o, capture + 2570000);
+    CHECK(o->link.failed_transaction == 123 && o->link.deferred);
+    CHECK(o->state.state.generation == generation && o->state.state.phase == ECHOY_PREVIEW);
+    CHECK(o->state.plan.source_count == 2 && o->state.plan.source[0].step == 2 &&
+          o->state.plan.source[1].step == 8);
+    free(abort); echoy_band_delete(o->band); free(o);
+}
+
+
+static void failed_abort_supersedes_unconsumed_source_begin(void)
+{
+    pair_t *p = fresh_pair(true);
+    real_owner_t *a = p->left->ctx, *b = p->right->ctx;
+    echoy_plan_t old_a = a->state.plan, old_b = b->state.plan;
+    expect_pcm(a, false); expect_pcm(b, false);
+    a->consume = false;
+    b->prepare = false;
+    CHECK(echoy_band_action(a->band, ECHOY_TILE_A, ECHOY_ACT_ROLE, ECHOY_VOICE, p->now));
+    advance_pair(p, p->now + 1000000);
+    uint32_t failed = p->left->transaction.id;
+    CHECK(a->desired.command == ECHOY_LINK_BEGIN && a->link.offered_transaction != failed);
+    CHECK(a->link.proposal_pending && a->link.proposal_ready);
+    advance_pair(p, p->now + 31000000);
+    CHECK(a->desired.command == ECHOY_LINK_ABORT && a->desired.failed);
+    CHECK(p->left->transaction.phase == TX_ABORTED && a->link.offered_transaction != failed);
+    a->consume = true;
+    advance_pair(p, p->now + 5000000);
+    CHECK(a->link.failed_transaction == failed);
+    equal_plan(&a->state.plan, &old_a); equal_plan(&b->state.plan, &old_b);
+    CHECK(p->left->update.command == ECHOY_LINK_NONE);
+    destroy_pair(p);
+}
+
 int main(int argc, char **argv)
 {
     const char *names[] = {"common-bar-playing", "common-bar-paused", "prepare-failed", "commit-lost",
                            "superseded-job-concurrent-edits", "armed-edits-and-pause",
                            "authorization-ack-lost", "wireless-deferred-recorder",
-                           "wireless-empty-example", "wireless-empty-record", "wireless-empty-cold-start"};
+                           "wireless-empty-example", "wireless-empty-record", "wireless-empty-cold-start",
+                           "incomplete-offer-abort", "fresh-transport-recovery",
+                           "source-owner-recovery", "receiver-owner-recovery",
+                           "unoffered-abort-authorized", "unoffered-abort-deferred-job",
+                           "abort-supersedes-source-begin"};
     unsigned ran = 0;
     for (unsigned i = 0; i < sizeof(names) / sizeof(names[0]); ++i) {
         if (argc > 1 && strcmp(argv[1], names[i])) continue;
@@ -502,7 +714,16 @@ int main(int argc, char **argv)
         else if (i == 5) armed_edits_queue_and_pause_stays_immediate();
         else if (i == 6) lost_authorization_ack_aborts_before_bar();
         else if (i == 7) wireless_deferred_recorder_does_not_hold_source();
-        else wireless_empty_pair_gets_first_phrase(i == 9, i == 10);
+        else if (i < 11) wireless_empty_pair_gets_first_phrase(i == 9, i == 10);
+        else if (i == 11) {
+            incomplete_offer_abort_is_acknowledged_once();
+            baseline_timeout_does_not_invent_a_recovery_event();
+        }
+        else if (i == 12) fresh_transport_recovers_without_replug_and_queues_edits();
+        else if (i < 15) available_owner_recovers_without_replug(i == 13);
+        else if (i == 15) unoffered_abort_preserves_authorized_commit();
+        else if (i == 16) unoffered_abort_preserves_deferred_recording_job();
+        else failed_abort_supersedes_unconsumed_source_begin();
         printf("PASS %s\n", scenario); ++ran;
     }
     CHECK(ran);

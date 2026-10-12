@@ -56,7 +56,7 @@ typedef struct {
     mosaico_mag_classifier_t classifier;
     mosaico_mag_presence_tracker_t presence;
     bool sensors_ready, sensors_initialized, attached, following, publish_pending;
-    bool recovering, have_view, peer_seen, peer_deferred;
+    bool recovering, have_view, peer_seen, peer_deferred, recovery_requested;
     mosaico_edge_mask_t contacts, reported_contacts;
     mosaico_edge_t edge;
     uint64_t peer;
@@ -179,6 +179,7 @@ static void detach(board_link_t *h)
     if (h->attached) ESP_LOGI(TAG, "detached edge=%s peer=%012" PRIx64 " session=%" PRIu32,
                             mosaico_edge_to_string(h->edge), h->peer, h->session);
     h->attached = h->following = h->have_view = h->peer_seen = h->peer_deferred = false;
+    h->recovery_requested = false;
     h->peer = h->session = 0;
     h->edge = MOSAICO_EDGE_NONE;
     h->pending.active = h->tx.active = false;
@@ -191,6 +192,9 @@ static void detach(board_link_t *h)
 
 static void abort_transaction(board_link_t *h, bool failed)
 {
+    /* Repeated wire ABORT/FAILED frames cannot recreate an owner command that
+     * its copied read-back already acknowledged. */
+    if (h->transaction.phase == TX_ABORTED && h->transaction.failed == failed) return;
     if (h->transaction.phase != TX_ABORTED)
         ESP_LOGW(TAG, "transaction=%" PRIu32 " aborted failed=%d at=%" PRId64,
                  h->transaction.id, failed, h->transaction.at);
@@ -321,14 +325,26 @@ static void publish_received(board_link_t *h)
     command(h, ECHOY_LINK_OFFER, h->rx.bound_revision);
 }
 
+/* A fresh, validated peer response after an actual silence is a recovery
+ * event. Continuous heartbeats after a failed preparation are not retries. */
+static void note_peer(board_link_t *h, int64_t now)
+{
+    if (h->transaction.phase == TX_ABORTED &&
+        (!h->peer_seen || now - h->peer_seen_at >= LINK_RX_TIMEOUT_US)) {
+        h->recovery_requested = true;
+        h->rx.next_want = 0;
+    }
+    h->peer_seen = true;
+    h->peer_seen_at = now;
+}
+
 static void receive_pong(board_link_t *h, const uint8_t *p, int64_t t4)
 {
     int64_t t1 = get_time(p + 12), t2 = get_time(p + 20), t3 = get_time(p + 28);
     if (!h->following || !h->clock.waiting || get32(p + 8) != h->clock.pending_sequence ||
         t1 != h->clock.t1 || t1 < 0 || t2 < 0 || t3 < t2 || t4 < t1) return;
     h->clock.waiting = false;
-    h->peer_seen = true;
-    h->peer_seen_at = t4;
+    note_peer(h, t4);
     int64_t rtt = (t4 - t1) - (t3 - t2);
     if (rtt < 0 || rtt > LINK_CLOCK_MAX_RTT_US || t4 - t1 > 250000) return;
     int64_t offset = ((t1 - t2) + (t4 - t3)) / 2;
@@ -364,6 +380,7 @@ static void receive_meta(board_link_t *h, const uint8_t *p, int64_t now)
         h->transaction.id = id;
         h->transaction.phase = TX_PREPARING;
         h->transaction.began = now;
+        h->recovery_requested = false;
         h->rx.offset = 0;
         h->rx.complete = false;
         h->rx.revision = id;
@@ -381,8 +398,7 @@ static void receive_meta(board_link_t *h, const uint8_t *p, int64_t now)
     h->rx.clock_started = (p[14] & META_CLOCK) != 0;
     h->rx.looping = (p[14] & META_LOOP) != 0;
     h->rx.origin = origin;
-    h->peer_seen = true;
-    h->peer_seen_at = now;
+    note_peer(h, now);
     publish_received(h);
     publish_attachment(h);
 }
@@ -416,8 +432,7 @@ static void receive_state(board_link_t *h, const uint8_t *p, int64_t now)
 {
     if (h->following || (p[28] & ~(STATE_DEFERRED | STATE_READY | STATE_FAILED |
         STATE_ARMED | STATE_AUTHORIZED | STATE_COMMITTED)) || p[29] || p[30] || p[31]) return;
-    h->peer_seen = true;
-    h->peer_seen_at = now;
+    note_peer(h, now);
     bool was_deferred = h->peer_deferred;
     h->peer_deferred = (p[28] & STATE_DEFERRED) != 0;
     if (h->peer_deferred) {
@@ -455,6 +470,7 @@ static void receive_state(board_link_t *h, const uint8_t *p, int64_t now)
 static void receive_control(board_link_t *h, const uint8_t *p, int64_t now)
 {
     if (!h->following || get32(p + 8) != h->transaction.id || !h->transaction.id) return;
+    note_peer(h, now);
     if (p[1] == WIRE_ABORT) { abort_transaction(h, p[28] != 0); return; }
     if (h->transaction.phase == TX_ABORTED || h->transaction.phase == TX_DONE) return;
     uint64_t revision = get64(p + 12);
@@ -513,10 +529,16 @@ static void receive_message(board_link_t *h, const mosaico_network_message_t *m,
             receive_control(h, p, now);
         break;
     case WIRE_WANT:
-        if (!h->following && n == 16 && h->transaction.phase == TX_PREPARING && h->tx.size &&
-            get32(p + 8) == h->tx.revision && get32(p + 12) == h->tx.crc &&
-            (!h->tx.active || now >= h->next_send)) {
-            h->tx.active = true; ++h->tx.transfer; h->tx.offset = 0; h->tx.next_meta = 0;
+        if (!h->following && n == 16 && h->tx.size &&
+            get32(p + 8) == h->tx.revision && get32(p + 12) == h->tx.crc) {
+            if (h->transaction.phase == TX_ABORTED) {
+                /* The receiver requests recovery once after owner/link health
+                 * returns. A new T makes duplicate old WANTs harmless. */
+                h->recovery_requested = true;
+            } else if (h->transaction.phase == TX_PREPARING &&
+                       (!h->tx.active || now >= h->next_send)) {
+                h->tx.active = true; ++h->tx.transfer; h->tx.offset = 0; h->tx.next_meta = 0;
+            }
         }
         break;
     default: break;
@@ -606,6 +628,7 @@ static bool begin_transaction(board_link_t *h, int64_t now)
     h->transaction.revision = proposed ? h->view.proposal_revision : 0;
     h->transaction.requested_revision = h->view.requested_revision;
     h->transaction.began = now;
+    h->recovery_requested = false;
     h->tx.revision = h->serial;
     memcpy(h->tx.bytes, h->scratch, size);
     h->tx.size = (uint16_t)size;
@@ -654,6 +677,11 @@ static void advance_transaction(board_link_t *h, int64_t now)
             abort_transaction(h, true); return;
         }
     }
+    if (h->transaction.phase == TX_ABORTED && h->update.command == ECHOY_LINK_ABORT &&
+        h->have_view && (h->view.failed_transaction == h->transaction.id ||
+         h->view.committed_transaction == h->transaction.id ||
+         (!h->transaction.failed && h->view.offered_transaction != h->transaction.id)))
+        command(h, ECHOY_LINK_NONE, h->transaction.revision);
     if (h->following) {
         if (h->transaction.phase == TX_REMOTE_ARM && !owner_armed(h) && h->have_view &&
             h->view.offered_transaction == h->transaction.id &&
@@ -688,12 +716,14 @@ static void advance_transaction(board_link_t *h, int64_t now)
             h->view.offered_transaction != h->transaction.id) command(h, ECHOY_LINK_NONE, 0);
         return;
     }
+    bool requested_changed = h->have_view &&
+        h->view.requested_revision != h->transaction.requested_revision;
     bool changed = h->have_view &&
-        (h->view.requested_revision != h->transaction.requested_revision ||
+        (requested_changed ||
          (h->view.proposal_pending && h->view.proposal_revision != h->transaction.revision));
     if (h->transaction.phase == TX_IDLE ||
-        ((h->transaction.phase == TX_DONE || h->transaction.phase == TX_ABORTED ||
-          h->transaction.phase == TX_PREPARING ||
+        (h->transaction.phase == TX_ABORTED && (h->recovery_requested || requested_changed)) ||
+        ((h->transaction.phase == TX_DONE || h->transaction.phase == TX_PREPARING ||
           ((h->transaction.phase == TX_REMOTE_ARM || h->transaction.phase == TX_LOCAL_ARM) &&
            !owner_armed(h))) && changed)) {
         begin_transaction(h, now);
@@ -762,7 +792,12 @@ static void read_local(board_link_t *h, int64_t now)
     if (!h->attached) return;
     if (now >= h->next_read) {
         h->next_read = now + 50000;
+        bool unavailable = h->have_view && !h->view.available;
         if (h->read(h->ctx, &h->view)) {
+            if (unavailable && h->view.available && h->transaction.phase == TX_ABORTED) {
+                h->recovery_requested = true;
+                h->rx.next_want = 0;
+            }
             h->have_view = true;
             if (!h->following) {
                 if (h->tx.clock_started != h->view.clock_started || h->tx.looping != h->view.looping ||
@@ -840,8 +875,9 @@ static void send_next(board_link_t *h, int64_t now)
         p[1] = WIRE_CHUNK; put32(p + 8, h->tx.revision); put32(p + 12, h->tx.crc);
         put16(p + 16, h->tx.size); put16(p + 18, h->tx.offset);
         memcpy(p + 20, h->tx.bytes + h->tx.offset, chunk); length = 20 + chunk;
-    } else if (h->following && h->rx.metadata && !h->rx.complete && phase == TX_PREPARING &&
-               now >= h->rx.next_want) {
+    } else if (h->following && h->rx.metadata && now >= h->rx.next_want &&
+               ((!h->rx.complete && phase == TX_PREPARING) ||
+                (phase == TX_ABORTED && h->recovery_requested && h->view.available))) {
         p[1] = WIRE_WANT; put32(p + 8, h->rx.revision); put32(p + 12, h->rx.crc); length = 16;
     }
     if (!length) return;

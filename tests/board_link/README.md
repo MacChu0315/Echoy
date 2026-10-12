@@ -58,6 +58,14 @@ it does not promise perfect atomic delivery across a partition. Deferred receive
 are not participants and cannot indefinitely hold the source's independent work.
 Neither receiving a plan nor authorizing a joint change grants looping permission.
 
+Recovery reuses the existing WANT message and wire version. An unavailable owner
+becoming available, or a fresh peer response after observed silence, may request
+one new transaction with its own unchanged 30-second ceiling. Repeated WANTs from
+the previous transaction cannot restart the new one or extend its deadline.
+Continuous status/ABORT traffic is not a recovery event; failed preparation does
+not trigger a timer-based retry loop. Owner acknowledgement clears an ABORT even
+when a partial transfer never produced an OFFER.
+
 At most one reliable application message is outstanding per device. Each 44-byte
 plan chunk advances only on its matching delivery event and transfer generation.
 Metadata repeats every 500 ms; readiness/control status every 100 ms. Delivery

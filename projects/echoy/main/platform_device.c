@@ -58,7 +58,8 @@ enum owner_trace_phase {
 };
 enum {
     TRACE_GOT_LINK = 1u, TRACE_GOT_JOB = 2u, TRACE_TOOK_JOB = 4u,
-    TRACE_LINK_VIEW = 8u, TRACE_PROBE = 16u, TRACE_FLUSH = 32u
+    TRACE_LINK_VIEW = 8u, TRACE_PROBE = 16u, TRACE_FLUSH = 32u,
+    TRACE_CACHE_BUSY = 64u
 };
 typedef struct {
     int64_t entry_us, expected_us, checked_us;
@@ -96,7 +97,7 @@ struct echoy_device {
     uint64_t accepted_frames;
     echoy_device_pcm_t pcm_processor;
     uint64_t pcm_clipped, pcm_limited;
-    unsigned deadline_misses, rejected_actions, queue_overflows;
+    unsigned deadline_misses, rejected_actions, queue_overflows, cache_busy;
     esp_err_t shutdown_error;
     board_audio_stats_t last_audio_stats;
     atomic_bool probe_busy;
@@ -330,7 +331,16 @@ static void publish(struct echoy_device *d)
     d->staging.condition = d->condition;
     d->staging.state.fault = d->condition != ECHOY_NORMAL;
     int64_t wait_started = now_us(d);
-    xSemaphoreTake(d->view_lock, portMAX_DELAY);
+    /* A preempted UI/radio reader must not delay the PCM deadline. Keep its
+     * coherent previous snapshot and retry publication on the next block. */
+    if (xSemaphoreTake(d->view_lock, 0) != pdTRUE) {
+        ++d->cache_busy;
+        if (d->trace_active) {
+            d->trace_active->flags |= TRACE_CACHE_BUSY;
+            d->trace_active->mutex_wait_us = (uint32_t)trace_elapsed(now_us(d), wait_started);
+        }
+        return;
+    }
     int64_t acquired = now_us(d);
     d->cache = d->staging;
     d->probe_cache = d->probe;
@@ -571,11 +581,11 @@ static void log_resources(struct echoy_device *d, board_audio_t *audio)
              (unsigned)stats.write_failures, d->deadline_misses);
     snprintf(diagnostic + DIAGNOSTIC_BYTES / 2, DIAGNOSTIC_BYTES / 2,
              "internal=%u PSRAM=%u owner_stack=%u prepare=%lldus render_max=%lldus rejected=%u "
-             "overflow=%u limited=%llu mix=%lldus pcm=%lldus core=%d",
+             "overflow=%u cache_busy=%u limited=%llu mix=%lldus pcm=%lldus core=%d",
              (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT),
              (unsigned)heap_caps_get_free_size(MALLOC_CAP_SPIRAM),
              (unsigned)uxTaskGetStackHighWaterMark(NULL), (long long)d->last_prepare_us,
-             (long long)d->max_render_us, d->rejected_actions, d->queue_overflows,
+             (long long)d->max_render_us, d->rejected_actions, d->queue_overflows, d->cache_busy,
              (unsigned long long)d->pcm_limited, (long long)d->max_mix_us,
              (long long)d->max_convert_us, d->audio_core);
     /* UART logging may block for longer than a PCM block. Worker owns all

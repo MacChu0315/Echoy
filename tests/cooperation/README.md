@@ -23,10 +23,15 @@ generations, initial silence, actual audio, explicit playback permission and
 Record/Play availability.
 
 `test_transactions.c` connects two independent real band owners to the actual
-`board_link` protocol. Its 11 cases cover common-bar activation with playing or
+`board_link` protocol. Its 18 cases cover common-bar activation with playing or
 paused participants, failed preparation, lost authorization, concurrent edits,
 queued changes after ARM, deferred recording admission, and the first phrase
-after two empty devices connect. Only radio, OS, clock and sensors are replaced.
+after two empty devices connect. Recovery cases acknowledge an aborted partial
+transfer without repeated owner rejection, resume after fresh peer/owner recovery
+without a parameter change or physical replug, deduplicate requests, preserve
+queued edits and Pause, and retain old PCM when a failed ABORT replaces an
+unconsumed source BEGIN. Unoffered ABORT cannot cancel an older authorized commit
+or a deferred recording job. Only radio, OS, clock and sensors are replaced.
 See [the adapter test notes](../board_link/README.md) for protocol coverage and
 physical limitations.
 

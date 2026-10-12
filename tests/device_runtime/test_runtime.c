@@ -3,7 +3,9 @@
 #include "esp_timer.h"
 #include "fakes.h"
 #include "platform_device.h"
+#include "freertos/semphr.h"
 #include <assert.h>
+#include <pthread.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,6 +16,19 @@ static atomic_uint deadline_line_count;
 static atomic_int fake_write_delay_ms;
 static atomic_bool fake_write_delay_entered;
 static atomic_llong observed_write_delay_us;
+static _Thread_local bool slow_cache_reader;
+static atomic_bool reader_holds_cache, release_cache_reader;
+BaseType_t __real_xSemaphoreTake(SemaphoreHandle_t, TickType_t);
+BaseType_t __wrap_xSemaphoreTake(SemaphoreHandle_t mutex, TickType_t timeout)
+{
+    BaseType_t result=__real_xSemaphoreTake(mutex,timeout);
+    if (result==pdTRUE && slow_cache_reader) {
+        assert(timeout==portMAX_DELAY);
+        atomic_store(&reader_holds_cache,true);
+        while (!atomic_load(&release_cache_reader)) fake_sleep_ms(1);
+    }
+    return result;
+}
 void __wrap_fake_log(const char *tag, const char *format, ...)
 {
     (void)tag;
@@ -121,6 +136,71 @@ static void unknown_and_cache(void)
     fake_hold_write(false);
     stop(&d);
     puts("PASS unknown battery is not fabricated; cache reads remain independent of blocked I/O");
+}
+struct cache_reader_args { echoy_device_handle_t device; bool link; };
+static void *hold_cached_read(void *opaque)
+{
+    struct cache_reader_args *args=opaque;
+    slow_cache_reader=true;
+    if (args->link) {
+        echoy_link_view_t cached;
+        assert(echoy_device_link_read(args->device,&cached));
+        assert(cached.current.source_count);
+    } else {
+        echoy_control_view_t cached=view();
+        assert(cached.state.seed==5 && cached.state.continuous);
+    }
+    slow_cache_reader=false;
+    return NULL;
+}
+static void cached_reader_cannot_block_audio(bool link)
+{
+    echoy_device_handle_t d;
+    start(&d);
+    assert(action(ECHOY_ACT_EXAMPLE,0));
+    until(ECHOY_NORMAL,ECHOY_PREVIEW,5);
+    assert(action(ECHOY_ACT_PAUSE,0));
+    until(ECHOY_NORMAL,ECHOY_IDLE,5);
+    assert(action(ECHOY_ACT_TRANSPORT,0));
+    until(ECHOY_NORMAL,ECHOY_PLAYING,5);
+    fake_sleep_ms(100); /* Include a full 50 ms link-cache publication. */
+    struct cache_reader_args args={d,link};
+    pthread_t reader;
+    assert(!pthread_create(&reader,NULL,hold_cached_read,&args));
+    int64_t end=esp_timer_get_time()+1000000;
+    while (!atomic_load(&reader_holds_cache)) {
+        assert(esp_timer_get_time()<end);
+        fake_sleep_ms(1);
+    }
+    int writes=atomic_load(&fake_write_calls), closes=atomic_load(&fake_close_calls);
+    fake_sleep_ms(80);
+    /* The old blocking publisher stalls output here for longer than its lead. */
+    assert(atomic_load(&fake_write_calls)>=writes+4);
+    assert(atomic_load(&fake_close_calls)==closes);
+    int flushes=atomic_load(&fake_flush_calls);
+    assert(action(ECHOY_ACT_PAUSE,0));
+    end=esp_timer_get_time()+100000;
+    while (atomic_load(&fake_flush_calls)==flushes) {
+        assert(esp_timer_get_time()<end);
+        fake_sleep_ms(1);
+    }
+    fake_sleep_ms(30);
+    assert(atomic_load(&fake_nonzero_since_flush)==0);
+    assert(atomic_load(&fake_close_calls)==closes);
+    atomic_store(&release_cache_reader,true);
+    assert(!pthread_join(reader,NULL));
+    until(ECHOY_NORMAL,ECHOY_IDLE,5);
+    echoy_link_view_t latest;
+    end=esp_timer_get_time()+100000;
+    do {
+        assert(echoy_device_link_read(d,&latest));
+        if (!latest.looping) break;
+        fake_sleep_ms(1);
+    } while (esp_timer_get_time()<end);
+    assert(!latest.looping && latest.current.source_count);
+    assert(atomic_load(&deadline_line_count)==0);
+    stop(&d);
+    puts("PASS delayed cache reader cannot stop PCM or Pause; latest state publishes after release");
 }
 static void fifo_cancel(void)
 {
@@ -587,6 +667,10 @@ int main(int argc, char **argv)
     assert(argc == 2);
     if (!strcmp(argv[1], "link"))
         linked_snapshot_queue();
+    else if (!strcmp(argv[1], "cache_contention_control"))
+        cached_reader_cannot_block_audio(false);
+    else if (!strcmp(argv[1], "cache_contention_link"))
+        cached_reader_cannot_block_audio(true);
     else if (!strcmp(argv[1], "cache"))
         unknown_and_cache();
     else if (!strcmp(argv[1], "fifo"))
