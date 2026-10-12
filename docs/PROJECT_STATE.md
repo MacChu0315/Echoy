@@ -108,7 +108,7 @@ Model and cue timing regressions, 22 device-runtime tests, normal/reduced-motion
 native input and the standalone three-device audio regression pass. A concurrent
 desktop run recorded one late audio block while all tiles were idle; the identical
 binary passed alone without relaxing checks. Host scheduling cause is not proven.
-Package `9ef37e48c8b0` is installed on the verified Mosaico, HEALTHY boot
+Package `9ef37e48c8b0` was installed on the verified Mosaico, HEALTHY boot
 `14075077765010003089`, operation `ddd0b874-0860-4676-b5d2-3762bfe27524`.
 Identity/commit/retained-layout and actual home checks pass; the same boot remains
 normal after 77 seconds with crash count zero and unchanged audio parameters.
@@ -129,7 +129,16 @@ Model/shared-band memory checks, 864 reference linked plans and 1,552 reference
 state transitions (normal and sanitizer), 22 device-runtime tests and all native
 Chinese/English role pages pass. The frozen HTML is intact; only the oracle test's
 initial defaults are adapted to this approved change. Package `1d57c5719989` is
-prepared; device installation is in progress. Evidence:
+installed, HEALTHY boot `5127593241566643399`, operation
+`d6e52c8b-6412-424c-9d9b-f51e848ba5e2`. Identity, commit, retained-layout and actual
+home checks pass; the new application remains normal after 100 seconds with crash
+count zero and unchanged speaker parameters. All four gallery defaults were
+verified in native GSP; physical gallery switching was left to the user.
+
+Old Recovery had another startup interrupt-watchdog reset before the write. The
+helper preserved crash metadata (no valid Core Dump), waited for a stable ready
+Recovery boot and submitted one successful update. The Recovery issue remains
+unresolved and is separate from the application change. Evidence:
 `verification/default-expressions/README.md`. Simulator build:
 `build-sim-default-expressions` (no new long-running desktop started).
 
@@ -462,7 +471,7 @@ phrase 3 (Answer), the original problematic expression, also has no obvious
 distortion at the same higher volume. Physical listening follow-up is closed
 for this trial. On 2026-10-10 the user decided to retain the current volume
 ("音量上就先这样吧"). Keep the output parameters from `7c431dacfd59`;
-the current UI package is `9ef37e48c8b0` with those same parameters;
+the current UI package is `1d57c5719989` with those same parameters;
 stop further loudness tuning unless requested. This is provisional retention,
 not a claim of measured acoustic performance or the absolute hardware limit.
 Any future substantial loudness improvement needs acoustic/output-chain

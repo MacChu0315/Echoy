@@ -41,4 +41,24 @@ frozen HTML are unchanged.
   to the previously installed `9ef37e48c8b0`. [Artifacts](artifacts.json) use the
   actual build directory, not the low-noise runner's stale default artifact path.
 
-Physical delivery is pending at this implementation checkpoint.
+## Physical installation (2026-10-12)
+
+Official `mosaico.py iris system-update --bundle ... --device-id ... --endpoint ...`
+installed package `1d57c5719989` on the same verified Mosaico, operation
+`d6e52c8b-6412-424c-9d9b-f51e848ba5e2`. HEALTHY boot `5127593241566643399`
+has the expected ELF identity, commit and unchanged bootloader/partition table.
+[Device evidence](device-result.json), [actual home](installed-home.png).
+
+`iris device-status`, `iris screenshot` and `iris logs --snapshot` confirm normal
+mode on the same boot after 100 seconds, application crash count zero and no
+UI/audio write/deadline errors. Startup logs retain the same bank trims and PCM
+gain. Native GSP verified all four gallery selections; no physical pointer
+injection or automated gallery switching was performed on the device.
+
+Before package writing, the old retained Recovery 0.1.2 again reset during startup:
+boot `6268870116642677245`, reset reason 5 (`ESP_RST_INT_WDT`), failed address
+`0x20000`, unchanged Recovery image `54f72372…`. The helper waited for Recovery
+boot `9896472446416298202` to finish initialization and saved its crash report;
+no valid Core Dump existed. It then submitted one successful update. This
+pre-existing Recovery startup problem is retained as an unresolved maintenance
+issue, not attributed to the new application defaults.
