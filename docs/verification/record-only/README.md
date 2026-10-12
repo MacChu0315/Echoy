@@ -65,6 +65,6 @@ python3 tools/desk_preview.py --build-dir projects/echoy/build-sim-record-only \
   summary points at an older default directory, so it is not used as evidence.
 
 Native screenshots were visually checked: the single Record label is centered,
-Play/divider are absent, and the side buttons retain their size. This is simulator
-acceptance, not physical-device acceptance. The installed device remains on
-`7c08b632adf9`; no hardware write was performed for this refinement.
+Play/divider are absent, and the side buttons retain their size. This initial verification was in the simulator. The single Record action was
+subsequently installed with package `86406d956f52` on 2026-10-12; see
+[installation evidence](../third-tap/device-result.json).

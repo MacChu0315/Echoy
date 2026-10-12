@@ -58,5 +58,33 @@ python3 tools/desk_preview.py --build-dir projects/echoy/build-sim-third-tap \
   separately because the runner's summary points at the older default directory.
 
 The Chinese/English prompt and its disappearance were visually inspected in
-native screenshots. This build has not been installed on hardware; the accepted
-physical package remains `7c08b632adf9`.
+native screenshots. Package `86406d956f52` was installed on hardware on 2026-10-12 as recorded below.
+
+## Physical installation (2026-10-12)
+
+The user explicitly requested the existing four-second reminder wording and the
+Record-only empty home. The pinned SDK `system-update-bundle` build passes with
+zero warnings, run `20261012-095108-system-update-bundle-2`; its application hash
+matches the previously verified artifact exactly.
+
+Official `mosaico.py iris system-update --bundle ... --device-id ... --endpoint ...`
+installed package `86406d956f52` on the same Mosaico, operation
+`ca0930e9-fa6c-4215-8045-99b05123c247`. New HEALTHY boot
+`9542740490602219176` has the expected ELF identity and unchanged bootloader and
+partition table. `iris device-status`, `iris screenshot` and `iris logs --snapshot`
+confirm normal mode, crash count zero, the [single Record home](installed-home.png),
+no UI errors and unchanged speaker gain/profile. [Device evidence](device-result.json).
+
+Before any package write, retained Vibe Mode 0.1.2 reset during startup: failed
+boot `14436840074278624180`, reset reason 5 (`ESP_RST_INT_WDT`), Recovery firmware
+address `0x20000`. It returned on boot `4761115984407552929` and completed
+`app_main`. The original helper stopped before submitting any update. Logs and
+the official crash report were preserved; no valid Core Dump existed. The explicit
+save-core request returned HTTP 404 for the absent dump, despite the wrapper
+classifying it as `device_unavailable`; this was not evidence of another reboot.
+After verifying the stable Recovery boot and empty operation queue, one update
+was submitted and succeeded. This old Recovery startup issue is not fixed here.
+
+The user confirmed that the reminder appeared on the physical device, but found
+the bottom text too small. They requested a larger automatically dismissed popup;
+that follow-up is pending. The installed wording and audio parameters remain unchanged.

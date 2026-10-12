@@ -18,5 +18,10 @@
     "path": "output/device-audio-ui-build/echoy.bin",
     "bytes": 1567296,
     "sha256": "0cc3756155ee97a8dc7ff4e4d09cfd2b0775843b16d7e7f4ba297b63b7cd15c0"
+  },
+  {
+    "path": "output/device-release/echoy-third-tap-86406d956f52.irisfw",
+    "bytes": 1101055,
+    "sha256": "86406d956f5200b5a3272f3aaadce94c7aaa9f2c9f396aa37e0e879c8bc6ac68"
   }
 ]

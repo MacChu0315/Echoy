@@ -40,8 +40,8 @@ arming recording. The record glyph uses its existing mask at the center; Play
 and the divider are absent until a phrase exists.
 
 Preview: `build-sim-record-only`, desk HTTP 18900, A/B/C 3234/3235/3236. A starts
-empty and silent; all older previews remain available. This refinement is not
-installed on hardware; the accepted physical package is still `7c08b632adf9`.
+empty and silent; all older previews remain available. This refinement was
+installed with reminder package `86406d956f52` on 2026-10-12.
 Native input checks pass with normal/reduced motion and firmware builds with zero
 warnings. See `verification/record-only/README.md` for evidence and restart details.
 
@@ -60,7 +60,17 @@ Latest preview: `build-sim-third-tap`, desk HTTP 18901, A/B/C 3237/3238/3239. A 
 left empty with the reminder unused. The record-only preview at 18900/3234–3236
 remains available for comparison. Native checks verify timing, both languages,
 normal/reduced motion and recording/cancellation; firmware builds with zero
-warnings. This remains a preview; installed hardware is still `7c08b632adf9`.
+warnings. The user explicitly requested installing this wording on 2026-10-12.
+Package `86406d956f52` is now installed, HEALTHY boot `9542740490602219176`, operation
+`ca0930e9-fa6c-4215-8045-99b05123c247`. Identity, healthy/commit, bootloader/partition
+checks and the real single-Record home pass. Audio parameters are unchanged.
+The user confirmed the reminder appears, but found the bottom text too small and
+requested a larger automatically dismissed popup; this follow-up is pending.
+
+Before the write, old Vibe Mode 0.1.2 had one startup interrupt-watchdog reset;
+logs and crash metadata were preserved, with no valid Core Dump. A stable Recovery
+boot was verified before the single successful update. This Recovery issue is
+not fixed by the application UI change.
 Evidence and restart instructions: `verification/third-tap/README.md`.
 
 ### Harmony home refinement
@@ -116,7 +126,7 @@ Preview: desk HTTP 18899, A/B/C views 3231/3232/3233, build `build-sim-settings`
 A was left on Settings with an empty, silent rhythm. Older previews remain alive
 to preserve the user's recordings. The user accepted the new preview and requested
 installation. Package
-`7c08b632adf9` is now installed on the same verified Mosaico, HEALTHY boot
+`7c08b632adf9` was installed on the same verified Mosaico, HEALTHY boot
 `16575296128339463175`, operation `b3127241-392a-4b71-af96-b00912b8dcfa`.
 Image identity, healthy acknowledgement, commit, bootloader and partition checks
 pass; the actual home screen is normal. Accepted speaker parameters from
@@ -392,7 +402,7 @@ phrase 3 (Answer), the original problematic expression, also has no obvious
 distortion at the same higher volume. Physical listening follow-up is closed
 for this trial. On 2026-10-10 the user decided to retain the current volume
 ("音量上就先这样吧"). Keep the output parameters from `7c431dacfd59`;
-the current UI package is `7c08b632adf9` with those same parameters;
+the current UI package is `86406d956f52` with those same parameters;
 stop further loudness tuning unless requested. This is provisional retention,
 not a claim of measured acoustic performance or the absolute hardware limit.
 Any future substantial loudness improvement needs acoustic/output-chain
