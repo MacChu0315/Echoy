@@ -1,0 +1,169 @@
+{
+  "date": "2026-10-12",
+  "package_sha256": "2822d40910b0f0ea71705e78a094d50784b22b6bca833937229bac175f400c7b",
+  "user_reports": [
+    {
+      "observation": "Right-hand phrase appeared; no following text was seen.",
+      "source": "User message in this conversation"
+    },
+    {
+      "observation": "听起来合拍，没有明显异常",
+      "source": "User response to paired listening check"
+    },
+    {
+      "observation": "两步都正常",
+      "meaning": "Pausing the left did not stop the right; detaching retained the phrase and continuous playback.",
+      "source": "User response to sequential pause/detach check"
+    }
+  ],
+  "ui_status": "No persistent following label exists in current show_home_state; following controls recording permission. No UI/firmware changes made during this acceptance.",
+  "devices": [
+    {
+      "label": "first",
+      "device_id": "4553502d49524953010030eda0f452a0",
+      "boot_id": "3411308831530673249",
+      "firmware_sha256": "8cf4eecdfb15e6dd73cd5a7b9a6b84fc355d0a128927be5c7e9cb813104a554f",
+      "application_crash_count": 0,
+      "current_free_internal": 7359,
+      "current_free_spiram": 12113512,
+      "latest_output_and_resources": {
+        "pcm_gain_milli": 18000,
+        "clipped": 0,
+        "accepted": 66972960,
+        "nonzero": 3455787,
+        "peak": 19660,
+        "pa": 0,
+        "activations": 2,
+        "write_max": 14944,
+        "partial": 0,
+        "write_errors": 0,
+        "deadline_misses": 0,
+        "internal": 7359,
+        "PSRAM": 12113512,
+        "owner_stack": 8716,
+        "prepare": 8238721,
+        "render_max": 14901,
+        "rejected": 0,
+        "overflow": 0,
+        "limited": 6321087,
+        "mix": 7548,
+        "pcm": 11301,
+        "core": 1,
+        "prep_stack": 8012
+      },
+      "contact_evidence": [
+        "I (2536183) echoy-link: detached edge=RIGHT peer=30eda0f40c6c session=1054921580",
+        "I (2548833) echoy-link: attached local=RIGHT remote=LEFT peer=30eda0f40c6c session=4082455361 following=0; waiting for plan/clock",
+        "I (2658973) echoy-link: detached edge=RIGHT peer=30eda0f40c6c session=4082455361",
+        "I (2666783) echoy-link: attached local=RIGHT remote=LEFT peer=30eda0f40c6c session=790655608 following=0; waiting for plan/clock",
+        "I (2741883) echoy-link: detached edge=RIGHT peer=30eda0f40c6c session=790655608"
+      ],
+      "transfer_evidence": [
+        "I (2518633) echoy-link: sent plan peer=30eda0f40c6c revision=1",
+        "I (2551033) echoy-link: sent plan peer=30eda0f40c6c revision=1",
+        "I (2555923) echoy-link: local plan revision=2 bytes=849",
+        "I (2557233) echoy-link: sent plan peer=30eda0f40c6c revision=2",
+        "I (2653423) echoy-link: local plan revision=3 bytes=849",
+        "I (2655333) echoy-link: sent plan peer=30eda0f40c6c revision=3",
+        "I (2669583) echoy-link: sent plan peer=30eda0f40c6c revision=3"
+      ],
+      "plan_evidence": [
+        "ECHOY_PLAN revision=0 role=pulse phrase=1 anchors=0 events=0",
+        "ECHOY_PLAN revision=2 role=voice phrase=1 anchors=5 events=12",
+        "ECHOY_PLAN revision=3 role=voice phrase=1 anchors=5 events=12"
+      ],
+      "playback_evidence": [
+        "I (2733753) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=65532480 nonzero=3455787 peak=19660 pa=0 activations=2 write_max=14944us partial=0 write_errors=0 deadline_misses=0",
+        "I (2763763) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=66252720 nonzero=3455787 peak=19660 pa=0 activations=2 write_max=14944us partial=0 write_errors=0 deadline_misses=0",
+        "I (2793773) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=66972960 nonzero=3455787 peak=19660 pa=0 activations=2 write_max=14944us partial=0 write_errors=0 deadline_misses=0"
+      ],
+      "record_permission_evidence": [
+        "ECHOY_STRIP_READY tile=A mode=record_only record=0 play=0 single=0 at_us=1838411",
+        "ECHOY_STRIP_READY tile=A mode=record_only record=1 play=0 single=0 at_us=2099126",
+        "ECHOY_STRIP_READY tile=A mode=idle record=1 play=1 single=0 at_us=2683311069"
+      ],
+      "transmission_timeouts": [
+        "W (2515333) echoy-link: delivery failed kind=3 revision=1 error=ESP_ERR_TIMEOUT",
+        "W (2533483) echoy-link: delivery failed kind=3 revision=1 error=ESP_ERR_TIMEOUT",
+        "W (2535183) echoy-link: delivery failed kind=3 revision=1 error=ESP_ERR_TIMEOUT"
+      ],
+      "clock_rtt_range_us": null
+    },
+    {
+      "label": "second",
+      "device_id": "4553502d49524953010030eda0f40c6c",
+      "boot_id": "17407228737210624198",
+      "firmware_sha256": "8cf4eecdfb15e6dd73cd5a7b9a6b84fc355d0a128927be5c7e9cb813104a554f",
+      "application_crash_count": 0,
+      "current_free_internal": 7707,
+      "current_free_spiram": 12131700,
+      "latest_output_and_resources": {
+        "pcm_gain_milli": 18000,
+        "clipped": 0,
+        "accepted": 64091520,
+        "nonzero": 4237107,
+        "peak": 19660,
+        "pa": 0,
+        "activations": 2,
+        "write_max": 6955,
+        "partial": 0,
+        "write_errors": 0,
+        "deadline_misses": 0,
+        "internal": 7455,
+        "PSRAM": 12131776,
+        "owner_stack": 8680,
+        "prepare": 392629,
+        "render_max": 9610,
+        "rejected": 0,
+        "overflow": 0,
+        "limited": 5442599,
+        "mix": 8317,
+        "pcm": 1432,
+        "core": 1,
+        "prep_stack": 7984
+      },
+      "contact_evidence": [
+        "I (2552025) echoy-link: detached edge=LEFT peer=30eda0f452a0 session=4082455361",
+        "I (2559835) echoy-link: attached local=LEFT remote=RIGHT peer=30eda0f452a0 session=790655608 following=1; waiting for plan/clock",
+        "I (2635105) echoy-link: detached edge=LEFT peer=30eda0f452a0 session=790655608"
+      ],
+      "transfer_evidence": [
+        "I (2444305) echoy-link: received plan peer=30eda0f452a0 revision=1 bytes=849",
+        "I (2450385) echoy-link: received plan peer=30eda0f452a0 revision=2 bytes=849",
+        "I (2548655) echoy-link: received plan peer=30eda0f452a0 revision=3 bytes=849",
+        "I (2562865) echoy-link: received plan peer=30eda0f452a0 revision=3 bytes=849"
+      ],
+      "plan_evidence": [
+        "ECHOY_PLAN revision=16 role=harmony phrase=1 anchors=5 events=12",
+        "ECHOY_PLAN revision=18 role=harmony phrase=2 anchors=5 events=12",
+        "ECHOY_PLAN revision=19 role=harmony phrase=2 anchors=5 events=9",
+        "ECHOY_PLAN revision=20 role=harmony phrase=2 anchors=5 events=9",
+        "ECHOY_PLAN revision=22 role=harmony phrase=2 anchors=5 events=9",
+        "ECHOY_PLAN revision=25 role=harmony phrase=2 anchors=5 events=9",
+        "ECHOY_PLAN revision=26 role=harmony phrase=2 anchors=5 events=9",
+        "ECHOY_PLAN revision=28 role=harmony phrase=2 anchors=5 events=9"
+      ],
+      "playback_evidence": [
+        "I (2583695) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=61931520 nonzero=3439603 peak=19660 pa=0 activations=1 write_max=6955us partial=0 write_errors=0 deadline_misses=0",
+        "I (2643695) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=63371520 nonzero=3716870 peak=19660 pa=1 activations=2 write_max=6955us partial=0 write_errors=0 deadline_misses=0",
+        "I (2673695) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=64091520 nonzero=4237107 peak=19660 pa=0 activations=2 write_max=6955us partial=0 write_errors=0 deadline_misses=0"
+      ],
+      "record_permission_evidence": [
+        "ECHOY_STRIP_READY tile=A mode=record_only record=0 play=0 single=0 at_us=1856249",
+        "ECHOY_STRIP_READY tile=A mode=record_only record=1 play=0 single=0 at_us=2108872",
+        "ECHOY_STRIP_READY tile=A mode=idle record=0 play=1 single=0 at_us=2575336442",
+        "ECHOY_STRIP_READY tile=A mode=idle record=1 play=1 single=0 at_us=2670957198"
+      ],
+      "transmission_timeouts": [],
+      "clock_rtt_range_us": [
+        13518,
+        73914
+      ]
+    }
+  ],
+  "limits": [
+    "Qualitative user listening; no measured acoustic offset or drift bound.",
+    "Transmission timeout and detach/reattach logs were observed; prior reconnect causes are not established.",
+    "Long-duration RF/load robustness and larger assemblies are not accepted by this check."
+  ]
+}

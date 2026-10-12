@@ -4,9 +4,11 @@ Status: package **`2822d40910b0` is installed on both boards**. Both real homes,
 separated-board magnetic calibration and idle audio passed. The first board
 remained on boot `3411308831530673249` at 202.7 seconds; the second remained on
 boot `17407228737210624198` at 97 seconds. Both have zero application crashes,
-partial writes, write errors and estimated audio deadline misses. Physical
-assembly, transmitted recorded phrases and listening still await the user.
-Do not treat simulator or host transport tests as hardware acceptance.
+partial writes, write errors and estimated audio deadline misses. The subsequent
+physical pair check now confirms contact, phrase transfer, audible playback,
+independent pause and detached phrase retention, with qualitative user listening
+acceptance. See [physical acceptance](physical-acceptance.json) below; simulator
+and host transport results remain distinct from these device observations.
 
 Official update operations are `2c440ef6-d3ef-4dc2-ac66-85aeadace29d` and
 `57201513-205f-43f7-97b8-a8cc6558596e`. Identity, ELF image, HEALTHY commit and
@@ -91,9 +93,51 @@ runs pass. The 23 runtime cases, band/calibration checks, clock regressions and
 The final package's measured idle render-plus-conversion maxima are 6,818 us and
 6,836 us, both below the unchanged 10 ms audio-block duration. Both boards logged
 `magnetometer baseline ready` and remained silent as intended. Internal free RAM
-was about 10 KiB per board at these checks; connected operation, real preparation
-and playback still need resource/deadline validation. No physical taps, recordings
-or seam events had been observed in the captured final logs.
+was about 10 KiB per board at these initial idle checks. Connected preparation and
+playback were subsequently exercised as recorded below.
+
+## First physical pair acceptance
+
+The first board (`...f452a0`) was physically on the left using Voice; the second
+(`...f40c6c`) was on the right using Harmony. Matching RIGHT/LEFT contact sessions
+were recorded. The right received full 849-byte snapshots from the left and
+committed Harmony plans with the recorded five source anchors; changing its
+expression to Broken produced nine events. Both real playback screens were
+captured, and nonzero physical PCM output was observed on each device.
+
+The user confirmed hearing them in time with no obvious problem. The user then
+confirmed both requested steps: pausing only the left left the right playing,
+and physically detaching retained the right phrase and continuous playback.
+Logs show the right's amplifier still active after its LEFT-edge detach, with
+nonzero sample counts increasing. Subsequent screenshots show both paused with
+their phrases retained. Right-side Record permission was disabled while following
+and enabled again after detachment. No firmware, UI or playback controls were
+changed by the agent during this read-only check.
+
+Official `iris device-status`, `iris logs --snapshot`, a bounded 35-second live
+log observation and `iris screenshot` all succeeded. Both stayed on their
+installed boot/image with crash count zero, no partial writes, no PCM write
+errors and no estimated audio deadline misses. Active render/conversion high
+watermarks were 14,901 us on the left and 9,610 us on the right; these are longer
+than the earlier idle maxima and are not a claim of every block staying below
+10 ms. The configured buffer/late-output protection was not changed.
+
+The logs include three metadata-delivery timeouts and successful detach/reattach
+and transfer events; the causes of the earlier reconnects were not established.
+Observed clock-estimate RTTs span 13,518–73,914 us; no acoustic offset or long-term
+drift bound was measured. Internal free RAM fell to about 3.2 KiB on the left in
+one logged sample. Basic interaction/listening acceptance does not establish
+long-duration radio/load robustness or ample internal memory headroom.
+
+[Structured observations and user-report provenance](physical-acceptance.json),
+[left playing](seam-first.png), [right playing](seam-second.png),
+[left after pause/detach](seam-first-detached.png),
+[right after pause/detach](seam-second-detached.png).
+
+The home UI currently has no persistent "跟随"/"Following" text. Its actual
+following state controls recording permission and receives the upstream phrase;
+the user did not overlook a label. A persistent following indicator has not been
+implemented or approved in this acceptance step.
 
 ## Verification
 
@@ -145,20 +189,18 @@ without relaxing tests or upgrading the SDK.
 
 ## Remaining hardware acceptance and limits
 
-The user confirmed separated placement; installation and baseline checks are now
-complete. The pending user prompt asks them to record on the intended left board,
-then join the two upright boards horizontally and report whether the right shows
-following/a phrase. Read the live contact/transfer logs after that action. Then
-select a complementary role on the right and press Play on each. Check contact
-identity, received complete phrase, clock RTT/offset, independent Play/Pause,
-exact detach retention, rejoin, actual audio deadlines and listening alignment.
+Installation, baseline calibration and the basic physical pair flow are accepted
+within the observations above. Continue future testing from these existing
+results; do not repeat the installation or basic listening questions merely to
+reconstruct state. Long-running RF/load behavior, quantitative acoustic alignment
+and the low internal-memory margin remain to be evaluated.
 
 This version is two-board/upright/horizontal only. Three boards, rotated seams
 and vertical arrangements are not supported by the physical adapter yet.
 Committed source edits propagate after wireless transfer and local preparation,
 then switch at the next available local bar; a simultaneous same-bar transaction
-on both boards is not implemented. Radio/speaker timing, drift, magnetic
-enclosure tolerance and behavior under real interference remain unverified.
+on both boards is not implemented. Quantitative radio/speaker timing, drift,
+magnetic enclosure tolerance and behavior under controlled interference remain unverified.
 The invisible upstream replica currently also allocates synthesized buffers;
-connected/playback memory headroom still needs measurement. These limits are separate
+long-running connected/playback memory headroom still needs evaluation. These limits are separate
 from the retained Recovery startup watchdog issue already observed on both boards.

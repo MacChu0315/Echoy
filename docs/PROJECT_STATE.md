@@ -399,7 +399,7 @@ See `verification/second-device/README.md` for identities, verification and limi
 
 ## Remaining physical integration
 
-### Dual-device firmware installed (2026-10-12, assembly acceptance pending)
+### Dual-device basic physical flow accepted (2026-10-12)
 
 Physical linking is now implemented locally for two upright, horizontally joined
 boards: magnetic contact confirmation, full-phrase wireless transport and mapped
@@ -428,14 +428,28 @@ and core affinity alone did not solve it. Active-slot gathering now preserves
 bit-identical PCM while reducing measured idle processing maxima to 6,818/6,836 us.
 Audio remains on core 1 with bounded diagnostics; block duration, deadline limits
 and sound parameters are unchanged. Both boards have about 10 KiB internal RAM
-free at idle; actual joined playback/preparation still needs resource checks.
+free at idle; joined operation later reached about 3.2 KiB in one left-board
+sample, so long-running memory headroom still needs evaluation.
 
-The pending user prompt asks them to record on the intended left board, then join
-both upright boards horizontally and report whether the right shows following or
-a phrase. No physical recording, seam or transfer has yet been observed in the
-final logs. Continue by reading live logs/screens after that action, then verify
-independent Play/Pause, actual timing/listening and detach/rejoin retention.
-The earlier diagnostic request to press "恢复到静止" is obsolete after the update.
+Actual RIGHT/LEFT contact sessions and complete 849-byte phrase transfers are
+now verified between the first board on the left (Voice) and second on the right
+(Harmony, including Broken). Both emitted nonzero PCM with zero output errors,
+partial writes, deadline misses and application crashes. Active processing maxima
+were 14,901/9,610 us; keep these distinct from the 6.8 ms idle observations.
+The user confirmed that the pair sounded in time without obvious problems, and
+that pausing the left did not stop the right and detaching retained the right's
+phrase/playback. Logs also show continued right-side output after detach, followed
+by the user's pause; final screens retain both phrases. Do not repeat these
+accepted basic steps just to recover context.
+
+The user correctly noted there is no persistent "跟随" text on the home screen.
+Following currently controls recording permission and upstream phrase reception;
+the text indicator has not been implemented or approved. No UI or firmware was
+changed during this read-only physical acceptance step.
+Earlier metadata timeout/reconnection events were observed; their cause is not
+established. Clock estimate RTTs were 13.5–73.9 ms, without a measured acoustic
+offset/drift bound. Long-duration RF/load robustness remains open. Evidence and
+user-report provenance: `verification/dual-device/physical-acceptance.json`.
 
 Local verification passes: 96 bit-identical PCM windows against the frozen old
 mixer (including explicitly audible windows), codec 11,236 round trips/232 rejected inputs, host
@@ -444,8 +458,9 @@ plans/1,552 transitions against the frozen reference, CTest 2/2, and 13 native G
 desk checks with real PCM and zero late blocks/clipping. Relevant sanitizer runs
 also pass outside ptrace. The final pinned-SDK bundle build passes with the
 expected factory-partition size warning (the package targets the much larger
-`ota_0` partition and preserves Recovery). Actual radio transfer, contact,
-playing audio timing and loaded memory headroom remain unverified. Only two upright horizontal boards are
+`ota_0` partition and preserves Recovery). Basic actual radio transfer/contact
+and listening now pass within the scope above; precision timing and sustained
+memory/radio load are not accepted yet. Only two upright horizontal boards are
 supported; playing edits propagate after transfer/preparation and are not a
 simultaneous same-bar transaction. See `verification/dual-device/README.md` for
 implementation, artifact identities, test commands and acceptance boundaries.
@@ -507,8 +522,8 @@ and reported the battery online. Battery code was not changed here; retain this
 recovered startup observation for later battery validation.
 
 Next: validate single-device touch, speaker, battery and
-resource watermarks on hardware, then accept actual two-board discovery,
-transport and clock integration above. Three-board hardware support
+resource watermarks and sustained RF/clock behavior on hardware, retaining the
+accepted basic two-board flow above. Three-board hardware support
 still needs implementation/acceptance. Device
 export still has no hardware destination; IMU integration is also unfinished.
 Do not repeat the earlier mistake of treating UI-only or single-tile tests as

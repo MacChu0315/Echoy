@@ -45,7 +45,7 @@
   },
   "build_run": "20261012-133513-system-update-bundle-2",
   "installed": true,
-  "note": "Installed and idle/calibration verified on both boards; physical seam, transmitted recorded phrase and listening still await user action.",
+  "note": "Installed on both boards. Real contact, full phrase transfer, nonzero output and user-confirmed paired listening/independent pause/detach retention accepted; precision timing and sustained RF/load robustness remain unverified.",
   "echoy.bin": {
     "bytes": 2080208,
     "sha256": "2d4a3049aa177282645f937cb74f0faee9f47db9c7a2d5c4a501f9104479ceb0"
