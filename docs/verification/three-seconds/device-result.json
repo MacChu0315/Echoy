@@ -1,0 +1,42 @@
+{
+  "device_id": "4553502d49524953010030eda0f452a0",
+  "source_commit": "7a6fb9f",
+  "package": {
+    "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-release/echoy-three-seconds-9ef37e48c8b0.irisfw",
+    "sha256": "9ef37e48c8b03ab7288c3356d60a5597195b281e20ea10a809dbd1d08b229049"
+  },
+  "before_boot_id": "11406880910400298043",
+  "recovery_boot_id": "13720273676645676443",
+  "installed_boot_id": "14075077765010003089",
+  "operation_id": "ddd0b874-0860-4676-b5d2-3762bfe27524",
+  "status": "succeeded",
+  "healthy": true,
+  "validated": true,
+  "application_validation": {
+    "actual": "28f531592920ca2fdd788b4d76dcb17749409d4311c2c444943af312e52f948f",
+    "actual_field": "firmware_sha256",
+    "expected": "28f531592920ca2fdd788b4d76dcb17749409d4311c2c444943af312e52f948f",
+    "expected_field": "elf_sha256",
+    "mode": "elf_sha256"
+  },
+  "source_inventory": {
+    "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+    "flags": 7,
+    "last_operation_id": "a0daa59b0a5245778b40eb147e3be642",
+    "last_result": 0,
+    "layout_version": 4,
+    "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+  },
+  "target_inventory": {
+    "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+    "flags": 7,
+    "last_operation_id": "ddd0b87408604676b5d23762bfe27524",
+    "last_result": 0,
+    "layout_version": 4,
+    "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+  },
+  "crash_count": 0,
+  "observed_uptime_us": 77646377,
+  "user_hardware_timing_acceptance": "pending",
+  "system_update_log": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/.codex-runs/mosaico/20261012T024016Z-system-update/raw.log"
+}

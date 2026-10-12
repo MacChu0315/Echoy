@@ -108,8 +108,12 @@ Model and cue timing regressions, 22 device-runtime tests, normal/reduced-motion
 native input and the standalone three-device audio regression pass. A concurrent
 desktop run recorded one late audio block while all tiles were idle; the identical
 binary passed alone without relaxing checks. Host scheduling cause is not proven.
-Build `build-sim-three-seconds` and package `9ef37e48c8b0` are ready; installation is
-in progress. Evidence: `verification/three-seconds/README.md`.
+Package `9ef37e48c8b0` is installed on the verified Mosaico, HEALTHY boot
+`14075077765010003089`, operation `ddd0b874-0860-4676-b5d2-3762bfe27524`.
+Identity/commit/retained-layout and actual home checks pass; the same boot remains
+normal after 77 seconds with crash count zero and unchanged audio parameters.
+Physical timing feedback is pending. The simulator build is `build-sim-three-seconds`;
+no new long-running desktop was started. Evidence: `verification/three-seconds/README.md`.
 
 ### Harmony home refinement
 
@@ -440,7 +444,7 @@ phrase 3 (Answer), the original problematic expression, also has no obvious
 distortion at the same higher volume. Physical listening follow-up is closed
 for this trial. On 2026-10-10 the user decided to retain the current volume
 ("音量上就先这样吧"). Keep the output parameters from `7c431dacfd59`;
-the current UI package is `a859d454627f` with those same parameters;
+the current UI package is `9ef37e48c8b0` with those same parameters;
 stop further loudness tuning unless requested. This is provisional retention,
 not a claim of measured acoustic performance or the absolute hardware limit.
 Any future substantial loudness improvement needs acoustic/output-chain

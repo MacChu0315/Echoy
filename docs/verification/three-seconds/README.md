@@ -52,5 +52,20 @@ persistence and the frozen reference remain unchanged. No migration is needed.
   [Exact artifacts](artifacts.json) are recorded independently of the runner's
   stale default-build artifact summary.
 
-Native screenshots of 预备-3, 预备-2 and 预备-1 were visually inspected. Device
-installation is pending at this implementation checkpoint.
+Native screenshots of 预备-3, 预备-2 and 预备-1 were visually inspected.
+
+## Physical installation (2026-10-12)
+
+Official `mosaico.py iris system-update --bundle ... --device-id ... --endpoint ...`
+installed `9ef37e48c8b0` on the same Mosaico, operation
+`ddd0b874-0860-4676-b5d2-3762bfe27524`. Recovery boot `13720273676645676443`
+completed initialization before the one update submission. New application boot
+`14075077765010003089` reports HEALTHY with the expected image identity, commit
+and unchanged bootloader/partition-table hashes. [Evidence](device-result.json).
+
+`iris device-status`, `iris screenshot` and `iris logs --snapshot` confirm the
+same new boot in normal mode after 77 seconds, crash count zero and the expected
+[Record-only home](installed-home.png). No UI/audio write/deadline errors were
+observed at startup; musical bank trims and PCM gain remain unchanged. The known
+GPIO ISR/I2S initialization messages remain, without preventing healthy startup.
+Physical acceptance of the new countdown and popup timing is pending.
