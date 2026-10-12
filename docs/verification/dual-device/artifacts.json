@@ -1,11 +1,11 @@
 {
   "package": {
-    "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-release/echoy-dual-device-7951d5c491a0.irisfw",
-    "sha256": "7951d5c491a0e983993e6b6b13548343f4524f4489dc5b61218404d7ffc3aa07"
+    "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-release/echoy-dual-active-2822d40910b0.irisfw",
+    "sha256": "2822d40910b0f0ea71705e78a094d50784b22b6bca833937229bac175f400c7b"
   },
   "inspection": {
     "schema": "esp-iris-system-update/v1",
-    "manifest_sha256": "5cb6e912c9b4e3b6f096c48ce9eae9e05ee407bd4518372a6a4a323e797c8f48",
+    "manifest_sha256": "5980789b2fd63e87910e3d578e4f0c7d23868136f8216c366c7b4a612e811111",
     "key_id": null,
     "chip_id": 32,
     "flash_size": 16777216,
@@ -25,8 +25,8 @@
         "kind": "application",
         "flags": 0,
         "target_offset": 2162688,
-        "size": 2078784,
-        "sha256": "a7695444bd3ee3b1bac622a4df0a1f71f8499871259b8530f17e45b3f451b747",
+        "size": 2080208,
+        "sha256": "2d4a3049aa177282645f937cb74f0faee9f47db9c7a2d5c4a501f9104479ceb0",
         "file": "ota_0.bin"
       },
       {
@@ -43,24 +43,20 @@
     "release": "1.0.0",
     "minimum_recovery_version": "0.1"
   },
-  "build_run": "20261012-122158-system-update-bundle-2",
-  "installed": false,
-  "note": "Awaiting separated-board readiness. Firmware and local tests complete; no physical wireless or sound acceptance yet.",
+  "build_run": "20261012-133513-system-update-bundle-2",
+  "installed": true,
+  "note": "Installed and idle/calibration verified on both boards; physical seam, transmitted recorded phrase and listening still await user action.",
   "echoy.bin": {
-    "bytes": 2078784,
-    "sha256": "a7695444bd3ee3b1bac622a4df0a1f71f8499871259b8530f17e45b3f451b747"
+    "bytes": 2080208,
+    "sha256": "2d4a3049aa177282645f937cb74f0faee9f47db9c7a2d5c4a501f9104479ceb0"
   },
   "echoy.elf": {
-    "bytes": 19496184,
-    "sha256": "9fc5ef6a4ff95d148414f295d7ef8088774ad2f70daf3447f53c43b31d52d3a9"
+    "bytes": 19504676,
+    "sha256": "8cf4eecdfb15e6dd73cd5a7b9a6b84fc355d0a128927be5c7e9cb813104a554f"
   },
   "ui_apps.bin": {
     "bytes": 380560,
     "sha256": "16dd35bec54d4427fd18ede442919f352e94d1306ee04fcde80ceaac71a9648b"
-  },
-  "bootloader/bootloader.bin": {
-    "bytes": 21936,
-    "sha256": "41b37a19705df47d10886d757bc5a97bc4d444e125b94e39abf9ea02757c91ea"
   },
   "source_files": {
     "projects/echoy/main/CMakeLists.txt": "b327d4be7df2c690fc12410d8aa5863da98aedc64006b9d578b3a1552e1e90b2",
@@ -87,8 +83,8 @@
     "projects/echoy/main/echoy_audio_diagnostics.h": "1b049a97933e5298983f055e7ed2091d28340dc68abeb8faf5c6c9c913b33b34",
     "projects/echoy/main/echoy_audio_probe.c": "45d4a9f577be177540767c998ab60f113ba9591f7123ceb38799f860f12cab5c",
     "projects/echoy/main/echoy_audio_probe.h": "a2993dee3735038c7bc8ed1ac03295d67a830f4084ec461ea473ce5d5e4a2741",
-    "projects/echoy/main/echoy_band.c": "f25e47105a403db46ca7a4145490b2ba4480eedfc78191c89e7af83c7c9d88f4",
-    "projects/echoy/main/echoy_band.h": "8f466e26a5fe8241d28821fae0462d762390eedba85456e5caca42186b769578",
+    "projects/echoy/main/echoy_band.c": "80adebcde91ebb7c828b2342d1e6c31446c252fa9257a509aab5181f879fb59c",
+    "projects/echoy/main/echoy_band.h": "8a24441f0d5e90d6a39b205e6dbbeee04ca3cbb71e00844d059176339f89efe8",
     "projects/echoy/main/echoy_control.h": "0d330bf94549369485417d2b6e5c0b342b3c7049bba3c065ca8e4d36b62772a5",
     "projects/echoy/main/echoy_device_pcm.c": "f888c952ad5ae1c774f552020efed20f2227edb11bcc53c74aed5b012cf10c6a",
     "projects/echoy/main/echoy_device_pcm.h": "4433aaa5d0ddbf0420ca33ba7de635de4be52aecd11998ac4f83c110c693ebf3",
@@ -111,7 +107,7 @@
     "projects/echoy/main/echoy_view_keys.h": "75664b95c88b302d9eee1682161ffde8d00a2d19c509d09639643606547765e1",
     "projects/echoy/main/idf_component.yml": "9d610352e907bfcfb6574cc34490742ed1cb6d1133e46a77ab1364ac7fb020db",
     "projects/echoy/main/main.c": "37aff9ccc69a694d16c75f2e8ff4b4bdecfa390c1d91701846931dd90f648a3c",
-    "projects/echoy/main/platform_device.c": "7d7c22644aca5f3523db13f9275dfb49e470f56486f6dc60311f77bae36d88da",
+    "projects/echoy/main/platform_device.c": "dbff4dc77b7cf4835c0699a95d409912fc68b78c88c58bdd73c39bbcc1f53065",
     "projects/echoy/main/platform_device.h": "b13b75ffab578fe55dec7178026271076510bac26b66f9bc93a7494fa7c07b33"
   }
 }

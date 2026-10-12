@@ -1,10 +1,22 @@
 # Physical dual-device integration (2026-10-12)
 
-Status: implemented and locally verified; the prepared package is **not installed**.
-Both boards still run the previously accepted single-device package
-`1d57c5719989`. The outstanding physical step is the user's confirmation that
-the boards are separated for startup magnetic calibration. Do not treat the
-simulator or host transport tests as hardware acceptance.
+Status: package **`2822d40910b0` is installed on both boards**. Both real homes,
+separated-board magnetic calibration and idle audio passed. The first board
+remained on boot `3411308831530673249` at 202.7 seconds; the second remained on
+boot `17407228737210624198` at 97 seconds. Both have zero application crashes,
+partial writes, write errors and estimated audio deadline misses. Physical
+assembly, transmitted recorded phrases and listening still await the user.
+Do not treat simulator or host transport tests as hardware acceptance.
+
+Official update operations are `2c440ef6-d3ef-4dc2-ac66-85aeadace29d` and
+`57201513-205f-43f7-97b8-a8cc6558596e`. Identity, ELF image, HEALTHY commit and
+unchanged device bootloader checks pass. [Device evidence](device-results.json),
+[first home](active-first-home.png), [second home](active-second-home.png).
+Before the final first-board write, retained Recovery again had its known startup
+interrupt-watchdog reset; metadata was saved and no valid Core Dump was available.
+The installer waited for a ready Recovery boot before submitting the update.
+The second board's final writer had crash count zero. This retained-firmware
+issue was not changed, and both installed application boots have crash count zero.
 
 ## Behavior and integration
 
@@ -45,6 +57,44 @@ explicitly pinned to the existing `espressif/bq27220==0.1.2`; a resolver-selecte
 0.1.3 during the first build was removed before preparing the release package.
 UI resources, musical algorithms, speaker voicing and Recovery remain unchanged.
 
+## Physical startup correction
+
+The initial `7951d5c491a0` candidate reached firmware HEALTHY on the first board,
+but its first silent 240-frame block took 42.8 ms and tripped the unchanged audio
+deadline protection. The second board was not updated with that candidate.
+Firmware health alone did not establish usable audio.
+
+Diagnostic builds established that the scheduler was already in internal memory.
+Pinning audio to core 1, away from the core-0 Wi-Fi driver, still left a 41 ms
+mixing operation, so core placement was not accepted as the explanation or fix.
+First-block cycle profiling then measured 11,565,465 cycles in empty cue scans,
+2,331,530 in voice work, and 132,705 in clock handling, with zero pending commits.
+At the configured 320 MHz, empty cue scans alone cost about 36 ms. Diagnostic
+build identities and measurements are in [startup diagnostics](startup-diagnostics.json).
+The exact reason that this unchanged old mixer became slower with the radio-enabled
+firmware was not isolated; the measured excessive repeated work was removed.
+
+The mixer now gathers active playback/cue slots once per block and refreshes them
+after any commit within the block. It preserves slot/addition order and skips
+idle voices while still applying identical volume smoothing. Already-equal
+volume values need no repeated smoothing arithmetic. No audio timeout, DMA depth,
+volume, limiter, synthesis or musical rule was relaxed. The audio owner remains
+explicitly on core 1, and bounded timing diagnostics are retained.
+
+`sh tests/render_active/run.sh` compares 96 actual PCM windows bit for bit against
+the frozen pre-optimization mixer from `5fa0d8f`, across every role/expression,
+future cues, in-block commits/crossfades, volume changes and cancellation. Expected
+audible windows must also contain nonzero PCM. Normal and ASan/UBSan/LeakSanitizer
+runs pass. The 23 runtime cases, band/calibration checks, clock regressions and
+13 native GSP/PCM desk checks were rerun successfully after the optimization.
+
+The final package's measured idle render-plus-conversion maxima are 6,818 us and
+6,836 us, both below the unchanged 10 ms audio-block duration. Both boards logged
+`magnetometer baseline ready` and remained silent as intended. Internal free RAM
+was about 10 KiB per board at these checks; connected operation, real preparation
+and playback still need resource/deadline validation. No physical taps, recordings
+or seam events had been observed in the captured final logs.
+
 ## Verification
 
 - `sh tests/link_codec/run.sh`: 11,236 exact round trips, 232 malformed input
@@ -78,7 +128,7 @@ UI resources, musical algorithms, speaker voicing and Recovery remain unchanged.
   [PCM evidence](desk-audio-metrics.json). This exercises shared UI/arrangement;
   hardware-specific codec, transport and clock paths are covered separately above.
 - Pinned SDK doctor confirms the exact required revision and esp32s31 support.
-  `system-update-bundle` run `20261012-122158-system-update-bundle-2` succeeds.
+  Final `system-update-bundle` run `20261012-133513-system-update-bundle-2` succeeds.
   [Actual package/image hashes](artifacts.json) were computed from
   `output/device-audio-ui-build`, avoiding the runner's stale default artifact
   path. Offline official bundle inspection verifies unchanged retained layout
@@ -95,11 +145,11 @@ without relaxing tests or upgrading the SDK.
 
 ## Remaining hardware acceptance and limits
 
-After the separated-board confirmation, install the prepared package on each
-authorized Device ID using the official workflow, retaining boot/log/operation
-evidence. Verify both reach HEALTHY and log `magnetometer baseline ready`.
-Then ask the user to place the boards upright side by side, record on the left,
-select a complementary role on the right, and press Play on each. Check contact
+The user confirmed separated placement; installation and baseline checks are now
+complete. The pending user prompt asks them to record on the intended left board,
+then join the two upright boards horizontally and report whether the right shows
+following/a phrase. Read the live contact/transfer logs after that action. Then
+select a complementary role on the right and press Play on each. Check contact
 identity, received complete phrase, clock RTT/offset, independent Play/Pause,
 exact detach retention, rejoin, actual audio deadlines and listening alignment.
 
@@ -110,5 +160,5 @@ then switch at the next available local bar; a simultaneous same-bar transaction
 on both boards is not implemented. Radio/speaker timing, drift, magnetic
 enclosure tolerance and behavior under real interference remain unverified.
 The invisible upstream replica currently also allocates synthesized buffers;
-physical memory headroom still needs measurement. These limits are separate
+connected/playback memory headroom still needs measurement. These limits are separate
 from the retained Recovery startup watchdog issue already observed on both boards.

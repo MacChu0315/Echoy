@@ -3,86 +3,86 @@
   "frames": 1440240,
   "windows": {
     "ordinary-pad": [
-      5564,
-      24145
+      5552,
+      24090
     ],
     "popup-pad": [
-      51633,
-      69203
+      51279,
+      68853
     ],
     "example-once": [
-      70796,
-      133588
+      70387,
+      133501
     ],
     "B-role-continues": [
-      264931,
-      322528
+      264484,
+      322045
     ],
     "B-phrase-continues": [
-      384927,
-      443571
+      384446,
+      443003
     ],
     "B-density-continues": [
-      505067,
-      564822
+      504408,
+      564067
     ],
     "paused-silence": [
-      650129,
-      659329
+      649389,
+      658568
     ]
   },
   "metrics": {
     "all": {
       "frames": 1440240,
-      "nonzero": 488312,
+      "nonzero": 487962,
       "peak": 6970,
-      "rms": 350.30246769406153,
+      "rms": 350.01269954880553,
       "clipped": 0
     },
     "ordinary-pad": {
-      "frames": 18581,
+      "frames": 18538,
       "nonzero": 4575,
       "peak": 370,
-      "rms": 54.667733234456534,
+      "rms": 54.731099049354796,
       "clipped": 0
     },
     "popup-pad": {
-      "frames": 17570,
+      "frames": 17574,
       "nonzero": 4575,
       "peak": 370,
-      "rms": 56.21856131485308,
+      "rms": 56.21216302639955,
       "clipped": 0
     },
     "example-once": {
-      "frames": 62792,
+      "frames": 63114,
       "nonzero": 22475,
       "peak": 6197,
-      "rms": 413.2931965033525,
+      "rms": 412.2375623833689,
       "clipped": 0
     },
     "B-role-continues": {
-      "frames": 57597,
-      "nonzero": 57132,
+      "frames": 57561,
+      "nonzero": 57096,
       "peak": 5980,
-      "rms": 658.4621147520257,
+      "rms": 658.425568247741,
       "clipped": 0
     },
     "B-phrase-continues": {
-      "frames": 58644,
-      "nonzero": 57971,
+      "frames": 58557,
+      "nonzero": 57884,
       "peak": 6442,
-      "rms": 560.3995274774699,
+      "rms": 559.436016942155,
       "clipped": 0
     },
     "B-density-continues": {
-      "frames": 59755,
-      "nonzero": 59055,
+      "frames": 59659,
+      "nonzero": 58958,
       "peak": 6970,
-      "rms": 558.2930367070492,
+      "rms": 558.3359663244942,
       "clipped": 0
     },
     "paused-silence": {
-      "frames": 9200,
+      "frames": 9179,
       "nonzero": 0,
       "peak": 0,
       "rms": 0.0,

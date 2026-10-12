@@ -399,7 +399,7 @@ See `verification/second-device/README.md` for identities, verification and limi
 
 ## Remaining physical integration
 
-### Prepared dual-device implementation (2026-10-12, not installed)
+### Dual-device firmware installed (2026-10-12, assembly acceptance pending)
 
 Physical linking is now implemented locally for two upright, horizontally joined
 boards: magnetic contact confirmation, full-phrase wireless transport and mapped
@@ -409,24 +409,43 @@ startup finishes before audio activation. Existing UI and output voicing are
 unchanged. The pinned BSP's network/interaction/peer components are used, with
 the existing battery driver explicitly retained at 0.1.2.
 
-Prepared package `7951d5c491a0`, ELF
-`9fc5ef6a4ff95d148414f295d7ef8088774ad2f70daf3447f53c43b31d52d3a9`,
-is at `output/device-release/echoy-dual-device-7951d5c491a0.irisfw`.
-Both physical devices still run `1d57c5719989`: the user was asked to separate
-the boards on a nonmetal surface before startup magnetic calibration, and that
-physical-readiness response is pending. Installation authorization already
-covers both Device IDs; do not ask for it again. After readiness, use the official
-workflow and `output/dual-device/package.json`, verify healthy boots and both
-baseline-ready logs, then request actual horizontal assembly/listening.
+The user confirmed separated placement. Current package `2822d40910b0`, ELF
+`8cf4eecdfb15e6dd73cd5a7b9a6b84fc355d0a128927be5c7e9cb813104a554f`,
+is installed on both authorized Device IDs. Immutable package:
+`output/device-release/echoy-dual-active-2822d40910b0.irisfw`.
+First board HEALTHY boot `3411308831530673249`, operation
+`2c440ef6-d3ef-4dc2-ac66-85aeadace29d`; second board HEALTHY boot
+`17407228737210624198`, operation `57201513-205f-43f7-97b8-a8cc6558596e`.
+Both real homes and separated magnetic baselines pass. At 202.7/97 seconds the
+same boots have zero application crashes, partial writes, write errors and
+estimated audio deadline misses. Preserve Recovery; installation authorization
+already covers both devices and does not need to be requested again.
 
-Local verification passes: codec 11,236 round trips/232 rejected inputs, host
+Initial package `7951d5c491a0` was rejected on the first board after the first
+silent audio block exceeded its deadline. Diagnostics found about 36 ms of
+repeated empty cue-slot scanning; internal-memory placement was already correct,
+and core affinity alone did not solve it. Active-slot gathering now preserves
+bit-identical PCM while reducing measured idle processing maxima to 6,818/6,836 us.
+Audio remains on core 1 with bounded diagnostics; block duration, deadline limits
+and sound parameters are unchanged. Both boards have about 10 KiB internal RAM
+free at idle; actual joined playback/preparation still needs resource checks.
+
+The pending user prompt asks them to record on the intended left board, then join
+both upright boards horizontally and report whether the right shows following or
+a phrase. No physical recording, seam or transfer has yet been observed in the
+final logs. Continue by reading live logs/screens after that action, then verify
+independent Play/Pause, actual timing/listening and detach/rejoin retention.
+The earlier diagnostic request to press "恢复到静止" is obsolete after the update.
+
+Local verification passes: 96 bit-identical PCM windows against the frozen old
+mixer (including explicitly audible windows), codec 11,236 round trips/232 rejected inputs, host
 transport/clock tests, 23 runtime cases, existing band/calibration tests, 864
 plans/1,552 transitions against the frozen reference, CTest 2/2, and 13 native GSP
 desk checks with real PCM and zero late blocks/clipping. Relevant sanitizer runs
 also pass outside ptrace. The final pinned-SDK bundle build passes with the
 expected factory-partition size warning (the package targets the much larger
-`ota_0` partition and preserves Recovery). Physical radio, magnets, audio timing
-and memory headroom remain unverified. Only two upright horizontal boards are
+`ota_0` partition and preserves Recovery). Actual radio transfer, contact,
+playing audio timing and loaded memory headroom remain unverified. Only two upright horizontal boards are
 supported; playing edits propagate after transfer/preparation and are not a
 simultaneous same-bar transaction. See `verification/dual-device/README.md` for
 implementation, artifact identities, test commands and acceptance boundaries.
@@ -488,8 +507,8 @@ and reported the battery online. Battery code was not changed here; retain this
 recovered startup observation for later battery validation.
 
 Next: validate single-device touch, speaker, battery and
-resource watermarks on hardware, then install and accept the prepared two-board
-discovery, transport and clock integration above. Three-board hardware support
+resource watermarks on hardware, then accept actual two-board discovery,
+transport and clock integration above. Three-board hardware support
 still needs implementation/acceptance. Device
 export still has no hardware destination; IMU integration is also unfinished.
 Do not repeat the earlier mistake of treating UI-only or single-tile tests as
@@ -526,7 +545,7 @@ phrase 3 (Answer), the original problematic expression, also has no obvious
 distortion at the same higher volume. Physical listening follow-up is closed
 for this trial. On 2026-10-10 the user decided to retain the current volume
 ("音量上就先这样吧"). Keep the output parameters from `7c431dacfd59`;
-the current UI package is `1d57c5719989` with those same parameters;
+the current dual-device package is `2822d40910b0` with those same parameters;
 stop further loudness tuning unless requested. This is provisional retention,
 not a claim of measured acoustic performance or the absolute hardware limit.
 Any future substantial loudness improvement needs acoustic/output-chain

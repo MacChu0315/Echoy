@@ -1,0 +1,57 @@
+[
+  {
+    "label": "first",
+    "package": "7951d5c491a0e983993e6b6b13548343f4524f4489dc5b61218404d7ffc3aa07",
+    "device_id": "4553502d49524953010030eda0f452a0",
+    "boot_id": "17263314792403207731",
+    "operation_id": "a4c7de43-1928-4e36-95d9-6e7fe6618d34",
+    "elf_sha256": "9fc5ef6a4ff95d148414f295d7ef8088774ad2f70daf3447f53c43b31d52d3a9",
+    "result": "Firmware HEALTHY but audio deadline failed at first silent block; superseded.",
+    "diagnostic_lines": [
+      "E (3267) echoy_device: estimated output deadline failed: ESP_ERR_TIMEOUT; playback stopped; explicit recovery required"
+    ]
+  },
+  {
+    "label": "diagnostic-first",
+    "package": "00865c2301cf48dcf12bff53f41590c984d55a7592971fa933afb8773fef361b",
+    "device_id": "4553502d49524953010030eda0f452a0",
+    "boot_id": "6281613522307814690",
+    "operation_id": "e40d037b-2a11-4bfb-ab6e-3e034c211aa3",
+    "elf_sha256": "df43871e12fef91a6a85538f84101900cf9b89ffc2749f1a14c3168cf7a09e8a",
+    "result": "Firmware HEALTHY but audio deadline failed at first silent block; superseded.",
+    "diagnostic_lines": [
+      "I (3131) echoy_band: scheduler bytes=10344 internal=1 default_internal_largest=20480",
+      "E (3261) echoy_device: estimated output deadline failed: ESP_ERR_TIMEOUT; playback stopped; explicit recovery required",
+      "E (3261) echoy_device: audio timing: render_max=42726us mix_max=41437us convert_max=1288us core=0"
+    ]
+  },
+  {
+    "label": "fixed-first",
+    "package": "b04b293ba1bfe82d9a9de690e41e9b1f10f90025012316bdc8820bf7c68b1e67",
+    "device_id": "4553502d49524953010030eda0f452a0",
+    "boot_id": "9273792693648854741",
+    "operation_id": "9f4b8752-ebb9-4d64-982d-e70f43820938",
+    "elf_sha256": "3a3706866b6b6a9efc75cabb22bcbfeb98f06a25fd4de27555a8669b97ad8fa2",
+    "result": "Firmware HEALTHY but audio deadline failed at first silent block; superseded.",
+    "diagnostic_lines": [
+      "I (3143) echoy_band: scheduler bytes=10344 internal=1 default_internal_largest=20480",
+      "E (3283) echoy_device: estimated output deadline failed: ESP_ERR_TIMEOUT; playback stopped; explicit recovery required",
+      "E (3283) echoy_device: audio timing: render_max=42424us mix_max=41082us convert_max=1341us core=1"
+    ]
+  },
+  {
+    "label": "profile-first",
+    "package": "9dcb905fc2b59f1b2fe5dab0710d5a118233e538cb6df32d094d73d9057460aa",
+    "device_id": "4553502d49524953010030eda0f452a0",
+    "boot_id": "13738589106601052252",
+    "operation_id": "7ecdd126-7198-486e-9be8-c589d6e495b2",
+    "elf_sha256": "fb964ec06b23eeb9f7061be5d6106a034ecf0ab75477b51f0c25ecaa5c35b7d9",
+    "result": "Firmware HEALTHY but audio deadline failed at first silent block; superseded.",
+    "diagnostic_lines": [
+      "I (3141) echoy_band: scheduler bytes=10360 internal=1 default_internal_largest=20992",
+      "E (3291) echoy_device: estimated output deadline failed: ESP_ERR_TIMEOUT; playback stopped; explicit recovery required",
+      "E (3291) echoy_device: audio timing: render_max=45116us mix_max=43850us convert_max=1265us core=1",
+      "E (3291) echoy_device: first mix cycles: clock=132705 voice=2331530 cues=11565465 commits=0"
+    ]
+  }
+]

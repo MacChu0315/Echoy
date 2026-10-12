@@ -66,6 +66,8 @@ struct echoy_device {
     bool audio_fault, fatal, preparation_in_flight, battery_empty;
     echoy_condition_t condition;
     int64_t origin_us, next_log_us, last_prepare_us, max_render_us;
+    int64_t max_mix_us, max_convert_us;
+    int audio_core;
     uint64_t accepted_frames;
     echoy_device_pcm_t pcm_processor;
     uint64_t pcm_clipped, pcm_limited;
@@ -254,6 +256,13 @@ static void fail_audio(struct echoy_device *d, board_audio_t **audio, const char
         (unsigned)d->last_audio_stats.pa_activations, (unsigned)d->last_audio_stats.partial_writes,
         (unsigned)d->last_audio_stats.write_failures, (unsigned)d->last_audio_stats.last_write_us,
         (unsigned)d->last_audio_stats.max_write_us);
+    ESP_LOGE(TAG, "audio timing: render_max=%lldus mix_max=%lldus convert_max=%lldus core=%d",
+             (long long)d->max_render_us, (long long)d->max_mix_us,
+             (long long)d->max_convert_us, d->audio_core);
+    echoy_band_profile_t profile = echoy_band_render_profile(d->band);
+    ESP_LOGE(TAG, "first mix cycles: clock=%u voice=%u cues=%u commits=%u",
+             (unsigned)profile.clock_cycles, (unsigned)profile.voice_cycles,
+             (unsigned)profile.cue_cycles, (unsigned)profile.tick_calls);
     if (close_error != ESP_OK) {
         /* Cleanup failure can leave hardware ownership uncertain. Do not reopen. */
         d->fatal = true;
@@ -428,12 +437,13 @@ static void log_resources(struct echoy_device *d, board_audio_t *audio)
              (unsigned)stats.write_failures, d->deadline_misses);
     snprintf(diagnostic + DIAGNOSTIC_BYTES / 2, DIAGNOSTIC_BYTES / 2,
              "internal=%u PSRAM=%u owner_stack=%u prepare=%lldus render_max=%lldus rejected=%u "
-             "overflow=%u limited=%llu",
+             "overflow=%u limited=%llu mix=%lldus pcm=%lldus core=%d",
              (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT),
              (unsigned)heap_caps_get_free_size(MALLOC_CAP_SPIRAM),
              (unsigned)uxTaskGetStackHighWaterMark(NULL), (long long)d->last_prepare_us,
              (long long)d->max_render_us, d->rejected_actions, d->queue_overflows,
-             (unsigned long long)d->pcm_limited);
+             (unsigned long long)d->pcm_limited, (long long)d->max_mix_us,
+             (long long)d->max_convert_us, d->audio_core);
     /* UART logging may block for longer than a PCM block. Worker owns all
      * periodic log output; dropping a diagnostic is safer than blocking audio. */
     xQueueOverwrite(d->diagnostics, diagnostic);
@@ -542,6 +552,11 @@ static void owner_worker(void *arg)
         int64_t at =
             d->origin_us + (int64_t)(d->accepted_frames * 1000000 / BOARD_AUDIO_SAMPLE_RATE);
         int64_t start = now_us(d);
+#ifdef ESP_PLATFORM
+        d->audio_core = xPortGetCoreID();
+#else
+        d->audio_core = -1;
+#endif
         if (start > at) {
             /* Do not replay stale samples to hide a missed output deadline. */
             ++d->deadline_misses;
@@ -552,6 +567,8 @@ static void owner_worker(void *arg)
             echoy_audio_probe_render(d->probe_position, d->block->pcm, BLOCK_FRAMES);
         } else {
             echoy_band_render(d->band, at, d->block->floating, BLOCK_FRAMES);
+            int64_t mix_done = now_us(d);
+            if (mix_done - start > d->max_mix_us) d->max_mix_us = mix_done - start;
             echoy_device_pcm_stats_t stats;
             if (!echoy_device_pcm_convert(&d->pcm_processor, d->block->floating, d->block->pcm,
                                           BLOCK_FRAMES, &stats)) {
@@ -560,6 +577,8 @@ static void owner_worker(void *arg)
                 d->pcm_clipped += stats.clipped;
                 d->pcm_limited += stats.limited;
             }
+            int64_t converted = now_us(d) - mix_done;
+            if (converted > d->max_convert_us) d->max_convert_us = converted;
         }
         if (!audio) {
             continue;
@@ -681,7 +700,16 @@ esp_err_t echoy_device_start(echoy_device_handle_t *out, echoy_platform_t *platf
         release_context(d);
         return ESP_ERR_NO_MEM;
     }
-    if (xTaskCreate(owner_worker, "echoy_audio", 12288, d, 5, &d->owner_task) != pdPASS) {
+    /* Floating-point tasks become core-affine on this port. Choose the core
+     * explicitly before the first FP operation: Wi-Fi runs at priority 23 on
+     * core 0, while this uninterrupted PCM owner must outrank UI on core 1. */
+#ifdef ESP_PLATFORM
+    BaseType_t owner_created = xTaskCreatePinnedToCore(
+        owner_worker, "echoy_audio", 12288, d, 5, &d->owner_task, 1);
+#else
+    BaseType_t owner_created = xTaskCreate(owner_worker, "echoy_audio", 12288, d, 5, &d->owner_task);
+#endif
+    if (owner_created != pdPASS) {
         atomic_store(&d->stopping, true);
         xEventGroupSetBits(d->done, STARTED);
         xEventGroupWaitBits(d->done, PREPARE_DONE, pdFALSE, pdTRUE, portMAX_DELAY);

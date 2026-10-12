@@ -4,6 +4,11 @@
 #include "echoy_control.h"
 typedef struct echoy_band echoy_band_t;
 typedef struct echoy_band_job echoy_band_job_t;
+typedef struct {
+    uint32_t clock_cycles, voice_cycles, cue_cycles, tick_calls;
+} echoy_band_profile_t;
+/* First rendered block, measured only by the embedded cycle counter. */
+echoy_band_profile_t echoy_band_render_profile(const echoy_band_t *band);
 /* Portable, externally serialized owner of three instruments. Preparation is
  * the one operation performed outside the owner's lock, on an immutable job. */
 echoy_band_t *echoy_band_create(void);

@@ -4,6 +4,9 @@
 #include <string.h>
 #ifdef ESP_PLATFORM
 #include "esp_log.h"
+#include "esp_memory_utils.h"
+#include "esp_heap_caps.h"
+#include "esp_cpu.h"
 #endif
 #define N ECHOY_ARRANGE_TILE_COUNT
 #define BAR INT64_C(2500000)
@@ -49,6 +52,8 @@ struct echoy_band {
     uint64_t issued;
     bool english, reduced_motion;
     bool upstream_connected;
+    bool profiled;
+    echoy_band_profile_t profile;
     int64_t render_until;
     /* Owner-only scratch: keep the 7 KiB empty plan off embedded task stacks. */
     echoy_plan_t empty_plan;
@@ -207,6 +212,11 @@ echoy_band_t *echoy_band_create(void)
     if (!b) {
         return NULL;
     }
+#ifdef ESP_PLATFORM
+    ESP_LOGI("echoy_band", "scheduler bytes=%u internal=%u default_internal_largest=%u",
+             (unsigned)sizeof(*b), (unsigned)esp_ptr_internal(b),
+             (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_INTERNAL | MALLOC_CAP_DEFAULT));
+#endif
     b->issued = UINT64_MAX;
     b->arrange = echoy_arrange_create();
     if (!b->arrange) {
@@ -760,26 +770,66 @@ bool echoy_band_read(echoy_band_t *b, echoy_tile_id_t id, echoy_control_view_t *
     out->preparation_failed = v->failed;
     return true;
 }
+struct active_mix {
+    uint8_t play[N][RECORDS], cues[N][CUES];
+    uint8_t play_count[N], cue_count[N];
+};
+static void active_mix_refresh(const echoy_band_t *b, struct active_mix *active)
+{
+    memset(active->play_count, 0, sizeof(active->play_count));
+    memset(active->cue_count, 0, sizeof(active->cue_count));
+    for (int i = 0; i < N; ++i)
+        for (unsigned j = 0; j < RECORDS; ++j)
+            if (b->voices[i].play[j].bank)
+                active->play[i][active->play_count[i]++] = (uint8_t)j;
+    for (unsigned j = 0; j < CUES; ++j) {
+        const struct cue *c = &b->scheduled[j];
+        if (c->used && valid_tile(c->tile))
+            active->cues[c->tile][active->cue_count[c->tile]++] = (uint8_t)j;
+    }
+}
 void echoy_band_render(echoy_band_t *b, int64_t at, float *out, size_t frames)
 {
     if (!b || !out || at < 0) {
         return;
     }
     memset(out, 0, frames * sizeof(*out));
+#ifdef ESP_PLATFORM
+    bool trace = !b->profiled;
+    uint32_t mark = esp_cpu_get_cycle_count();
+#define PROFILE_PART(field) do { if (trace) { uint32_t next=esp_cpu_get_cycle_count(); \
+    b->profile.field += next-mark; mark=next; } } while (0)
+#else
+#define PROFILE_PART(field) ((void)0)
+#endif
     const double smooth = exp(-1.0 / (.015 * ECHOY_AUDIO_SAMPLE_RATE));
+    /* The owner serializes actions around blocks. Preserve slot order exactly,
+     * but do not scan 96 empty cues for every voice and every sample. A commit
+     * inside this block can replace playback banks, so refresh after ticking. */
+    struct active_mix active;
+    active_mix_refresh(b, &active);
+    const echoy_arrange_pending_t *pending = echoy_arrange_get_pending(b->arrange);
     for (size_t k = 0; k < frames; k++) {
         int64_t t = at + (int64_t)(k * 1000000 / ECHOY_AUDIO_SAMPLE_RATE);
         double sum = 0;
-        const echoy_arrange_pending_t *pending = echoy_arrange_get_pending(b->arrange);
         if (pending && t >= pending->at_us) {
+            if (!b->profiled) ++b->profile.tick_calls;
             echoy_band_tick(b, t);
+            active_mix_refresh(b, &active);
+            pending = echoy_arrange_get_pending(b->arrange);
         }
+        PROFILE_PART(clock_cycles);
         for (int i = 0; i < N; i++) {
             struct voice *v = &b->voices[i];
             double sample = 0;
-            v->smoothed_volume = v->volume + (v->smoothed_volume - v->volume) * smooth;
-            for (unsigned j = 0; j < RECORDS; j++) {
-                struct playback *p = &v->play[j];
+            if (v->smoothed_volume != v->volume)
+                v->smoothed_volume = v->volume + (v->smoothed_volume - v->volume) * smooth;
+            if (!active.play_count[i] && !active.cue_count[i]) {
+                PROFILE_PART(voice_cycles);
+                continue;
+            }
+            for (unsigned j = 0; j < active.play_count[i]; j++) {
+                struct playback *p = &v->play[active.play[i][j]];
                 if (!p->bank || t < p->at || (p->stop && t >= p->stop + FADE)) {
                     continue;
                 }
@@ -794,8 +844,9 @@ void echoy_band_render(echoy_band_t *b, int64_t at, float *out, size_t frames)
                 }
                 sample += p->bank->loops->samples[ECHOY_AUDIO_FULL][pos] * gain;
             }
-            for (unsigned j = 0; j < CUES; j++) {
-                struct cue *c = &b->scheduled[j];
+            PROFILE_PART(voice_cycles);
+            for (unsigned j = 0; j < active.cue_count[i]; j++) {
+                struct cue *c = &b->scheduled[active.cues[i][j]];
                 if (!c->used || c->tile != i || t < c->at) {
                     continue;
                 }
@@ -807,9 +858,18 @@ void echoy_band_render(echoy_band_t *b, int64_t at, float *out, size_t frames)
                 }
                 sample += buffer->samples[pos];
             }
+            PROFILE_PART(cue_cycles);
             sum += sample * v->smoothed_volume;
+            PROFILE_PART(voice_cycles);
         }
         out[k] = (float)(sum * .45);
+        PROFILE_PART(voice_cycles);
     }
     b->render_until = at + (int64_t)(frames * 1000000 / ECHOY_AUDIO_SAMPLE_RATE);
+    if (frames) b->profiled = true;
+#undef PROFILE_PART
+}
+echoy_band_profile_t echoy_band_render_profile(const echoy_band_t *b)
+{
+    return b ? b->profile : (echoy_band_profile_t){0};
 }
