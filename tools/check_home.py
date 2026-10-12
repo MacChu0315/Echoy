@@ -54,6 +54,10 @@ def assert_header_fit(image,role=None,locale=None):
 def compact_message(image,paper):
     return any(max(abs(a-b) for a,b in zip(pixel,paper))>35 for pixel in image.crop((24,338,456,365)).getdata())
 
+def record_hint_visible(image):
+    # A point inside the pale popup, outside any prompt glyph or pad ring.
+    return sum(image.getpixel((112,147))) - sum(image.getpixel((100,80))) > 15
+
 def strip_events(log,ready=False,tile='A'):
     prefix='ECHOY_STRIP_READY ' if ready else 'ECHOY_STRIP '
     rows=[]
@@ -193,32 +197,38 @@ def main():
             pad(hold=.15);pad();time.sleep(.1)
             twice=Image.open(shot('try-twice')).convert('RGB')
             assert ImageChops.difference(twice.crop(status_box),baseline).getbbox() is None
+            assert not record_hint_visible(twice), 'Popup appeared before the third tap'
             third_at=time.monotonic();pad()
             reminder=Image.open(shot('try-third-reminder')).convert('RGB')
-            assert ImageChops.difference(reminder.crop(status_box),baseline).getbbox(), 'Third try must show the recording reminder'
+            assert record_hint_visible(reminder), 'Third try must show the large central reminder popup'
+            assert ImageChops.difference(reminder.crop(status_box),baseline).getbbox() is None, 'Reminder should move out of the small status line'
             assert state_rows()[-1][0]==0 and state_rows()[-1][1]==0, 'Reminder must not record or create a phrase'
             ready_strip('record_only',record=1)
             if not args.reduced_motion:
                 tap('settings');time.sleep(.15);tap('language_en');time.sleep(.15);tap('settings_back');time.sleep(.2)
                 english=Image.open(shot('try-third-english')).convert('RGB')
                 english_baseline=Image.open(out/'empty-english.png').convert('RGB').crop(status_box)
-                assert ImageChops.difference(english.crop(status_box),english_baseline).getbbox(), 'Reminder must localize without resetting its lifetime'
+                assert record_hint_visible(english), 'Localized popup disappeared early'
+                assert ImageChops.difference(english.crop((106,150,374,238)),reminder.crop((106,150,374,238))).getbbox(), 'Popup text did not localize'
+                assert ImageChops.difference(english.crop(status_box),english_baseline).getbbox() is None
                 tap('settings');time.sleep(.15);tap('language_zh');time.sleep(.15);tap('settings_back');time.sleep(.2)
                 pad()
+                assert record_hint_visible(Image.open(shot('try-popup-during-taps')).convert('RGB')), 'Continued tapping obscured the popup'
                 while time.monotonic()<third_at+4.25:time.sleep(.04)
                 expired=Image.open(shot('try-reminder-expired')).convert('RGB')
-                assert ImageChops.difference(expired.crop(status_box),baseline).getbbox() is None, 'Further tries extended the reminder'
+                assert not record_hint_visible(expired), 'Further tries extended the popup'
                 pad();pad();pad()
                 again=Image.open(shot('try-no-repeat')).convert('RGB')
-                assert ImageChops.difference(again.crop(status_box),baseline).getbbox() is None, 'Reminder repeated in the same run'
+                assert not record_hint_visible(again), 'Popup repeated in the same run'
             else:
                 # Starting Record consumes/dismisses the reminder, including a quick Cancel.
                 n=len(state_rows());tap('record');phase(1,after=n)
                 n=len(state_rows());tap('strip_action');phase(0,after=n);time.sleep(.3)
                 cancelled=Image.open(shot('try-reminder-cancelled')).convert('RGB')
+                assert not record_hint_visible(cancelled), 'Record/Cancel must dismiss the popup'
                 pad();pad();pad()
                 assert ImageChops.difference(Image.open(shot('try-after-record')).convert('RGB').crop(status_box),cancelled.crop(status_box)).getbbox() is None
-            checks.append('Only the third accepted empty-pad tap shows a four-second reminder; no auto-recording, hold overcount, repeat, or reappearance after Record')
+            checks.append('Only the third accepted empty-pad tap shows a large four-second popup; no auto-recording, hold overcount, repeat, or reappearance after Record')
             # The former Play half now records too; Cancel then returns to one button.
             n=len(state_rows());call('tap',{'x':300,'y':420});phase(1,after=n)
             n=len(state_rows());tap('strip_action');phase(0,after=n)

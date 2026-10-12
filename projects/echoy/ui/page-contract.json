@@ -60,6 +60,10 @@
     "status_page": {
       "zh": "status_page_zh",
       "en": "status_page_en"
+    },
+    "record_hint": {
+      "zh": "record_hint_zh",
+      "en": "record_hint_en"
     }
   },
   "scroll": {},

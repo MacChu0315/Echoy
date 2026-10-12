@@ -25,7 +25,7 @@ import time
 import wave
 
 from PIL import Image, ImageChops
-from check_home import assert_v4_geometry, strip_events
+from check_home import assert_v4_geometry, strip_events, record_hint_visible
 
 ROOT = Path(__file__).resolve().parents[1]
 BAR_US = 2500000
@@ -320,10 +320,20 @@ class DeskCheck:
         self.pad('A')
         time.sleep(.15)
         with Image.open(self.shot('A', 'third-try-reminder')) as image:
-            assert ImageChops.difference(caption, image.convert('RGB').crop((24, 338, 456, 365))).getbbox()
+            assert record_hint_visible(image.convert('RGB'))
         state = self.status()['tiles']['A']
         assert state['seed'] == 0 and state['phase'] == 0 and not state['loop'] and state['events'] == 0
-        self.passed('The third native pad try shows a reminder with real C audio, without creating a phrase or playback permission')
+        # Let the previous tap tail finish, then test a fresh tap through the popup.
+        time.sleep(.4)
+        start = self.mark('popup-pad-before')['sample_index']
+        self.pad('A'); time.sleep(.6)
+        self.windows['popup-pad'] = [start, self.mark('popup-pad-after')['sample_index']]
+        live = array('h', self.wav.read_bytes()[44:])
+        if sys.byteorder != 'little': live.byteswap()
+        assert pcm_statistics(live, *self.windows['popup-pad'])['nonzero'] > 100
+        with Image.open(self.shot('A', 'popup-keeps-playing')) as image:
+            assert record_hint_visible(image.convert('RGB'))
+        self.passed('The third native pad try shows the popup without creating a phrase; a fresh tap through it still produces real PCM')
 
         start = self.mark('example-before')['sample_index']
         self.command('example A')

@@ -360,7 +360,7 @@ static void show_metadata(echoy_ui_handle_t u, const echoy_snapshot_t *s)
     static const char *const locale_groups[] = {
         "home", "role", "settings_header", "settings", "display_header", "display",
         "guide_header", "guide", "info_header", "info", "status_page", "role_footer",
-        "settings_footer"};
+        "settings_footer", "record_hint"};
     char name[96];
     for (size_t i = 0; i < sizeof(locale_groups) / sizeof(locale_groups[0]); i++) {
         snprintf(name, sizeof(name), "%s_zh", locale_groups[i]);
@@ -556,6 +556,11 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
     if (s->following) {
         u->record_hint_until_us = 0;
     }
+    bool hint = !plan->count && s->phase == ECHOY_IDLE && !s->following &&
+                !s->plan_pending && !u->density_dirty &&
+                !(u->platform.read_control && u->external.preparing) &&
+                now < u->record_hint_until_us;
+    SHOW(u, "record_hint_popup", hint);
     char status[128] = {0};
     if (cap) {
         if (s->phase == ECHOY_COUNT_IN) {
@@ -586,10 +591,7 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
     } else if (s->phase == ECHOY_PLAYING && now < s->start_us) {
         strcpy(status, tr(u, "等共同拍点开始", "Waiting for the shared beat"));
     } else if (!plan->count) {
-        strcpy(status, now < u->record_hint_until_us
-                           ? tr(u, "点录制，再敲一遍，就能留下节奏。",
-                                "Tap Record, then tap again to keep your rhythm.")
-                           : tr(u, "中央试奏 · 录制才保存", "Tap to try · Record to keep"));
+        strcpy(status, tr(u, "中央试奏 · 录制才保存", "Tap to try · Record to keep"));
     }
     if (s->notice == ECHOY_NOTICE_CANCELLED) {
         strcpy(status, tr(u, "已取消，原节奏保留", "Cancelled; original rhythm kept"));

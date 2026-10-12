@@ -73,8 +73,8 @@ def add(kind,name,x,y,w,h,parent=-1,**kw):
 # Runtime glyphs are scoped to the actual UI text, never HTML/CSS/JavaScript.
 # GSP embeds one font pack per (font,size); an all-source corpus at every size
 # makes even the old home-only scene almost fill the 1 MiB UI partition.
-home_status_zh='中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续点录制，再敲一遍，就能留下节奏。'
-home_status_en='Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original kept No notes captured; original kept Preparation failed; current sound continues Tap Record, then tap again to keep your rhythm.'
+home_status_zh='中央试奏 · 录制才保存准备录制预备 · 1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续'
+home_status_en='Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original kept No notes captured; original kept Preparation failed; current sound continues'
 role_names_zh='脉冲声线微尘和声'
 phrase_names_zh='重音切分留白短句轻答长线颗粒点缀余韵短和弦分解接句'
 phrase_names_en='Accent Syncopation Space Short phrase Light reply Long line Grains Touches Trails Short chords Arpeggio Answer'
@@ -505,6 +505,14 @@ for obj in objects:
     if obj['name']=='problem_title':obj['font_charset']='暂时无法发声电量已耗尽准备声音'
     if obj['name']=='problem_title_en':obj['font_charset']='Audio unavailable Battery empty Preparing sound'
 add('container','display_shade',0,0,480,480,paper,bg_color='#000000',radius=60,opacity={'default':0,'min':0,'max':204})
+
+# A temporary native layer above the pad, with no button or pointer interception.
+# Reuse established font sizes to remain within GSP's 32-font-pack limit.
+hint_popup=layer('record_hint_popup',home,x=90,y=127,w=300,h=128)
+add('container','record_hint_surface',0,0,300,128,hint_popup,bg_color='#fafbf3',border_color='#a9b99a',border_width=1,radius=20)
+hint_copy=locales('record_hint',hint_popup,w=300,h=128)
+text_pair('record_hint_first',16,26,268,34,'点录制，再敲一遍，','Tap Record, then tap again',22,'#4f6340',hint_copy,en_size=18,weight=True,dynamic=False,text_align='center')
+text_pair('record_hint_second',16,68,268,34,'就能留下节奏。','to keep your rhythm.',22,'#4f6340',hint_copy,en_size=18,weight=True,dynamic=False,text_align='center')
 
 # Later paint order must leave labels above surfaces. Locale groups and role
 # copy groups were declared before their shapes so move complete group trees

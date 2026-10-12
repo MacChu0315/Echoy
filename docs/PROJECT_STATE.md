@@ -65,13 +65,28 @@ Package `86406d956f52` is now installed, HEALTHY boot `9542740490602219176`, ope
 `ca0930e9-fa6c-4215-8045-99b05123c247`. Identity, healthy/commit, bootloader/partition
 checks and the real single-Record home pass. Audio parameters are unchanged.
 The user confirmed the reminder appears, but found the bottom text too small and
-requested a larger automatically dismissed popup; this follow-up is pending.
+requested a larger automatically dismissed popup; its implementation is described below.
 
 Before the write, old Vibe Mode 0.1.2 had one startup interrupt-watchdog reset;
 logs and crash metadata were preserved, with no valid Core Dump. A stable Recovery
 boot was verified before the single successful update. This Recovery issue is
 not fixed by the application UI change.
 Evidence and restart instructions: `verification/third-tap/README.md`.
+
+### Large reminder popup (2026-10-12)
+
+Following physical feedback that the status-line text was too small, the same
+third-tap reminder now appears in a native 300x128 panel centered over the pad.
+Chinese uses two lines of 22px medium text (previously 13px); English reuses the
+existing 18px bold font. The original wording, third-tap trigger, four-second
+lifetime and once-per-run rule remain. The panel has no input handler, so trial
+sound continues and the bottom Record action remains available. Recording or
+obtaining a phrase dismisses it. No music or persistence changes were made.
+Native normal/reduced-motion tests and actual shared C audio checks pass, including
+continued sound while the popup is visible; the pinned SDK bundle builds with
+zero warnings. Device delivery is in progress. Evidence is in
+`verification/reminder-popup/README.md`. Existing live previews still show the
+previous inline reminder; the new simulator build is `build-sim-reminder-popup`.
 
 ### Harmony home refinement
 
