@@ -505,6 +505,16 @@ measured; lightweight timing diagnosis is now in progress without changing audio
 parameters, deadlines or playback semantics. Reports/evidence are retained in
 `verification/cooperation/physical-acceptance.json`.
 
+Right-only diagnostic package `29a3cb61a5a0` is now installed, HEALTHY boot
+`13509464675950450897`, operation `51501961-9b96-4def-9c58-ebcdba0e7863`, ELF
+`83eaa386833d4ef389fe63a822d49e062b863bb422ee3a1e5fff65bc36478050`. Left remains
+on `ace57f3ff2b0`. The new 16-round owner trace freezes current/previous control,
+mutex, render and write timings on a deadline miss, then logs four lines after
+closing audio. All 24 runtime cases and ASan/UBSan pass; the SDK build passes and
+UI-data hash is identical. This is diagnosis, not an audio fix. Reproduction
+while playing and detaching/reattaching twice is pending; preserve an error page
+until the four trace lines are saved. See `verification/cooperation/README.md`.
+
 The retained output calibration was accepted provisionally on `4ee7991a5d56`: hardware volume 90,
 device PCM gain 6 with .90 peak limiting and diagnostic RPC disabled. The
 one-reference-playback authorization has already been used.

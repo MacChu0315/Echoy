@@ -62,7 +62,7 @@ log: `.codex-runs/idf-low-noise-build/20261012-172032-system-update-bundle-28900
 
 ## Device delivery
 
-Package `ace57f3ff2b0` is installed on both authorized boards through the official
+Package `ace57f3ff2b0` was installed on both authorized boards through the official
 system-update workflow. Both match ELF `79e4f1701d3775e379d160ee4ce0bf3816d0b82d0fa3bb362fd6d9731b440acd`,
 are HEALTHY with zero application crashes, have normal real homes and completed
 separated magnetic calibration. [Machine-readable evidence](device-results.json).
@@ -96,3 +96,27 @@ reboot, or that sound synthesis alone caused either deadline miss.
 
 The next step is bounded owner timing diagnostics; keep the audio deadline,
 DMA lead, musical timing and output calibration unchanged.
+
+## Owner deadline trace (diagnosis, not a fix)
+
+A 16-round numeric history in the existing PSRAM context records health access,
+queue receive, link handling, commands, prepared-job completion, band tick/job
+compile, publication, render and write. Publication records link-view cost,
+mutex wait and cache-copy cost separately. On a deadline miss the current and
+preceding three rounds freeze; exactly four compact lines are logged after
+closing audio. Normal blocks do not print these traces. The original deadline,
+DMA lead, sound and fault/recovery behavior are unchanged.
+
+The new 80 ms fake-write-delay test first failed without diagnostics, then
+verified exact lateness, phase offsets, ring wrap, copied command/transaction
+metadata, four-line output only after close and absence of unexecuted stages.
+All 24 runtime cases pass normally and with ASan/UBSan. Pinned SDK build passes
+with the same factory-size warning; UI-data hash is unchanged.
+
+Only the right device now runs diagnostic package `29a3cb61a5a0`, boot
+`13509464675950450897`, operation `51501961-9b96-4def-9c58-ebcdba0e7863`, ELF
+`83eaa386833d4ef389fe63a822d49e062b863bb422ee3a1e5fff65bc36478050`.
+Its real home, healthy state, retained bootloader and separated magnetic baseline
+pass. Left remains on `ace57f3ff2b0`. [Diagnostic delivery](diagnostic-device.json).
+Reproduction requested: both play, detach/reattach twice with about eight seconds
+between; leave any error page untouched for evidence. The cause remains unresolved.

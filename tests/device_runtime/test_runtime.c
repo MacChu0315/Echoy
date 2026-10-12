@@ -1,11 +1,57 @@
 #include "echoy_band.h"
+#include "board_audio.h"
 #include "esp_timer.h"
 #include "fakes.h"
 #include "platform_device.h"
 #include <assert.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+/* Capture only deadline diagnostics; normal fake logging remains silent. */
+static char deadline_lines[4][640];
+static atomic_uint deadline_line_count;
+static atomic_int fake_write_delay_ms;
+static atomic_bool fake_write_delay_entered;
+static atomic_llong observed_write_delay_us;
+void __wrap_fake_log(const char *tag, const char *format, ...)
+{
+    (void)tag;
+    char line[640];
+    va_list args;
+    va_start(args, format);
+    vsnprintf(line, sizeof(line), format, args);
+    va_end(args);
+    if (strncmp(line, "ECHOY_DEADLINE ", 15)) return;
+    assert(atomic_load(&fake_close_calls) > 0); /* Never format/log while output is active. */
+    unsigned index = atomic_load(&deadline_line_count);
+    assert(index < 4);
+    strcpy(deadline_lines[index], line);
+    atomic_store(&deadline_line_count, index + 1);
+}
+esp_err_t __real_board_audio_write(board_audio_t *, const int16_t *, size_t, size_t *);
+esp_err_t __wrap_board_audio_write(board_audio_t *audio, const int16_t *pcm, size_t frames,
+                                  size_t *written)
+{
+    int delay = atomic_exchange(&fake_write_delay_ms, 0);
+    int64_t before = esp_timer_get_time();
+    if (delay) {
+        atomic_store(&fake_write_delay_entered, true);
+        fake_sleep_ms((unsigned)delay);
+    }
+    esp_err_t result = __real_board_audio_write(audio, pcm, frames, written);
+    if (delay) atomic_store(&observed_write_delay_us, esp_timer_get_time() - before);
+    return result;
+}
+static long long trace_field(const char *line, const char *name)
+{
+    char key[48];
+    snprintf(key, sizeof(key), "%s=", name);
+    const char *at = strstr(line, key);
+    assert(at);
+    return strtoll(at + strlen(key), NULL, 10);
+}
+
 static echoy_device_handle_t retained_failure;
 static echoy_platform_t p;
 static echoy_control_view_t view(void)
@@ -332,6 +378,62 @@ static void missed_deadline(void)
     stop(&d);
     puts("PASS output deadline miss faults instead of writing catch-up blocks");
 }
+
+static void deadline_trace_is_frozen_and_truthful(void)
+{
+    echoy_device_handle_t d;
+    start(&d);
+    int64_t end = esp_timer_get_time() + 2000000;
+    while (atomic_load(&fake_write_calls) < 24) {
+        assert(esp_timer_get_time() < end);
+        fake_sleep_ms(1);
+    }
+    assert(!atomic_load(&deadline_line_count)); /* No per-block diagnostic logging. */
+    atomic_store(&fake_write_delay_ms, 80);
+    while (!atomic_load(&fake_write_delay_entered)) {
+        assert(esp_timer_get_time() < end);
+        fake_sleep_ms(1);
+    }
+    board_link_update_t *update = calloc(1, sizeof(*update));
+    assert(update);
+    update->attached = true;
+    update->connection_generation = 1;
+    update->session = 17;
+    update->transaction = 123456;
+    update->command = ECHOY_LINK_NONE;
+    assert(echoy_device_link_receive(d, update));
+    free(update);
+    until(ECHOY_AUDIO_FAULT, ECHOY_IDLE, 0);
+    int writes = atomic_load(&fake_write_calls);
+    fake_sleep_ms(40);
+    assert(atomic_load(&fake_write_calls) == writes);
+    assert(atomic_load(&deadline_line_count) == 4);
+    stop(&d);
+    const char *current = deadline_lines[0], *previous = deadline_lines[1];
+    assert(trace_field(current, "age") == 0 && trace_field(current, "seq") > 16);
+    long long checked = trace_field(current, "now"), expected = trace_field(current, "at");
+    assert(checked > expected && trace_field(current, "late") == checked - expected);
+    assert(trace_field(current, "tx") == 123456 && trace_field(current, "cmd") == ECHOY_LINK_NONE);
+    assert(trace_field(current, "render") == -1 && trace_field(current, "write") == -1);
+    const char *stages[] = {"health", "queue", "link", "commands", "finish", "tick", "take", "publish"};
+    long long before = 0;
+    for (unsigned i = 0; i < sizeof(stages) / sizeof(stages[0]); ++i) {
+        long long value = trace_field(current, stages[i]);
+        assert(value >= before); before = value;
+    }
+    assert(trace_field(current, "lv") >= 0 && trace_field(current, "wait") >= 0 &&
+           trace_field(current, "copy") >= 0);
+    long long write_us = trace_field(previous, "write") - trace_field(previous, "render");
+    long long injected = atomic_load(&observed_write_delay_us);
+    assert(injected >= 80000 && write_us >= injected && write_us - injected < 10000);
+    for (unsigned i = 0; i < 4; ++i) {
+        assert(trace_field(deadline_lines[i], "age") == i);
+        assert(trace_field(deadline_lines[i], "seq") == trace_field(current, "seq") - i);
+        puts(deadline_lines[i]);
+    }
+    puts("PASS frozen deadline trace names the delayed write, pending link metadata and exact lateness");
+}
+
 static void acceptance_gate(void)
 {
     echoy_device_handle_t d;
@@ -517,6 +619,8 @@ int main(int argc, char **argv)
         flush_failure();
     else if (!strcmp(argv[1], "deadline"))
         missed_deadline();
+    else if (!strcmp(argv[1], "deadline_trace"))
+        deadline_trace_is_frozen_and_truthful();
     else if (!strcmp(argv[1], "acceptance_gate"))
         acceptance_gate();
     else if (!strcmp(argv[1], "stop_unactivated"))

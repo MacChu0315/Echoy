@@ -31,6 +31,7 @@
 #define STARTED BIT2
 #define COMMAND_COUNT 32
 #define DIAGNOSTIC_BYTES 512
+#define OWNER_TRACE_ROWS 16u
 static const char *TAG = "echoy_device";
 
 _Static_assert(BOARD_AUDIO_SAMPLE_RATE == 24000, "PCM limiter requires 24 kHz");
@@ -51,6 +52,22 @@ typedef struct {
     float floating[BLOCK_FRAMES];
     int16_t pcm[BLOCK_FRAMES];
 } pcm_block_t;
+enum owner_trace_phase {
+    TRACE_HEALTH, TRACE_QUEUE, TRACE_LINK, TRACE_COMMANDS, TRACE_FINISH, TRACE_TICK,
+    TRACE_TAKE, TRACE_PUBLISH, TRACE_RENDER, TRACE_WRITE, TRACE_PHASE_COUNT
+};
+enum {
+    TRACE_GOT_LINK = 1u, TRACE_GOT_JOB = 2u, TRACE_TOOK_JOB = 4u,
+    TRACE_LINK_VIEW = 8u, TRACE_PROBE = 16u, TRACE_FLUSH = 32u
+};
+typedef struct {
+    int64_t entry_us, expected_us, checked_us;
+    /* Completion offsets from entry, in microseconds; -1 means not executed. */
+    int32_t completed_us[TRACE_PHASE_COUNT];
+    uint32_t link_view_us, mutex_wait_us, cache_copy_us;
+    uint32_t sequence, transaction, flags;
+    unsigned link_command;
+} owner_trace_t;
 struct echoy_device {
     QueueHandle_t commands, startup, jobs, prepared, diagnostics;
     QueueHandle_t link_updates;
@@ -63,6 +80,12 @@ struct echoy_device {
     echoy_control_view_t cache, staging;
     echoy_link_view_t link_cache, link_view_staging;
     int64_t next_link_publish_us;
+    /* Owner-only numeric history stays in this PSRAM context, not its stack. */
+    owner_trace_t trace[OWNER_TRACE_ROWS];
+    owner_trace_t *trace_active;
+    unsigned trace_next, trace_count;
+    uint32_t trace_sequence;
+    bool trace_frozen, trace_pending;
     pcm_block_t *block;
     atomic_bool stopping, queue_fault, accepting, owner_exited, prepare_exited, activated;
     bool audio_fault, fatal, preparation_in_flight, battery_empty;
@@ -87,6 +110,74 @@ static int64_t now_us(void *ctx)
 {
     (void)ctx;
     return esp_timer_get_time();
+}
+static int32_t trace_elapsed(int64_t now, int64_t before)
+{
+    int64_t elapsed = now - before;
+    return elapsed < 0 ? 0 : elapsed > INT32_MAX ? INT32_MAX : (int32_t)elapsed;
+}
+static void trace_begin(struct echoy_device *d)
+{
+    d->trace_active = NULL;
+    if (d->trace_frozen) return;
+    owner_trace_t *row = &d->trace[d->trace_next];
+    memset(row, 0, sizeof(*row));
+    for (unsigned i = 0; i < TRACE_PHASE_COUNT; ++i) row->completed_us[i] = -1;
+    row->entry_us = now_us(d);
+    row->sequence = ++d->trace_sequence;
+    d->trace_next = (d->trace_next + 1) % OWNER_TRACE_ROWS;
+    if (d->trace_count < OWNER_TRACE_ROWS) ++d->trace_count;
+    d->trace_active = row;
+}
+static void trace_mark(struct echoy_device *d, enum owner_trace_phase phase)
+{
+    if (d->trace_active)
+        d->trace_active->completed_us[phase] = trace_elapsed(now_us(d), d->trace_active->entry_us);
+}
+static void trace_freeze(struct echoy_device *d, int64_t expected, int64_t checked)
+{
+    if (!d->trace_active) trace_begin(d);
+    if (d->trace_active) {
+        d->trace_active->expected_us = expected;
+        d->trace_active->checked_us = checked;
+        d->trace_frozen = d->trace_pending = true;
+        d->trace_active = NULL;
+    }
+}
+/* Only called after closing audio. The current and three previous rounds are
+ * sufficient to distinguish owner work, lock contention and a delayed write. */
+static void trace_log_deadline(struct echoy_device *d, esp_err_t error)
+{
+    for (unsigned age = 0; age < 4; ++age) {
+        if (age >= d->trace_count) {
+            ESP_LOGE(TAG, "ECHOY_DEADLINE age=%u unavailable=1", age);
+            continue;
+        }
+        unsigned index = (d->trace_next + OWNER_TRACE_ROWS - 1 - age) % OWNER_TRACE_ROWS;
+        const owner_trace_t *r = &d->trace[index];
+        char line[512];
+        int used = snprintf(line, sizeof(line),
+            "ECHOY_DEADLINE age=%u seq=%u entry=%lld at=%lld now=%lld late=%lld "
+            "health=%ld queue=%ld link=%ld commands=%ld finish=%ld tick=%ld take=%ld publish=%ld "
+            "render=%ld write=%ld lv=%u wait=%u copy=%u cmd=%u tx=%u flags=%u",
+            age, (unsigned)r->sequence, (long long)r->entry_us, (long long)r->expected_us,
+            (long long)r->checked_us, (long long)(r->checked_us - r->expected_us),
+            (long)r->completed_us[TRACE_HEALTH], (long)r->completed_us[TRACE_QUEUE],
+            (long)r->completed_us[TRACE_LINK],
+            (long)r->completed_us[TRACE_COMMANDS], (long)r->completed_us[TRACE_FINISH],
+            (long)r->completed_us[TRACE_TICK], (long)r->completed_us[TRACE_TAKE],
+            (long)r->completed_us[TRACE_PUBLISH], (long)r->completed_us[TRACE_RENDER],
+            (long)r->completed_us[TRACE_WRITE], (unsigned)r->link_view_us,
+            (unsigned)r->mutex_wait_us, (unsigned)r->cache_copy_us, r->link_command,
+            (unsigned)r->transaction, (unsigned)r->flags);
+        if (!age && used > 0 && (size_t)used < sizeof(line))
+            snprintf(line + used, sizeof(line) - (size_t)used,
+                " err=%s accepted=%llu render_max=%lld write_max=%u",
+                esp_err_to_name(error), (unsigned long long)d->last_audio_stats.frames_written,
+                (long long)d->max_render_us, (unsigned)d->last_audio_stats.max_write_us);
+        ESP_LOGE(TAG, "%s", line);
+    }
+    d->trace_pending = false;
 }
 static TickType_t ticks(uint32_t ms)
 {
@@ -142,8 +233,16 @@ bool echoy_device_link_receive(void *ctx, const board_link_update_t *update)
 }
 static void process_link(struct echoy_device *d)
 {
-    if (!d->band || xQueueReceive(d->link_updates, d->link_staging, 0) != pdTRUE) return;
+    if (!d->band) return;
+    bool received = xQueueReceive(d->link_updates, d->link_staging, 0) == pdTRUE;
+    trace_mark(d, TRACE_QUEUE);
+    if (!received) return;
     const board_link_update_t *u = d->link_staging;
+    if (d->trace_active) {
+        d->trace_active->flags |= TRACE_GOT_LINK;
+        d->trace_active->link_command = (unsigned)u->command;
+        d->trace_active->transaction = u->transaction;
+    }
     int64_t now = now_us(d);
     bool ok = echoy_band_link_update(d->band, u, now);
     if (!ok) ++d->rejected_actions;
@@ -214,7 +313,14 @@ static void publish(struct echoy_device *d)
     bool link_due=now>=d->next_link_publish_us;
     if (d->band) {
         echoy_band_read(d->band, ECHOY_TILE_A, &d->staging);
-        if (link_due) echoy_band_link_read(d->band,&d->link_view_staging);
+        if (link_due) {
+            int64_t before = now_us(d);
+            echoy_band_link_read(d->band,&d->link_view_staging);
+            if (d->trace_active) {
+                d->trace_active->flags |= TRACE_LINK_VIEW;
+                d->trace_active->link_view_us = (uint32_t)trace_elapsed(now_us(d), before);
+            }
+        }
     }
     board_health_snapshot_t health;
     bool known = d->health && board_health_get(d->health, &health) == ESP_OK && health.valid;
@@ -223,7 +329,9 @@ static void publish(struct echoy_device *d)
     d->staging.imu_unknown = true;
     d->staging.condition = d->condition;
     d->staging.state.fault = d->condition != ECHOY_NORMAL;
+    int64_t wait_started = now_us(d);
     xSemaphoreTake(d->view_lock, portMAX_DELAY);
+    int64_t acquired = now_us(d);
     d->cache = d->staging;
     d->probe_cache = d->probe;
     if (link_due) {
@@ -231,7 +339,12 @@ static void publish(struct echoy_device *d)
         d->link_cache=d->link_view_staging;
         d->next_link_publish_us=now+50000;
     }
+    int64_t copied = now_us(d);
     xSemaphoreGive(d->view_lock);
+    if (d->trace_active) {
+        d->trace_active->mutex_wait_us = (uint32_t)trace_elapsed(acquired, wait_started);
+        d->trace_active->cache_copy_us = (uint32_t)trace_elapsed(copied, acquired);
+    }
 }
 static void set_condition(struct echoy_device *d, echoy_condition_t condition)
 {
@@ -255,25 +368,29 @@ static void fail_audio(struct echoy_device *d, board_audio_t **audio, const char
         board_audio_get_stats(*audio, &d->last_audio_stats);
     }
     const esp_err_t close_error = board_audio_close(audio);
-    ESP_LOGE(TAG, "%s failed: %s; playback stopped; explicit recovery required", operation,
-             esp_err_to_name(error));
-    ESP_LOGE(
-        TAG,
-        "accepted=%llu nonzero=%llu peak=%u pa=%u activations=%u partial=%u "
-        "write_errors=%u last_write_us=%u max_write_us=%u",
-        (unsigned long long)d->last_audio_stats.frames_written,
-        (unsigned long long)d->last_audio_stats.nonzero_frames,
-        (unsigned)d->last_audio_stats.peak_pcm, (unsigned)d->last_audio_stats.pa_enabled,
-        (unsigned)d->last_audio_stats.pa_activations, (unsigned)d->last_audio_stats.partial_writes,
-        (unsigned)d->last_audio_stats.write_failures, (unsigned)d->last_audio_stats.last_write_us,
-        (unsigned)d->last_audio_stats.max_write_us);
-    ESP_LOGE(TAG, "audio timing: render_max=%lldus mix_max=%lldus convert_max=%lldus core=%d",
-             (long long)d->max_render_us, (long long)d->max_mix_us,
-             (long long)d->max_convert_us, d->audio_core);
-    echoy_band_profile_t profile = echoy_band_render_profile(d->band);
-    ESP_LOGE(TAG, "first mix cycles: clock=%u voice=%u cues=%u commits=%u",
-             (unsigned)profile.clock_cycles, (unsigned)profile.voice_cycles,
-             (unsigned)profile.cue_cycles, (unsigned)profile.tick_calls);
+    if (d->trace_pending) {
+        trace_log_deadline(d, error);
+    } else {
+        ESP_LOGE(TAG, "%s failed: %s; playback stopped; explicit recovery required", operation,
+                 esp_err_to_name(error));
+        ESP_LOGE(
+            TAG,
+            "accepted=%llu nonzero=%llu peak=%u pa=%u activations=%u partial=%u "
+            "write_errors=%u last_write_us=%u max_write_us=%u",
+            (unsigned long long)d->last_audio_stats.frames_written,
+            (unsigned long long)d->last_audio_stats.nonzero_frames,
+            (unsigned)d->last_audio_stats.peak_pcm, (unsigned)d->last_audio_stats.pa_enabled,
+            (unsigned)d->last_audio_stats.pa_activations, (unsigned)d->last_audio_stats.partial_writes,
+            (unsigned)d->last_audio_stats.write_failures, (unsigned)d->last_audio_stats.last_write_us,
+            (unsigned)d->last_audio_stats.max_write_us);
+        ESP_LOGE(TAG, "audio timing: render_max=%lldus mix_max=%lldus convert_max=%lldus core=%d",
+                 (long long)d->max_render_us, (long long)d->max_mix_us,
+                 (long long)d->max_convert_us, d->audio_core);
+        echoy_band_profile_t profile = echoy_band_render_profile(d->band);
+        ESP_LOGE(TAG, "first mix cycles: clock=%u voice=%u cues=%u commits=%u",
+                 (unsigned)profile.clock_cycles, (unsigned)profile.voice_cycles,
+                 (unsigned)profile.cue_cycles, (unsigned)profile.tick_calls);
+    }
     if (close_error != ESP_OK) {
         /* Cleanup failure can leave hardware ownership uncertain. Do not reopen. */
         d->fatal = true;
@@ -296,6 +413,12 @@ static bool open_audio(struct echoy_device *d, board_audio_t **audio)
     /* I2S owns three 5 ms DMA descriptors. This is an estimated presentation
      * timeline, not a measured DAC playhead. Hardware acceptance measures it. */
     d->origin_us = now_us(d) + QUEUE_US;
+    if (d->trace_frozen) {
+        /* Explicit successful recovery begins a fresh diagnostic history. */
+        d->trace_frozen = d->trace_pending = false;
+        d->trace_next = d->trace_count = 0;
+        trace_begin(d);
+    }
     return true;
 }
 static void prepare_worker(void *arg)
@@ -474,9 +597,13 @@ static void owner_worker(void *arg)
         open_audio(d, &audio);
     }
     while (!atomic_load(&d->stopping)) {
+        trace_begin(d);
         update_health(d);
+        trace_mark(d, TRACE_HEALTH);
         process_link(d);
+        trace_mark(d, TRACE_LINK);
         bool flush = process_commands(d, &audio);
+        trace_mark(d, TRACE_COMMANDS);
         echoy_condition_t desired = d->audio_fault     ? ECHOY_AUDIO_FAULT
                                     : d->battery_empty ? ECHOY_BATTERY_EMPTY
                                                        : ECHOY_NORMAL;
@@ -486,6 +613,7 @@ static void owner_worker(void *arg)
             finish_probe(d, ECHOY_PROBE_FAILED, ESP_ERR_INVALID_STATE);
         }
         if (flush) {
+            if (d->trace_active) d->trace_active->flags |= TRACE_FLUSH;
             echoy_device_pcm_reset(&d->pcm_processor);
         }
         if (flush && audio) {
@@ -531,6 +659,7 @@ static void owner_worker(void *arg)
 #endif
         prepared_t result;
         if (xQueueReceive(d->prepared, &result, 0) == pdTRUE) {
+            if (d->trace_active) d->trace_active->flags |= TRACE_GOT_JOB;
             d->preparation_in_flight = false;
             d->last_prepare_us = result.elapsed_us;
             if (result.calibration_failed) {
@@ -540,11 +669,14 @@ static void owner_worker(void *arg)
                 echoy_band_finish_job(d->band, result.job, now_us(d));
             }
         }
+        trace_mark(d, TRACE_FINISH);
         if (d->band) {
             echoy_band_tick(d->band, now_us(d));
+            trace_mark(d, TRACE_TICK);
             if (!d->preparation_in_flight) {
                 echoy_band_job_t *job = echoy_band_take_job(d->band);
                 if (job) {
+                    if (d->trace_active) d->trace_active->flags |= TRACE_TOOK_JOB;
                     if (xQueueSend(d->jobs, &job, 0) == pdTRUE) {
                         d->preparation_in_flight = true;
                     } else {
@@ -554,7 +686,9 @@ static void owner_worker(void *arg)
                 }
             }
         }
+        trace_mark(d, TRACE_TAKE);
         publish(d);
+        trace_mark(d, TRACE_PUBLISH);
         log_resources(d, audio);
         if (!audio || d->condition != ECHOY_NORMAL || !d->band) {
             vTaskDelay(ticks(10));
@@ -563,6 +697,10 @@ static void owner_worker(void *arg)
         int64_t at =
             d->origin_us + (int64_t)(d->accepted_frames * 1000000 / BOARD_AUDIO_SAMPLE_RATE);
         int64_t start = now_us(d);
+        if (d->trace_active) {
+            d->trace_active->expected_us = at;
+            d->trace_active->checked_us = start;
+        }
 #ifdef ESP_PLATFORM
         d->audio_core = xPortGetCoreID();
 #else
@@ -571,10 +709,12 @@ static void owner_worker(void *arg)
         if (start > at) {
             /* Do not replay stale samples to hide a missed output deadline. */
             ++d->deadline_misses;
+            trace_freeze(d, at, start);
             fail_audio(d, &audio, "estimated output deadline", ESP_ERR_TIMEOUT);
             continue;
         }
         if (d->probe_active) {
+            if (d->trace_active) d->trace_active->flags |= TRACE_PROBE;
             echoy_audio_probe_render(d->probe_position, d->block->pcm, BLOCK_FRAMES);
         } else {
             echoy_band_render(d->band, at, d->block->floating, BLOCK_FRAMES);
@@ -598,8 +738,10 @@ static void owner_worker(void *arg)
         if (elapsed > d->max_render_us) {
             d->max_render_us = elapsed;
         }
+        trace_mark(d, TRACE_RENDER);
         size_t written = 0;
         esp_err_t error = board_audio_write(audio, d->block->pcm, BLOCK_FRAMES, &written);
+        trace_mark(d, TRACE_WRITE);
         d->accepted_frames += written;
         if (d->probe_active) {
             d->probe_position += written;

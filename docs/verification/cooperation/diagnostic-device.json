@@ -1,0 +1,18 @@
+{
+  "package": {
+    "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-release/echoy-owner-trace-29a3cb61a5a0.irisfw",
+    "sha256": "29a3cb61a5a08fa889298892ef9b85f7a91b6028f0804c61aff5e8931df703b0"
+  },
+  "device_id": "4553502d49524953010030eda0f40c6c",
+  "boot_id": "13509464675950450897",
+  "firmware_sha256": "83eaa386833d4ef389fe63a822d49e062b863bb422ee3a1e5fff65bc36478050",
+  "operation_id": "51501961-9b96-4def-9c58-ebcdba0e7863",
+  "healthy": true,
+  "validated": true,
+  "baseline_ready": true,
+  "application_crash_count": 0,
+  "bootloader_preserved": true,
+  "purpose": "Bounded numeric owner deadline trace only; not a timing fix. UI/sound/timing protections unchanged.",
+  "left_unchanged_package": "ace57f3ff2b0",
+  "evidence_dir": "output/dual-device/cooperation-trace-right"
+}
