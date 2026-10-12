@@ -78,5 +78,21 @@ Recovery boot before submitting one update per board. Application crashes are
 zero; the Recovery issue remains separate and unresolved. Before/after bootloader
 hashes match `d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc`.
 
-Physical interaction/listening checks are pending; the host and native results
-above do not establish those observations.
+## Physical interaction and blocking output fault
+
+The user confirmed both-empty join/first phrase without right autoplay, a complete
+right recording and one-shot reply when joining during count-in, explicit cancel,
+detach/rejoin while deferred, and coherent common updates with a paused right
+remaining silent. However, the user reported an occasional right-side boot screen.
+This is not a stable-delivery acceptance. [Reports and evidence](physical-acceptance.json).
+
+Both devices still report the installed Boot IDs and crash count zero; neither
+has a valid core dump. Each recorded one audio output deadline miss. The right
+failure was captured live after contact: cumulative render/mix/conversion maxima
+were unchanged at 8,916/7,624/1,430 us. Pre-render owner operations and scheduling
+are not yet timed, so the cause is unresolved. The first left error fell in a
+log-loss gap. No claim is made that the user's observed screen was a hardware
+reboot, or that sound synthesis alone caused either deadline miss.
+
+The next step is bounded owner timing diagnostics; keep the audio deadline,
+DMA lead, musical timing and output calibration unchanged.

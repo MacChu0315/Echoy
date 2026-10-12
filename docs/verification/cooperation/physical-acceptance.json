@@ -1,0 +1,52 @@
+{
+  "firmware_package": "ace57f3ff2b0",
+  "user_reports": [
+    {
+      "scenario": "two-empty-join-and-first-phrase",
+      "response": "都正常,右侧没有自动播放"
+    },
+    {
+      "scenario": "join-during-recording-and-original-reply",
+      "response": "正常，录制和一次试听完整，之后静默跟随"
+    },
+    {
+      "scenario": "cancel-and-detach-rejoin-while-deferred",
+      "response": "两步都正常"
+    },
+    {
+      "scenario": "common-update-playing-and-right-paused",
+      "response": "两步都正常,但是期间遇到偶现的崩溃重启"
+    },
+    {
+      "scenario": "anomaly-clarification",
+      "response": "右侧出现开机画面"
+    }
+  ],
+  "observations": {
+    "boot_ids_unchanged": [
+      "6968030823019921606",
+      "9645677825573746719"
+    ],
+    "application_crash_count_each": 0,
+    "valid_core_dumps": false,
+    "audio_deadline_misses_each": 1,
+    "right_error": "estimated output deadline failed: ESP_ERR_TIMEOUT; playback stopped; explicit recovery required",
+    "right_error_log_stamp_ms": 665836,
+    "right_render_max_us": 8916,
+    "right_mix_max_us": 7624,
+    "right_convert_max_us": 1430,
+    "timing_limits": "These are cumulative maxima already present before the failed block; they do not measure the owner control path. Log prefix is not esp_timer monotonic time. Error printing follows codec close."
+  },
+  "evidence": [
+    "output/cooperation-physical/first-phrase-confirmed",
+    "output/cooperation-physical/deferred-join-confirmed",
+    "output/cooperation-physical/left-live-boundaries.json",
+    "output/cooperation-physical/right-live-boundaries.json",
+    "output/cooperation-physical/left-live-shared.json",
+    "output/cooperation-physical/right-live-shared.json",
+    "output/cooperation-physical/shared-update-anomaly",
+    "output/cooperation-physical/left-crash-check.json",
+    "output/cooperation-physical/right-crash-check.json"
+  ],
+  "status": "Product interaction reports pass; stable physical delivery is blocked by reproduced audio deadline faults. User-observed boot screen is retained as reported; actual hardware reboot is not established by boot/crash records. Owner timing diagnosis in progress."
+}

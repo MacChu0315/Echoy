@@ -62,9 +62,17 @@ autoplay, audio calibration, three preparation seconds and four recording beats.
 - [x] Install sequentially on the two already authorized Device IDs using
   `mosaico.py`; obtain separated placement before startup magnetic calibration.
   Verify identity, healthy boot, baseline, speaker deadlines and resource use.
-- [ ] Ask the user for specific new-boundary actions: join during recording,
+- [x] Ask the user for specific new-boundary actions: join during recording,
   cancel and detach while deferred, then shared edits while both play and while
   one is paused. Retain evidence and update current project state accurately.
 
 The plan records the already-approved scope and implementation choices; it is
 not a second approval or a stopping point. No remote writes are authorized.
+
+## Physical follow-up
+
+All requested interaction scenarios were reported correct, but two audio deadline
+faults (one per board) prevent stable-delivery acceptance. The right live fault
+had no increase in its render maximum; boot IDs/crash counts remained unchanged
+despite the user observing a boot screen. Capture bounded owner control/queue/
+mutex/render/write timing before choosing a fix. Do not relax timing protection.

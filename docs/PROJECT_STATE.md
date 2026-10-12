@@ -466,7 +466,7 @@ the v2 refinement below implements shared future-bar transactions. See
 `verification/dual-device/README.md` for
 implementation, artifact identities, test commands and acceptance boundaries.
 
-### Cooperation refinement installed; new physical checks pending
+### Cooperation interactions pass; audio deadline diagnosis blocks stable delivery
 
 The four user-approved decisions are implemented against the unchanged v4 HTML.
 New contact during count-in/recording/original preparation/reply waits for that
@@ -492,10 +492,18 @@ operations `0c47f6c4-e554-45d3-bd41-cb3fdf9d336b` /
 real homes and separated magnetic baselines pass, with zero application crashes.
 The known Recovery startup watchdog occurred before both writes; saved metadata
 had no valid core and stable Recovery was verified before each single update.
-The first new physical question (two empty devices joining, then the left's first
-recording reaching the silent right) is pending. Recording-join boundaries and
-common updates still require physical checks; precise acoustic timing and
-sustained RF/memory load remain separate from the accepted basic flow.
+The user has now confirmed all four targeted interaction groups: both empty
+joining/first phrase without right autoplay; complete deferred recording/reply;
+explicit cancel and detach/rejoin; common updates while playing and while the
+right is paused. The user also reported an occasional right-side boot screen.
+Read-only status still has the same Boot IDs, crash count zero and no core dump.
+Both devices recorded one audio deadline miss; the right fault was captured live
+after contact with unchanged render/mix/conversion maxima 8,916/7,624/1,430 us.
+Do not claim stable hardware acceptance or a proven whole-device reboot. The
+left error was in a dropped-log interval. Owner control/scheduling costs were not
+measured; lightweight timing diagnosis is now in progress without changing audio
+parameters, deadlines or playback semantics. Reports/evidence are retained in
+`verification/cooperation/physical-acceptance.json`.
 
 The retained output calibration was accepted provisionally on `4ee7991a5d56`: hardware volume 90,
 device PCM gain 6 with .90 peak limiting and diagnostic RPC disabled. The
