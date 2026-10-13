@@ -44,13 +44,19 @@ static int lookup(const char *name)
 }
 echoy_view_cache_t echoy_view_cache_create(esp_gsp_handle_t gsp)
 {
+    return echoy_view_cache_create_with_allocator(gsp, NULL, NULL);
+}
+echoy_view_cache_t echoy_view_cache_create_with_allocator(
+    esp_gsp_handle_t gsp, void *(*allocate)(void *ctx, size_t size), void *ctx)
+{
     if (!gsp) {
         return NULL;
     }
-    echoy_view_cache_t v = calloc(1, sizeof(*v));
+    echoy_view_cache_t v = allocate ? allocate(ctx, sizeof(*v)) : calloc(1, sizeof(*v));
     if (!v) {
         return NULL;
     }
+    if (allocate) memset(v, 0, sizeof(*v));
     v->gsp = gsp;
     for (size_t i = 0; i < VIEW_COUNT; i++) {
         v->values[i] = (struct cached_value){.visible = view_defaults[i].visible,

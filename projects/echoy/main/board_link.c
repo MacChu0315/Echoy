@@ -26,6 +26,7 @@
 #define LINK_SERVICE_MASK UINT16_C(0xf000)
 #define LINK_WIRE_VERSION 2
 #define LINK_CHUNK_BYTES 44
+#define LINK_CHUNK_WINDOW 2u
 #define LINK_PERIOD_US INT64_C(2500000)
 #define LINK_RETRY_US INT64_C(750000)
 #define LINK_META_US INT64_C(500000)
@@ -47,6 +48,14 @@ typedef enum { TX_IDLE, TX_PREPARING, TX_REMOTE_ARM, TX_LOCAL_ARM,
 
 typedef struct { mosaico_network_event_t event; int64_t received_us; } link_event_t;
 typedef struct {
+    bool active;
+    uint16_t service, bytes;
+    uint8_t kind;
+    uint32_t session, revision, transfer;
+    uint64_t peer;
+    int64_t since;
+} link_pending_t;
+typedef struct {
     board_link_read_fn read;
     board_link_receive_fn receive;
     void *ctx;
@@ -62,6 +71,8 @@ typedef struct {
     uint64_t peer;
     uint32_t session, serial, connection_generation;
     int64_t next_sensor, next_read, next_send, next_state, peer_seen_at, attached_at;
+    int64_t control_retry_at;
+    uint16_t service_sequence;
     /* All complete plans and byte arrays are heap-owned, never worker locals. */
     echoy_link_view_t view;
     board_link_update_t update;
@@ -70,12 +81,13 @@ typedef struct {
     struct {
         uint8_t bytes[ECHOY_LINK_PLAN_MAX_BYTES];
         uint32_t revision, crc, transfer;
-        uint16_t size, offset;
-        bool active, clock_started, looping;
-        int64_t origin, next_meta;
+        uint16_t size, offset, queued;
+        bool active, clock_started, looping, metadata_acked, serial_retry;
+        int64_t origin, next_meta, retry_at;
     } tx;
     struct {
         uint8_t bytes[ECHOY_LINK_PLAN_MAX_BYTES];
+        uint8_t received[(ECHOY_LINK_PLAN_MAX_BYTES + 7) / 8];
         uint32_t revision, crc, complete_revision;
         uint64_t bound_revision;
         uint16_t size, offset;
@@ -97,13 +109,10 @@ typedef struct {
         int64_t t1, next_ping, best_rtt, best_offset, offset, window_start;
         int64_t pong_t1, pong_t2, last_log;
     } clock;
-    struct {
-        bool active;
-        uint16_t service, sequence, bytes;
-        uint8_t kind;
-        uint32_t revision, transfer;
-        int64_t since;
-    } pending;
+    /* One control lane cannot be occupied by data ACKs. Old-generation slots
+     * stay reserved until their callbacks/timeouts, so retries never exceed
+     * two physical chunks plus one control message in flight. */
+    link_pending_t pending, chunks[LINK_CHUNK_WINDOW];
 } board_link_t;
 
 static const char *TAG = "echoy-link";
@@ -121,6 +130,21 @@ static void put64(uint8_t *p, uint64_t n) { put32(p, (uint32_t)n); put32(p + 4, 
 static void put_time(uint8_t *p, int64_t n) { put64(p, (uint64_t)n); }
 static bool newer(uint32_t a, uint32_t b)
 { return a != b && (uint32_t)(a - b) < UINT32_C(0x80000000); }
+
+static void restart_transfer(board_link_t *h, int64_t ready_at)
+{
+    h->tx.active = h->tx.size != 0;
+    ++h->tx.transfer;
+    h->tx.offset = h->tx.queued = 0;
+    h->tx.metadata_acked = false;
+    h->tx.next_meta = 0;
+    h->tx.retry_at = ready_at;
+}
+
+static link_pending_t *pending_slot(board_link_t *h, unsigned index)
+{
+    return index ? &h->chunks[index - 1] : &h->pending;
+}
 
 static int64_t mapped_origin(board_link_t *h)
 {
@@ -182,8 +206,9 @@ static void detach(board_link_t *h)
     h->recovery_requested = false;
     h->peer = h->session = 0;
     h->edge = MOSAICO_EDGE_NONE;
-    h->pending.active = h->tx.active = false;
+    h->tx.active = false;
     h->tx.size = 0;
+    h->control_retry_at = 0;
     memset(&h->transaction, 0, sizeof(h->transaction));
     memset(&h->rx, 0, sizeof(h->rx));
     memset(&h->clock, 0, sizeof(h->clock));
@@ -382,6 +407,7 @@ static void receive_meta(board_link_t *h, const uint8_t *p, int64_t now)
         h->transaction.began = now;
         h->recovery_requested = false;
         h->rx.offset = 0;
+        memset(h->rx.received, 0, sizeof(h->rx.received));
         h->rx.complete = false;
         h->rx.revision = id;
         h->rx.size = size;
@@ -410,16 +436,36 @@ static void receive_chunk(board_link_t *h, const uint8_t *p, size_t length, int6
     if (!h->following || !h->rx.metadata || h->rx.complete || h->transaction.phase != TX_PREPARING ||
         get32(p + 8) != h->rx.revision || get32(p + 12) != h->rx.crc ||
         get16(p + 16) != h->rx.size || !bytes || offset + bytes > h->rx.size) return;
-    if (!offset) h->rx.offset = 0;
-    if (offset != h->rx.offset) return;
-    memcpy(h->rx.bytes + offset, p + 20, bytes);
-    h->rx.offset += (uint16_t)bytes;
+    /* The v2 offset is authoritative. A bounded per-byte coverage map accepts
+     * old serial senders, arbitrary legal fragment lengths, duplicates and
+     * reordering without letting a repeated offset-zero fragment erase data. */
+    for (size_t i = 0; i < bytes; ++i) {
+        size_t at = offset + i;
+        if ((h->rx.received[at / 8] & (1u << (at % 8))) && h->rx.bytes[at] != p[20 + i]) {
+            h->rx.offset = 0;
+            memset(h->rx.received, 0, sizeof(h->rx.received));
+            h->rx.next_want = now + LINK_RETRY_US;
+            return;
+        }
+    }
+    uint16_t before = h->rx.offset;
+    for (size_t i = 0; i < bytes; ++i) {
+        size_t at = offset + i;
+        uint8_t bit = (uint8_t)(1u << (at % 8));
+        if (!(h->rx.received[at / 8] & bit)) {
+            h->rx.received[at / 8] |= bit;
+            h->rx.bytes[at] = p[20 + i];
+            ++h->rx.offset;
+        }
+    }
+    if (h->rx.offset == before) return;
     h->rx.last_progress = now;
     h->rx.next_want = now + LINK_RX_TIMEOUT_US;
     if (h->rx.offset != h->rx.size) return;
     if (echoy_link_crc32(h->rx.bytes, h->rx.size) != h->rx.crc ||
         !echoy_link_plan_decode(h->rx.bytes, h->rx.size, &h->received_plan)) {
         h->rx.offset = 0;
+        memset(h->rx.received, 0, sizeof(h->rx.received));
         h->rx.next_want = now + LINK_RETRY_US;
         return;
     }
@@ -537,7 +583,10 @@ static void receive_message(board_link_t *h, const mosaico_network_message_t *m,
                 h->recovery_requested = true;
             } else if (h->transaction.phase == TX_PREPARING &&
                        (!h->tx.active || now >= h->next_send)) {
-                h->tx.active = true; ++h->tx.transfer; h->tx.offset = 0; h->tx.next_meta = 0;
+                /* An old v2 receiver may reject reordered chunks. A WANT
+                 * retries this T serially; a new transaction restores two. */
+                h->tx.serial_retry = true;
+                restart_transfer(h, now);
             }
         }
         break;
@@ -545,13 +594,15 @@ static void receive_message(board_link_t *h, const mosaico_network_message_t *m,
     }
 }
 
-static void delivery_failed(board_link_t *h, int64_t now)
+static void delivery_failed(board_link_t *h, link_pending_t *pending, int64_t now)
 {
-    h->pending.active = false;
-    h->next_send = now + LINK_RETRY_US;
-    if (!h->following && h->transaction.phase == TX_PREPARING && h->tx.size) {
-        h->tx.active = true; ++h->tx.transfer; h->tx.offset = 0; h->tx.next_meta = 0;
-    }
+    pending->active = false;
+    if (!h->attached || pending->peer != h->peer || pending->session != h->session) return;
+    if (pending->kind != WIRE_CHUNK) h->control_retry_at = now + LINK_RETRY_US;
+    if (!h->following && h->transaction.phase == TX_PREPARING && h->tx.size &&
+        (pending->kind == WIRE_CHUNK || pending->kind == WIRE_META) &&
+        pending->revision == h->tx.revision && pending->transfer == h->tx.transfer)
+        restart_transfer(h, now + LINK_RETRY_US);
 }
 
 static void process_event(board_link_t *h, const link_event_t *e)
@@ -574,20 +625,27 @@ static void process_event(board_link_t *h, const link_event_t *e)
     case MOSAICO_NETWORK_EVENT_MESSAGE_DELIVERED:
     case MOSAICO_NETWORK_EVENT_MESSAGE_FAILED: {
         const mosaico_network_delivery_event_t *d = &e->event.data.delivery;
-        if (!h->pending.active || d->service_id != h->pending.service ||
-            d->destination_id != h->peer) {
-            break;
+        link_pending_t *pending = NULL;
+        for (unsigned i = 0; i <= LINK_CHUNK_WINDOW; ++i) {
+            link_pending_t *slot = pending_slot(h, i);
+            if (slot->active && d->service_id == slot->service && d->destination_id == slot->peer) {
+                pending = slot;
+                break;
+            }
         }
+        if (!pending) break;
         if (e->event.type == MOSAICO_NETWORK_EVENT_MESSAGE_FAILED) {
             ESP_LOGW(TAG, "delivery failed kind=%u revision=%" PRIu32 " error=%s",
-                     (unsigned)h->pending.kind, h->pending.revision, esp_err_to_name(d->error));
-            delivery_failed(h, e->received_us);
+                     (unsigned)pending->kind, pending->revision, esp_err_to_name(d->error));
+            delivery_failed(h, pending, e->received_us);
             break;
         }
-        h->pending.active = false;
-        if (h->pending.kind == WIRE_CHUNK && h->pending.revision == h->tx.revision &&
-            h->pending.transfer == h->tx.transfer) {
-            h->tx.offset += h->pending.bytes;
+        pending->active = false;
+        if (pending->peer != h->peer || pending->session != h->session ||
+            pending->revision != h->tx.revision || pending->transfer != h->tx.transfer) break;
+        if (pending->kind == WIRE_META) h->tx.metadata_acked = true;
+        if (pending->kind == WIRE_CHUNK) {
+            h->tx.offset += pending->bytes;
             if (h->tx.offset == h->tx.size) {
                 h->tx.active = false;
                 ESP_LOGI(TAG, "sent plan peer=%012" PRIx64 " revision=%" PRIu32,
@@ -633,7 +691,8 @@ static bool begin_transaction(board_link_t *h, int64_t now)
     memcpy(h->tx.bytes, h->scratch, size);
     h->tx.size = (uint16_t)size;
     h->tx.crc = echoy_link_crc32(h->tx.bytes, size);
-    h->tx.offset = 0; h->tx.active = true; ++h->tx.transfer; h->tx.next_meta = 0;
+    h->tx.serial_retry = false;
+    restart_transfer(h, now);
     if (h->recovering && !++h->connection_generation) ++h->connection_generation;
     h->recovering = false;
     h->update.valid = false;
@@ -831,63 +890,81 @@ static uint8_t state_flags(board_link_t *h)
 static void send_next(board_link_t *h, int64_t now)
 {
     if (!h->attached) return;
-    if (h->pending.active) {
-        if (now - h->pending.since >= 2500000) delivery_failed(h, now);
-        return;
+    for (unsigned i = 0; i <= LINK_CHUNK_WINDOW; ++i) {
+        link_pending_t *slot = pending_slot(h, i);
+        if (slot->active && now - slot->since >= 2500000) delivery_failed(h, slot, now);
     }
     if (now < h->next_send) return;
     uint8_t p[64] = {LINK_WIRE_VERSION};
     put32(p + 4, h->session);
     size_t length = 0;
     uint16_t chunk = 0;
+    link_pending_t *pending = NULL;
     transaction_phase_t phase = h->transaction.phase;
-    if (h->clock.pong_pending) {
-        p[1] = WIRE_PONG;
-        put32(p + 8, h->clock.pong_sequence);
-        put_time(p + 12, h->clock.pong_t1); put_time(p + 20, h->clock.pong_t2); put_time(p + 28, now);
-        length = 36;
-    } else if (h->following && now >= h->clock.next_ping &&
-               (!h->clock.waiting || now - h->clock.t1 >= 500000)) {
-        if (now - h->clock.window_start >= 5000000) { h->clock.window_start = now; h->clock.samples = 0; }
-        p[1] = WIRE_PING; put32(p + 8, ++h->clock.sequence); put_time(p + 12, now); length = 20;
-    } else if (h->following && now >= h->next_state) {
-        p[1] = WIRE_STATE;
-        put32(p + 8, h->transaction.id);
-        uint64_t revision = h->view.offered_transaction == h->transaction.id ? h->view.offered_revision : 0;
-        put64(p + 12, revision);
-        int64_t at = h->transaction.at ? h->transaction.at - h->clock.offset : 0;
-        put_time(p + 20, at); p[28] = state_flags(h); length = 32;
-    } else if (!h->following && h->transaction.id && now >= h->transaction.next_control &&
-               (phase == TX_REMOTE_ARM || phase == TX_REMOTE_COMMIT || phase == TX_ABORTED)) {
-        p[1] = phase == TX_REMOTE_ARM ? WIRE_ARM : phase == TX_REMOTE_COMMIT ? WIRE_COMMIT : WIRE_ABORT;
-        put32(p + 8, h->transaction.id); put64(p + 12, h->transaction.peer_revision);
-        put_time(p + 20, h->transaction.at); p[28] = phase == TX_ABORTED && h->transaction.failed;
-        length = 32;
-    } else if (!h->following && h->tx.size && now >= h->tx.next_meta) {
-        p[1] = WIRE_META;
-        put32(p + 8, h->tx.revision); put16(p + 12, h->tx.size);
-        p[14] = (h->tx.clock_started ? META_CLOCK : 0) | (h->tx.looping ? META_LOOP : 0);
-        put32(p + 16, h->tx.crc); put_time(p + 20, h->tx.origin);
-        put64(p + 28, h->transaction.revision); length = 36;
-    } else if (!h->following && h->tx.active && phase == TX_PREPARING) {
-        chunk = h->tx.size - h->tx.offset;
-        if (chunk > LINK_CHUNK_BYTES) chunk = LINK_CHUNK_BYTES;
-        p[1] = WIRE_CHUNK; put32(p + 8, h->tx.revision); put32(p + 12, h->tx.crc);
-        put16(p + 16, h->tx.size); put16(p + 18, h->tx.offset);
-        memcpy(p + 20, h->tx.bytes + h->tx.offset, chunk); length = 20 + chunk;
-    } else if (h->following && h->rx.metadata && now >= h->rx.next_want &&
-               ((!h->rx.complete && phase == TX_PREPARING) ||
-                (phase == TX_ABORTED && h->recovery_requested && h->view.available))) {
-        p[1] = WIRE_WANT; put32(p + 8, h->rx.revision); put32(p + 12, h->rx.crc); length = 16;
+    if (!h->pending.active && now >= h->control_retry_at) {
+        pending = &h->pending;
+        if (h->clock.pong_pending) {
+            p[1] = WIRE_PONG;
+            put32(p + 8, h->clock.pong_sequence);
+            put_time(p + 12, h->clock.pong_t1); put_time(p + 20, h->clock.pong_t2); put_time(p + 28, now);
+            length = 36;
+        } else if (h->following && now >= h->clock.next_ping &&
+                   (!h->clock.waiting || now - h->clock.t1 >= 500000)) {
+            if (now - h->clock.window_start >= 5000000) { h->clock.window_start = now; h->clock.samples = 0; }
+            p[1] = WIRE_PING; put32(p + 8, ++h->clock.sequence); put_time(p + 12, now); length = 20;
+        } else if (h->following && now >= h->next_state) {
+            p[1] = WIRE_STATE;
+            put32(p + 8, h->transaction.id);
+            uint64_t revision = h->view.offered_transaction == h->transaction.id ? h->view.offered_revision : 0;
+            put64(p + 12, revision);
+            int64_t at = h->transaction.at ? h->transaction.at - h->clock.offset : 0;
+            put_time(p + 20, at); p[28] = state_flags(h); length = 32;
+        } else if (!h->following && h->transaction.id && now >= h->transaction.next_control &&
+                   (phase == TX_REMOTE_ARM || phase == TX_REMOTE_COMMIT || phase == TX_ABORTED)) {
+            p[1] = phase == TX_REMOTE_ARM ? WIRE_ARM : phase == TX_REMOTE_COMMIT ? WIRE_COMMIT : WIRE_ABORT;
+            put32(p + 8, h->transaction.id); put64(p + 12, h->transaction.peer_revision);
+            put_time(p + 20, h->transaction.at); p[28] = phase == TX_ABORTED && h->transaction.failed;
+            length = 32;
+        } else if (!h->following && h->tx.size && now >= h->tx.next_meta && now >= h->tx.retry_at) {
+            p[1] = WIRE_META;
+            put32(p + 8, h->tx.revision); put16(p + 12, h->tx.size);
+            p[14] = (h->tx.clock_started ? META_CLOCK : 0) | (h->tx.looping ? META_LOOP : 0);
+            put32(p + 16, h->tx.crc); put_time(p + 20, h->tx.origin);
+            put64(p + 28, h->transaction.revision); length = 36;
+        } else if (h->following && h->rx.metadata && now >= h->rx.next_want &&
+                   ((!h->rx.complete && phase == TX_PREPARING) ||
+                    (phase == TX_ABORTED && h->recovery_requested && h->view.available))) {
+            p[1] = WIRE_WANT; put32(p + 8, h->rx.revision); put32(p + 12, h->rx.crc); length = 16;
+        }
+    }
+    unsigned chunks_active = 0;
+    for (unsigned i = 0; i < LINK_CHUNK_WINDOW; ++i) chunks_active += h->chunks[i].active;
+    unsigned window = h->tx.serial_retry ? 1u : LINK_CHUNK_WINDOW;
+    if (!length && !h->following && h->tx.active && phase == TX_PREPARING &&
+        h->tx.metadata_acked && now >= h->tx.retry_at && h->tx.queued < h->tx.size &&
+        chunks_active < window) {
+        for (unsigned i = 0; i < LINK_CHUNK_WINDOW; ++i) {
+            if (h->chunks[i].active) continue;
+            pending = &h->chunks[i];
+            chunk = h->tx.size - h->tx.queued;
+            if (chunk > LINK_CHUNK_BYTES) chunk = LINK_CHUNK_BYTES;
+            p[1] = WIRE_CHUNK; put32(p + 8, h->tx.revision); put32(p + 12, h->tx.crc);
+            put16(p + 16, h->tx.size); put16(p + 18, h->tx.queued);
+            memcpy(p + 20, h->tx.bytes + h->tx.queued, chunk); length = 20 + chunk;
+            break;
+        }
     }
     if (!length) return;
-    uint16_t service = LINK_SERVICE_BASE | (++h->pending.sequence & ~LINK_SERVICE_MASK);
+    uint16_t service = LINK_SERVICE_BASE | (++h->service_sequence & ~LINK_SERVICE_MASK);
+    *pending = (link_pending_t){.service = service, .kind = p[1], .peer = h->peer,
+        .session = h->session, .revision = h->tx.revision, .transfer = h->tx.transfer,
+        .bytes = chunk, .since = now};
     if (mosaico_network_send(h->network, h->peer, service, p, length) != ESP_OK) {
-        delivery_failed(h, now); return;
+        delivery_failed(h, pending, now); return;
     }
-    h->pending.active = true; h->pending.service = service; h->pending.kind = p[1];
-    h->pending.revision = h->tx.revision; h->pending.transfer = h->tx.transfer;
-    h->pending.bytes = chunk; h->pending.since = now; h->next_send = now + 5000;
+    pending->active = true;
+    if (chunk) h->tx.queued += chunk;
+    h->next_send = now + 5000;
     if (p[1] == WIRE_PONG) h->clock.pong_pending = false;
     else if (p[1] == WIRE_PING) {
         h->clock.waiting = true; h->clock.pending_sequence = h->clock.sequence;
@@ -895,7 +972,7 @@ static void send_next(board_link_t *h, int64_t now)
     } else if (p[1] == WIRE_META) h->tx.next_meta = now + LINK_META_US;
     else if (p[1] == WIRE_WANT) h->rx.next_want = now + LINK_RX_TIMEOUT_US;
     else if (p[1] == WIRE_STATE) h->next_state = now + LINK_STATE_US;
-    else h->transaction.next_control = now + LINK_STATE_US;
+    else if (p[1] != WIRE_CHUNK) h->transaction.next_control = now + LINK_STATE_US;
 }
 
 static void worker(void *arg)

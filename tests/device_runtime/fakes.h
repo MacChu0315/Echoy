@@ -9,6 +9,8 @@ extern atomic_int fake_watermark_after_exit, fake_nonzero_blocks;
 extern atomic_int fake_nonzero_since_flush;
 extern atomic_int fake_calibration_failure;
 extern atomic_int fake_probe_calls, fake_probe_failure;
+extern atomic_int fake_image_alloc_calls, fake_image_alloc_failure;
+extern atomic_uint fake_image_alloc_caps;
 void fake_set_health(int percent); /* -1 unknown, -2 absent, 0..100 validated */
 void fake_hold_write(bool value);
 void fake_hold_create(bool value);

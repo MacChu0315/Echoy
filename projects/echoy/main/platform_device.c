@@ -197,6 +197,13 @@ static bool read_control(void *ctx, echoy_control_view_t *out)
     xSemaphoreGive(d->view_lock);
     return true;
 }
+static void *ui_storage_alloc(void *ctx, size_t size)
+{
+    (void)ctx;
+    /* View cache and image sources are UI-only storage. Keep them out of the
+     * internal heap needed by audio/radio, even when that heap has room. */
+    return heap_caps_malloc(size, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+}
 static bool perform_action(void *ctx, echoy_action_t action, double value, int64_t at)
 {
     struct echoy_device *d = ctx;
@@ -889,6 +896,7 @@ esp_err_t echoy_device_start(echoy_device_handle_t *out, echoy_platform_t *platf
     }
     *platform = (echoy_platform_t){.ctx = d,
                                    .now_us = now_us,
+                                   .ui_storage_alloc = ui_storage_alloc,
                                    .read_control = read_control,
                                    .perform_action = perform_action,
                                    .initial_condition = ECHOY_LOADING};

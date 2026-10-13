@@ -31,6 +31,7 @@ class DeviceRuntime(unittest.TestCase):
         self.assertEqual(result.returncode,0,result.stdout+'\n'+result.stderr)
         self.assertIn('PASS ',result.stdout)
     def test_link_snapshots_preserve_audio_owner_and_silence(self):self.run_case('link')
+    def test_retained_image_storage_is_psram_without_fallback(self):self.run_case('image_storage')
     def test_cache_unknown_battery_and_blocked_io(self):self.run_case('cache')
     def test_ui_reader_cannot_block_audio_or_pause(self):self.run_case('cache_contention_control')
     def test_link_reader_cannot_block_audio_or_pause(self):self.run_case('cache_contention_link')

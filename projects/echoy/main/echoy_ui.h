@@ -9,6 +9,10 @@ typedef struct {
     void *ctx;
     bool is_simulator;
     bool reduced_motion;
+    /* Optional malloc/free-compatible storage for cold UI data: view cache
+     * and retained encoded images. An absent callback uses the default heap;
+     * allocation failure is propagated without default-heap fallback. */
+    void *(*ui_storage_alloc)(void *ctx, size_t size);
     /* Runs on the UI owner, never the audio worker. NULL uses simulator shading. */
     bool (*set_brightness)(void *ctx, unsigned percent);
     const char *software_version;

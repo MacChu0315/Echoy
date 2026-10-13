@@ -1,0 +1,48 @@
+{
+  "package": "e44a3d8919d33c4ed074bc39bd62426bf591fce926e9e628ca10638fb1ffa536",
+  "devices": [
+    {
+      "device_id": "4553502d49524953010030eda0f452a0",
+      "operation_id": "be0c5a85-e134-43bf-9bf8-2f76be4541c1",
+      "boot_id": 13804741210610604633,
+      "elf_sha256": "f5fdd9f1a1e3e5167228456303547fa887b19a5004483f293ddbc51d52afa144",
+      "healthy": true,
+      "validated": true,
+      "application_crash_count": 0,
+      "recovery_boot_id": 16941290593667138495,
+      "recovery_crash_count": 0,
+      "manual_recovery_entry": true,
+      "software_entry_attempts": 1,
+      "software_entry_error": "0x101 ESP_ERR_NO_MEM; no package submitted",
+      "magnetic_baseline_ready": true,
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+      "home_screenshot": "latency-first-home.png",
+      "uptime_us_at_status": 27727865
+    },
+    {
+      "device_id": "4553502d49524953010030eda0f40c6c",
+      "operation_id": "31c459c5-6288-41ca-8dd6-3b1a99473f6e",
+      "boot_id": 3888807882828278489,
+      "elf_sha256": "f5fdd9f1a1e3e5167228456303547fa887b19a5004483f293ddbc51d52afa144",
+      "healthy": true,
+      "validated": true,
+      "application_crash_count": 0,
+      "recovery_boot_id": 5418263912301200255,
+      "recovery_crash_count": 0,
+      "manual_recovery_entry": true,
+      "software_entry_attempts": 1,
+      "software_entry_error": "0x101 ESP_ERR_NO_MEM; no package submitted",
+      "magnetic_baseline_ready": true,
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+      "home_screenshot": "latency-second-home.png",
+      "uptime_us_at_status": 25578490
+    }
+  ],
+  "scope": "Identity, healthy commit, retained layout/bootloader, actual home and separated magnetic baseline. Hardware performance comparison pending.",
+  "startup_observations": [
+    "Existing GPIO ISR/already-disabled I2S startup messages remain.",
+    "Right battery command 0x3a read failed once during startup; later battery health needs observation."
+  ]
+}

@@ -292,7 +292,7 @@ static void test_stale_fragments_crc_repair_and_delivery_identity(void)
     receive_message(b, &chunk, 1213000);
     assert(b->rx.offset == LINK_CHUNK_BYTES);
     delivered(a, meta.service_id, true, 1015000);
-    assert(a->pending.active && !a->tx.offset);
+    assert(a->chunks[0].active && !a->tx.offset);
     delivered(a, service, true, 1016000);
     assert(a->tx.offset == LINK_CHUNK_BYTES);
     for (int64_t now = 1020000; now < 3000000 && a->tx.active; now += 10000) {

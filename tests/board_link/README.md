@@ -66,13 +66,34 @@ Continuous status/ABORT traffic is not a recovery event; failed preparation does
 not trigger a timer-based retry loop. Owner acknowledgement clears an ABORT even
 when a partial transfer never produced an OFFER.
 
-At most one reliable application message is outstanding per device. Each 44-byte
-plan chunk advances only on its matching delivery event and transfer generation.
-Metadata repeats every 500 ms; readiness/control status every 100 ms. Delivery
-failure backs off 750 ms and restarts an incomplete snapshot. Clock synchronization
-uses three two-way samples, rejects RTT above 80 ms and uses the best RTT sample;
-it refreshes every five seconds and freezes the mapping during arm/commit. These
-are estimates, not evidence of sample-exact physical playback synchronization.
+At most two 44-byte chunks and one control message are outstanding per device.
+The separate control slot has priority, so chunk ACKs cannot occupy its slot.
+Initial metadata must be acknowledged before data starts. Each data ACK accounts
+only for its matching service, peer, session, revision and transfer generation;
+retired generations keep their physical slots until callbacks or the existing
+2.5-second callback ceiling. The pinned BSP retries at 150 ms, up to five retries,
+then fails on the next eligible check (about 900 ms, plus task dispatch latency).
+
+A bounded 1 KiB coverage bitmap accepts arbitrary legal v2 offsets, reordered and
+duplicate fragments. Complete coverage, the full CRC and canonical decode remain
+mandatory. WANT requests retry the same transaction with one chunk in flight,
+including any old-generation slots in that count; this supports old serial v2
+receivers after loss/reordering. A new transaction restores two chunks. Retries
+never reset the transaction's 30-second deadline. Metadata repeats every 500 ms;
+readiness/control status every 100 ms. Existing 750 ms failure backoff, one-second
+scheduling lead and 200 ms guard remain unchanged.
+
+`run.sh` includes `run_transport_window.sh`; the latter may also run separately.
+Its deterministic 50 ms receive-dispatch plus 50 ms ACK-dispatch model transfers
+the same 693-byte plan in 2.000 s with serialized sends and 0.900 s with the two
+chunk slots (55% shorter). It also exercises control priority, missing fragments,
+legacy v2 reassembly, conflicting overlaps, retries, changed peers/sessions and
+late callbacks. These are host model results, not measured device throughput.
+
+Clock synchronization uses three two-way samples, rejects RTT above 80 ms and
+uses the best RTT sample; it refreshes every five seconds and freezes the mapping
+during arm/commit. These are estimates, not evidence of sample-exact physical
+playback synchronization.
 
 `board_link_stop(timeout_ms)` must succeed before callback context is released.
 Timeout or network shutdown failure preserves the singleton for retry. The timeout

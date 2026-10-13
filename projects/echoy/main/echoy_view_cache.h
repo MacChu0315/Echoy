@@ -2,6 +2,10 @@
 #include "esp_gsp.h"
 typedef struct echoy_view_cache *echoy_view_cache_t;
 echoy_view_cache_t echoy_view_cache_create(esp_gsp_handle_t gsp);
+/* Optional allocator must return free()-compatible storage, not necessarily
+ * zeroed. NULL allocator preserves the default; allocation failure never falls back. */
+echoy_view_cache_t echoy_view_cache_create_with_allocator(
+    esp_gsp_handle_t gsp, void *(*allocate)(void *ctx, size_t size), void *ctx);
 void echoy_view_cache_delete(echoy_view_cache_t view);
 esp_gsp_err_t echoy_view_show(echoy_view_cache_t view,const char *name,bool visible);
 esp_gsp_err_t echoy_view_enable(echoy_view_cache_t view,const char *name,bool enabled);

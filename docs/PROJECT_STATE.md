@@ -509,13 +509,115 @@ user-assisted AI-button entry resolved delivery without rewriting base firmware.
 Recovery boot `15016243081138835729` had crash count zero. The two prior software
 attempts submitted no update bundle; the manual-entry path submitted one update.
 
-The user has confirmed the repaired first Role click and initial full phrase
-transfer to a silent follower. Latest live telemetry has zero crashes/deadline
-misses/partial writes/write errors on both, with cache-busy publication counts
-4/10, proving that busy readers were encountered without stopping PCM. This is
-initial/idle-linked verification. Playing rejoin/shared updates and paused-right
-retest was requested but has no new result yet; preserve current phrases. Physical RF/load
-or acoustic precision beyond these targeted checks is not yet established.
+The user confirmed the repaired first Role click and initial full phrase
+transfer to a silent follower, then reported no exceptions during the requested
+playing/rejoin/shared-update checks. They did report slower phrase transfer and
+selection feedback, plus pre-existing Harmony distortion; these remain open.
+The latest captured boots are `2646500753984770485` / `4969769315098002880`, both
+power-on reset reason 1 with crash count zero and the same f13 ELF. Do not label
+the intervening user power cycles as crashes. Live audio telemetry has no
+deadline misses, partial writes or write errors; nonblocking cache publication
+has been exercised. Physical RF/load or acoustic precision beyond these targeted
+checks is not yet established.
+
+### Switching latency investigation (2026-10-13, in progress)
+
+A fresh controlled expression change captured transaction 4: proposal to common
+bar was 3.572 seconds, comprising 1.630 seconds to finish sending a 693-byte
+phrase, 0.601 seconds until both prepared, then 1.341 seconds until the scheduled
+common bar. These are same-device monotonic timestamps, not touch-to-display
+measurements. The previous 15-second observation window was not a measured
+requirement or acceptable response target. The user also confirmed the selected
+expression marker itself feels slow. One gallery batch cost 151,873 us, with
+maximum UI callback 165,764 us and callback gap 357,823 us during this capture.
+
+The candidate moves image preparation out of the input callback, spreads the
+three unchanged gallery images across callbacks, removes duplicate cached-state
+reads, and skips synthesis/calibration of the physical follower's inaudible
+upstream replica. The latter saves one 720,000-byte PCM allocation and its
+calibration pass for the representative follower; full musical/clock data stays.
+Continuous hover/drag cannot postpone the new gallery indefinitely.
+
+Wireless now uses two chunk slots plus one priority control slot within the BSP's
+eight slots. Reassembly accepts legal v2 offsets in any order and still requires
+full coverage, CRC and decode. Old transfer slots remain occupied until released;
+late ACKs cannot advance a new transfer. WANT retries the current transaction
+serially for compatibility with old v2 receivers, and new transactions restore
+two chunks. The S31 context grows 1,136 bytes in existing PSRAM, with no new
+runtime internal-heap allocation. The same 693-byte host timing model improves
+2.000 to 0.900 seconds; this is not a measured hardware improvement.
+
+The 18 real transport/PCM cases, 24 deferred cases and protocol/window tests pass
+normally and with address/undefined-behavior sanitizers. Seven UI scheduling
+tests pass, including hover/drag/re-entry, with unchanged QOI output. The native
+before/after comparison has 36 pixel-identical final screens. Package
+`e44a3d8919d3` builds against the pinned SDK and preserves UI data and retained
+layout. Both normal
+f13 boots rejected software Recovery entry with device error `0x101`
+(`ESP_ERR_NO_MEM`), with unchanged Boot IDs, empty queues and no package submitted.
+The user paused/separated both and manually entered retained Vibe Mode. Both
+updates then succeeded with HEALTHY, image and retained-bootloader/layout checks:
+left boot `13804741210610604633`, operation
+`be0c5a85-e134-43bf-9bf8-2f76be4541c1`; right boot `3888807882828278489`, operation
+`31c459c5-6288-41ca-8dd6-3b1a99473f6e`. Both Recovery boots had zero crashes;
+both application homes and magnetic baselines pass. Final native desk validation
+passes 13 actual-PCM checks.
+
+The first physical comparison is blocked: the left recorded four taps, but the
+right remains empty after joining. Both magnetic contacts are recognized; neither
+has established a peer session or proposed a phrase transaction. The right's
+`mosaico_peer` broadcast (type 2) fails repeatedly from the first contact. Its
+free internal heap fell from 9,931 to 1,939 bytes after visiting the role gallery
+(Pulse -> Voice -> Dust), despite about 12 MiB free PSRAM. Both Boot IDs remain
+unchanged with zero crashes/audio deadline misses. This precedes the application
+chunk window; allocation/radio causes are under investigation, not established.
+Preserve the current attached scene and continuous logs; do not call this a
+successful hardware performance acceptance. Keep all
+sound/output settings, recording timing, explicit Play permission, UI geometry
+and frozen HTML unchanged. Baseline and candidate evidence:
+`verification/cooperation/README.md`.
+
+Image-storage follow-up: actual empty-Dust gallery encodings total 7,499 bytes,
+94% of the observed 7,992-byte internal-heap drop. GSP COPY retains those sources
+until bind replacement/shutdown even while hidden, and the installed allocator
+prefers internal heap for sizes <=16 KiB. Four opaque Chinese bottom glyphs can
+retain another 9,760 bytes. Candidate `c4e5fb0e45d2` now copies retained sources
+through a device-only explicit PSRAM allocator and passes public GSP TAKE ownership;
+PC uses the original encoder buffer. Failure, completion and shutdown ownership
+are covered by ten new cases. This changes no pixels, encoder output, global
+malloc policy, audio or wire data. The app also registers missing ESPNOW error
+names through the public build interface, avoiding the ambiguous `ERROR` text
+without SDK/BSP changes or runtime allocation.
+Seven scheduling cases, ten ownership cases and sanitizers pass; 27 device-runtime
+cases pass. Native complete UI passes with 36 identical final screens. The SDK
+package, unchanged UI data/layout and concrete ESPNOW names in the final binary
+are verified. Both installations succeeded: left boot `2491134233307376902`,
+operation `dcf2a750-58d9-464f-a637-b5dc48fb109d`; right boot
+`16801241995940483221`, operation `b633ab51-3da2-45dd-b8c1-aba2d9cc0610`.
+Image/HEALTHY/retained layout/home/calibration pass with zero application crashes.
+Left empty-home internal free is 12,235 bytes, but right is only 2,315 bytes before
+opening the gallery. Directly joining default empty homes established both peer
+sessions; right then logged explicit `ESP_ERR_ESPNOW_NO_MEM` on type-8 sends.
+Thus persistent image COPY was a real pressure source, but its removal has not
+resolved the entire internal-memory budget. Performance acceptance remains open.
+
+Current follow-up is limited to UI cold allocations: double-callback external UI
+currently creates an unused 14,256-byte standalone model, and its 14,764-byte
+view cache uses ordinary calloc. Remove only the unused model and allocate the
+UI cache explicitly in PSRAM, retaining standalone/single-callback behavior.
+Do not change global malloc policy or move band models yet: the owner copies
+a 7,072-byte current plan every 10 ms as well as reading hot snapshots. One-time
+allocation-location/free/largest-block diagnostics will establish actual object
+placement at startup. The live devices remain on c4 with empty linked homes.
+The UI-only follow-up is implemented and locally verified as package
+`150bd97add2b`, ELF `09644dd9013d660b1237b2ae016f6d4f3637a99313d8e8988d5f2e7c91b2163d`.
+Sixteen construction cases, seven scheduling cases, ten image-ownership cases,
+twelve unchanged encodings and sanitizers pass; 27 runtime cases and six native
+three-tile cooperation flows pass. The SDK package preserves UI data and retained
+layout. Right-only installation is awaiting the requested manual Vibe Mode entry;
+keep left on c4 as the initial hardware control, then update it after right-side
+headroom/connection verification. The application models used by the band were
+not moved; their actual allocation locations are logged only at startup.
 
 The retained output calibration was accepted provisionally on `4ee7991a5d56`: hardware volume 90,
 device PCM gain 6 with .90 peak limiting and diagnostic RPC disabled. The
@@ -617,6 +719,29 @@ stop further loudness tuning unless requested. This is provisional retention,
 not a claim of measured acoustic performance or the absolute hardware limit.
 Any future substantial loudness improvement needs acoustic/output-chain
 measurement or a separately evaluated spectral adjustment.
+On 2026-10-13 the user again reported Harmony distortion with the same retained
+profile, explicitly predating the cooperation changes. All three expressions
+distort progressively with increased volume; Answer is somewhat better.
+After the user returned home without moving the slider, the right screen showed
+Harmony Arpeggio, following and playing, with knob center around y211: roughly
+34% volume from `(249-211)/111`. The user confirmed distortion also occurs during
+unchanged continuous playback, not only at a switch/start transient.
+This is a screenshot estimate and listening
+report, not an exact digital setting, SPL measurement or identified component
+failure. Preserve this starting point for a separate sound investigation; the
+latency changes do not retune gain, limiting or timbre. Current quality acceptance
+is open despite the earlier trial's positive feedback.
+The unchanged PCM processor's telemetry has a confirmed interpretation limit:
+after one transient, floating-point high-pass tails and an envelope that settles
+at `0.999971389771` can increase `limited` by 720,000 during 30 seconds of entirely
+zero integer output. `clipped` checks only post-limiter values beyond +/-1, so
+zero clipped samples does not establish absence of upstream/limiter/acoustic
+distortion. An offline representative `40aa`/.5 test at .34 volume still reaches
+the .60 limiter for all Harmony expressions; it is not the exact current failed
+plan. Do not attribute this issue to a physical component from those counters.
+No audio/telemetry code was changed. Next sound investigation should first
+capture/replay the exact failed plan and compare bank, high-pass/drive and limiter
+stages on effective audible samples rather than cumulative counts.
 288 calibrated cases have no clipping and true peak <= -3.9 dBFS; 120 raw synth
 banks are unchanged. Filter/mean-level regressions, PCM/band tests and 22 runtime
 cases (normal and sanitizer) pass. The official build has zero warnings and

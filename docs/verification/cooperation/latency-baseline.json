@@ -1,0 +1,179 @@
+{
+  "date": "2026-10-13",
+  "firmware_package": "f13fd6428d8b",
+  "transaction": 4,
+  "phrase_bytes": 693,
+  "timing_domain": "left Iris event.monotonic_us; not ESP_LOG stamp or touch timestamp",
+  "left_timestamps_us": {
+    "proposal": 924654506,
+    "sent": 926284066,
+    "both_prepared": 926884739,
+    "common_bar": 928226095,
+    "both_committed_ack": 928334709
+  },
+  "durations_us": {
+    "proposal_to_sent": 1629560,
+    "sent_to_prepared": 600673,
+    "prepared_to_bar": 1341356,
+    "proposal_to_bar": 3571589
+  },
+  "ui_observations_us": {
+    "gallery_batch": 151873,
+    "max_callback": 165764,
+    "max_callback_gap": 357823
+  },
+  "user_report": {
+    "rejoin_and_shared_update": "No exceptions reported; phrase transfer and selection feedback felt slower.",
+    "harmony": "Pre-existing distortion across all three expressions as volume rises; Answer somewhat better.",
+    "unchanged_slider_home": "User returned home without changing volume.",
+    "continuous_harmony": "User confirmed distortion also during unchanged continuous playback at the captured slider setting."
+  },
+  "harmony_screenshot": {
+    "device_suffix": "f40c6c",
+    "boot_id": 4969769315098002880,
+    "role": "harmony",
+    "expression": "arpeggio",
+    "following": true,
+    "playing": true,
+    "knob_center_y_approx": 211,
+    "volume_estimate": 0.34234234234234234,
+    "method": "(249-y)/111; screenshot pixel estimate, not an exact digital value",
+    "path": "harmony-threshold-home.png"
+  },
+  "logs": {
+    "left": [
+      {
+        "boot_id": 2646500753984770485,
+        "monotonic_us": 923663954,
+        "text": "ECHOY_ROUTE route=role_page locale=zh\n"
+      },
+      {
+        "boot_id": 2646500753984770485,
+        "monotonic_us": 924654506,
+        "text": "I (925830) echoy-link: proposed transaction=4 revision=3 bytes=693\n"
+      },
+      {
+        "boot_id": 2646500753984770485,
+        "monotonic_us": 924655898,
+        "text": "ECHOY_STRIP_READY tile=A mode=idle record=0 play=0 single=0 at_us=924655860\n"
+      },
+      {
+        "boot_id": 2646500753984770485,
+        "monotonic_us": 924816721,
+        "text": "ECHOY_GALLERY_COST role=0 us=151873\n"
+      },
+      {
+        "boot_id": 2646500753984770485,
+        "monotonic_us": 924920290,
+        "text": "ECHOY_GALLERY revision=3\n"
+      },
+      {
+        "boot_id": 2646500753984770485,
+        "monotonic_us": 925014306,
+        "text": "ECHOY_ROUTE route=home locale=zh\n"
+      },
+      {
+        "boot_id": 2646500753984770485,
+        "monotonic_us": 925484672,
+        "text": "I (926660) echoy_synth: role=0 phrase=1 events=10 source_us=287806 foreground_us=404578 full_us=107404 normalize_us=40925\n"
+      },
+      {
+        "boot_id": 2646500753984770485,
+        "monotonic_us": 925522064,
+        "text": "I (926690) echoy_balance: role=0 gain_milli=1600 before_peak_micro=461266 after_peak_micro=738026\n"
+      },
+      {
+        "boot_id": 2646500753984770485,
+        "monotonic_us": 926284066,
+        "text": "I (927460) echoy-link: sent plan peer=30eda0f40c6c revision=4\n"
+      },
+      {
+        "boot_id": 2646500753984770485,
+        "monotonic_us": 926884739,
+        "text": "I (928060) echoy-link: prepared transaction=4 common-bar=928226095\n"
+      },
+      {
+        "boot_id": 2646500753984770485,
+        "monotonic_us": 927340242,
+        "text": "I (928510) gsp_esp: perf: 2.8 rendered fps\n"
+      },
+      {
+        "boot_id": 2646500753984770485,
+        "monotonic_us": 928241173,
+        "text": "ECHOY_STRIP_READY tile=A mode=idle record=1 play=1 single=0 at_us=928241137\n"
+      },
+      {
+        "boot_id": 2646500753984770485,
+        "monotonic_us": 928245437,
+        "text": "ECHOY_PLAN revision=3 role=pulse phrase=1 anchors=3 events=10\n"
+      },
+      {
+        "boot_id": 2646500753984770485,
+        "monotonic_us": 928334709,
+        "text": "I (929510) echoy-link: both committed transaction=4 root-at=928226095\n"
+      },
+      {
+        "boot_id": 2646500753984770485,
+        "monotonic_us": 928361392,
+        "text": "ECHOY_UI_COST route=0 tick_max_us=165764 gap_max_us=357823 stack_min=7652\n"
+      }
+    ],
+    "right": [
+      {
+        "boot_id": 4969769315098002880,
+        "monotonic_us": 925349290,
+        "text": "ECHOY_STRIP_READY tile=A mode=idle record=0 play=0 single=0 at_us=925349254\n"
+      },
+      {
+        "boot_id": 4969769315098002880,
+        "monotonic_us": 925583799,
+        "text": "I (926752) echoy_synth: role=2 phrase=1 events=11 source_us=58473 foreground_us=60090 full_us=93950 normalize_us=21263\n"
+      },
+      {
+        "boot_id": 4969769315098002880,
+        "monotonic_us": 925792448,
+        "text": "I (926962) echoy_synth: role=0 phrase=1 events=10 source_us=53253 foreground_us=50935 full_us=63687 normalize_us=25545\n"
+      },
+      {
+        "boot_id": 4969769315098002880,
+        "monotonic_us": 925814682,
+        "text": "I (926992) echoy_balance: role=2 gain_milli=31 before_peak_micro=552548 after_peak_micro=17515\n"
+      },
+      {
+        "boot_id": 4969769315098002880,
+        "monotonic_us": 925837179,
+        "text": "I (927012) echoy_balance: role=0 gain_milli=1600 before_peak_micro=461266 after_peak_micro=738026\n"
+      },
+      {
+        "boot_id": 4969769315098002880,
+        "monotonic_us": 927177877,
+        "text": "I (928352) gsp_esp: perf: 0.4 rendered fps\n"
+      },
+      {
+        "boot_id": 4969769315098002880,
+        "monotonic_us": 927309018,
+        "text": "ECHOY_STRIP_READY tile=A mode=idle record=0 play=1 single=0 at_us=927308984\n"
+      },
+      {
+        "boot_id": 4969769315098002880,
+        "monotonic_us": 927311589,
+        "text": "ECHOY_PLAN revision=14 role=dust phrase=1 anchors=3 events=11\n"
+      },
+      {
+        "boot_id": 4969769315098002880,
+        "monotonic_us": 927324950,
+        "text": "I (928502) echoy-link: committed transaction=4 local-at=927291276\n"
+      },
+      {
+        "boot_id": 4969769315098002880,
+        "monotonic_us": 927648793,
+        "text": "ECHOY_UI_COST route=0 tick_max_us=5589 gap_max_us=69596 stack_min=7424\n"
+      }
+    ]
+  },
+  "limits": [
+    "No hardware performance improvement has been measured yet.",
+    "No acoustic cause or distortion threshold across phrases has been established.",
+    "The earlier 15 s was a capture window, not measured switch latency."
+  ]
+}

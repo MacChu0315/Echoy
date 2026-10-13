@@ -23,6 +23,8 @@ atomic_int fake_task_failure, fake_health_stop_timeout, fake_event_tail_reads_af
 atomic_int fake_watermark_after_exit, fake_nonzero_blocks, fake_nonzero_since_flush;
 atomic_int fake_calibration_failure;
 atomic_int fake_probe_calls, fake_probe_failure;
+atomic_int fake_image_alloc_calls, fake_image_alloc_failure;
+atomic_uint fake_image_alloc_caps;
 static atomic_int health_percent = -1;
 static atomic_bool hold_write, hold_create, hold_prepare, write_blocked, prepare_blocked, create_blocked;
 void fake_sleep_ms(unsigned ms)
@@ -50,6 +52,12 @@ void *heap_caps_calloc(size_t count, size_t size, unsigned caps)
 {
     (void)caps;
     return calloc(count, size);
+}
+void *heap_caps_malloc(size_t size, unsigned caps)
+{
+    atomic_fetch_add(&fake_image_alloc_calls, 1);
+    atomic_store(&fake_image_alloc_caps, caps);
+    return atomic_load(&fake_image_alloc_failure) ? NULL : malloc(size);
 }
 size_t heap_caps_get_free_size(unsigned caps)
 {

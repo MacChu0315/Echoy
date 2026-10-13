@@ -23,6 +23,16 @@ static uint8_t expand(unsigned channel, unsigned maximum)
 
 bool echoy_art_encode_qoi(const echoy_art_frame_t *frame, uint8_t **out, size_t *size)
 {
+    return echoy_art_encode_qoi_profiled(frame, out, size, NULL, NULL, NULL);
+}
+
+bool echoy_art_encode_qoi_profiled(const echoy_art_frame_t *frame, uint8_t **out, size_t *size,
+                                  int64_t (*now_us)(void *), void *clock_ctx,
+                                  echoy_art_encode_cost_t *cost)
+{
+    if (cost) {
+        *cost = (echoy_art_encode_cost_t){0};
+    }
     if (out) {
         *out = NULL;
     }
@@ -54,7 +64,9 @@ bool echoy_art_encode_qoi(const echoy_art_frame_t *frame, uint8_t **out, size_t 
         .height = (uint16_t)frame->height,
         .pixel_format = ESP_GSP_CANVAS_PIXEL_RGB565,
     };
+    int64_t draw_at = now_us && cost ? now_us(clock_ctx) : 0;
     echoy_art_draw(&surface, &snapshot);
+    int64_t encode_at = now_us && cost ? now_us(clock_ctx) : 0;
 
     /* QOI v1.0: https://qoiformat.org/qoi-specification.pdf. The opaque RGB
      * and RUN subset needs no color-index table or additional dependency. */
@@ -93,5 +105,9 @@ bool echoy_art_encode_qoi(const echoy_art_frame_t *frame, uint8_t **out, size_t 
     free(pixels);
     *out = encoded;
     *size = offset + 8;
+    if (now_us && cost) {
+        cost->draw_us = encode_at - draw_at;
+        cost->encode_us = now_us(clock_ctx) - encode_at;
+    }
     return true;
 }

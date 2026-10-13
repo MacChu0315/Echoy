@@ -1,0 +1,64 @@
+{
+  "firmware": "e44a3d8919d3",
+  "user_report": "Right stays empty/waiting to record after first join; left has just recorded a phrase.",
+  "stage": "Physical contacts seen; no peer session, application proposal or chunk transfer yet.",
+  "heap": {
+    "right_initial_internal_bytes": 9931,
+    "right_after_gallery_internal_bytes": 1939,
+    "left_after_recording_internal_bytes": 4355,
+    "right_psram_free_bytes": 12797840
+  },
+  "image_sizes_from_real_encoder": {
+    "dust_gallery_left_voice": 2315,
+    "dust_gallery_center_dust": 3636,
+    "dust_gallery_right_harmony": 1548,
+    "dust_gallery_total": 7499,
+    "opaque_chinese_strip_record": 2163,
+    "opaque_chinese_strip_play": 2628,
+    "opaque_chinese_strip_cancel": 2657,
+    "opaque_chinese_strip_pause": 2312
+  },
+  "confirmed_allocation_contract": "COPY retains encoded sources until bind replacement/shutdown, including hidden pages. Plain malloc up to 16384 bytes prefers internal heap in the installed configuration.",
+  "error_limit": "BSP logs literal ERROR for unregistered ESPNOW codes; the captured text does not identify a numeric NO_MEM return.",
+  "proposed_change": "Keep encoded GSP sources in explicit PSRAM through an application allocator and public TAKE ownership; no global allocator, image content, sound or wire changes.",
+  "events": [
+    {
+      "device": "left",
+      "boot_id": 13804741210610604633,
+      "broadcast_error_count_in_capture": 0,
+      "observations": [
+        {
+          "monotonic_us": 250594991,
+          "text": "I (251736) echoy-link: magnetic contact edge=RIGHT\n"
+        }
+      ]
+    },
+    {
+      "device": "right",
+      "boot_id": 3888807882828278489,
+      "broadcast_error_count_in_capture": 3164,
+      "observations": [
+        {
+          "monotonic_us": 113282041,
+          "text": "ECHOY_ROUTE route=role_page locale=zh\n"
+        },
+        {
+          "monotonic_us": 122119216,
+          "text": "I (123258) echoy_device: internal=1939 PSRAM=12797840 owner_stack=8716 prepare=18us render_max=6965us rejected=0 overflow=0 cache_busy=0 limited=0 mix=5623us pcm=1425us core=1 prep_stack=8012\n"
+        },
+        {
+          "monotonic_us": 153848828,
+          "text": "I (154988) echoy-link: magnetic contact edge=LEFT\n"
+        },
+        {
+          "monotonic_us": 153844923,
+          "text": "E (154988) mosaico_peer: send peer frame failed: type=2 target=000000000000 sequence=1 error=ERROR\n"
+        },
+        {
+          "monotonic_us": 153876027,
+          "text": "E (155018) mosaico_peer: send peer frame failed: type=2 target=000000000000 sequence=2 error=ERROR\n"
+        }
+      ]
+    }
+  ]
+}

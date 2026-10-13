@@ -41,6 +41,7 @@ struct voice {
 struct echoy_band_job {
     echoy_arrange_job_t arrangement;
     uint32_t generation;
+    uint8_t inaudible_mask;
     struct bank *banks[N];
     bool ok, staged, calibrated;
 };
@@ -260,6 +261,15 @@ echoy_band_t *echoy_band_create(void)
             echoy_band_delete(b);
             return NULL;
         }
+#ifdef ESP_PLATFORM
+        ESP_LOGI("echoy_band", "ECHOY_MODEL_STORAGE tile=%c bytes=%u internal=%u external=%u "
+                              "internal_free=%u internal_largest=%u",
+                 'A' + i, (unsigned)heap_caps_get_allocated_size(b->voices[i].model),
+                 (unsigned)esp_ptr_internal(b->voices[i].model),
+                 (unsigned)esp_ptr_external_ram(b->voices[i].model),
+                 (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT),
+                 (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT));
+#endif
         echoy_model_select_role(b->voices[i].model, echoy_arrange_get_tile(b->arrange, i)->role, 0);
     }
     for (unsigned i = 0; i < 3; i++) {
@@ -854,6 +864,9 @@ echoy_band_job_t *echoy_band_take_job(echoy_band_t *b)
     }
     b->issued = rev;
     j->generation=b->job_generation;
+    /* Physical B carries the upstream phrase and clock, never local audio.
+     * Snapshot the identity here; the immutable worker must not read band. */
+    j->inaudible_mask=b->upstream_connected ? (1u << ECHOY_TILE_B) : 0;
     struct cooperation *c=b->cooperation;
     c->candidate=j->arrangement.plans[ECHOY_TILE_A].music;
     c->candidate_revision=rev;
@@ -876,7 +889,8 @@ bool echoy_band_prepare_job(echoy_band_job_t *j)
         return false;
     }
     for (int i = 0; i < N; i++) {
-        if ((j->arrangement.changed_mask & (1u << i)) && j->arrangement.plans[i].valid) {
+        if ((j->arrangement.changed_mask & (1u << i)) &&
+            !(j->inaudible_mask & (1u << i)) && j->arrangement.plans[i].valid) {
             const echoy_arrange_plan_t *p = &j->arrangement.plans[i];
             struct bank *k = calloc(1, sizeof(*k));
             if (!k) {
@@ -1015,7 +1029,9 @@ void echoy_band_tick(echoy_band_t *b, int64_t now)
     bool authorized=!joint_hold(b) || (c->armed && c->authorized==c->armed && c->committed!=c->armed);
     if (b->ready && b->ready->staged && authorized && echoy_arrange_commit(b->arrange, now, &commit)) {
         for (int i = 0; i < N; i++) {
-            if (commit.changed_mask & (1u << i)) {
+            /* Identity can become inaudible without changing its music.
+             * Drop any previous prepared bank while retaining the full plan. */
+            if ((commit.changed_mask | b->ready->inaudible_mask) & (1u << i)) {
                 struct voice *v = &b->voices[i];
                 echoy_snapshot_t s;
                 echoy_model_get_snapshot(v->model, &s);

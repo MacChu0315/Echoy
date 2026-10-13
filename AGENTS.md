@@ -47,3 +47,7 @@
 - The PCM owner must not wait for UI/link cached-state readers. Publish without
   blocking and retry on a later block; keep the output deadline and explicit
   pause/recovery semantics intact.
+- Retained GSP encoded images and the large UI view cache use the device
+  `ui_storage_alloc` PSRAM path. Hiding a bind does not release its image source.
+  A UI with both external control callbacks must not create a redundant
+  standalone musical model.

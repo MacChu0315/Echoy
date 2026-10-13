@@ -1,0 +1,53 @@
+{
+  "path": "output/device-release/echoy-latency-e44a3d8919d3.irisfw",
+  "sha256": "e44a3d8919d33c4ed074bc39bd62426bf591fce926e9e628ca10638fb1ffa536",
+  "elf_sha256": "f5fdd9f1a1e3e5167228456303547fa887b19a5004483f293ddbc51d52afa144",
+  "build_log": ".codex-runs/idf-low-noise-build/20261013-105929-system-update-bundle-3271788/raw.log",
+  "sources": {
+    "projects/echoy/main/board_link.c": "c188c3f172f856938b3988d34f721a579813110d5ebf33e4fdeeb8379b83f9c5",
+    "projects/echoy/main/echoy_band.c": "25ae98895180d73feffcfdfc2e2d70870659e3b1e0335ee3c7b9122e7bb90871",
+    "projects/echoy/main/echoy_ui.c": "c5c39a1da8cc9afc7a4900ca9a0ff211736e8add83669e73cafa95fe0ef1fa31",
+    "projects/echoy/main/echoy_art_image.c": "85f46f8ee762c9f6ee7c24cf913b072bebdec80aed701babf8d7342dd471200e",
+    "projects/echoy/main/echoy_art_image.h": "52e029e133755d8eac8923368e107851060b44ba90c03a50d2ad55a8e3139cb8"
+  },
+  "bundle": {
+    "schema": "esp-iris-system-update/v1",
+    "manifest_sha256": "3dad21296ca714a3d109b9cf9001ad2f4d71efc5b44ccd7b9da9de477030f793",
+    "key_id": null,
+    "chip_id": 32,
+    "flash_size": 16777216,
+    "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+    "components": [
+      {
+        "id": 1,
+        "kind": "partition_table",
+        "flags": 0,
+        "target_offset": 32768,
+        "size": 4096,
+        "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+        "file": "partition-table.bin"
+      },
+      {
+        "id": 2,
+        "kind": "application",
+        "flags": 0,
+        "target_offset": 2162688,
+        "size": 2097584,
+        "sha256": "21270773131a539c41d6c15e994c9ad7fa397b233c399109d2d1ede7562aa646",
+        "file": "ota_0.bin"
+      },
+      {
+        "id": 3,
+        "kind": "data",
+        "flags": 0,
+        "target_offset": 15728640,
+        "size": 383312,
+        "sha256": "89946856deafbf7fd282c8ce148d49a55e6289d99ce87dc82322b504124deeef",
+        "file": "ui_apps.bin"
+      }
+    ],
+    "signature_verified": false,
+    "release": "1.0.0",
+    "minimum_recovery_version": "0.1"
+  }
+}

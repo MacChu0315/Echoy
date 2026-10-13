@@ -1,6 +1,7 @@
 #include "echoy_band.h"
 #include "board_audio.h"
 #include "esp_timer.h"
+#include "esp_heap_caps.h"
 #include "fakes.h"
 #include "platform_device.h"
 #include "freertos/semphr.h"
@@ -662,10 +663,32 @@ static void linked_snapshot_queue(void)
     stop(&d);
     puts("PASS network snapshots are copied off audio, attach stays silent, detach retains phrase");
 }
+static void image_storage_uses_psram(void)
+{
+    echoy_device_handle_t device = NULL;
+    assert(echoy_device_start(&device, &p) == ESP_OK);
+    assert(p.ui_storage_alloc);
+    unsigned before = atomic_load(&fake_image_alloc_calls);
+    void *image = p.ui_storage_alloc(p.ctx, 1024);
+    assert(image);
+    memset(image, 0x5a, 1024);
+    free(image); /* TAKE's default release uses free(), including on device. */
+    assert(atomic_load(&fake_image_alloc_calls) == before + 1);
+    assert(atomic_load(&fake_image_alloc_caps) == (MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
+    atomic_store(&fake_image_alloc_failure, 1);
+    assert(!p.ui_storage_alloc(p.ctx, 1024));
+    assert(atomic_load(&fake_image_alloc_calls) == before + 2);
+    assert(atomic_load(&fake_image_alloc_caps) == (MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
+    atomic_store(&fake_image_alloc_failure, 0);
+    stop(&device);
+    puts("PASS retained image storage requires free-compatible PSRAM without internal fallback");
+}
 int main(int argc, char **argv)
 {
     assert(argc == 2);
-    if (!strcmp(argv[1], "link"))
+    if (!strcmp(argv[1], "image_storage"))
+        image_storage_uses_psram();
+    else if (!strcmp(argv[1], "link"))
         linked_snapshot_queue();
     else if (!strcmp(argv[1], "cache_contention_control"))
         cached_reader_cannot_block_audio(false);

@@ -1,0 +1,39 @@
+{
+  "boot_id": 16801241995940483221,
+  "user_action": "Directly joined default empty homes without opening Role page.",
+  "first_events": [
+    {
+      "monotonic_us": 465745024,
+      "text": "I (466890) echoy-link: magnetic contact edge=LEFT\n"
+    },
+    {
+      "monotonic_us": 465894146,
+      "text": "I (467040) echoy-link: attached edge=LEFT peer=30eda0f452a0 session=1053056631 following=1\n"
+    },
+    {
+      "monotonic_us": 468411353,
+      "text": "E (469550) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=63 error=ESP_ERR_ESPNOW_NO_MEM\n"
+    },
+    {
+      "monotonic_us": 468411416,
+      "text": "W (469550) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM\n"
+    },
+    {
+      "monotonic_us": 471428602,
+      "text": "E (472570) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=138 error=ESP_ERR_ESPNOW_NO_MEM\n"
+    },
+    {
+      "monotonic_us": 471428662,
+      "text": "W (472570) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM\n"
+    },
+    {
+      "monotonic_us": 479399765,
+      "text": "E (480540) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=326 error=ESP_ERR_ESPNOW_NO_MEM\n"
+    },
+    {
+      "monotonic_us": 479399828,
+      "text": "W (480540) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM\n"
+    }
+  ],
+  "failure_count_in_current_capture": 251
+}

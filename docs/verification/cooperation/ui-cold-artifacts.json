@@ -1,0 +1,58 @@
+{
+  "path": "output/device-release/echoy-ui-cold-storage-150bd97add2b.irisfw",
+  "sha256": "150bd97add2ba269b467808ae9fb8ecf8a287c7e4cd8d8728f6447ef294ee247",
+  "elf_sha256": "09644dd9013d660b1237b2ae016f6d4f3637a99313d8e8988d5f2e7c91b2163d",
+  "sources": {
+    "projects/echoy/main/CMakeLists.txt": "1810c09c9e27b4727fcf4e70de41aa921ce00206359a2e6e780fd5e531749574",
+    "projects/echoy/main/board_link.c": "c188c3f172f856938b3988d34f721a579813110d5ebf33e4fdeeb8379b83f9c5",
+    "projects/echoy/main/echoy_band.c": "efe74bcffd054db1d288be432d4d7462b65d3c8d8e22b0eedf8293b27b801031",
+    "projects/echoy/main/echoy_ui.c": "24ca7aaf11a95927e301b16dc4891e27215186de2ae0d06daf7de007e43920c6",
+    "projects/echoy/main/echoy_ui.h": "3f95d69760f1834236da9236a537ffe3560965db703e729a4b616211bcc3d1be",
+    "projects/echoy/main/echoy_view_cache.c": "f34541a6c605fe16a4c017567dc1ae7df36c5a0cf2a0efd2d3672afd74bc45a8",
+    "projects/echoy/main/echoy_view_cache.h": "2875f693757c711a0d2466e3fa1e1715427fa909eb7d0b99bdb9f4c8fc876755",
+    "projects/echoy/main/platform_device.c": "84bfb787f41e1403008a3423fcbc67ecf337d76e9d18a1bd0ed37c2869049496",
+    "projects/echoy/main/echoy_art_image.c": "85f46f8ee762c9f6ee7c24cf913b072bebdec80aed701babf8d7342dd471200e",
+    "projects/echoy/main/echoy_art_image.h": "52e029e133755d8eac8923368e107851060b44ba90c03a50d2ad55a8e3139cb8"
+  },
+  "build_log": ".codex-runs/idf-low-noise-build/20261013-120858-system-update-bundle-3347365/raw.log",
+  "bundle": {
+    "schema": "esp-iris-system-update/v1",
+    "manifest_sha256": "1376b38cfea11e5baa4d0ebe7652309d0b46add2de4fcf4b32a402d9747f01a7",
+    "key_id": null,
+    "chip_id": 32,
+    "flash_size": 16777216,
+    "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+    "components": [
+      {
+        "id": 1,
+        "kind": "partition_table",
+        "flags": 0,
+        "target_offset": 32768,
+        "size": 4096,
+        "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+        "file": "partition-table.bin"
+      },
+      {
+        "id": 2,
+        "kind": "application",
+        "flags": 0,
+        "target_offset": 2162688,
+        "size": 2098816,
+        "sha256": "96051dac8d36c0e02350159148052964c7c47b0adc34ec09d0549605f3fdcf50",
+        "file": "ota_0.bin"
+      },
+      {
+        "id": 3,
+        "kind": "data",
+        "flags": 0,
+        "target_offset": 15728640,
+        "size": 383312,
+        "sha256": "89946856deafbf7fd282c8ce148d49a55e6289d99ce87dc82322b504124deeef",
+        "file": "ui_apps.bin"
+      }
+    ],
+    "signature_verified": false,
+    "release": "1.0.0",
+    "minimum_recovery_version": "0.1"
+  }
+}

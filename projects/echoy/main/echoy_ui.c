@@ -13,6 +13,8 @@
 #include <stdlib.h>
 #include <string.h>
 #ifdef ESP_PLATFORM
+#include "esp_heap_caps.h"
+#include "esp_memory_utils.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #endif
@@ -48,6 +50,8 @@ struct echoy_ui {
     atomic_uint images_pending;
     bool events_registered, pointer_registered, canvas_registered[2];
     bool gallery_dirty, gallery_inflight, last_draw_animated;
+    unsigned gallery_next;
+    int64_t gallery_ready_us;
     uint32_t gallery_submitted_revision;
     echoy_art_frame_t frames[5];
     struct echoy_art_workspace *art_workspace;
@@ -68,6 +72,8 @@ struct echoy_ui {
     int64_t record_hint_until_us;
 #ifdef ESP_PLATFORM
     int64_t perf_tick_at, perf_log_at, perf_tick_max, perf_gap_max;
+    int64_t perf_gallery_draw[3], perf_gallery_encode[3], perf_gallery_submit[3];
+    unsigned perf_gallery_count[3], perf_gallery_role[3];
 #endif
     int last_step, last_phase, last_route, last_condition, last_english;
     uint16_t last_capture_mask, last_gallery_seed;
@@ -298,6 +304,8 @@ static void prepare_graphics(echoy_ui_handle_t u, const echoy_snapshot_t *s, int
                                                    .background = i == 1 ? 0xe5e7de : 0xecefe4};
         }
         u->gallery_dirty = true;
+        u->gallery_next = 0;
+        u->gallery_ready_us = now + DRAW_US;
         u->last_gallery_revision = s->revision;
         u->last_gallery_seed = seed;
         u->frames_dirty = true;
@@ -314,40 +322,76 @@ static void gallery_complete(esp_gsp_handle_t gsp, uint16_t bind, gsp_err_t stat
     }
     atomic_fetch_sub_explicit(&u->images_pending, 1, memory_order_release);
 }
-static void publish_gallery(echoy_ui_handle_t u)
+/* Consumes the encoder buffer on every path. Retained input can outlive its
+ * completion callback, so only GSP releases accepted TAKE storage. */
+static esp_gsp_err_t submit_image(echoy_ui_handle_t u, uint16_t bind, uint8_t *encoded, size_t size)
 {
-    /* Back-pressure: finish the previous batch; the next batch uses latest state. */
-    if (!u->gallery_dirty || atomic_load_explicit(&u->images_pending, memory_order_acquire)) {
+    if (u->platform.ui_storage_alloc) {
+        uint8_t *storage = u->platform.ui_storage_alloc(u->platform.ctx, size);
+        if (!storage) {
+            free(encoded);
+            return ESP_GSP_ERR_NO_MEM;
+        }
+        memcpy(storage, encoded, size);
+        free(encoded);
+        encoded = storage;
+    }
+    const esp_gsp_image_options_t options = {
+        .ownership = ESP_GSP_IMAGE_TAKE, .on_complete = gallery_complete, .complete_ctx = u};
+    atomic_fetch_add(&u->images_pending, 1);
+    esp_gsp_err_t error = esp_gsp_set_image_ex(u->gsp, bind, encoded, size, &options);
+    if (error != ESP_GSP_OK) {
+        atomic_fetch_sub(&u->images_pending, 1);
+        free(encoded);
+    }
+    return error;
+}
+static void publish_gallery(echoy_ui_handle_t u, int64_t now)
+{
+    /* Yield one display interval for selection feedback, then submit one image
+     * per timer callback. New state replaces only work not yet submitted; an
+     * old completion cannot advance the replacement sequence. */
+    if (!u->gallery_dirty || now < u->gallery_ready_us ||
+        atomic_load_explicit(&u->images_pending, memory_order_acquire)) {
+        return;
+    }
+    static const unsigned order[] = {3, 2, 4}; /* Main, previous, next. */
+    unsigned i = order[u->gallery_next];
+    uint8_t *encoded = NULL;
+    size_t size = 0;
+#ifdef ESP_PLATFORM
+    echoy_art_encode_cost_t cost;
+    bool encoded_ok = echoy_art_encode_qoi_profiled(&u->frames[i], &encoded, &size,
+                                                   u->platform.now_us, u->platform.ctx, &cost);
+#else
+    bool encoded_ok = echoy_art_encode_qoi(&u->frames[i], &encoded, &size);
+#endif
+    if (!encoded_ok) {
+        CHECK(u, ESP_GSP_ERR_NO_MEM);
         return;
     }
 #ifdef ESP_PLATFORM
-    int64_t gallery_start = now_us(u);
+    int64_t submit_at = now_us(u);
 #endif
-    for (unsigned i = 2; i < 5; i++) {
-        uint8_t *encoded = NULL;
-        size_t size = 0;
-        if (!echoy_art_encode_qoi(&u->frames[i], &encoded, &size)) {
-            CHECK(u, ESP_GSP_ERR_NO_MEM);
-            return;
-        }
-        const esp_gsp_image_options_t options = {
-            .ownership = ESP_GSP_IMAGE_COPY, .on_complete = gallery_complete, .complete_ctx = u};
-        atomic_fetch_add(&u->images_pending, 1);
-        esp_gsp_err_t err = esp_gsp_set_image_ex(u->gsp, canvases[i], encoded, size, &options);
-        free(encoded);
-        if (err != ESP_GSP_OK) {
-            atomic_fetch_sub(&u->images_pending, 1);
-            CHECK(u, err);
-            return;
-        }
-    }
+    esp_gsp_err_t err = submit_image(u, canvases[i], encoded, size);
 #ifdef ESP_PLATFORM
-    fprintf(stderr, "ECHOY_GALLERY_COST role=%u us=%lld\n", (unsigned)u->frames[3].role,
-            (long long)(now_us(u)-gallery_start));
+    int64_t submit_us = now_us(u) - submit_at;
+    unsigned slot = i - 2;
+    if (cost.draw_us > u->perf_gallery_draw[slot]) u->perf_gallery_draw[slot] = cost.draw_us;
+    if (cost.encode_us > u->perf_gallery_encode[slot]) u->perf_gallery_encode[slot] = cost.encode_us;
+    if (submit_us > u->perf_gallery_submit[slot]) u->perf_gallery_submit[slot] = submit_us;
+    u->perf_gallery_count[slot]++;
+    u->perf_gallery_role[slot] = u->frames[i].role;
 #endif
-    u->gallery_dirty = false;
-    u->gallery_inflight = true;
-    u->gallery_submitted_revision = u->last_gallery_revision;
+    if (err != ESP_GSP_OK) {
+        CHECK(u, err);
+        return;
+    }
+    if (++u->gallery_next == sizeof(order) / sizeof(order[0])) {
+        u->gallery_dirty = false;
+        u->gallery_inflight = true;
+        u->gallery_submitted_revision = u->last_gallery_revision;
+    }
 }
 static void show_metadata(echoy_ui_handle_t u, const echoy_snapshot_t *s)
 {
@@ -457,13 +501,8 @@ static void strip_glyph(echoy_ui_handle_t u, unsigned kind, unsigned alpha, uint
         CHECK(u, ESP_GSP_ERR_NO_MEM);
         return;
     }
-    esp_gsp_image_options_t options = {
-        .ownership = ESP_GSP_IMAGE_COPY, .on_complete = gallery_complete, .complete_ctx = u};
-    atomic_fetch_add(&u->images_pending, 1);
-    esp_gsp_err_t error = esp_gsp_set_image_ex(u->gsp, binds[kind], encoded, size, &options);
-    free(encoded);
+    esp_gsp_err_t error = submit_image(u, binds[kind], encoded, size);
     if (error != ESP_GSP_OK) {
-        atomic_fetch_sub(&u->images_pending, 1);
         CHECK(u, error);
         return;
     }
@@ -730,11 +769,11 @@ static void refresh(echoy_ui_handle_t u, int64_t now, bool force)
         u->condition = ECHOY_AUDIO_FAULT;
     }
     show_display(u, &s, now);
+    show_metadata(u, &s);
+    show_home_state(u, &s, now);
     show_strip(u, &s, now);
     prepare_graphics(u, &s, now);
     u->frames_dirty |= s.committed_revision != u->last_committed;
-    show_metadata(u, &s);
-    show_home_state(u, &s, now);
     int height = (int)lround(u->volume * 111);
     CHECK(u, echoy_view_y(u->view, "volume_knob", 148 - height));
     CHECK(u, echoy_view_y(u->view, "volume_fill", 111 - height));
@@ -781,7 +820,14 @@ static void refresh(echoy_ui_handle_t u, int64_t now, bool force)
         u->frames_dirty = false;
     }
     if (u->route == ROLE && u->condition == ECHOY_NORMAL && !u->removed) {
-        publish_gallery(u);
+        if (u->last_route != ROLE) {
+            /* A new page gets a display interval; hover/drag cannot extend it. */
+            u->gallery_ready_us = now + DRAW_US;
+        }
+        if (!force) {
+            /* Pointer/event callbacks must return before expensive art work. */
+            publish_gallery(u, now);
+        }
     }
     route_t shown = u->removed ? REMOVED : u->condition != ECHOY_NORMAL ? STATUS : u->route;
     if ((int)shown != u->last_route) {
@@ -841,12 +887,12 @@ static void tick(esp_gsp_handle_t gsp, void *ctx)
     }
     if (!u->platform.read_control) {
         echoy_model_tick(u->model, now);
-    }
-    echoy_snapshot_t s;
-    read_state(u, &s);
-    /* Standalone UI-only adapter; the shared band waits for real prepared audio. */
-    if (!u->platform.read_control && s.phase == ECHOY_PREPARING && !s.plan_pending) {
-        echoy_model_prepare_done(u->model, s.generation, now);
+        echoy_snapshot_t s;
+        echoy_model_get_snapshot(u->model, &s);
+        /* Standalone adapter; the shared band waits for real prepared audio. */
+        if (s.phase == ECHOY_PREPARING && !s.plan_pending) {
+            echoy_model_prepare_done(u->model, s.generation, now);
+        }
     }
     refresh(u, now, false);
 #ifdef ESP_PLATFORM
@@ -858,6 +904,16 @@ static void tick(esp_gsp_handle_t gsp, void *ctx)
         fprintf(stderr, "ECHOY_UI_COST route=%u tick_max_us=%lld gap_max_us=%lld stack_min=%u\n",
                 (unsigned)u->route, (long long)u->perf_tick_max, (long long)u->perf_gap_max,
                 (unsigned)uxTaskGetStackHighWaterMark(NULL));
+        for (unsigned i = 0; i < 3; i++) {
+            if (!u->perf_gallery_count[i]) continue;
+            fprintf(stderr, "ECHOY_GALLERY_COST slot=%u last_role=%u count=%u draw_max_us=%lld "
+                            "encode_max_us=%lld submit_max_us=%lld\n",
+                    i, u->perf_gallery_role[i], u->perf_gallery_count[i],
+                    (long long)u->perf_gallery_draw[i], (long long)u->perf_gallery_encode[i],
+                    (long long)u->perf_gallery_submit[i]);
+            u->perf_gallery_count[i] = 0;
+            u->perf_gallery_draw[i] = u->perf_gallery_encode[i] = u->perf_gallery_submit[i] = 0;
+        }
         u->perf_log_at = now;
         u->perf_tick_max = u->perf_gap_max = 0;
     }
@@ -1016,6 +1072,22 @@ static void event(esp_gsp_handle_t gsp, const esp_gsp_event_t *e, void *ctx)
     u->frames_dirty = true;
     refresh(u, now, true);
 }
+#ifdef ESP_PLATFORM
+static void log_ui_allocation(const char *object, const void *pointer, bool required)
+{
+    const unsigned caps = MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT;
+    fprintf(stderr, "ECHOY_UI_ALLOC object=%s status=%s allocated_size=%u internal=%u psram=%u "
+                    "internal_free=%u internal_largest=%u\n",
+            object, pointer ? "allocated" : required ? "failed" : "skipped",
+            pointer ? (unsigned)heap_caps_get_allocated_size((void *)pointer) : 0,
+            (unsigned)(pointer && esp_ptr_internal(pointer)),
+            (unsigned)(pointer && esp_ptr_external_ram(pointer)),
+            (unsigned)heap_caps_get_free_size(caps),
+            (unsigned)heap_caps_get_largest_free_block(caps));
+}
+#else
+#define log_ui_allocation(object, pointer, required) ((void)0)
+#endif
 esp_gsp_err_t echoy_ui_create(esp_gsp_handle_t gsp, const echoy_platform_t *platform,
                               echoy_ui_handle_t *out)
 {
@@ -1024,6 +1096,7 @@ esp_gsp_err_t echoy_ui_create(esp_gsp_handle_t gsp, const echoy_platform_t *plat
     }
     *out = NULL;
     echoy_ui_handle_t u = calloc(1, sizeof(*u));
+    log_ui_allocation("ui", u, true);
     if (!u) {
         return ESP_GSP_ERR_NO_MEM;
     }
@@ -1051,16 +1124,20 @@ esp_gsp_err_t echoy_ui_create(esp_gsp_handle_t gsp, const echoy_platform_t *plat
     atomic_init(&u->image_error, GSP_OK);
     atomic_init(&u->images_pending, 0);
     u->art_workspace = echoy_art_workspace_create();
-    u->model = echoy_model_create();
-    u->view = echoy_view_cache_create(gsp);
-    if (!u->model || !u->view || !u->art_workspace) {
+    log_ui_allocation("art_workspace", u->art_workspace, true);
+    const bool needs_model = !platform->read_control || !platform->perform_action;
+    u->model = needs_model ? echoy_model_create() : NULL;
+    log_ui_allocation("standalone_model", u->model, needs_model);
+    u->view = echoy_view_cache_create_with_allocator(gsp, platform->ui_storage_alloc, platform->ctx);
+    log_ui_allocation("view_cache", u->view, true);
+    if ((needs_model && !u->model) || !u->view || !u->art_workspace) {
         echoy_model_delete(u->model);
         echoy_view_cache_delete(u->view);
         echoy_art_workspace_delete(u->art_workspace);
         free(u);
         return ESP_GSP_ERR_NO_MEM;
     }
-    if (platform->initial_seed) {
+    if (u->model && platform->initial_seed) {
         echoy_model_load_seed(u->model, platform->initial_seed, now_us(u), false);
     }
     if (platform->initial_condition != ECHOY_NORMAL) {

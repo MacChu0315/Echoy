@@ -1,0 +1,56 @@
+{
+  "path": "output/device-release/echoy-image-storage-c4e5fb0e45d2.irisfw",
+  "sha256": "c4e5fb0e45d263265385125c02625f56bf62e3aa8cb66d46fdd8d3823691ca28",
+  "elf_sha256": "512a572fb11b73ca14800433b05309aa08458c97d601017369ea93babf3b071b",
+  "sources": {
+    "projects/echoy/main/CMakeLists.txt": "1810c09c9e27b4727fcf4e70de41aa921ce00206359a2e6e780fd5e531749574",
+    "projects/echoy/main/board_link.c": "c188c3f172f856938b3988d34f721a579813110d5ebf33e4fdeeb8379b83f9c5",
+    "projects/echoy/main/echoy_band.c": "25ae98895180d73feffcfdfc2e2d70870659e3b1e0335ee3c7b9122e7bb90871",
+    "projects/echoy/main/echoy_ui.c": "5717be8838d000d0e9d5c7d71124e0bd750ddbac7f33c0f38511627abe656879",
+    "projects/echoy/main/echoy_ui.h": "4aa1705d0c4f3212008a6251c8dda736d459368254bc389900ee097499be0ca2",
+    "projects/echoy/main/echoy_art_image.c": "85f46f8ee762c9f6ee7c24cf913b072bebdec80aed701babf8d7342dd471200e",
+    "projects/echoy/main/echoy_art_image.h": "52e029e133755d8eac8923368e107851060b44ba90c03a50d2ad55a8e3139cb8",
+    "projects/echoy/main/platform_device.c": "c3bc13fdcec76ef12a89f7f35a39eff0763a94831fabcd9b82f6824362204362"
+  },
+  "build_log": ".codex-runs/idf-low-noise-build/20261013-113520-system-update-bundle-3318430/raw.log",
+  "bundle": {
+    "schema": "esp-iris-system-update/v1",
+    "manifest_sha256": "c9ac35c6f9ab55bc2cded16f2a99b8e77f608dcb2416922434ec750845e2d40e",
+    "key_id": null,
+    "chip_id": 32,
+    "flash_size": 16777216,
+    "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+    "components": [
+      {
+        "id": 1,
+        "kind": "partition_table",
+        "flags": 0,
+        "target_offset": 32768,
+        "size": 4096,
+        "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+        "file": "partition-table.bin"
+      },
+      {
+        "id": 2,
+        "kind": "application",
+        "flags": 0,
+        "target_offset": 2162688,
+        "size": 2098016,
+        "sha256": "bdaf9bafce8136d91218b08bd87c30437e731852f202398a16f19d78e744c7aa",
+        "file": "ota_0.bin"
+      },
+      {
+        "id": 3,
+        "kind": "data",
+        "flags": 0,
+        "target_offset": 15728640,
+        "size": 383312,
+        "sha256": "89946856deafbf7fd282c8ce148d49a55e6289d99ce87dc82322b504124deeef",
+        "file": "ui_apps.bin"
+      }
+    ],
+    "signature_verified": false,
+    "release": "1.0.0",
+    "minimum_recovery_version": "0.1"
+  }
+}

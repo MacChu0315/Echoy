@@ -11,3 +11,4 @@ trap 'rm -rf "$band_build"' EXIT HUP INT TERM
 "$band_build/test_band"
 
 sh "$root/tests/band/run_calibration.sh"
+sh "$root/tests/band/run_upstream_synthesis.sh"
