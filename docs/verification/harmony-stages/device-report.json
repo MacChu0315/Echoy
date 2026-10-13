@@ -1,0 +1,223 @@
+{
+  "input": {
+    "kind": "canonical_echp",
+    "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/quality-harmony-device-plan-20261013/plan.echp"
+  },
+  "volume": 0.65,
+  "production": {
+    "role": 3,
+    "phrase": 2,
+    "density": 0.5,
+    "events": 10,
+    "target_rms": 0.045,
+    "bank_gain": 2.38000011,
+    "drive": 18,
+    "ceiling": 0.600000024,
+    "lookahead_frames": 24,
+    "loop_frames": 60000,
+    "limited_counter": 119998,
+    "clipped_counter": 0,
+    "block_partition_bit_identical": true
+  },
+  "verification": {
+    "observer_bit_identical": true,
+    "block_partition_bit_identical": true
+  },
+  "sample_rate": 24000,
+  "warmup_frames": 60000,
+  "measured_frames": 120000,
+  "stages": {
+    "pre_compressor": {
+      "peak": 0.06038116663694382,
+      "rms": 0.01726623538401997,
+      "mean": 5.469495767828662e-07,
+      "crest_db": 10.874076853483883,
+      "maximum_adjacent_jump": 0.0059631826588884,
+      "energy_fractions": {
+        "0-120_hz": 8.802900762868006e-06,
+        "120-300_hz": 0.33890036906700816,
+        "300-1000_hz": 0.6609388149839956,
+        "1000-3000_hz": 0.0001507222827697519,
+        "3000-12001_hz": 1.2907654630983951e-06
+      }
+    },
+    "post_compressor": {
+      "peak": 0.09094300866127014,
+      "rms": 0.0260054884937024,
+      "mean": 5.906260589819024e-07,
+      "crest_db": 10.874086035114747,
+      "maximum_adjacent_jump": 0.008981439284980297,
+      "energy_fractions": {
+        "0-120_hz": 8.850782549977696e-06,
+        "120-300_hz": 0.33890095368050216,
+        "300-1000_hz": 0.6609381811502922,
+        "1000-3000_hz": 0.00015072317355232755,
+        "3000-12001_hz": 1.2912131034112694e-06
+      }
+    },
+    "post_fade": {
+      "peak": 0.09094300866127014,
+      "rms": 0.025996526397430383,
+      "mean": 9.112350430076225e-07,
+      "crest_db": 10.877079910643538,
+      "maximum_adjacent_jump": 0.008981439284980297,
+      "energy_fractions": {
+        "0-120_hz": 8.682165292892306e-06,
+        "120-300_hz": 0.3385041223103579,
+        "300-1000_hz": 0.6613351244719408,
+        "1000-3000_hz": 0.00015078013768809112,
+        "3000-12001_hz": 1.2909147207091746e-06
+      }
+    },
+    "normalized_full": {
+      "peak": 0.15742239356040955,
+      "rms": 0.045000001284096876,
+      "mean": 1.5773470525881036e-06,
+      "crest_db": 10.877079705199261,
+      "maximum_adjacent_jump": 0.01554687600582838,
+      "energy_fractions": {
+        "0-120_hz": 8.682165601431975e-06,
+        "120-300_hz": 0.3385041225514019,
+        "300-1000_hz": 0.6613351242343991,
+        "1000-3000_hz": 0.00015078013438792612,
+        "3000-12001_hz": 1.290914209395358e-06
+      }
+    },
+    "input": {
+      "peak": 0.1095896065235138,
+      "rms": 0.031326752389271524,
+      "mean": 1.0980654574817524e-06,
+      "crest_db": 10.877079864928385,
+      "maximum_adjacent_jump": 0.010822958312928677,
+      "energy_fractions": {
+        "0-120_hz": 8.682163469287696e-06,
+        "120-300_hz": 0.3385041225477064,
+        "300-1000_hz": 0.661335124238991,
+        "1000-3000_hz": 0.0001507801356388658,
+        "3000-12001_hz": 1.2909141945159462e-06
+      }
+    },
+    "hp_drive": {
+      "peak": 1.9124902486801147,
+      "rms": 0.5567086197509764,
+      "mean": -1.8674918054117916e-07,
+      "crest_db": 10.719425674979934,
+      "maximum_adjacent_jump": 0.19270317628979683,
+      "energy_fractions": {
+        "0-120_hz": 2.278739526135483e-06,
+        "120-300_hz": 0.3267003122852118,
+        "300-1000_hz": 0.6731414064974491,
+        "1000-3000_hz": 0.00015467808669350892,
+        "3000-12001_hz": 1.3243911193102163e-06
+      }
+    },
+    "pcm": {
+      "peak": 0.5999938962981048,
+      "rms": 0.30807705677901,
+      "mean": -0.0003876099937945699,
+      "crest_db": 5.789749515237654,
+      "maximum_adjacent_jump": 0.0729392376476333,
+      "energy_fractions": {
+        "0-120_hz": 0.00010869781844149559,
+        "120-300_hz": 0.40457113597221606,
+        "300-1000_hz": 0.5951538867964432,
+        "1000-3000_hz": 0.0001652457732372057,
+        "3000-12001_hz": 1.0336396622023128e-06
+      }
+    }
+  },
+  "effective_limiter": {
+    "input_threshold": 0.0001,
+    "active_fraction": 0.8366666666666667,
+    "gain_reduction_db_percentiles": {
+      "0": 0.00024850885085343256,
+      "50": 3.557151410461922,
+      "95": 8.084780841464193,
+      "100": 10.068961480670534
+    },
+    "active_reduction_fraction": {
+      "0.1": 0.8562350597609562,
+      "1": 0.6738446215139442,
+      "3": 0.5372509960159363,
+      "6": 0.2595617529880478
+    }
+  },
+  "boundaries": {
+    "input": [
+      {
+        "frame": 60000,
+        "jump": 0.0,
+        "local_peak_1ms": 1.155801692220848e-05
+      },
+      {
+        "frame": 120000,
+        "jump": 0.0,
+        "local_peak_1ms": 1.155801692220848e-05
+      }
+    ],
+    "hp_drive": [
+      {
+        "frame": 60000,
+        "jump": 2.4732289602980018e-06,
+        "local_peak_1ms": 0.00019723051809705794
+      },
+      {
+        "frame": 120000,
+        "jump": 2.4732289602980018e-06,
+        "local_peak_1ms": 0.00019723051809705794
+      }
+    ],
+    "pcm": [
+      {
+        "frame": 60000,
+        "jump": 3.051850947599719e-05,
+        "local_peak_1ms": 0.0014648884548478652
+      },
+      {
+        "frame": 120000,
+        "jump": 3.051850947599719e-05,
+        "local_peak_1ms": 0.0014648884548478652
+      }
+    ]
+  },
+  "shared_compressor_shape_residual": {
+    "best_constant_gain": 1.5061485622424007,
+    "relative_residual": 3.467060792732181e-08,
+    "residual_db": -149.2007708639205
+  },
+  "normalization_shape_residual": {
+    "best_constant_gain": 1.7310005420010617,
+    "relative_residual": 2.5234867421243747e-08,
+    "residual_db": -151.95997945234754
+  },
+  "limiter_shape_residual": {
+    "best_constant_gain": 0.5284040201231123,
+    "relative_residual": 0.2970915142283008,
+    "residual_db": -10.542195053893382
+  },
+  "matched_wavs": {
+    "common_rms": 0.06309573444801933,
+    "gains": {
+      "pre_compressor": 3.6542843905866653,
+      "post_compressor": 2.426246846441622,
+      "post_fade": 2.4270832757970315,
+      "normalized_full": 1.4021273921678206,
+      "input": 2.014116677783291,
+      "hp_drive": 0.11333708911538488,
+      "pcm": 0.2048050416596884
+    }
+  },
+  "source_sha256": {
+    "echoy_audio.c": "91b2f8a3fb391e13f0f3df5004616a10491501344af4a7a313ecc493a969ede6",
+    "echoy_device_pcm.c": "f888c952ad5ae1c774f552020efed20f2227edb11bcc53c74aed5b012cf10c6a",
+    "echoy_music.c": "b4dd6f3449dbb56c1122453c10c2461afc7872df2fd1c4ef7819f37925f96e33",
+    "echoy_link_codec.c": "8fdf823a71f75467e72a83a1d771312f5038628a9c4d6c98ceb517c3bca0b66d"
+  },
+  "plan_sha256": "3fa2667a834f28c2b772b203dae35c5e5e4e5d5b416c7fed8c4a7cfd2c995b37",
+  "limits": [
+    "Steady single-tile FULL bank replay; no transitions, cues, multi-tile sum or device timing",
+    "Shape residual includes intended nonlinear dynamics; it is not THD or listening acceptance",
+    "Spectral energy and adjacent-sample jumps do not identify an audible click or analog fault",
+    "Native JSON events/canonical ECHP preserve linked pitches; a seed alone does not"
+  ]
+}
