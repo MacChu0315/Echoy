@@ -1,0 +1,38 @@
+{
+  "package": "f13fd6428d8b",
+  "date": "2026-10-13",
+  "user_report": {
+    "scenario": "first Role click and initial phrase transfer to a silent follower",
+    "response": "都正常，右侧收到乐句且保持静音"
+  },
+  "observations": [
+    {
+      "side": "left",
+      "device_id": "4553502d49524953010030eda0f452a0",
+      "boot_id": "7368647184006517658",
+      "uptime_us": 51231151233,
+      "application_crash_count": 0,
+      "deadline_misses": 0,
+      "partial_writes": 0,
+      "write_errors": 0,
+      "rejected_actions": 0,
+      "cache_busy": 4,
+      "render_max_us": 7443
+    },
+    {
+      "side": "right",
+      "device_id": "4553502d49524953010030eda0f40c6c",
+      "boot_id": "14992168401857743263",
+      "uptime_us": 789034538,
+      "application_crash_count": 0,
+      "deadline_misses": 0,
+      "partial_writes": 0,
+      "write_errors": 0,
+      "rejected_actions": 0,
+      "cache_busy": 10,
+      "render_max_us": 6915
+    }
+  ],
+  "evidence_dir": "output/cooperation-physical/lockfix-active-20261013",
+  "scope": "Physical first Role and initial phrase transfer confirmed. Busy publication branches executed without deadline errors. Active playback/rejoin/shared edits/paused-right retest requested but no new user report or observed activity for it yet."
+}

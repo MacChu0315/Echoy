@@ -466,91 +466,56 @@ the v2 refinement below implements shared future-bar transactions. See
 `verification/dual-device/README.md` for
 implementation, artifact identities, test commands and acceptance boundaries.
 
-### Cooperation and audio-publication fixes; hardware retest in progress
+### Cooperation and audio-publication fixes installed (2026-10-13)
 
-The four user-approved decisions are implemented against the unchanged v4 HTML.
-New contact during count-in/recording/original preparation/reply waits for that
-local operation; Cancel/Pause and detach still work. Wireless v2 prepares full
-proposals and both actual sound banks before a common future-bar commit. Old
-PCM continues while preparing or after failure; paused devices never auto-start.
-Failure/peer-loss waits are bounded, and session/job fences reject stale work.
-The existing home line now shows connected, waiting, deferred, following and
-recovering states; empty followers no longer show the contradictory save hint.
-Detach ownership, no reboot memory, bottom geometry, audio profile and recording
-sequence are unchanged. Both peers must use the v2 coordination firmware.
+The four approved decisions are implemented against unchanged v4 HTML. Contact
+acknowledges immediately but defers joining through an existing count-in,
+recording and one-shot reply. Cancel/Pause and detach/rejoin remain independent.
+Wireless v2 prepares both sound banks before a common future bar; failures keep
+committed sound and no connection/commit grants Play permission. Detach retains
+the collaborative phrase; no restore-own entry or reboot memory was added.
+The existing status line shows connected, waiting, deferred, following and recovery.
 
-24 recording/link boundaries, 11 real two-owner transport/PCM cases, protocol and
-relevant sanitizers pass. The 864-plan/1,552-transition HTML oracle, 96 exact PCM
-windows, 23 device runtime cases, 6 new native GSP flows and 13 existing desk
-checks also pass. Build `build-sim-cooperation-v2` is isolated from older live
-previews. Native evidence and commands: `verification/cooperation/README.md`.
-The initial cooperation package `ace57f3ff2b0` was installed on both authorized Device IDs. ELF:
-`79e4f1701d3775e379d160ee4ce0bf3816d0b82d0fa3bb362fd6d9731b440acd`.
-First/second HEALTHY boots are `6968030823019921606` / `9645677825573746719`;
-operations `0c47f6c4-e554-45d3-bd41-cb3fdf9d336b` /
-`b8a34b86-6b57-490a-9f0e-17a0b2ac5877`. Live image, retained bootloader/layout,
-real homes and separated magnetic baselines pass, with zero application crashes.
-The known Recovery startup watchdog occurred before both writes; saved metadata
-had no valid core and stable Recovery was verified before each single update.
-The user has now confirmed all four targeted interaction groups: both empty
-joining/first phrase without right autoplay; complete deferred recording/reply;
-explicit cancel and detach/rejoin; common updates while playing and while the
-right is paused. The user also reported an occasional right-side boot screen.
-Read-only status still has the same Boot IDs, crash count zero and no core dump.
-Both devices recorded one audio deadline miss; the right fault was captured live
-after contact with unchanged render/mix/conversion maxima 8,916/7,624/1,430 us.
-Do not claim stable hardware acceptance or a proven whole-device reboot. The
-left error was in a dropped-log interval. Owner control/scheduling costs were not
-measured then; the subsequent trace and repair below preserve audio parameters,
-deadlines and playback semantics. Reports/evidence are retained in
-`verification/cooperation/physical-acceptance.json`.
+The earlier right-side apparent restart was an audio error page with unchanged
+Boot ID. A four-round diagnostic trace measured `view_lock` publication waiting
+16,806 us and missing PCM time by 1,841 us. Publication now uses a zero-wait lock
+attempt and retries next block; UI/radio readers cannot block the PCM owner.
+`cache_busy` telemetry counts deferred publications. No audio deadline, DMA lead,
+recording timing, volume or sound parameters were relaxed.
 
-Right-only diagnostic package `29a3cb61a5a0` was then installed, HEALTHY boot
-`13509464675950450897`, operation `51501961-9b96-4def-9c58-ebcdba0e7863`, ELF
-`83eaa386833d4ef389fe63a822d49e062b863bb422ee3a1e5fff65bc36478050`. Left remains
-on `ace57f3ff2b0`. The 16-round owner trace freezes current/previous control,
-mutex, render and write timings on a deadline miss. On the user's return, both
-Boot IDs/images were verified unchanged. The first right-side Role click
-reproduced a deadline failure: publisher lock wait 16,806 us, publication 17,026 us,
-late by 1,841 us; all earlier control stages completed within 93 us. Previous
-rounds had ordinary ~10 ms render/write cycles. Evidence:
-`verification/cooperation/publish-lock-trace.json`. This establishes blocking
-`view_lock` publication as the cause of the captured right-side failure.
+Recovery now acknowledges pre-OFFER ABORT without repeatedly resubmitting it;
+held source candidates cannot escape a failed transaction if ABORT overtakes
+BEGIN. Existing WANT messages resume after owner readiness or fresh peer traffic
+following actual silence. Every attempt remains 30 seconds; duplicate messages,
+continuous heartbeats and failed baseline markers do not trigger retry loops.
+Wire version/layout remain v2. Deferred local jobs, already-authorized commits
+and explicit playback permission remain protected.
 
-The local fix now uses a zero-wait publication attempt: a busy reader keeps its
-coherent previous cache, and the owner retries next block without delaying PCM.
-Two new tests hold UI/link readers for 80 ms: old code stops advancing output;
-new code keeps PCM and immediate Pause, then publishes fresh state after release.
-All 26 runtime cases pass normally and with ASan/UBSan. Not installed yet.
+All 26 runtime tests pass, including two 80 ms cache-reader contention regressions
+that fail on old code. The 18 real transport/PCM cases (33,039,014 assertions),
+24 deferred/owner cases, protocol/calibration checks and relevant ASan/UBSan
+runs pass. Fresh native GSP verification passes 6 flows and 46 caption/visibility
+assertions; frozen reference hashes are unchanged. Evidence and commands:
+`verification/cooperation/README.md` and `publish-lock-trace.json` there.
 
-The user's empty-right waiting report also has a concrete failure path: left is
-on its audio error page (deadline count increased to 2), right received no complete
-source plan and transaction 13 timed out before any common bar. Its current
-screen is Reconnecting. The same-connection recovery gap and repeated ABORT rejection before OFFER
-are now fixed locally. Recovery uses the existing WANT format only after an
-owner-ready transition or validated traffic after real silence; attempts remain
-30 seconds. Duplicate messages and a failed baseline marker cannot start retries.
-Pre-BEGIN failure cannot release a held source candidate into playback. Deferred
-recording and already-authorized jobs stay protected. The right never needs to
-record before following.
-
-18 real transport/PCM cases (33,039,014 assertions), 24 deferred cases, protocol,
-calibration and relevant sanitizer checks pass. All 26 runtime cases and the
-fresh native 6-flow/46-caption check pass; frozen HTML hashes remain intact.
-The pinned SDK package `f13fd6428d8b` preserves UI data and Recovery layout.
-It is installed on the first device, HEALTHY boot `7368647184006517658`, operation
-`1d41206d-1d5c-461e-8ebc-a7afd7abf3a7`, ELF
+Both authorized devices now run package `f13fd6428d8b`, ELF
 `f57805292875250767cf6f76a111a6d6a3914775438b5d90cd791768ef651420`.
-Home, retained bootloader, separated calibration and 90 seconds of idle PCM pass
-with zero deadline misses. Right still runs diagnostic `29a3cb61a5a0`: two software
-enter-recovery attempts returned device error 0x101 (ESP_ERR_NO_MEM), while live
-status confirmed the same normal boot and empty operation queue; no bundle write
-was submitted. The pinned recovery helper selects factory, then allocates a
-2,048-byte restart task; allocation failed and it requests rollback of the boot
-selection. User was asked to power on only the right while holding AI to enter
-existing Vibe Mode. Preserve the package/identity checks and resume from verified
-Recovery; do not repeat an unknown write or replace base firmware. Both-device
-retest remains pending. See `verification/cooperation/README.md`.
+First installed HEALTHY boot: `7368647184006517658`, operation
+`1d41206d-1d5c-461e-8ebc-a7afd7abf3a7`. Second installed HEALTHY boot:
+`14992168401857743263`, operation `58219d2c-cc92-4374-aeaf-7b8d6bafa456`.
+Identity, retained bootloader/layout, actual homes and magnetic baselines pass.
+The right's old firmware could not allocate the software recovery-entry task;
+user-assisted AI-button entry resolved delivery without rewriting base firmware.
+Recovery boot `15016243081138835729` had crash count zero. The two prior software
+attempts submitted no update bundle; the manual-entry path submitted one update.
+
+The user has confirmed the repaired first Role click and initial full phrase
+transfer to a silent follower. Latest live telemetry has zero crashes/deadline
+misses/partial writes/write errors on both, with cache-busy publication counts
+4/10, proving that busy readers were encountered without stopping PCM. This is
+initial/idle-linked verification. Playing rejoin/shared updates and paused-right
+retest was requested but has no new result yet; preserve current phrases. Physical RF/load
+or acoustic precision beyond these targeted checks is not yet established.
 
 The retained output calibration was accepted provisionally on `4ee7991a5d56`: hardware volume 90,
 device PCM gain 6 with .90 peak limiting and diagnostic RPC disabled. The
@@ -647,7 +612,7 @@ phrase 3 (Answer), the original problematic expression, also has no obvious
 distortion at the same higher volume. Physical listening follow-up is closed
 for this trial. On 2026-10-10 the user decided to retain the current volume
 ("音量上就先这样吧"). Keep the output parameters from `7c431dacfd59`;
-the current dual-device package is `ace57f3ff2b0` with those same parameters;
+the current dual-device package is `f13fd6428d8b` with those same parameters;
 stop further loudness tuning unless requested. This is provisional retention,
 not a claim of measured acoustic performance or the absolute hardware limit.
 Any future substantial loudness improvement needs acoustic/output-chain

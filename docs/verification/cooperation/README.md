@@ -78,7 +78,7 @@ Recovery boot before submitting one update per board. Application crashes are
 zero; the Recovery issue remains separate and unresolved. Before/after bootloader
 hashes match `d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc`.
 
-## Physical interaction and blocking output fault
+## Earlier interaction checks and captured output fault
 
 The user confirmed both-empty join/first phrase without right autoplay, a complete
 right recording and one-shot reply when joining during count-in, explicit cancel,
@@ -166,3 +166,28 @@ was submitted. User-assisted AI-button entry to the retained Vibe Mode was
 requested. Raw evidence lives in `output/dual-device/cooperation-lockfix-second/`
 and `.codex-runs/mosaico/20261012T114920Z-enter-recovery/` /
 `20261012T115205Z-enter-recovery/`.
+
+## Completed delivery of the fixes (2026-10-13)
+
+Both boards now run `f13fd6428d8b` with matching ELF
+`f57805292875250767cf6f76a111a6d6a3914775438b5d90cd791768ef651420`.
+The right entered retained Vibe Mode through the user's AI-button power-on,
+Recovery boot `15016243081138835729`, crash count zero. A single official update
+then succeeded: operation `58219d2c-cc92-4374-aeaf-7b8d6bafa456`, HEALTHY app boot
+`14992168401857743263`. Left remains on its installed boot
+`7368647184006517658`. [Delivery evidence](lockfix-device-results.json) includes
+image and retained bootloader/layout checks. Actual homes and magnetic baselines
+pass; right idle telemetry through 93 seconds has zero deadline misses or output
+errors. The former software-entry allocation failure was bypassed by manual
+entry; no base-firmware write or change to its helper was made.
+
+The user confirmed the first Role click on both devices and receipt of the left
+phrase by the silent right follower. Active rejoin/shared-update checks are pending.
+
+At the latest post-fix snapshot, both installed Boot IDs remained unchanged with
+zero application crashes, deadline misses, partial writes and write errors.
+`cache_busy` was 4 on the left and 10 on the right: the nonblocking publication
+path was exercised on real hardware while output timing stayed healthy. These
+are initial/idle-linked observations, not a sustained-playing acceptance.
+[Initial retest evidence](lockfix-initial-retest.json),
+[left linked home](lockfix-linked-left.png), [right linked home](lockfix-linked-right.png).
