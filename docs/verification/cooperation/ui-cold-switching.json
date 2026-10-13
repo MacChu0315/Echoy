@@ -1,0 +1,78 @@
+{
+  "source": "Iris event.monotonic_us on left boot 2491134233307376902",
+  "right_boot": 12837437181173456188,
+  "transactions": {
+    "2": {
+      "proposal": 15288205198,
+      "revision": 0,
+      "bytes": 771,
+      "sent": 15289104061,
+      "ready": 15292854397,
+      "bar": 15295960356,
+      "committed": 15296104067
+    },
+    "3": {
+      "proposal": 15421924534,
+      "revision": 2,
+      "bytes": 771,
+      "sent": 15422604070
+    },
+    "4": {
+      "proposal": 15422825443,
+      "revision": 3,
+      "bytes": 832,
+      "sent": 15423454078,
+      "ready": 15423954284,
+      "bar": 15425960356
+    },
+    "5": {
+      "proposal": 15424224519,
+      "revision": 4,
+      "bytes": 771
+    },
+    "6": {
+      "proposal": 15424754590,
+      "revision": 5,
+      "bytes": 771,
+      "sent": 15425404079,
+      "ready": 15425604867,
+      "bar": 15428460356,
+      "committed": 15428704856
+    },
+    "7": {
+      "proposal": 15428714236,
+      "revision": 7,
+      "bytes": 710,
+      "sent": 15429254140,
+      "ready": 15429804884,
+      "bar": 15430960356,
+      "committed": 15431054077
+    },
+    "8": {
+      "proposal": 15437384454,
+      "revision": 8,
+      "bytes": 588,
+      "sent": 15437954093,
+      "ready": 15438454720,
+      "bar": 15440960356,
+      "committed": 15441104249
+    },
+    "9": {
+      "proposal": 15445033082,
+      "revision": 9,
+      "bytes": 771,
+      "sent": 15445654073,
+      "ready": 15446204728,
+      "bar": 15448460356,
+      "committed": 15448654710
+    }
+  },
+  "notes": [
+    "Cold initial join transaction 2 took 7.755 s proposal-to-bar; clock/session setup is included.",
+    "Committed subsequent expression transactions 6-9 transferred 588-771 bytes in 0.540-0.649 s; total proposal-to-bar was 2.246-3.706 s.",
+    "Full source plans differ from the old 693-byte baseline. This is not a controlled identical-phrase percentage comparison.",
+    "Incomplete transactions 3-5 overlapped subsequent user choices; do not count them as completed switches.",
+    "These timestamp intervals are not touch-to-selection latency or measured acoustic offset.",
+    "User reports selection feedback and phrase updates both smoother."
+  ]
+}

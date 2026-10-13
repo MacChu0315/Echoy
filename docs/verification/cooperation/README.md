@@ -405,7 +405,7 @@ action callbacks exist, preserves zero/single-callback initialization and seed
 behavior, and retains the old cache creation wrapper. A custom cache allocator
 receives the full 14,764-byte body, zeroes it and never falls back after failure.
 Images and cache share `ui_storage_alloc`; small text allocations are unchanged.
-Startup-only `ECHOY_UI_STORAGE` / `ECHOY_MODEL_STORAGE` diagnostics record actual
+Startup-only `ECHOY_UI_ALLOC` / `ECHOY_MODEL_STORAGE` diagnostics record actual
 object placement and internal free/largest blocks, including explicit skipped
 versus failed model construction. Band allocation and all musical rules remain.
 
@@ -425,6 +425,53 @@ Verification on this final source:
 
 [Follow-up package](ui-cold-artifacts.json): `150bd97add2b`, ELF
 `09644dd9013d660b1237b2ae016f6d4f3637a99313d8e8988d5f2e7c91b2163d`.
-Right-only hardware installation is awaiting manual Vibe Mode entry, with the
-left on c4 as the initial comparison. Internal-memory recovery and measured
-physical switching latency remain unverified.
+Right-only installation succeeded after manual Vibe Mode entry:
+operation `5187cab1-eb40-4491-abdd-7bbfb58eb9b0`, HEALTHY boot
+`12837437181173456188`. [Delivery and allocation evidence](ui-cold-right-device.json)
+verify the exact ELF, retained bootloader/layout, real home and separated magnetic
+baseline. Empty-home internal free is now 27,031 bytes (previous c4 boot: 2,315).
+The unused standalone model is explicitly skipped; the 14,848 allocated bytes of
+UI cache reside in PSRAM. All three band models remain internal (14,336 allocated
+bytes each). Recovery/application crash counts are zero.
+
+The right-gallery -> left-record -> join regression passed with left still on
+c4. The user confirmed phrase receipt, following text and continued silence.
+Right internal free remained 26,699-26,795 bytes after gallery use/reception,
+with zero NO_MEM/audio deadline/partial-write/write errors and zero nonzero PCM
+frames or playback activations during silent follow. The user also reports both
+expression selection and phrase updating feel smoother.
+
+[Measured transactions](ui-cold-switching.json) contain the actual stage timings:
+completed later expression updates transferred 588-771 bytes in 0.540-0.649 s;
+proposal-to-common-bar intervals were 2.246-3.706 s. These are different phrases
+from the old 693-byte baseline, so no controlled speedup percentage or exact
+touch-response time is claimed. Cold initial join still took 7.755 s from proposal
+to bar, including session/clock setup; it remains a performance limitation.
+
+After intervening power-on resets/rejoin, both versions continued with zero
+NO_MEM or output errors in the captured activity. Left pre-update boot
+`6522249969172912942` and right current boot `15501297783550630593` report reset
+reason 1 and zero crashes. The user separated both again for the left update.
+Left software Recovery entry succeeded; a single official update then installed
+the same package, operation `12f303ba-45d5-42e9-a91f-0ec896d71907`, HEALTHY boot
+`1399056586306074643`. Left internal free is 27,099 bytes at the postcheck;
+right current status is 31,051 bytes. [Both delivery records](ui-cold-device-results.json)
+verify images, homes, object placement, retained bootloader/layout and separated
+calibration. The final same-image check now passes: the user confirms silent
+initial follow, continued playing through shared updates, smoother switching and
+an effective right Pause, with no reported stop/reboot/obvious timing anomaly.
+
+[Final acceptance and telemetry](ui-cold-final-acceptance.json) confirm unchanged
+Boot IDs `1399056586306074643` / `15501297783550630593`, zero crashes, NO_MEM,
+deadline misses, partial writes and write errors. Actual PCM was nonzero during
+requested playing. Right transactions 3/4 committed while its UI/controller stayed
+paused; the user confirmed silence. Both actual homes were inspected and finish
+paused, left connected/right following. Internal free at the final snapshot is
+26,603 bytes left and 31,047 right, after role changes, recording and shared updates.
+
+Final expression transactions 2-4 transferred 527-771 bytes in 0.410-0.660 s;
+proposal-to-common-bar was 3.414-4.066 s while preserving the bar rule. Initial
+join in this run took 4.355 s from proposal to bar, versus 7.755 s in the earlier
+right-only check. Startup latency is still a future optimization item, and these
+small samples are not a bound on sustained RF/load or acoustic clock precision.
+Harmony distortion remains separate; no audio settings or timbre were changed.

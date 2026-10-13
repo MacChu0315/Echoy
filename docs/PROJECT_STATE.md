@@ -498,7 +498,7 @@ runs pass. Fresh native GSP verification passes 6 flows and 46 caption/visibilit
 assertions; frozen reference hashes are unchanged. Evidence and commands:
 `verification/cooperation/README.md` and `publish-lock-trace.json` there.
 
-Both authorized devices now run package `f13fd6428d8b`, ELF
+Package `f13fd6428d8b` was installed on both authorized devices, ELF
 `f57805292875250767cf6f76a111a6d6a3914775438b5d90cd791768ef651420`.
 First installed HEALTHY boot: `7368647184006517658`, operation
 `1d41206d-1d5c-461e-8ebc-a7afd7abf3a7`. Second installed HEALTHY boot:
@@ -520,104 +520,84 @@ deadline misses, partial writes or write errors; nonblocking cache publication
 has been exercised. Physical RF/load or acoustic precision beyond these targeted
 checks is not yet established.
 
-### Switching latency investigation (2026-10-13, in progress)
+### Switching latency and internal memory (2026-10-13, targeted hardware checks passed)
 
-A fresh controlled expression change captured transaction 4: proposal to common
-bar was 3.572 seconds, comprising 1.630 seconds to finish sending a 693-byte
-phrase, 0.601 seconds until both prepared, then 1.341 seconds until the scheduled
-common bar. These are same-device monotonic timestamps, not touch-to-display
-measurements. The previous 15-second observation window was not a measured
-requirement or acceptable response target. The user also confirmed the selected
-expression marker itself feels slow. One gallery batch cost 151,873 us, with
-maximum UI callback 165,764 us and callback gap 357,823 us during this capture.
+The implementation is committed locally as `443dbfa`. It preserves the frozen
+HTML, sound/output parameters, recording timing, explicit playback permission
+and common-bar readiness/authorization rules.
 
-The candidate moves image preparation out of the input callback, spreads the
-three unchanged gallery images across callbacks, removes duplicate cached-state
-reads, and skips synthesis/calibration of the physical follower's inaudible
-upstream replica. The latter saves one 720,000-byte PCM allocation and its
-calibration pass for the representative follower; full musical/clock data stays.
-Continuous hover/drag cannot postpone the new gallery indefinitely.
+- UI selection feedback precedes image encoding; the three unchanged gallery
+  images are submitted across callbacks, center first. Continuous hover/drag
+  cannot postpone them. External state is read once per timer callback.
+- Physical followers omit synthesis/calibration of the inaudible upstream
+  replica while retaining full plans/clocks; desktop A/B/C still have real banks.
+- Transport has two data slots plus one priority control slot within the BSP's
+  eight slots, with unchanged v2 frames, complete coverage/CRC/decode and deadlines.
+  Retired transfers retain their slots until released. WANT retries the current
+  transaction serially for older v2 receivers; new transactions restore two.
+- Retained encoded images and the large UI view cache use explicit PSRAM storage.
+  Double-callback external UI skips its unused standalone model; zero/single
+  callback behavior remains. Band models and global malloc policy are unchanged.
+  Startup allocation diagnostics and concrete ESPNOW error names are available.
 
-Wireless now uses two chunk slots plus one priority control slot within the BSP's
-eight slots. Reassembly accepts legal v2 offsets in any order and still requires
-full coverage, CRC and decode. Old transfer slots remain occupied until released;
-late ACKs cannot advance a new transfer. WANT retries the current transaction
-serially for compatibility with old v2 receivers, and new transactions restore
-two chunks. The S31 context grows 1,136 bytes in existing PSRAM, with no new
-runtime internal-heap allocation. The same 693-byte host timing model improves
-2.000 to 0.900 seconds; this is not a measured hardware improvement.
+The f13 baseline was 3.572 s from proposal to common bar: 1.630 s for 693 bytes,
+0.601 s until both ready, then 1.341 s waiting for the scheduled bar. Gallery work
+cost 151,873 us; UI callback/gap maxima were 165,764/357,823 us. The user's earlier
+15 s was an observation window, not a measured requirement or acceptable target.
 
-The 18 real transport/PCM cases, 24 deferred cases and protocol/window tests pass
-normally and with address/undefined-behavior sanitizers. Seven UI scheduling
-tests pass, including hover/drag/re-entry, with unchanged QOI output. The native
-before/after comparison has 36 pixel-identical final screens. Package
-`e44a3d8919d3` builds against the pinned SDK and preserves UI data and retained
-layout. Both normal
-f13 boots rejected software Recovery entry with device error `0x101`
-(`ESP_ERR_NO_MEM`), with unchanged Boot IDs, empty queues and no package submitted.
-The user paused/separated both and manually entered retained Vibe Mode. Both
-updates then succeeded with HEALTHY, image and retained-bootloader/layout checks:
-left boot `13804741210610604633`, operation
-`be0c5a85-e134-43bf-9bf8-2f76be4541c1`; right boot `3888807882828278489`, operation
-`31c459c5-6288-41ca-8dd6-3b1a99473f6e`. Both Recovery boots had zero crashes;
-both application homes and magnetic baselines pass. Final native desk validation
-passes 13 actual-PCM checks.
-
-The first physical comparison is blocked: the left recorded four taps, but the
-right remains empty after joining. Both magnetic contacts are recognized; neither
-has established a peer session or proposed a phrase transaction. The right's
-`mosaico_peer` broadcast (type 2) fails repeatedly from the first contact. Its
-free internal heap fell from 9,931 to 1,939 bytes after visiting the role gallery
-(Pulse -> Voice -> Dust), despite about 12 MiB free PSRAM. Both Boot IDs remain
-unchanged with zero crashes/audio deadline misses. This precedes the application
-chunk window; allocation/radio causes are under investigation, not established.
-Preserve the current attached scene and continuous logs; do not call this a
-successful hardware performance acceptance. Keep all
-sound/output settings, recording timing, explicit Play permission, UI geometry
-and frozen HTML unchanged. Baseline and candidate evidence:
+The first optimized package exposed internal-memory pressure: gallery COPY
+sources retained 7,499 bytes while hidden, and software Recovery entry failed
+with `ESP_ERR_NO_MEM`. c4 moved those images but still left one boot with 2,315
+internal bytes; a default-home join then produced explicit ESPNOW NO_MEM.
+The current UI-only package `150bd97add2b` also removes a redundant 14,256-byte
+model and places the 14,764-byte cache in PSRAM. Its ELF is
+`09644dd9013d660b1237b2ae016f6d4f3637a99313d8e8988d5f2e7c91b2163d`.
+Prior failures, exact artifacts and timing limits are in
 `verification/cooperation/README.md`.
 
-Image-storage follow-up: actual empty-Dust gallery encodings total 7,499 bytes,
-94% of the observed 7,992-byte internal-heap drop. GSP COPY retains those sources
-until bind replacement/shutdown even while hidden, and the installed allocator
-prefers internal heap for sizes <=16 KiB. Four opaque Chinese bottom glyphs can
-retain another 9,760 bytes. Candidate `c4e5fb0e45d2` now copies retained sources
-through a device-only explicit PSRAM allocator and passes public GSP TAKE ownership;
-PC uses the original encoder buffer. Failure, completion and shutdown ownership
-are covered by ten new cases. This changes no pixels, encoder output, global
-malloc policy, audio or wire data. The app also registers missing ESPNOW error
-names through the public build interface, avoiding the ambiguous `ERROR` text
-without SDK/BSP changes or runtime allocation.
-Seven scheduling cases, ten ownership cases and sanitizers pass; 27 device-runtime
-cases pass. Native complete UI passes with 36 identical final screens. The SDK
-package, unchanged UI data/layout and concrete ESPNOW names in the final binary
-are verified. Both installations succeeded: left boot `2491134233307376902`,
-operation `dcf2a750-58d9-464f-a637-b5dc48fb109d`; right boot
-`16801241995940483221`, operation `b633ab51-3da2-45dd-b8c1-aba2d9cc0610`.
-Image/HEALTHY/retained layout/home/calibration pass with zero application crashes.
-Left empty-home internal free is 12,235 bytes, but right is only 2,315 bytes before
-opening the gallery. Directly joining default empty homes established both peer
-sessions; right then logged explicit `ESP_ERR_ESPNOW_NO_MEM` on type-8 sends.
-Thus persistent image COPY was a real pressure source, but its removal has not
-resolved the entire internal-memory budget. Performance acceptance remains open.
+Right-only installation succeeded: operation
+`5187cab1-eb40-4491-abdd-7bbfb58eb9b0`, initial HEALTHY boot
+`12837437181173456188`, Recovery boot `2790096483567616551` with zero crashes.
+Image, retained bootloader/layout, actual home and separated magnetic baseline
+pass. Internal free rose to 27,031 bytes at home and remained about 26,700 bytes after
+right gallery navigation, phrase reception and repeated expression updates.
+The skipped UI model and external UI cache are confirmed; all three band models
+remain internal. No NO_MEM, audio deadline misses, partial writes or write errors
+appeared in the captured regression. Right PCM remained zero during silent follow.
 
-Current follow-up is limited to UI cold allocations: double-callback external UI
-currently creates an unused 14,256-byte standalone model, and its 14,764-byte
-view cache uses ordinary calloc. Remove only the unused model and allocate the
-UI cache explicitly in PSRAM, retaining standalone/single-callback behavior.
-Do not change global malloc policy or move band models yet: the owner copies
-a 7,072-byte current plan every 10 ms as well as reading hot snapshots. One-time
-allocation-location/free/largest-block diagnostics will establish actual object
-placement at startup. The live devices remain on c4 with empty linked homes.
-The UI-only follow-up is implemented and locally verified as package
-`150bd97add2b`, ELF `09644dd9013d660b1237b2ae016f6d4f3637a99313d8e8988d5f2e7c91b2163d`.
-Sixteen construction cases, seven scheduling cases, ten image-ownership cases,
-twelve unchanged encodings and sanitizers pass; 27 runtime cases and six native
-three-tile cooperation flows pass. The SDK package preserves UI data and retained
-layout. Right-only installation is awaiting the requested manual Vibe Mode entry;
-keep left on c4 as the initial hardware control, then update it after right-side
-headroom/connection verification. The application models used by the band were
-not moved; their actual allocation locations are logged only at startup.
+The user confirmed the original right-gallery -> left-record -> join path now
+receives a phrase, shows following and stays silent. They also report expression
+selection and phrase updating both feel smoother. Subsequent completed transfers
+of 588-771 bytes took 0.540-0.649 s; complete proposal-to-bar intervals were
+2.246-3.706 s. These differ from the old 693-byte plan, so do not claim a controlled
+percentage improvement or touch latency. Initial join took 4.355-7.755 s from proposal to bar across the two observed
+runs, including session/clock setup and bar waiting; startup latency remains an
+optimization item.
+
+Both devices now run `150bd97add2b`. Left software Recovery entry and update
+succeeded without manual intervention: operation
+`12f303ba-45d5-42e9-a91f-0ec896d71907`, HEALTHY boot `1399056586306074643`.
+Right current boot is `15501297783550630593` after an intervening power-on reset
+(reset reason 1, zero crashes). Both image/retained-layout/home/calibration checks
+pass. The user confirmed the final same-version test: silent initial follow,
+continued playing through common updates, smoother switching and right Pause
+remaining effective, with no stop/reboot/obvious misalignment reported.
+
+Final logs retain those Boot IDs with zero crashes, NO_MEM, audio deadline misses,
+partial writes and write errors. Right transactions 3/4 committed while paused.
+Internal free after the exercises is 26,603 bytes left and 31,047 right. Both
+finish paused and linked; preserve their current phrases. Same-version expression
+transfers took 0.410-0.660 s for 527-771 bytes, with complete proposal-to-bar
+intervals of 3.414-4.066 s. Those intervals include the unchanged musical bar wait.
+Final evidence: `verification/cooperation/ui-cold-final-acceptance.json`.
+
+Local validation passes: 16 UI construction, seven scheduling, ten image ownership
+and twelve encoding cases with sanitizers; 27 runtime cases; 18 real transport/PCM
+and 24 deferred cases; 96 bit-identical PCM windows. Native image comparisons and
+six current three-tile cooperation flows pass, with zero late blocks. The pinned
+SDK package preserves UI data and retained layout, with only the known irrelevant
+factory-size warning (the package targets OTA). Hardware timing/acoustic precision
+and sustained RF/load acceptance beyond these targeted observations remain open.
 
 The retained output calibration was accepted provisionally on `4ee7991a5d56`: hardware volume 90,
 device PCM gain 6 with .90 peak limiting and diagnostic RPC disabled. The
@@ -714,7 +694,7 @@ phrase 3 (Answer), the original problematic expression, also has no obvious
 distortion at the same higher volume. Physical listening follow-up is closed
 for this trial. On 2026-10-10 the user decided to retain the current volume
 ("音量上就先这样吧"). Keep the output parameters from `7c431dacfd59`;
-the current dual-device package is `f13fd6428d8b` with those same parameters;
+the current package(s) listed in the memory section retain those same parameters;
 stop further loudness tuning unless requested. This is provisional retention,
 not a claim of measured acoustic performance or the absolute hardware limit.
 Any future substantial loudness improvement needs acoustic/output-chain

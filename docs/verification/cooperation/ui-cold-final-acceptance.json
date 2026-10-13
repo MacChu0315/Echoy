@@ -1,0 +1,102 @@
+{
+  "date": "2026-10-13",
+  "package": "150bd97add2b",
+  "user_report": "All normal; switching smoother, right Pause stayed effective. No reported stop, reboot, obvious misalignment or unintended playback.",
+  "devices": {
+    "left": {
+      "boot_id": 1399056586306074643,
+      "crash_count": 0,
+      "uptime_us": 398530078,
+      "free_internal": 26603,
+      "free_spiram": 12035380,
+      "no_memory_errors": 0,
+      "partial": 0,
+      "write_errors": 0,
+      "deadline_misses": 0,
+      "last_telemetry": [
+        "I (603296) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=14401680 nonzero=891033 peak=19660 pa=0 activations=1 write_max=11931us partial=0 write_errors=0 deadline_misses=0",
+        "I (603296) echoy_device: internal=26603 PSRAM=12035380 owner_stack=8716 prepare=247907us render_max=4664us rejected=0 overflow=0 cache_busy=1 limited=2077071 mix=3377us pcm=1395us core=1 prep_stack=7912",
+        "I (633306) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=15121920 nonzero=891033 peak=19660 pa=0 activations=1 write_max=11931us partial=0 write_errors=0 deadline_misses=0",
+        "I (633306) echoy_device: internal=26603 PSRAM=12035380 owner_stack=8716 prepare=247907us render_max=4664us rejected=0 overflow=0 cache_busy=1 limited=2077071 mix=3377us pcm=1395us core=1 prep_stack=7912"
+      ],
+      "home": "ui-cold-final-left.png"
+    },
+    "right": {
+      "boot_id": 15501297783550630593,
+      "crash_count": 0,
+      "uptime_us": 897489404,
+      "free_internal": 31047,
+      "free_spiram": 12045080,
+      "no_memory_errors": 0,
+      "partial": 0,
+      "write_errors": 0,
+      "deadline_misses": 0,
+      "last_telemetry": [
+        "I (1112002) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=26644080 nonzero=810312 peak=19660 pa=0 activations=4 write_max=8640us partial=0 write_errors=0 deadline_misses=0",
+        "I (1112002) echoy_device: internal=30667 PSRAM=12045080 owner_stack=8716 prepare=482815us render_max=3488us rejected=0 overflow=0 cache_busy=6 limited=1252517 mix=2206us pcm=1382us core=1 prep_stack=7912",
+        "I (1142012) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=27364320 nonzero=810312 peak=19660 pa=0 activations=4 write_max=8640us partial=0 write_errors=0 deadline_misses=0",
+        "I (1142012) echoy_device: internal=30287 PSRAM=12045080 owner_stack=8716 prepare=482815us render_max=3488us rejected=0 overflow=0 cache_busy=6 limited=1252517 mix=2206us pcm=1382us core=1 prep_stack=7912"
+      ],
+      "home": "ui-cold-final-right.png"
+    }
+  },
+  "transactions": {
+    "1": {
+      "proposal": 260805084,
+      "revision": 0,
+      "bytes": 771,
+      "sent": 261554074,
+      "ready": 262254701,
+      "bar": 265160540,
+      "committed": 265254097
+    },
+    "2": {
+      "proposal": 278594552,
+      "revision": 2,
+      "bytes": 710,
+      "sent": 279254078,
+      "ready": 279904498,
+      "bar": 282660540,
+      "committed": 282754704
+    },
+    "3": {
+      "proposal": 309246206,
+      "revision": 3,
+      "bytes": 771,
+      "sent": 309854075,
+      "ready": 310454705,
+      "bar": 312660540,
+      "committed": 312754719
+    },
+    "4": {
+      "proposal": 318794387,
+      "revision": 4,
+      "bytes": 527,
+      "sent": 319204073,
+      "ready": 319804694,
+      "bar": 322660540,
+      "committed": 322724305
+    }
+  },
+  "paused_right_evidence": {
+    "pause_at_us": 803510301,
+    "next_playing_at_us": 823118716,
+    "commits_while_paused": [
+      {
+        "transaction": 3,
+        "local_bar_us": 809010212
+      },
+      {
+        "transaction": 4,
+        "local_bar_us": 819010206
+      }
+    ],
+    "after_transaction_3": "PCM telemetry at 810794028 us reports pa=0; user confirmed continued silence."
+  },
+  "limits": [
+    "Device monotonic timing is not measured acoustic offset or touch latency.",
+    "Different phrase sizes and bar phases prevent a controlled percentage comparison.",
+    "Initial join was 4.355 s proposal-to-bar in this final run, versus 7.755 s in the earlier right-only run; startup latency remains a future optimization item.",
+    "Harmony steady-play distortion remains a separate unresolved listening issue; audio parameters were unchanged."
+  ]
+}

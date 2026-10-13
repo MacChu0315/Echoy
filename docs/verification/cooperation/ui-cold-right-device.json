@@ -1,0 +1,57 @@
+{
+  "package": "150bd97add2ba269b467808ae9fb8ecf8a287c7e4cd8d8728f6447ef294ee247",
+  "right": {
+    "device_id": "4553502d49524953010030eda0f40c6c",
+    "boot_id": 12837437181173456188,
+    "elf_sha256": "09644dd9013d660b1237b2ae016f6d4f3637a99313d8e8988d5f2e7c91b2163d",
+    "operation_id": "5187cab1-eb40-4491-abdd-7bbfb58eb9b0",
+    "healthy": true,
+    "validated": true,
+    "crash_count": 0,
+    "recovery_boot_id": 2790096483567616551,
+    "recovery_crash_count": 0,
+    "free_internal": 27031,
+    "free_spiram": 12800876,
+    "uptime_us": 42611670,
+    "allocations": [
+      "ECHOY_UI_ALLOC object=ui status=allocated allocated_size=37888 internal=0 psram=1 internal_free=163451 internal_largest=98304",
+      "ECHOY_UI_ALLOC object=art_workspace status=allocated allocated_size=147456 internal=0 psram=1 internal_free=163271 internal_largest=98304",
+      "ECHOY_UI_ALLOC object=standalone_model status=skipped allocated_size=0 internal=0 psram=0 internal_free=163291 internal_largest=98304",
+      "ECHOY_UI_ALLOC object=view_cache status=allocated allocated_size=14848 internal=0 psram=1 internal_free=163291 internal_largest=98304",
+      "I (3140) echoy_band: ECHOY_MODEL_STORAGE tile=A bytes=14336 internal=1 external=0 internal_free=69915 internal_largest=31744",
+      "I (3140) echoy_band: ECHOY_MODEL_STORAGE tile=B bytes=14336 internal=1 external=0 internal_free=55575 internal_largest=31744",
+      "I (3140) echoy_band: ECHOY_MODEL_STORAGE tile=C bytes=14336 internal=1 external=0 internal_free=41235 internal_largest=17408"
+    ],
+    "magnetic_baseline_ready": true,
+    "retained_inventory": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "5187cab1eb404491abdd7bbfb58eb9b0",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    },
+    "home": "ui-cold-right-home.png"
+  },
+  "left_control": {
+    "package": "c4e5fb0e45d2",
+    "boot_id": 2491134233307376902
+  },
+  "scope": "Right-only startup, role-gallery and silent-join checks pass; both-device delivery and playing-update verification pending.",
+  "user_reports": {
+    "original_path": "Received phrase, showed following left, stayed silent after right gallery navigation and left recording.",
+    "expression_switching": "Selection feedback and phrase update both felt smoother."
+  },
+  "after_gallery_and_following": {
+    "free_internal_range_bytes": [
+      26699,
+      26795
+    ],
+    "no_memory_errors_in_observed_capture": 0,
+    "right_audio_deadline_misses": 0,
+    "right_write_errors": 0,
+    "right_partial_writes": 0,
+    "right_nonzero_pcm_frames": 0,
+    "right_playback_activations": 0
+  }
+}
