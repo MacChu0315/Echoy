@@ -113,8 +113,7 @@ def main():
                 dim=shot('display-60')
                 assert sum(dim.getpixel((240,90))) < sum(bright.getpixel((240,90))) * .7
                 drag(418,193,193);until(lambda:'ECHOY_DISPLAY brightness=100 effective=100' in log(),'brightness restore')
-                tap('display_auto_dim');until(lambda:'auto_dim=0 ok=1' in log(),'idle dim disabled')
-                shot('display-auto-off');tap('display_back');route('settings_page')
+                shot('display-manual-only');tap('display_back');route('settings_page')
                 tap('settings_guide');route('guide_page');before=shot('guide-zh');drag(230,418,170);after=shot('guide-after-drag')
                 assert ImageChops.difference(before,after).getbbox() is None
                 tap('guide_back');route('settings_page')
@@ -139,7 +138,7 @@ def main():
                 tap('role_back');route('home')
                 (out/'home-header-captures.json').write_text(json.dumps(home_headers,indent=2)+'\n')
                 checks.append('All twelve expressions have Chinese/English v4 home header captures and hidden steady-state captions')
-                checks.append('Four settings entries and one-screen guides work in Chinese/English; brightness and idle-dim switch respond to real pointer input')
+                checks.append('Four settings entries and one-screen guides work in Chinese/English; the manual brightness slider responds to real pointer input')
                 for state in ['fault','loading','empty']:
                     command(state);route('status_page');shot('status-'+state)
                     tap('recover');route('home')

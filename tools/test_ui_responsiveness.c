@@ -6,6 +6,8 @@
 static echoy_control_view_t owner;
 static int64_t test_now;
 static unsigned reads, encodes, submissions, selected_phrase;
+static unsigned invalidations, volume_actions;
+static int volume_knob_y;
 static bool role_visible;
 static esp_gsp_image_complete_cb_t pending_complete;
 static void *pending_ctx;
@@ -41,13 +43,21 @@ VIEW_STUB(echoy_view_enable, bool)
 VIEW_STUB(echoy_view_text, const char *)
 VIEW_STUB(echoy_view_color, uint32_t)
 VIEW_STUB(echoy_view_value, int32_t)
-VIEW_STUB(echoy_view_y, int32_t)
+esp_gsp_err_t echoy_view_y(echoy_view_cache_t v, const char *name, int32_t value)
+{ (void)v; if (!strcmp(name, "volume_knob")) volume_knob_y = value; return ESP_GSP_OK; }
 VIEW_STUB(echoy_view_x, int32_t)
 VIEW_STUB(echoy_view_opacity, uint8_t)
 VIEW_STUB(echoy_view_scale, uint32_t)
 
 esp_gsp_err_t esp_gsp_canvas_invalidate(esp_gsp_handle_t gsp, uint16_t bind)
-{ (void)gsp; (void)bind; return ESP_GSP_OK; }
+{ (void)gsp; (void)bind; invalidations++; return ESP_GSP_OK; }
+esp_gsp_err_t esp_gsp_canvas_try_push(esp_gsp_handle_t gsp, uint16_t bind,
+    const void *pixels, size_t stride, esp_gsp_canvas_release_cb_t release, void *ctx)
+{
+    (void)gsp; (void)bind; (void)pixels; (void)stride; (void)release; (void)ctx;
+    assert(!"Scheduling-only fixture does not create a home producer");
+    return ESP_GSP_ERR_INVALID_STATE;
+}
 esp_gsp_err_t esp_gsp_component_set_property(esp_gsp_handle_t gsp, gsp_component_key_t key,
                                            gsp_property_key_t property, const gsp_value_t *v)
 { (void)gsp; (void)key; (void)property; (void)v; return ESP_GSP_OK; }
@@ -117,6 +127,14 @@ static bool read_owner(void *ctx, echoy_control_view_t *out)
     return true;
 }
 static int64_t clock_now(void *ctx) { (void)ctx; return test_now; }
+static bool set_volume(void *ctx, echoy_action_t action, double value, int64_t at)
+{
+    (void)ctx;
+    assert(action == ECHOY_ACT_VOLUME && at == test_now);
+    owner.volume = value;
+    volume_actions++;
+    return true;
+}
 static struct echoy_ui *setup(void)
 {
     struct echoy_ui *u = calloc(1, sizeof(*u));
@@ -141,7 +159,40 @@ int main(int argc, char **argv)
 {
     assert(argc == 2);
     struct echoy_ui *u = setup();
-    if (!strcmp(argv[1], "single-read")) {
+    if (!strcmp(argv[1], "idle-pointer-art") || !strcmp(argv[1], "volume-pointer-art") ||
+        !strcmp(argv[1], "capture-dirty-art")) {
+        u->canvas_registered[0] = u->canvas_registered[1] = true;
+        u->route = HOME;
+        if (!strcmp(argv[1], "capture-dirty-art")) {
+            owner.state.phase = ECHOY_RECORDING;
+            owner.state.capture_at_us = test_now;
+            owner.state.pending_seed = 1;
+        }
+        refresh(u, test_now, true);
+        invalidations = 0;
+        if (!strcmp(argv[1], "idle-pointer-art")) {
+            for (unsigned i = 0; i < 20; i++) {
+                test_now += 2000;
+                pointer(NULL, 230 + i, 70, i < 10, u);
+            }
+            assert(invalidations == 0 && "Unchanged pointer samples must not repaint home art");
+        } else if (!strcmp(argv[1], "volume-pointer-art")) {
+            u->platform.perform_action = set_volume;
+            pointer(NULL, 48, 200, true, u);
+            test_now += 1000;
+            pointer(NULL, 48, 180, true, u);
+            assert(volume_actions == 2 && owner.volume > .76 && owner.volume < .77);
+            assert(volume_knob_y == 148 - (int)lround(owner.volume * 111));
+            pointer(NULL, 48, 180, false, u);
+            assert(invalidations == 0 && "Slider feedback must not force unchanged home art");
+        } else {
+            owner.state.pending_seed |= 4;
+            test_now += 1000;
+            tick(NULL, u);
+            assert(invalidations == 2 && "A newly recorded cell must paint without waiting for the animation interval");
+            assert(u->last_capture_mask == 5);
+        }
+    } else if (!strcmp(argv[1], "single-read")) {
         tick(NULL, u);
         assert(reads == 1 && "A tick must read the controller snapshot once");
     } else if (!strcmp(argv[1], "feedback-first")) {

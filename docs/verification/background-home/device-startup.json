@@ -1,0 +1,40 @@
+{
+  "first": {
+    "device_id": "4553502d49524953010030eda0f452a0",
+    "boot_id": "15237885666942643151",
+    "operation_id": "36675880-13a8-4413-b311-97ebcb61bebf",
+    "firmware_sha256": "8c180bbaf1b34e6cf2e2dd1ca961c5a78347ffcbbd125b90a2ef647cc8cd4d5d",
+    "healthy": true,
+    "validated": true,
+    "crash_count": 0,
+    "free_internal": 24935,
+    "free_spiram": 12267468,
+    "retained": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "3667588013a84413b31197ebcb61bebf",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    }
+  },
+  "second": {
+    "device_id": "4553502d49524953010030eda0f40c6c",
+    "boot_id": "9386692617368392907",
+    "operation_id": "239c1e50-99ab-4dbd-bd92-22ff51859904",
+    "firmware_sha256": "8c180bbaf1b34e6cf2e2dd1ca961c5a78347ffcbbd125b90a2ef647cc8cd4d5d",
+    "healthy": true,
+    "validated": true,
+    "crash_count": 0,
+    "free_internal": 25163,
+    "free_spiram": 12267472,
+    "retained": {
+      "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "flags": 7,
+      "last_operation_id": "239c1e5099ab4dbdbd9222ff51859904",
+      "last_result": 0,
+      "layout_version": 4,
+      "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    }
+  }
+}

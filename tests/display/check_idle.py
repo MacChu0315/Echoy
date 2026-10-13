@@ -1,8 +1,9 @@
-"""Use real elapsed time and native GSP input to verify display idle behavior."""
+"""Verify manual brightness survives elapsed idle/playback and native touch."""
 import argparse
 import json
 import os
 from pathlib import Path
+import re
 import socket
 import subprocess
 import sys
@@ -28,6 +29,7 @@ def main():
         s.bind(('127.0.0.1', 0)); port = s.getsockname()[1]
         b.bind(('127.0.0.1', 0)); backend_port = b.getsockname()[1]
     ready = out / 'ready.json'
+    ready.unlink(missing_ok=True)
     processes = []
     with (out / 'host.log').open('w') as hf, (out / 'backend.log').open('w') as bf:
         def log():
@@ -69,32 +71,76 @@ def main():
                     call('screenshot', {'path': str(path), 'format': 'png'})
                     return Image.open(path).convert('RGB').getpixel((240, 80))
 
+                def tap(name):
+                    call('tap_object', {'name': name})
+                    time.sleep(.15)
+                    call('wait', {'frames': 5})
+
+                def route(name):
+                    until(lambda: re.findall(r'ECHOY_ROUTE route=(\w+)', log())[-1] == name)
+
+                def brightness(percent):
+                    rows = re.findall(r'ECHOY_DISPLAY brightness=(\d+) effective=(\d+) ok=(\d+)', log())
+                    return bool(rows) and rows[-1] == (str(percent), str(percent), '1')
+
+                def set_level(x, percent):
+                    for pressed in (True, False):
+                        call('feed_pointer', {'x': x, 'y': 193, 'pressed': pressed})
+                        call('wait', {'frames': 3})
+                    until(lambda: brightness(percent))
+
                 time.sleep(.15)
                 call('wait', {'frames': 5})
-                call('tap_object', {'name': 'transport'})
-                until(lambda: 'ECHOY_STATE phase=5' in log())
+                bright = shot('home-default-100')
+                assert brightness(100), 'Default brightness must be 100%'
+                tap('settings'); route('settings_page')
+                tap('settings_display'); route('display_page')
+                set_level(240, 60)
+                shot('display-manual-60')
+                tap('display_back'); route('settings_page')
+                tap('settings_back'); route('home')
+                manual = shot('home-manual-60')
+                assert sum(manual) < sum(bright) * .7, (bright, manual)
+                manual_log_at = len(log())
                 began = time.monotonic()
                 until(lambda: time.monotonic() - began > 61, 64)
-                bright = shot('playing-after-minute')
-                assert 'effective=20' not in log(), 'Playback incorrectly dimmed'
-                call('tap_object', {'name': 'strip_action'})
-                until(lambda: 'ECHOY_STATE phase=0' in log().split('ECHOY_STATE phase=5')[-1])
-                until(lambda: 'effective=20' in log(), 63)
-                dark = shot('idle-after-minute')
-                assert sum(dark) < sum(bright) * .3, (bright, dark)
+                idle_seconds = time.monotonic() - began
+                assert shot('idle-after-minute') == manual
+                assert brightness(60), 'Idle changed the manual brightness'
                 before = log().count('ECHOY_STATE phase=')
                 for pressed in (True, False):
                     call('feed_pointer', {'x': 240, 'y': 80, 'pressed': pressed})
                     call('wait', {'frames': 3})
-                until(lambda: log().rstrip().endswith('effective=100 auto_dim=1 ok=1'))
-                assert shot('touch-restored') == bright
-                assert log().count('ECHOY_STATE phase=') == before, 'Neutral wake changed music state'
+                assert shot('touch-keeps-60') == manual
+                assert brightness(60), 'Neutral touch changed the manual brightness'
+                assert log().count('ECHOY_STATE phase=') == before, 'Neutral touch changed music state'
+                tap('transport')
+                until(lambda: 'ECHOY_STATE phase=5' in log())
+                began = time.monotonic()
+                until(lambda: time.monotonic() - began > 61, 64)
+                playing_seconds = time.monotonic() - began
+                assert shot('playing-after-minute') == manual
+                assert brightness(60), 'Playback changed the manual brightness'
+                assert 'ECHOY_DISPLAY' not in log()[manual_log_at:], 'Brightness changed without slider input'
+                tap('strip_action')
+                until(lambda: re.findall(r'ECHOY_STATE phase=(\d+)', log())[-1] == '0')
+                tap('settings'); route('settings_page')
+                tap('settings_display'); route('display_page')
+                set_level(418, 100)
+                shot('display-restored-100')
+                tap('display_back'); route('settings_page')
+                tap('settings_back'); route('home')
+                assert shot('home-restored-100') == bright
                 assert backend.wait(timeout=20) == 0
                 call('quit')
                 assert host.wait(timeout=6) == 0
             assert 'ECHOY_UI_ERROR' not in log() and 'cleanup_error=0' in log()
-            result = {'passed': ['61 seconds of playback remain bright', '60 seconds idle dim to 20%',
-                                 'native touch restores brightness without starting playback'],
+            result = {'passed': ['manual 60% brightness survives more than 61 idle seconds',
+                                 'native touch preserves 60% without starting playback',
+                                 'manual 60% brightness survives more than 61 playing seconds',
+                                 'native slider restores 100% brightness'],
+                      'elapsed_idle_seconds': idle_seconds,
+                      'elapsed_playing_seconds': playing_seconds,
                       'scope': 'production C UI in official GSP; physical panel not tested'}
             (out / 'checks.json').write_text(json.dumps(result, indent=2) + '\n')
             print(json.dumps(result, indent=2))

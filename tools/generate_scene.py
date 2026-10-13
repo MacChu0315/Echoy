@@ -112,7 +112,8 @@ for name,x,color,default,top,bottom in [('volume',16,'#657756',65,'','音量'),(
     kw=dict(bg_color='#fafbf5',border_color='#93a382' if name=='volume' else '#b87943',border_width=1,radius=13 if name=='volume' else 10)
     knob=add('container',name+'_knob',20 if name=='volume' else 17,round(160-height-12),25 if name=='volume' else 30,25 if name=='volume' else 27,p,**kw)
     if name=='richness':label('equal',0,0,30,27,'=',21,'#687b57',knob,text_align='center',font='fonts/LiberationSans-Regular.ttf')
-add('image','art',90,89,300,204,home,image='canvas.png',codec='lossless',bind='art',bind_target='resource')
+home_art=add('layer','home_art',0,0,480,480,home,bind='home_art_visible',bind_target='visible')
+add('image','art',90,89,300,204,home_art,image='canvas.png',codec='lossless',bind='art',bind_target='resource')
 add('image','pad_border',90,89,300,204,home,image='icons/pad-border.png',codec='lossless',hidden=True)
 dyn('touch_hint',90,265,300,24,'试奏区',13,'#6b795c',home,text_align='center')
 add('container','progress_bg',103,301,274,2,home,bg_color='#dce0d2',hidden=True)
@@ -447,15 +448,10 @@ add('container','display_rail',62,190,356,6,display_page,bg_color='#c3cdb6',radi
 add('container','display_knob',{'default':404,'min':48,'max':404},179,28,28,display_page,bg_color='#fafbf5',border_color='#93a382',border_width=1,radius=14)
 text_pair('display_soft',42,224,100,24,'柔和','Soft',14,'#7c886e',display_copy)
 text_pair('display_bright',338,224,100,24,'明亮','Bright',14,'#7c886e',display_copy,text_align='right')
-row=button('display_auto_dim',24,278,432,78,display_page,'auto_dim_click',bg_color='#ecefe5',border_color='#d9e0d0',border_width=1,radius=17)
-text_pair('display_auto_dim_text',44,300,264,32,'闲置时自动调暗','Dim when idle',18,'#576b47',display_copy)
-add('container','display_switch',342,24,66,30,row,bg_color='#718661',radius=15,bind='display_switch_color',bind_target='color')
-add('container','display_switch_knob',{'default':378,'min':345,'max':378},27,24,24,row,bg_color='#fafbf5',radius=12)
-text_pair('display_note_1',42,376,396,26,'静止 1 分钟后调暗，触摸恢复。','Dims after 1 minute. Touch to brighten.',15,'#7c886e',display_copy)
+text_pair('display_note_1',42,278,396,26,'屏幕保持设定的亮度。','Brightness stays at your chosen level.',15,'#7c886e',display_copy)
 for obj in objects:
     if obj['name']=='display_note_1':obj['font_charset']+='亮度调整未成功，请再试一次。'
     if obj['name']=='display_note_1_en':obj['font_charset']+='Could not set brightness. Please try again.'
-text_pair('display_note_2',42,405,396,26,'录制和播放时保持亮度。','Stays bright while recording or playing.',15,'#7c886e',display_copy)
 # A native overlay represents brightness on the simulator. Hardware uses its panel.
 # It is declared after the other pages below so it never covers future controls.
 

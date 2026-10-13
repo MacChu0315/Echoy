@@ -96,6 +96,7 @@ class CooperationCheck(DeskCheck):
 
     def record_join(self, join_phase, suffix):
         self.detach()
+        self.record_ready('B')
         # The strip is Record-only when empty, or the same left-hand hit area
         # when a retained phrase exists. Pointer coordinates work for both.
         self.tap_at('B', 170, 420)
@@ -139,6 +140,7 @@ class CooperationCheck(DeskCheck):
         self.passed('Joining during native count-in and recording preserves capture/reply and joins afterward')
 
         self.detach()
+        self.record_ready('B')
         self.tap_at('B', 170, 420)
         self.until(lambda s: s['tiles']['B']['phase'] == 1, 'Cancel setup did not count in')
         self.command('edges A B')
@@ -149,6 +151,7 @@ class CooperationCheck(DeskCheck):
         self.passed('Native Cancel ends the deferred operation and retains visible connection feedback')
 
         self.detach()
+        self.record_ready('B')
         self.tap_at('B', 170, 420)
         self.until(lambda s: s['tiles']['B']['phase'] == 1, 'Detach setup did not count in')
         self.command('edges A B')
@@ -183,6 +186,7 @@ class CooperationCheck(DeskCheck):
         self.tap('A', 'settings_back')
         self.caption_shot('B', 'following-en')
         self.detach()
+        self.record_ready('B')
         self.tap_at('B', 170, 420)
         self.until(lambda s: s['tiles']['B']['phase'] == 1, 'English count-in did not start')
         self.command('edges A B')

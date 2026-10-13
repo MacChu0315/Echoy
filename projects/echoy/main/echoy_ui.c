@@ -1,6 +1,8 @@
 #include "echoy_ui.h"
+#include "board_touch_trace.h"
 #include "echoy_art.h"
 #include "echoy_art_image.h"
+#include "echoy_art_producer.h"
 #include "echoy_display.h"
 #include "echoy_strip.h"
 #include "echoy_strip_image.h"
@@ -25,6 +27,15 @@
 #define TRIAL_HINT_TAPS 3u
 #define TRIAL_HINT_US INT64_C(3000000)
 typedef enum { HOME, ROLE, SETTINGS, DISPLAY, GUIDE, INFO, STATUS, REMOVED } route_t;
+struct home_structure {
+    uint32_t generation, revision;
+    echoy_phase_t phase;
+    echoy_role_t selected_role;
+    unsigned selected_phrase;
+    route_t route;
+    echoy_condition_t condition;
+    bool removed, reduced_motion, active;
+};
 static const char *const routes[] = {"home", "role_page", "settings_page", "display_page",
                                      "guide_page", "info_page", "status_page"};
 static const char *const role_ids[] = {"pulse", "voice", "dust", "harmony"};
@@ -55,6 +66,14 @@ struct echoy_ui {
     uint32_t gallery_submitted_revision;
     echoy_art_frame_t frames[5];
     struct echoy_art_workspace *art_workspace;
+    echoy_art_producer_t *home_producer;
+    atomic_bool home_closing;
+    atomic_uint home_users;
+    struct home_structure home_structure;
+    echoy_plan_t home_plan;
+    uint32_t home_epoch, home_published_epoch;
+    echoy_role_t home_published_role;
+    bool home_structure_valid, home_request_pending, home_waiting_visibility;
     echoy_plan_t capture_plan, gallery[3];
     route_t route;
     echoy_condition_t condition;
@@ -310,6 +329,89 @@ static void prepare_graphics(echoy_ui_handle_t u, const echoy_snapshot_t *s, int
         u->last_gallery_seed = seed;
         u->frames_dirty = true;
     }
+}
+/* Lifecycle callers can begin teardown while GSP has already selected a UI
+ * callback. Entry never waits; closing prevents new producer calls, and a
+ * nonzero user count makes deletion retain its live context for a retry. */
+static bool home_enter(echoy_ui_handle_t u)
+{
+    if (atomic_load(&u->home_closing)) return false;
+    atomic_fetch_add(&u->home_users, 1);
+    if (atomic_load(&u->home_closing)) {
+        atomic_fetch_sub(&u->home_users, 1);
+        return false;
+    }
+    return true;
+}
+static void home_leave(echoy_ui_handle_t u)
+{
+    atomic_fetch_sub(&u->home_users, 1);
+}
+static void sync_home_structure(echoy_ui_handle_t u, const echoy_snapshot_t *s)
+{
+    if (!home_enter(u)) return;
+    if (!u->home_producer) { home_leave(u); return; }
+    const struct home_structure *old = &u->home_structure;
+    bool visible = u->route == HOME && u->condition == ECHOY_NORMAL && !u->removed;
+    bool was_visible = old->route == HOME && old->condition == ECHOY_NORMAL && !old->removed;
+    bool changed = !u->home_structure_valid || old->generation != s->generation ||
+        old->revision != s->committed_revision || old->phase != s->phase ||
+        old->selected_role != s->role || old->selected_phrase != s->phrase ||
+        old->route != u->route || old->condition != u->condition || old->removed != u->removed ||
+        old->reduced_motion != u->reduced_motion || old->active != u->frames[0].active ||
+        memcmp(&u->home_plan, u->frames[0].plan, sizeof(u->home_plan)) != 0;
+    if (changed) {
+        if (++u->home_epoch == 0) ++u->home_epoch;
+        echoy_art_producer_set_epoch(u->home_producer, u->home_epoch);
+        /* A successful old push is still GSP-owned: epochs cannot retract it.
+         * Hide only initially, on role mismatch or real page re-entry. Same-
+         * role capture/animation retains its preceding frame without flashes. */
+        if (visible && (!u->home_published_epoch || !was_visible ||
+                        u->home_published_role != u->frames[0].role)) {
+            /* The resource-only art image cannot expose visibility. Its
+             * independently authored home_art layer owns that property. */
+            SHOW(u, "home_art", false);
+            u->home_waiting_visibility = true;
+        }
+        u->home_structure = (struct home_structure){
+            .generation=s->generation, .revision=s->committed_revision, .phase=s->phase,
+            .selected_role=s->role, .selected_phrase=s->phrase, .route=u->route,
+            .condition=u->condition, .removed=u->removed, .reduced_motion=u->reduced_motion,
+            .active=u->frames[0].active};
+        u->home_plan = *u->frames[0].plan;
+        u->home_structure_valid = true;
+        u->home_request_pending = visible;
+    }
+    if (!visible) u->home_request_pending = false;
+    home_leave(u);
+}
+static void publish_home(echoy_ui_handle_t u)
+{
+    if (!home_enter(u)) return;
+    if (!u->home_producer || u->route != HOME || u->condition != ECHOY_NORMAL || u->removed) {
+        home_leave(u);
+        return;
+    }
+    if (u->home_request_pending &&
+        echoy_art_producer_request(u->home_producer, &u->frames[0], u->home_epoch))
+        u->home_request_pending = false;
+    bool published = false;
+    esp_gsp_err_t err = echoy_art_producer_publish_ready(
+        u->home_producer, u->gsp, canvases[0], u->home_epoch, &published);
+    if (err != ESP_GSP_OK && err != ESP_GSP_ERR_TIMEOUT) CHECK(u, err);
+    if (published) {
+        u->canvas_registered[0] = true;
+        u->home_published_epoch = u->home_epoch;
+        u->home_published_role = u->frames[0].role;
+        if (u->home_waiting_visibility) {
+            /* Try-push precedes SHOW in GSP queue order. Native bridge drains
+             * its accepted canvas queue before the visibility command. */
+            esp_gsp_err_t shown = echoy_view_show(u->view, "home_art", true);
+            CHECK(u, shown);
+            if (shown == ESP_GSP_OK) u->home_waiting_visibility = false;
+        }
+    }
+    home_leave(u);
 }
 /* Decoder callbacks may run on another thread. Only atomics cross that boundary. */
 static void gallery_complete(esp_gsp_handle_t gsp, uint16_t bind, gsp_err_t status, void *ctx)
@@ -741,21 +843,19 @@ static void show_display(echoy_ui_handle_t u, const echoy_snapshot_t *s, int64_t
             CHECK(u, echoy_view_opacity(u->view, "display_shade", (100 - level) * 255 / 100));
         }
         u->display_level = (int)level;
-        fprintf(stderr, "ECHOY_DISPLAY brightness=%u effective=%u auto_dim=%d ok=%d\n",
-                u->display.brightness, level, u->display.auto_dim, !u->display_failed);
+        fprintf(stderr, "ECHOY_DISPLAY brightness=%u effective=%u ok=%d\n",
+                u->display.brightness, level, !u->display_failed);
     }
     char percent[8];
     snprintf(percent, sizeof(percent), "%u%%", u->display.brightness);
     local_text(u, "display_percent", percent);
     CHECK(u, echoy_view_x(u->view, "display_knob", 48 + (u->display.brightness - 20) * 356 / 80));
-    CHECK(u, echoy_view_x(u->view, "display_switch_knob", u->display.auto_dim ? 378 : 345));
-    COLOR(u, "display_switch", u->display.auto_dim ? 0x718661 : 0xb6c1aa);
     local_text(u, "display_note_1",
                u->display_failed
                    ? tr(u, "亮度调整未成功，请再试一次。", "Could not set brightness. Please try again.")
-                   : tr(u, "静止 1 分钟后调暗，触摸恢复。", "Dims after 1 minute. Touch to brighten."));
+                   : tr(u, "屏幕保持设定的亮度。", "Brightness stays at your chosen level."));
 }
-static void refresh(echoy_ui_handle_t u, int64_t now, bool force)
+static void refresh(echoy_ui_handle_t u, int64_t now, bool input_turn)
 {
     if (u->gallery_inflight && !atomic_load_explicit(&u->images_pending, memory_order_acquire)) {
         if (atomic_load(&u->image_error) == GSP_OK) {
@@ -765,14 +865,16 @@ static void refresh(echoy_ui_handle_t u, int64_t now, bool force)
     }
     echoy_snapshot_t s;
     read_state(u, &s);
+    board_touch_trace_note_phase(s.phase);
     if (s.fault && u->condition == ECHOY_NORMAL) {
         u->condition = ECHOY_AUDIO_FAULT;
     }
+    prepare_graphics(u, &s, now);
+    sync_home_structure(u, &s);
     show_display(u, &s, now);
     show_metadata(u, &s);
     show_home_state(u, &s, now);
     show_strip(u, &s, now);
-    prepare_graphics(u, &s, now);
     u->frames_dirty |= s.committed_revision != u->last_committed;
     int height = (int)lround(u->volume * 111);
     CHECK(u, echoy_view_y(u->view, "volume_knob", 148 - height));
@@ -807,10 +909,14 @@ static void refresh(echoy_ui_handle_t u, int64_t now, bool force)
     }
     bool animated = u->frames[0].active || u->frames[0].energy > 0;
     if (u->condition == ECHOY_NORMAL && !u->removed &&
-        (force || u->frames_dirty ||
+        (u->frames_dirty ||
          ((animated || u->last_draw_animated) && now - u->last_draw_us >= DRAW_US))) {
         unsigned count = u->route == HOME ? 2 : 0;
         for (unsigned i = 0; i < count; i++) {
+            if (i == 0 && u->home_producer) {
+                u->home_request_pending = true;
+                continue;
+            }
             if (u->canvas_registered[i]) {
                 CHECK(u, esp_gsp_canvas_invalidate(u->gsp, canvases[i]));
             }
@@ -819,12 +925,13 @@ static void refresh(echoy_ui_handle_t u, int64_t now, bool force)
         u->last_draw_animated = animated;
         u->frames_dirty = false;
     }
+    publish_home(u);
     if (u->route == ROLE && u->condition == ECHOY_NORMAL && !u->removed) {
         if (u->last_route != ROLE) {
             /* A new page gets a display interval; hover/drag cannot extend it. */
             u->gallery_ready_us = now + DRAW_US;
         }
-        if (!force) {
+        if (!input_turn) {
             /* Pointer/event callbacks must return before expensive art work. */
             publish_gallery(u, now);
         }
@@ -904,6 +1011,16 @@ static void tick(esp_gsp_handle_t gsp, void *ctx)
         fprintf(stderr, "ECHOY_UI_COST route=%u tick_max_us=%lld gap_max_us=%lld stack_min=%u\n",
                 (unsigned)u->route, (long long)u->perf_tick_max, (long long)u->perf_gap_max,
                 (unsigned)uxTaskGetStackHighWaterMark(NULL));
+        if (u->home_producer && home_enter(u)) {
+            echoy_art_producer_stats_t stats;
+            echoy_art_producer_get_stats(u->home_producer, &stats);
+            fprintf(stderr, "ECHOY_ART_COST rendered=%u published=%u stale=%u coalesced=%u "
+                            "draw_max_us=%u worker_stack_min=%u\n",
+                    (unsigned)stats.rendered, (unsigned)stats.published, (unsigned)stats.stale,
+                    (unsigned)stats.coalesced, (unsigned)stats.draw_max_us,
+                    (unsigned)stats.worker_stack_min);
+            home_leave(u);
+        }
         for (unsigned i = 0; i < 3; i++) {
             if (!u->perf_gallery_count[i]) continue;
             fprintf(stderr, "ECHOY_GALLERY_COST slot=%u last_role=%u count=%u draw_max_us=%lld "
@@ -926,6 +1043,7 @@ static void pointer(esp_gsp_handle_t gsp, int32_t x, int32_t y, bool pressed, vo
     echoy_snapshot_t s;
     read_state(u, &s);
     int64_t now = now_us(u);
+    bool tap_submitted = false;
     if (pressed) {
         echoy_display_touch(&u->display, now);
     }
@@ -941,7 +1059,7 @@ static void pointer(esp_gsp_handle_t gsp, int32_t x, int32_t y, bool pressed, vo
                     u->drag = 2;
                     u->drag_value = u->richness;
                 } else if (x >= 90 && x < 390 && y >= 89 && y < 293 &&
-                           act(u, ECHOY_ACT_TAP, 0, now)) {
+                           (tap_submitted = act(u, ECHOY_ACT_TAP, 0, now))) {
                     u->last_hit_us = now;
                     echoy_strip_state_t strip = echoy_strip_compute(
                         &s, current_plan(u)->count != 0,
@@ -987,6 +1105,8 @@ static void pointer(esp_gsp_handle_t gsp, int32_t x, int32_t y, bool pressed, vo
         }
         u->drag = 0;
     }
+    board_touch_trace_note_observer(x, y, pressed, now, s.phase, s.capture_at_us,
+                                   s.pending_seed, tap_submitted);
     u->pressed = pressed;
     refresh(u, now, true);
 }
@@ -1011,12 +1131,15 @@ static void event(esp_gsp_handle_t gsp, const esp_gsp_event_t *e, void *ctx)
         u->density_dirty || (u->platform.read_control && u->external.preparing));
     if (gsp_echoy_event_is_record_click(e)) {
         if ((u->route == HOME && strip.record_enabled) && act(u, ECHOY_ACT_RECORD, 0, now)) {
+            board_touch_trace_reset();
             select_route(u, HOME);
         }
     } else if (gsp_echoy_event_is_strip_action_click(e)) {
         if (u->route == HOME && strip.single_enabled) {
             if (strip.mode == ECHOY_STRIP_CANCEL) {
-                act(u, ECHOY_ACT_CANCEL_RECORD, 0, now);
+                if (act(u, ECHOY_ACT_CANCEL_RECORD, 0, now)) {
+                    board_touch_trace_freeze();
+                }
             } else if (strip.mode == ECHOY_STRIP_PAUSE) {
                 act(u, ECHOY_ACT_PAUSE, 0, now);
             }
@@ -1032,9 +1155,6 @@ static void event(esp_gsp_handle_t gsp, const esp_gsp_event_t *e, void *ctx)
             select_route(u, SETTINGS);
         } else if (gsp_echoy_event_is_display_click(e)) {
             select_route(u, DISPLAY);
-        } else if (gsp_echoy_event_is_auto_dim_click(e)) {
-            u->display.auto_dim = !u->display.auto_dim;
-            u->display_level = -1;
         } else if (gsp_echoy_event_is_guide_click(e)) {
             select_route(u, GUIDE);
         } else if (gsp_echoy_event_is_info_click(e)) {
@@ -1088,6 +1208,17 @@ static void log_ui_allocation(const char *object, const void *pointer, bool requ
 #else
 #define log_ui_allocation(object, pointer, required) ((void)0)
 #endif
+static void *home_storage_alloc(void *ctx, size_t size)
+{
+    echoy_ui_handle_t u = ctx;
+    if (u->platform.ui_storage_alloc)
+        return u->platform.ui_storage_alloc(u->platform.ctx, size);
+#ifdef ESP_PLATFORM
+    return heap_caps_malloc(size, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+#else
+    return malloc(size);
+#endif
+}
 esp_gsp_err_t echoy_ui_create(esp_gsp_handle_t gsp, const echoy_platform_t *platform,
                               echoy_ui_handle_t *out)
 {
@@ -1123,6 +1254,8 @@ esp_gsp_err_t echoy_ui_create(esp_gsp_handle_t gsp, const echoy_platform_t *plat
     atomic_init(&u->error, ESP_GSP_OK);
     atomic_init(&u->image_error, GSP_OK);
     atomic_init(&u->images_pending, 0);
+    atomic_init(&u->home_closing, false);
+    atomic_init(&u->home_users, 0);
     u->art_workspace = echoy_art_workspace_create();
     log_ui_allocation("art_workspace", u->art_workspace, true);
     const bool needs_model = !platform->read_control || !platform->perform_action;
@@ -1143,9 +1276,15 @@ esp_gsp_err_t echoy_ui_create(esp_gsp_handle_t gsp, const echoy_platform_t *plat
     if (platform->initial_condition != ECHOY_NORMAL) {
         set_condition(u, platform->initial_condition);
     }
+    const echoy_art_producer_config_t producer_config = {
+        .storage_alloc=home_storage_alloc, .storage_ctx=u};
+    esp_gsp_err_t producer_error = echoy_art_producer_create(&producer_config, &u->home_producer);
+    fprintf(stderr, "ECHOY_HOME_RENDER mode=%s error=%d\n",
+            producer_error == ESP_GSP_OK ? "worker" : "synchronous-fallback", producer_error);
     refresh(u, now_us(u), true);
     esp_gsp_err_t err = atomic_load(&u->error);
     for (unsigned i = 0; i < 2 && err == ESP_GSP_OK; i++) {
+        if (i == 0 && u->home_producer) continue;
         err = esp_gsp_canvas_set_draw_cb(
             gsp, canvases[i], i == 1 ? echoy_feedback_draw : echoy_art_draw, &u->frames[i]);
         u->canvas_registered[i] = err == ESP_GSP_OK;
@@ -1178,6 +1317,7 @@ esp_gsp_err_t echoy_ui_delete(echoy_ui_handle_t u)
     if (!u) {
         return ESP_GSP_OK;
     }
+    atomic_store(&u->home_closing, true);
     esp_gsp_err_t err;
     if (u->events_registered) {
         err = esp_gsp_on_event(u->gsp, NULL, NULL);
@@ -1200,6 +1340,11 @@ esp_gsp_err_t echoy_ui_delete(echoy_ui_handle_t u)
         }
         u->timer = NULL;
     }
+    if (atomic_load(&u->home_users)) return ESP_GSP_ERR_INVALID_STATE;
+    if (u->home_producer) {
+        err = echoy_art_producer_stop(u->home_producer, 1000);
+        if (err != ESP_GSP_OK) return err;
+    }
     for (unsigned i = 0; i < 2; i++) {
         if (u->canvas_registered[i]) {
             err = esp_gsp_canvas_stop(u->gsp, canvases[i]);
@@ -1216,6 +1361,10 @@ esp_gsp_err_t echoy_ui_delete(echoy_ui_handle_t u)
     if (atomic_load_explicit(&u->images_pending, memory_order_acquire)) {
         return ESP_GSP_ERR_INVALID_STATE;
     }
+    if (u->home_producer) {
+        err = echoy_art_producer_destroy(&u->home_producer);
+        if (err != ESP_GSP_OK) return err;
+    }
     echoy_model_delete(u->model);
     echoy_view_cache_delete(u->view);
     echoy_art_workspace_delete(u->art_workspace);
@@ -1231,6 +1380,19 @@ void echoy_ui_release_closed(echoy_ui_handle_t u)
 {
     if (!u) {
         return;
+    }
+    atomic_store(&u->home_closing, true);
+    if (atomic_load(&u->home_users) || atomic_load(&u->images_pending)) {
+        fprintf(stderr, "ECHOY_HOME_CLOSE retained: UI/image callbacks still active\n");
+        return;
+    }
+    if (u->home_producer) {
+        esp_gsp_err_t err = echoy_art_producer_stop(u->home_producer, 1000);
+        if (err == ESP_GSP_OK) err = echoy_art_producer_destroy(&u->home_producer);
+        if (err != ESP_GSP_OK) {
+            fprintf(stderr, "ECHOY_HOME_CLOSE retained: producer error=%d\n", err);
+            return;
+        }
     }
     echoy_model_delete(u->model);
     echoy_view_cache_delete(u->view);

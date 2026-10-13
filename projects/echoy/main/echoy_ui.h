@@ -28,9 +28,13 @@ typedef struct {
 } echoy_platform_t;
 esp_gsp_err_t echoy_ui_create(esp_gsp_handle_t gsp, const echoy_platform_t *platform,
                               echoy_ui_handle_t *out);
-/* Call outside GSP callbacks. On failure the handle remains alive for retry. */
+/* Call outside GSP callbacks. Disables new home-worker requests first; on
+ * failure the complete handle remains alive for retry, including producer
+ * storage still owned by a worker or borrowed by GSP. */
 esp_gsp_err_t echoy_ui_delete(echoy_ui_handle_t ui);
 esp_gsp_err_t echoy_ui_get_error(echoy_ui_handle_t ui);
 
-/* Only after the GSP owner has closed its handle and completed all releases. */
+/* Only after the GSP owner has closed its handle and completed all releases.
+ * A producer that cannot stop/join is explicitly logged and retained; callers
+ * may retry with the same handle. It is never freed while still in use. */
 void echoy_ui_release_closed(echoy_ui_handle_t ui);

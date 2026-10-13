@@ -1,0 +1,45 @@
+{
+  "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/dual-device/echoy-background-home-09275b935ad8.irisfw",
+  "sha256": "09275b935ad86f471d60d941dbe7b030b3c4559871d1a322ad3c9ee692726e86",
+  "elf_sha256": "8c180bbaf1b34e6cf2e2dd1ca961c5a78347ffcbbd125b90a2ef647cc8cd4d5d",
+  "manifest": {
+    "schema": "esp-iris-system-update/v1",
+    "manifest_sha256": "f56c89e349927e631100356ffcec1294698d9099731ab7199a355aef08973531",
+    "key_id": null,
+    "chip_id": 32,
+    "flash_size": 16777216,
+    "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+    "components": [
+      {
+        "id": 1,
+        "kind": "partition_table",
+        "flags": 0,
+        "target_offset": 32768,
+        "size": 4096,
+        "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+        "file": "partition-table.bin"
+      },
+      {
+        "id": 2,
+        "kind": "application",
+        "flags": 0,
+        "target_offset": 2162688,
+        "size": 2113168,
+        "sha256": "523999e77a3d0e0ed4ec632dc1ebd1c9c45eb7933106c43528581f5785519e8b",
+        "file": "ota_0.bin"
+      },
+      {
+        "id": 3,
+        "kind": "data",
+        "flags": 0,
+        "target_offset": 15728640,
+        "size": 375376,
+        "sha256": "8eb3051c2ec05215826a3f29bdf0315a79a3bd7d7872fed1fc729b81c2f32fc1",
+        "file": "ui_apps.bin"
+      }
+    ],
+    "signature_verified": false,
+    "release": "1.0.0",
+    "minimum_recovery_version": "0.1"
+  }
+}

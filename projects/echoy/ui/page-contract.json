@@ -105,7 +105,6 @@
   },
   "callbacks": [
     "audition_click",
-    "auto_dim_click",
     "back_click",
     "display_click",
     "guide_click",

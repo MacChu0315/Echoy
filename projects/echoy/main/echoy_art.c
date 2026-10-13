@@ -22,11 +22,22 @@ struct echoy_art_workspace {
     uint16_t pixels[300 * 204];
     echoy_art_frame_t frame;
     echoy_plan_t plan;
+    double voice_shape[7][141];
+    int voice_note;
+    bool voice_valid;
     bool valid;
 };
 struct echoy_art_workspace *echoy_art_workspace_create(void)
 {
     return calloc(1,sizeof(struct echoy_art_workspace));
+}
+struct echoy_art_workspace *echoy_art_workspace_create_with_allocator(
+    void *(*allocate)(void *ctx, size_t size), void *ctx)
+{
+    if (!allocate) return NULL;
+    struct echoy_art_workspace *work = allocate(ctx, sizeof(*work));
+    if (work) memset(work, 0, sizeof(*work));
+    return work;
 }
 void echoy_art_workspace_delete(struct echoy_art_workspace *workspace) { free(workspace); }
 
@@ -98,6 +109,9 @@ static bounds_t clip(const raster_t *r, float x0, float y0, float x1, float y1)
  * Keeping both scale factors preserves the compressed ellipses in the gallery. */
 static float edge_scale(const raster_t *r, float dx, float dy, float distance)
 {
+    /* At native size the denominator is the distance already computed by the
+     * caller, including the near-zero fallback. Keep scaled galleries exact. */
+    if (r->sx == 1 && r->sy == 1) return 1;
     return distance > .00001f ? distance / hypotf(dx / r->sx, dy / r->sy) :
            fminf(r->sx, r->sy);
 }
@@ -229,6 +243,11 @@ static void stroke_path(const raster_t *r, const point_t *points, unsigned count
         max_y = fmaxf(max_y, points[i].y);
     }
     const float half = width * .5f, extent = closed ? half * 10 : half;
+    /* Coverage ends within half a device pixel of the stroke. A full pixel
+     * at the smaller scale leaves a conservative margin: only known-empty
+     * corners skip distance roots; antialiased boundaries keep the old math. */
+    const float outside = half + 1 / fminf(r->sx, r->sy);
+    const float outside2 = outside * outside;
     bounds_t b = clip(r, (min_x - extent) * r->sx + r->offset - 1,
                      (min_y - extent) * r->sy + r->offset - 1,
                      (max_x + extent) * r->sx + r->offset + 1,
@@ -242,21 +261,30 @@ static void stroke_path(const raster_t *r, const point_t *points, unsigned count
     bounds_t *segments = r->workspace ? r->workspace->segments : local_segments;
     join_t *joins = r->workspace ? r->workspace->joins : local_joins;
     unsigned join_count = closed ? prepare_joins(r, points, count, half, joins) : 0;
+    bool monotone = !closed;
     for (unsigned i = 0; i < count - !closed; ++i) {
         point_t a = points[i], z = points[(i + 1) % count];
+        if (z.x < a.x) monotone = false;
         segments[i] = clip(r, (fminf(a.x,z.x)-half)*r->sx+r->offset-1,
                            (fminf(a.y,z.y)-half)*r->sy+r->offset-1,
                            (fmaxf(a.x,z.x)+half)*r->sx+r->offset+1,
                            (fmaxf(a.y,z.y)+half)*r->sy+r->offset+1);
     }
     for (int by = b.y0; by < b.y1; by += BLOCK_HEIGHT) {
+        unsigned first_segment = 0;
         for (int bx = b.x0; bx < b.x1; bx += BLOCK_WIDTH) {
             const int right = bx + BLOCK_WIDTH < b.x1 ? bx + BLOCK_WIDTH : b.x1;
             const int bottom = by + BLOCK_HEIGHT < b.y1 ? by + BLOCK_HEIGHT : b.y1;
             float coverage[BLOCK_WIDTH * BLOCK_HEIGHT] = {0};
-            for (unsigned i = 0; i < count - !closed; ++i) {
+            /* Voice's open paths advance in x. Their clipped bounds do too,
+             * so visit only this block's range, in the original segment order.
+             * Restart the cursor for every block row; other paths scan fully. */
+            if (monotone) while (first_segment < count - !closed &&
+                segments[first_segment].x1 <= bx) ++first_segment;
+            for (unsigned i = first_segment; i < count - !closed; ++i) {
                 point_t a = points[i], z = points[(i + 1) % count];
                 bounds_t segment = segments[i];
+                if (monotone && segment.x0 >= right) break;
                 if (segment.x1 <= bx || segment.x0 >= right || segment.y1 <= by || segment.y0 >= bottom) continue;
                 if (segment.x0 < bx) segment.x0 = bx;
                 if (segment.y0 < by) segment.y0 = by;
@@ -268,7 +296,9 @@ static void stroke_path(const raster_t *r, const point_t *points, unsigned count
                         float px = (x + .5f - r->offset) / r->sx - a.x;
                         float py = (y + .5f - r->offset) / r->sy - a.y;
                         float t = length2 ? clamp01((px * dx + py * dy) / length2) : 0;
-                        float nx = px - t * dx, ny = py - t * dy, distance = hypotf(nx, ny);
+                        float nx = px - t * dx, ny = py - t * dy;
+                        if (nx * nx + ny * ny > outside2) continue;
+                        float distance = hypotf(nx, ny);
                         float scale = edge_scale(r, nx, ny, distance);
                         float alpha = clamp01(.5f + (half - distance) * scale) -
                                       clamp01(.5f - (half + distance) * scale);
@@ -397,15 +427,32 @@ static void voice(const raster_t *r, const echoy_art_frame_t *frame,
         if (!included(frame, n)) continue;
         if (frame->active ? n->step <= now : !event && n->layer == ECHOY_ANCHOR) event = n;
     }
-    const double frequency = ((event && event->note ? event->note : 65) - 50) / 18.0;
+    const int note = event && event->note ? event->note : 65;
+    const double frequency = (note - 50) / 18.0;
+    struct echoy_art_workspace *work = r->workspace;
+    /* Only pitch changes this part of the curve. Retain double precision and
+     * the original multiplication order so energy/scale changes reuse it
+     * without changing the RGB565 coverage. Each UI owns its own cache. */
+    if (work && (!work->voice_valid || work->voice_note != note)) {
+        for (unsigned row = 0; row < 7; ++row) {
+            for (unsigned i = 0; i < 141; ++i) {
+                double u = i / 140.0;
+                work->voice_shape[row][i] =
+                    sin(u * PI * (3 + frequency) + row * .22) * voice_window[i];
+            }
+        }
+        work->voice_note = note;
+        work->voice_valid = true;
+    }
     static const float strength[] = {.58f, .84f, 1, .9f, .76f, .5f, .36f};
     for (unsigned row = 0; row < 7; ++row) {
         point_t points[141];
         for (unsigned i = 0; i < 141; ++i) {
             double u = i / 140.0;
+            double shape = work ? work->voice_shape[row][i] :
+                sin(u * PI * (3 + frequency) + row * .22) * voice_window[i];
             points[i] = (point_t){10 + i * 2,
-                41 + row * 11 + sin(u * PI * (3 + frequency) + row * .22) *
-                voice_window[i] * (25 + energy * 9) * strength[row]};
+                41 + row * 11 + shape * (25 + energy * 9) * strength[row]};
         }
         uint32_t ink = row == 2 || row == 3 ? color : row < 2 ? 0xa8b7bc : 0xbec6bd;
         stroke_path(r, points, 141, false, row == 2 ? 2 : 1.1f, ink, 1);

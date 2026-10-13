@@ -1,0 +1,106 @@
+{
+  "before": "output/capture-quality-full-ui-20261013",
+  "after": "output/background-home-full-ui-fixed-20261013",
+  "frames": [
+    {
+      "file": "home-en-dust-1.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-en-dust-2.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-en-dust-3.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-en-harmony-1.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-en-harmony-2.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-en-harmony-3.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-en-pulse-1.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-en-pulse-2.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-en-pulse-3.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-en-voice-1.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-en-voice-2.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-en-voice-3.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-en.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-zh-dust-1.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-zh-dust-2.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-zh-dust-3.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-zh-harmony-1.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-zh-harmony-2.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-zh-harmony-3.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-zh-pulse-1.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-zh-pulse-2.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-zh-pulse-3.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-zh-voice-1.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-zh-voice-2.png",
+      "pixels_differ": false
+    },
+    {
+      "file": "home-zh-voice-3.png",
+      "pixels_differ": false
+    }
+  ]
+}

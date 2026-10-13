@@ -182,9 +182,10 @@ inside the tile. The four-step guide and device information replace prototype
 and experiment prose. Simulator battery readings are labelled as simulated;
 hardware uses its existing validated battery view and actual app version.
 
-Display brightness ranges from 20–100%, initially 100%. Automatic dimming is on
-by default: 60 seconds of inactivity dims to 20%; touch restores the selected
-brightness. Capture, preparation and playback keep it awake. Preferences are
+Display brightness ranges from 20–100%, initially 100%. The original settings
+package dimmed after 60 idle seconds; on 2026-10-13 the user explicitly requested
+removing this behavior and its switch. Current source keeps the selected level
+through idle, touch, capture and playback; see the quality work below. Preferences are
 currently per running tile and reset on restart; no rhythm or preference
 persistence was added. The PC visual uses native GSP shading; firmware calls the
 public BSP brightness API from the UI owner, with no audio-thread I/O or flash
@@ -203,6 +204,112 @@ pass; the actual home screen is normal. Accepted speaker parameters from
 touch and visible brightness adjustment are all normal. Automatic idle dimming
 was validated in the simulator; measured power savings remain unverified.
 Verification and restart commands are in `verification/settings/README.md`.
+
+## Recording response, brightness and sound investigation (2026-10-13, in progress)
+
+The user requested cancellation of idle brightness reduction, improved frame
+rate and further Harmony distortion work. Suspected missed taps occur after
+the screen already shows recording. Do not treat this as count-in confusion.
+
+Manual brightness now remains at its 20–100% setting through idle, touch and
+playback; the idle-dim switch is removed. Native GSP checks retain 60% through
+61 s idle and 61 s playback, and the manual slider still works. Redundant home
+art redraws on unchanged pointer samples are removed; new grid hits still
+redraw immediately. Coverage/pitch-cache optimizations have zero differences
+over 3,712 frames / 99,716,368 pixels. Bottom geometry is unchanged. Current
+recording/countdown, musical rules and sound parameters are preserved.
+
+Both authorized devices now run background-home package `09275b935ad8`, ELF
+`8c180bbaf1b34e6cf2e2dd1ca961c5a78347ffcbbd125b90a2ef647cc8cd4d5d`.
+Left HEALTHY boot `15237885666942643151`, right `9386692617368392907`; exact
+operations/retained-layout checks are in `verification/background-home/device-startup.json`.
+Both actual homes and separated magnetic calibrations pass. This supersedes
+diagnostic package `73058c98b7ce`, whose initial checks remain in
+`verification/capture-quality/device-startup.json`. Sound quality is still open.
+
+The package includes optional bounded touch diagnostics and private read-only
+ECA1 snapshots. Record arms the touch rings; finish/Cancel freezes evidence
+until the next recording. There is no automatic trace dump or extra controller
+read/ACK. Use `tools/capture_touch_trace.py <new-output> --device-id <id>` and
+`tools/capture_audio_snapshot.py <new-output> --device-id <id>` via official CLI.
+The first candidate `606c0563f4e0` was briefly installed only on the left; an
+independent review found a reset/IRQ statistics race. It was fixed with a failing
+then passing deterministic regression before installing the current package.
+Do not use the superseded candidate's touch counters as evidence.
+
+Initial live plan/chunk and inactive-trace reads work. The official task-memory
+endpoint returns HTTP 501 in this configuration; no dedicated Iris service
+stack watermark is available. Both devices retain roughly 25 KB free internal
+heap at the checked idle point. Current background-home log captures are
+`output/background-home-{first,second}-live-20261013.jsonl`, with bounded
+900/600-second lifetimes; do not assume they are still running in a later turn.
+No new audio profile has been installed. The right-side current linked
+Harmony/Arpeggio reproduction is now captured at exact .65 volume: ten events,
+six source notes, following/playing, committed revision 6 with no pending job.
+Its full ECHP, state and original-C stage replay are preserved in
+`verification/harmony-stages/device-{plan.echp,snapshot.json,report.json}`.
+The user heard no obvious distortion in either the average-level-matched
+pre-limiter or actual-output WAV. This shifts the next investigation toward
+device output level, without identifying a component or claiming a cure. The
+right was playing while linked on the previous diagnostic firmware. The user lowered only its volume and
+selected a highest-clean position: exact `0.12222222222222229` with the same
+ECHP SHA256. The replay at this level has no effective limiting; snapshot and
+report are `verification/harmony-stages/device-clean-{snapshot,report}.json`.
+This phrase-specific listening point is not a universal acoustic ceiling and
+no sound fix has been installed. The user subsequently paused/separated both
+boards before the background-home installs; the recorded sample is preserved
+locally and was not restored automatically after reboot.
+
+On `73058c98b7ce`, the user still perceived missed responses. The first captured Voice rhythm had
+an unknown physical tap count: five observer presses, all submitted and retained
+as five source notes (`seed=2894`), no same-grid merges/trace drops/overwrites.
+Its maximum interval between controller reads was 226183 us, while reads took
+at most 710 us and raw-to-observer delivery at most 2345 us. Do not infer a
+physical missed-tap count from this unknown-count rhythm.
+
+A follow-up explicitly counted six taps: all six observer presses were accepted
+and retained as six source notes (`seed=9294`). No same-grid merges or diagnostic
+loss occurred. Reads were at most 149755 us apart and lasted at most 742 us;
+raw-to-observer delivery was at most 174 us. This confirms that one counted
+sequence was preserved, not that fast-tap reliability or visual response is fixed.
+Full evidence: `verification/capture-quality/physical-input.json`. Both windows
+use the same current left Boot ID. Preserve the current six-tap phrase.
+
+The user clarified that missed response means delayed sound or visual feedback
+at the moment of tapping. Voice's additional segment-scan optimization is
+locally complete: 100800 to 7640 visited segments, identical pixels and about
+15% lower paired PC render time; it is included in the current package. On this
+evidence the user explicitly approved moving home-art rasterization to a
+background producer through the existing GSP Canvas API, preserving the sole
+touch reader and musical action path. Implementation, native/ESP producer
+tests and eleven UI integration cases pass with sanitizers. Actual native GSP
+passes five full-UI, ten input, six cooperation and thirteen real-C audio/desk
+groups; 25 static home screenshots match the prior version exactly. The approved design is
+`plans/2026-10-13-responsive-home-rendering.md`; do not ask for design approval
+again unless a material requirement changes.
+
+On the new left firmware the user recorded six Voice taps and reported that
+immediate response seems better. All six observer presses are stored
+(`seed=1954`), with no same-grid merge, trace drop or overwrite. All 34 observed
+controller IRQs were handled in separate reads (previous counted test: 32 IRQs,
+19 reads, 13 multi-IRQ windows). Maximum latest-IRQ-to-read age was 46506 us;
+raw-to-observer maximum 238 us. Do not call the 228328 us maximum read gap a
+latency: IRQ-only reads are intentionally absent during quiet gaps. Hardware
+finger-to-sound/display latency and faster tapping remain unmeasured.
+Evidence: `verification/background-home/counted-recording.json`.
+
+The user also confirmed left Play/Pause and then the silent Harmony home are
+normal. No audio deadline misses, partial writes, write errors or reboots were
+observed. The worker's minimum unused stack was 9200 bytes for Voice and 3648
+after Harmony; left internal free after that check was 25271 bytes. Both
+boards were paused and separated again before updating the right. A same-version
+cooperation check is now pending: left Voice, right Dust; join silently, play
+both, pause right and change left expression. Capture its result before claiming
+the new package's physical cooperation acceptance.
+Verification and limitations:
+`verification/capture-quality/README.md`. Current native build is
+`projects/echoy/build-sim-capture-quality`; no new persistent browser preview
+was started and all earlier previews were preserved.
 
 ## PC application
 
@@ -549,7 +656,7 @@ The first optimized package exposed internal-memory pressure: gallery COPY
 sources retained 7,499 bytes while hidden, and software Recovery entry failed
 with `ESP_ERR_NO_MEM`. c4 moved those images but still left one boot with 2,315
 internal bytes; a default-home join then produced explicit ESPNOW NO_MEM.
-The current UI-only package `150bd97add2b` also removes a redundant 14,256-byte
+The UI-only package `150bd97add2b` also removes a redundant 14,256-byte
 model and places the 14,764-byte cache in PSRAM. Its ELF is
 `09644dd9013d660b1237b2ae016f6d4f3637a99313d8e8988d5f2e7c91b2163d`.
 Prior failures, exact artifacts and timing limits are in
@@ -574,7 +681,8 @@ percentage improvement or touch latency. Initial join took 4.355-7.755 s from pr
 runs, including session/clock setup and bar waiting; startup latency remains an
 optimization item.
 
-Both devices now run `150bd97add2b`. Left software Recovery entry and update
+Both devices finished that round on `150bd97add2b` (superseded by the quality
+package above). Left software Recovery entry and update
 succeeded without manual intervention: operation
 `12f303ba-45d5-42e9-a91f-0ec896d71907`, HEALTHY boot `1399056586306074643`.
 Right current boot is `15501297783550630593` after an intervening power-on reset

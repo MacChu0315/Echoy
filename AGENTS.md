@@ -7,6 +7,8 @@
   Show concrete differences and obtain approval before a non-equivalent change.
 - Approved device adaptation: hide "Put away this tile (simulation)" on hardware;
   retain the action in the PC simulator and leave the frozen HTML unchanged.
+- Approved Display behavior: manual brightness only (20–100%, initially 100%).
+  Idle time, touches and playback must not change the selected brightness.
 - Use ESP-GSP JSON/resources and portable C UI shared by the native `sim_bridge`
   and firmware. Do not substitute a whole-screen image for functioning controls.
 - Validate UI and interaction in the matching official simulator before hardware.
@@ -51,3 +53,8 @@
   `ui_storage_alloc` PSRAM path. Hiding a bind does not release its image source.
   A UI with both external control callbacks must not create a redundant
   standalone musical model.
+- Home artwork is prepared by a private worker from copied frame/plan data;
+  GSP remains the sole touch reader and UI owner. The worker must not call GSP,
+  flash or filesystem APIs. Keep its large storage/stack in explicit PSRAM;
+  borrowed Canvas buffers remain immutable until release. Stop/flush failures
+  must retain live contexts for retry.

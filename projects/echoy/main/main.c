@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "board_display.h"
+#include "board_touch_trace.h"
 #include "bsp/esp_mosaico.h"
 #include "echoy_ui.h"
 #include "esp_gsp_esp_lcd.h"
@@ -12,6 +13,7 @@
 #include "nvs_flash.h"
 #include "platform_device.h"
 #include "echoy_audio_diagnostics.h"
+#include "echoy_snapshot_diagnostics.h"
 #include "sdkconfig.h"
 #include "ui_bundle.h"
 
@@ -25,6 +27,7 @@
 static const char *TAG = "echoy";
 static echoy_ui_handle_t s_ui;
 static echoy_device_handle_t s_device;
+static echoy_snapshot_diagnostics_handle_t s_snapshot_diagnostics;
 
 static bool set_brightness(void *ctx, unsigned percent)
 {
@@ -73,6 +76,15 @@ void app_main(void)
     lcd.display = display;
     lcd.touch = touch;
     lcd.perf_log = true;
+    /* Observe the existing driver calls; no extra controller reads or ACKs.
+     * GSP owns input until reset, including the early-return paths below. */
+    const esp_err_t touch_trace_error = board_touch_trace_attach(touch);
+    if (touch_trace_error == ESP_OK) {
+        lcd.touch_wake_from_isr = board_touch_trace_wake_from_isr;
+        lcd.touch_wake_user_ctx = NULL;
+    } else {
+        ESP_LOGW(TAG, "Touch trace unavailable: %s", esp_err_to_name(touch_trace_error));
+    }
 
     CHECK_START(iris_screen_mirror_init());
 
@@ -122,6 +134,17 @@ void app_main(void)
     ESP_LOGI(TAG,
              "Echoy physical link controller ready at %dx%d RGB565; speaker initializes silently",
              BSP_LCD_H_RES, BSP_LCD_V_RES);
+    /* Register after all fallible application startup/cleanup. This callback
+     * only copies the platform's coherent view cache. The runtime stays alive
+     * until reset; any future shutdown must successfully stop this service
+     * before releasing s_device. Optional diagnostic failure cannot stop music. */
+    esp_err_t snapshot_error = echoy_snapshot_diagnostics_start(&platform, &s_snapshot_diagnostics);
+    if (snapshot_error == ESP_OK) {
+        ESP_LOGI(TAG, "Read-only plan snapshots ready: RPC 0xECA1");
+    } else {
+        ESP_LOGW(TAG, "Plan snapshots unavailable: %s; retained_context=%u",
+                 esp_err_to_name(snapshot_error), s_snapshot_diagnostics != NULL);
+    }
 #if CONFIG_ECHOY_AUDIO_DIAGNOSTICS
     CHECK_START(echoy_audio_diagnostics_register(s_device));
     ESP_LOGI(TAG, "Explicit audio diagnostics ready: RPC 0xECA0; no automatic tone");

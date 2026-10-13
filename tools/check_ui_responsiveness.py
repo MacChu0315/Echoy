@@ -30,10 +30,11 @@ def main():
         executable = Path(directory) / 'test-ui'
         subprocess.run(['cc', *flags, str(ROOT / 'tools/test_ui_responsiveness.c'),
             *[str(main / file) for file in ('echoy_model.c', 'echoy_music.c', 'echoy_strip.c',
-                                          'echoy_display.c')],
-            '-Wl,--gc-sections', '-lm', '-o', str(executable)], check=True)
+                                          'echoy_display.c', 'echoy_art_producer.c', 'echoy_art.c')],
+            '-Wl,--gc-sections', '-pthread', '-lm', '-o', str(executable)], check=True)
         for case in ('single-read', 'feedback-first', 'latest-wins', 'latest-after-last',
-                     'hover-progress', 'drag-progress', 'quick-role-return'):
+                     'hover-progress', 'drag-progress', 'quick-role-return',
+                     'idle-pointer-art', 'volume-pointer-art', 'capture-dirty-art'):
             result = subprocess.run([str(executable), case], text=True, capture_output=True)
             if result.returncode:
                 print(result.stderr)
@@ -64,18 +65,34 @@ def main():
         subprocess.run(['cc', *flags, str(ROOT / 'tools/test_ui_creation.c'),
             *[str(main / file) for file in ('echoy_model.c', 'echoy_music.c', 'echoy_art_image.c',
                 'echoy_art.c', 'echoy_strip.c', 'echoy_strip_image.c', 'echoy_display.c',
-                'echoy_view_cache.c')], '-Wl,--gc-sections', '-Wl,--wrap=echoy_model_create',
-            '-Wl,--wrap=echoy_model_delete', '-lm', '-o', str(executable)], check=True)
+                'echoy_view_cache.c', 'echoy_art_producer.c')], '-Wl,--gc-sections', '-Wl,--wrap=echoy_model_create',
+            '-Wl,--wrap=echoy_model_delete', '-pthread', '-lm', '-o', str(executable)], check=True)
         for case in ('none', 'read-only', 'action-only', 'external', 'storage-only',
                      'storage-failure', 'external-storage-failure', 'external-model-failure',
                      'standalone-model-failure', 'external-timer-failure', 'external-close-retry',
                      'external-already-closed', 'standalone-close-retry', 'standalone-already-closed',
-                     'legacy-cache', 'external-error'):
+                     'legacy-cache', 'external-error', 'external-home-async'):
             result = subprocess.run([str(executable), case], text=True, capture_output=True)
             if result.returncode:
                 print(result.stderr)
             result.check_returncode()
             print('PASS: UI creation ' + case)
+        executable = Path(directory) / 'test-ui-home-async'
+        subprocess.run(['cc', *flags, str(ROOT / 'tools/test_ui_home_async.c'),
+            *[str(main / file) for file in ('echoy_model.c', 'echoy_music.c', 'echoy_art_image.c',
+                'echoy_art.c', 'echoy_strip.c', 'echoy_strip_image.c', 'echoy_display.c',
+                'echoy_view_cache.c', 'echoy_art_producer.c')], '-Wl,--gc-sections',
+            '-Wl,--wrap=echoy_model_create', '-Wl,--wrap=echoy_model_delete',
+            '-Wl,--wrap=echoy_art_draw', '-pthread', '-lm', '-o', str(executable)], check=True)
+        for case in ('input-during-draw', 'continuous-progress', 'role-replaces-inflight',
+                     'static-final-queue-full', 'route-role-visibility', 'startup-fallback',
+                     'worker-stop-retry', 'active-owner-close-retry', 'canvas-stop-retry',
+                     'release-closed-retry', 'publish-error'):
+            result = subprocess.run([str(executable), case], text=True, capture_output=True)
+            if result.returncode:
+                print(result.stderr)
+            result.check_returncode()
+            print('PASS: asynchronous home ' + case)
 
 
 if __name__ == '__main__':

@@ -125,6 +125,14 @@ class DeskCheck:
             return rows and rows[-1].get('mode')=='idle' and rows[-1].get('play')==1 and state['tiles'][tile]['phase']==0
         self.until(enabled,tile+' native Play permission did not become ready',timeout=4)
 
+    def record_ready(self, tile):
+        # A detached controller can publish SOLO before the UI has enabled its
+        # Record target. Wait for the actual control, not a render-duration guess.
+        def enabled(state):
+            rows=strip_events((self.output/'desk.log').read_text(),ready=True,tile=tile)
+            return rows and rows[-1].get('mode') in ('idle', 'record_only') and rows[-1].get('record')==1 and state['tiles'][tile]['phase']==0 and self.stable(state)
+        self.until(enabled,tile+' native Record permission did not become ready',timeout=4)
+
     def visual_ready(self, tile, route):
         path = self.output / f'visible-{route}-{tile}.png'
         def visible(_):

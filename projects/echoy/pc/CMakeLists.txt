@@ -29,12 +29,15 @@ target_link_libraries(echoy_backend PRIVATE m)
 target_sources(echoy_backend PRIVATE ../main/echoy_display.c)
 
 find_package(Threads REQUIRED)
+target_sources(echoy_backend PRIVATE ../main/echoy_art_producer.c)
+target_link_libraries(echoy_backend PRIVATE Threads::Threads)
 add_executable(echoy_desk desk_main.c
     ../main/echoy_ui.c ../main/echoy_strip.c ../main/echoy_strip_image.c ../main/echoy_model.c ../main/echoy_music.c
     ../main/echoy_view_cache.c ../main/echoy_art.c ../main/echoy_art_image.c
     ../main/echoy_band.c ../main/echoy_audio.c ../main/echoy_arrange.c)
 add_dependencies(echoy_desk echoy_backend_bundle)
 target_sources(echoy_desk PRIVATE ../main/echoy_display.c)
+target_sources(echoy_desk PRIVATE ../main/echoy_art_producer.c)
 target_include_directories(echoy_desk PRIVATE ../main "${CMAKE_CURRENT_BINARY_DIR}/echoy_backend_assets")
 target_link_libraries(echoy_desk PRIVATE esp_gsp::sim_bridge Threads::Threads m)
 target_compile_options(echoy_desk PRIVATE -Wall -Wextra)

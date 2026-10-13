@@ -1,0 +1,12 @@
+{
+  "before": {
+    "inner_segment_visits": 100800,
+    "budget": 20000,
+    "passed": false
+  },
+  "candidate": {
+    "inner_segment_visits": 7640,
+    "budget": 20000,
+    "passed": true
+  }
+}

@@ -16,7 +16,7 @@ trap 'rm -rf "$art_build"' EXIT HUP INT TERM
     -I"$root/projects/echoy/main" \
     -I"$root/projects/echoy/managed_components/espressif__esp-gsp/include" \
     "$root/tests/art/test_performance.c" "$root/projects/echoy/main/echoy_art.c" \
-    -Wl,--wrap=hypotf -lm -o "$art_build/test_performance"
+    -Wl,--wrap=hypotf -Wl,--wrap=sin -lm -o "$art_build/test_performance"
 "$art_build/test_performance"
 
 "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -g -O2 ${ART_TEST_CFLAGS:-} \

@@ -1,0 +1,11 @@
+{
+  "passed": [
+    "manual 60% brightness survives more than 61 idle seconds",
+    "native touch preserves 60% without starting playback",
+    "manual 60% brightness survives more than 61 playing seconds",
+    "native slider restores 100% brightness"
+  ],
+  "elapsed_idle_seconds": 61.01290028099902,
+  "elapsed_playing_seconds": 61.015094972914085,
+  "scope": "production C UI in official GSP; physical panel not tested"
+}
