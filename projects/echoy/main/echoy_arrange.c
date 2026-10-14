@@ -307,6 +307,36 @@ bool echoy_arrange_set_edges(echoy_arrange_t *m, const echoy_arrange_edge_t *edg
     return true;
 }
 
+bool echoy_arrange_release(echoy_arrange_t *m, echoy_tile_id_t id)
+{
+    if (!m || !valid_tile(id)) return false;
+    echoy_tile_id_t old = m->tiles[id].clock_id;
+    m->clocks[id] = m->clocks[old];
+    m->origin_seconds[id] = m->origin_seconds[old];
+    for (int i = 0; i < ECHOY_ARRANGE_TILE_COUNT; ++i) {
+        echoy_tile_id_t root = (echoy_tile_id_t)i;
+        for (int depth = 0; depth < ECHOY_ARRANGE_TILE_COUNT; ++depth) {
+            echoy_tile_id_t parent = ECHOY_TILE_NONE;
+            for (size_t j = 0; j < m->wanted_count; ++j)
+                if (m->wanted[j].right == root) parent = m->wanted[j].left;
+            if (parent == ECHOY_TILE_NONE) break;
+            root = parent;
+        }
+        if (root == id) m->tiles[i].clock_id = id;
+    }
+    echoy_arrange_plan_t *p = &m->tiles[id].current;
+    if (p->valid && p->source != ECHOY_TILE_NONE) {
+        p->source = ECHOY_TILE_NONE;
+        p->has_detached = p->detached = true;
+    }
+    size_t kept = 0;
+    for (size_t j = 0; j < m->edge_count; ++j)
+        if (m->edges[j].right != id) m->edges[kept++] = m->edges[j];
+    m->edge_count = kept;
+    echoy_arrange_invalidate(m);
+    return true;
+}
+
 static bool same_note(const echoy_note_t *a, const echoy_note_t *b)
 {
     if (a->step != b->step || a->velocity != b->velocity || a->duration != b->duration ||
@@ -525,11 +555,15 @@ bool echoy_arrange_tick(echoy_arrange_t *m, int64_t now_us, echoy_arrange_commit
 { return echoy_arrange_commit(m, now_us, result); }
 
 bool echoy_arrange_enable_loop(echoy_arrange_t *m, echoy_tile_id_t id, int64_t now_us, int64_t *start_us)
+{ return echoy_arrange_enable_loop_shared(m,id,now_us,false,start_us); }
+
+bool echoy_arrange_enable_loop_shared(echoy_arrange_t *m, echoy_tile_id_t id, int64_t now_us,
+                                      bool peer_playing, int64_t *start_us)
 {
     if (!m || !valid_tile(id) || !start_us || !m->tiles[id].present || !m->tiles[id].current.valid) return false;
     echoy_arrange_tile_t *d = &m->tiles[id];
     echoy_tile_id_t clock = d->clock_id;
-    bool established = m->clocks[clock].started;
+    bool established = peer_playing;
     for (int i = 0; i < 3; ++i) if (m->tiles[i].loop && m->tiles[i].clock_id == clock) established = true;
     double now = (double)now_us / 1000000.0, origin = m->origin_seconds[clock];
     double start = established ? origin + ceil((now + .10 - origin) / BAR_SECONDS) * BAR_SECONDS : now + .05;

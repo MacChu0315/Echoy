@@ -1,0 +1,13 @@
+{
+  "passed": [
+    "Empty linked follower shows waiting and its disabled Record stays disabled",
+    "Joining during native count-in and recording preserves capture/reply and joins afterward",
+    "Native Cancel ends the deferred operation and retains visible connection feedback",
+    "Detaching a deferred join preserves the native capture and removes its join promise",
+    "Following text remains visible while idle and during explicitly requested playback",
+    "Centered follower Play accepts both sides of its full area and starts a paused group promptly",
+    "Native release restores independent controls, retains the phrase/play state and permits prompt replay",
+    "English deferred progress and one-shot reply use the unchanged status area"
+  ],
+  "scope": "Native shared C/GSP captions and pointer flows; physical wireless/audio acceptance excluded"
+}

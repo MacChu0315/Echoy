@@ -187,7 +187,7 @@ static void expect_pcm(real_owner_t *o, bool silent)
     bool original = o->state.source == ECHOY_TILE_NONE && o->state.plan.role == ECHOY_PULSE &&
                     o->state.plan.phrase == 1;
     CHECK(echoy_audio_prepare(&o->state.plan, original, &o->pcm.old) == ECHOY_AUDIO_OK);
-    o->pcm.old_start = o->state.state.start_us;
+    o->pcm.old_start = o->state.state.continuous ? o->link.clock_origin_us : o->state.state.start_us;
     o->pcm.enabled = true; o->pcm.silent = silent;
 }
 static void expect_next(real_owner_t *o, const echoy_plan_t *plan, int64_t at)
@@ -694,6 +694,175 @@ static void failed_abort_supersedes_unconsumed_source_begin(void)
     destroy_pair(p);
 }
 
+/* First Play is prompt from either side; clock traffic cannot grant permission. */
+static void prompt_group_start(bool follower_first, bool simultaneous)
+{
+    pair_t *p=fresh_pair(false);
+    real_owner_t *a=p->left->ctx, *b=p->right->ctx;
+    CHECK(echoy_band_action(a->band,ECHOY_TILE_A,ECHOY_ACT_PAUSE,0,p->now));
+    advance_pair(p,p->now+500000);
+    real_owner_t *first=follower_first ? b : a, *later=follower_first ? a : b;
+    int64_t pressed=p->now, origin;
+    CHECK(echoy_band_action(first->band,ECHOY_TILE_A,ECHOY_ACT_TRANSPORT,0,pressed+first->offset));
+    service_owner(first,pressed+first->offset);
+    CHECK(first->state.state.start_us==pressed+first->offset+50000);
+    origin=first->state.state.start_us-first->offset;
+    if (simultaneous) {
+        CHECK(echoy_band_action(later->band,ECHOY_TILE_A,ECHOY_ACT_TRANSPORT,0,pressed+later->offset+20000));
+        service_owner(later,pressed+later->offset+20000);
+    }
+    advance_pair(p,p->now+500000);
+    CHECK(llabs(a->link.clock_origin_us-b->link.clock_origin_us+REMOTE_OFFSET)<=1000);
+    CHECK(llabs(a->link.clock_origin_us-origin)<=1000);
+    CHECK(first->state.state.continuous);
+    if (!simultaneous) {
+        CHECK(!later->state.state.continuous && later->state.state.phase==ECHOY_IDLE);
+        CHECK(echoy_band_action(later->band,ECHOY_TILE_A,ECHOY_ACT_TRANSPORT,0,p->now+later->offset));
+        service_owner(later,p->now+later->offset);
+        CHECK(later->state.state.start_us>p->now+later->offset+1000000);
+        CHECK(llabs((later->state.state.start_us-later->offset-origin)%2500000)<=1000);
+    }
+    advance_pair(p,p->now+3000000);
+    expect_pcm(a,false);expect_pcm(b,false);
+    advance_pair(p,p->now+200000);
+    CHECK(a->pcm.energy>1e-6 && b->pcm.energy>1e-6);
+    destroy_pair(p);
+}
+static void immediate_release_rejects_old_session(void)
+{
+    pair_t *p=fresh_pair(true);
+    real_owner_t *a=p->left->ctx,*b=p->right->ctx;
+    echoy_plan_t retained=b->state.plan;
+    echoy_link_update_t stale=b->desired;
+    expect_pcm(a,false);expect_pcm(b,false);
+    /* A pending proposal/queued start must not delay visible physical release. */
+    CHECK(echoy_band_action(a->band,ECHOY_TILE_A,ECHOY_ACT_PHRASE,2,p->now));
+    advance_pair(p,p->now+100000);
+    mosaico_mag_presence_event_t e={.attached_mask=0};
+    presence_event(&e,p->right);
+    deliver_update(p->right);service_owner(b,p->now+b->offset);
+    CHECK(b->state.cooperation==ECHOY_COOP_SOLO && !b->state.state.following);
+    CHECK(b->state.clock==ECHOY_TILE_A && b->state.source==ECHOY_TILE_NONE);
+    CHECK(b->state.state.continuous);equal_plan(&b->state.plan,&retained);
+    CHECK(!echoy_band_link_update(b->band,&stale,p->now+b->offset));
+    render_owner(b,p->now+b->offset);
+    CHECK(b->pcm.energy>1e-6);
+    destroy_pair(p);
+}
+
+static void radio_loss_retains_physical_membership(void)
+{
+    pair_t *p=fresh_pair(true);
+    real_owner_t *b=p->right->ctx;
+    echoy_plan_t retained=b->state.plan;
+    link_event_t lost={.event={.type=MOSAICO_NETWORK_EVENT_NEIGHBOR_DETACHED,
+        .data.neighbor={.peer_id=p->right->peer,.session_id=p->right->session,.local_edge=p->right->edge}}};
+    process_event(p->right,&lost);deliver_update(p->right);service_owner(b,p->now+b->offset);
+    CHECK(p->right->attached && b->state.state.following);
+    CHECK(b->state.cooperation==ECHOY_COOP_RECOVERING && b->state.state.continuous);
+    equal_plan(&b->state.plan,&retained);
+    mosaico_network_neighbor_event_t joined={.peer_id=p->right->peer,.session_id=778,
+        .local_edge=MOSAICO_EDGE_LEFT,.peer_edge=MOSAICO_EDGE_RIGHT};
+    attach(p->right,&joined);deliver_update(p->right);service_owner(b,p->now+b->offset);
+    CHECK(p->right->session==778 && b->state.state.following);
+    CHECK(b->state.clock==ECHOY_TILE_B && b->state.state.continuous);
+    equal_plan(&b->state.plan,&retained);
+    destroy_pair(p);
+}
+
+static void repeated_paused_starts_and_stale_clock(void)
+{
+    pair_t *p=fresh_pair(false);
+    real_owner_t *a=p->left->ctx,*b=p->right->ctx;
+    for (unsigned round=0;round<4;++round) {
+        CHECK(echoy_band_action(a->band,ECHOY_TILE_A,ECHOY_ACT_PAUSE,0,p->now));
+        CHECK(echoy_band_action(b->band,ECHOY_TILE_A,ECHOY_ACT_PAUSE,0,p->now+b->offset));
+        advance_pair(p,p->now+600000);
+        real_owner_t *first=round%2 ? a : b,*peer=round%2 ? b : a;
+        int64_t pressed=p->now;
+        CHECK(echoy_band_action(first->band,ECHOY_TILE_A,ECHOY_ACT_TRANSPORT,0,pressed+first->offset));
+        service_owner(first,pressed+first->offset);
+        CHECK(first->state.state.start_us==pressed+first->offset+50000);
+        if (!round) {
+            p->dropped=1u<<WIRE_CLOCK;
+            advance_pair(p,p->now+200000);
+            mosaico_network_message_t stale={.source_id=p->right->peer,.service_id=LINK_SERVICE_BASE,.payload_len=36};
+            stale.payload[0]=LINK_WIRE_VERSION;stale.payload[1]=WIRE_CLOCK;
+            put32(stale.payload+4,p->right->session);
+            put32(stale.payload+8,p->right->playback.receive_sequence+1);
+            put32(stale.payload+20,p->right->playback.revision);
+            put_time(stale.payload+24,3150000);stale.payload[32]=1;
+            receive_message(p->right,&stale,p->now+b->offset);
+            deliver_update(p->right);service_owner(b,p->now+b->offset);
+            CHECK(b->link.clock_origin_us==pressed+b->offset+50000);
+            p->dropped=0;
+        }
+        advance_pair(p,p->now+1000000);
+        CHECK(llabs(a->link.clock_origin_us-b->link.clock_origin_us+REMOTE_OFFSET)<=1000);
+        CHECK(llabs(a->link.clock_origin_us-pressed-50000)<=1000);
+        CHECK(!peer->state.state.continuous && first->state.state.continuous);
+    }
+    destroy_pair(p);
+}
+
+static void radio_session_supersedes_unconsumed_abort(void)
+{
+    pair_t *p=fresh_pair(true);
+    real_owner_t *a=p->left->ctx,*b=p->right->ctx;
+    echoy_plan_t retained=b->state.plan, old_upstream=a->state.plan;
+    b->prepare=false;
+    CHECK(echoy_band_action(a->band,ECHOY_TILE_A,ECHOY_ACT_ROLE,ECHOY_VOICE,p->now));
+    advance_pair(p,p->now+700000);
+    CHECK(b->link.offered_transaction!=b->link.committed_transaction);
+    link_event_t lost={.event={.type=MOSAICO_NETWORK_EVENT_NEIGHBOR_DETACHED,
+        .data.neighbor={.peer_id=p->right->peer,.session_id=p->right->session,.local_edge=p->right->edge}}};
+    process_event(p->right,&lost);
+    mosaico_network_neighbor_event_t joined={.peer_id=p->right->peer,.session_id=778,
+        .local_edge=MOSAICO_EDGE_LEFT,.peer_edge=MOSAICO_EDGE_RIGHT};
+    attach(p->right,&joined);deliver_update(p->right);
+    b->prepare=true;
+    service_owner(b,p->now+b->offset);
+    service_owner(b,p->now+b->offset+5000000);
+    equal_plan(&b->state.plan,&retained);
+    CHECK(b->state.state.following && b->state.state.continuous);
+    CHECK(echoy_band_action(b->band,ECHOY_TILE_A,ECHOY_ACT_DENSITY,.7,p->now+b->offset+5001000));
+    service_owner(b,p->now+b->offset+5001000);
+    service_owner(b,p->now+b->offset+8000000);
+    echoy_plan_t local,expected;
+    CHECK(echoy_compose(old_upstream.source,old_upstream.source_count,retained.role,retained.phrase,.7,&local));
+    CHECK(echoy_arrange_linked(&local,&old_upstream,&expected));
+    equal_plan(&b->state.plan,&expected);
+    destroy_pair(p);
+}
+
+static void first_start_before_recovered_clock(void)
+{
+ pair_t *p=fresh_pair(false);
+ real_owner_t *a=p->left->ctx,*b=p->right->ctx;
+ CHECK(echoy_band_action(a->band,ECHOY_TILE_A,ECHOY_ACT_PAUSE,0,p->now));
+ advance_pair(p,p->now+600000);
+ board_link_t *nodes[]={p->left,p->right};
+ for (int i=0;i<2;++i) {
+  board_link_t *h=nodes[i];
+  link_event_t lost={.event={.type=MOSAICO_NETWORK_EVENT_NEIGHBOR_DETACHED,
+    .data.neighbor={.peer_id=h->peer,.session_id=h->session,.local_edge=h->edge}}};
+  process_event(h,&lost);
+  mosaico_network_neighbor_event_t joined={.peer_id=h->peer,.session_id=778,.local_edge=h->edge,
+    .peer_edge=h->following ? MOSAICO_EDGE_RIGHT : MOSAICO_EDGE_LEFT};
+  attach(h,&joined);deliver_update(h);service_owner(h->ctx,p->now+((real_owner_t*)h->ctx)->offset);
+ }
+ // Read a fresh session view first; follower then presses before offset is valid.
+ advance_pair(p,p->now+10000);
+ int64_t pressed=p->now;
+ CHECK(!p->right->clock.valid);
+ CHECK(echoy_band_action(b->band,ECHOY_TILE_A,ECHOY_ACT_TRANSPORT,0,pressed+b->offset));
+ service_owner(b,pressed+b->offset);
+ advance_pair(p,p->now+1000000);
+ CHECK(llabs(a->link.clock_origin_us-pressed-50000)<=1000);
+ CHECK(llabs(a->link.clock_origin_us-b->link.clock_origin_us+REMOTE_OFFSET)<=1000);
+ destroy_pair(p);
+}
+
 int main(int argc, char **argv)
 {
     const char *names[] = {"common-bar-playing", "common-bar-paused", "prepare-failed", "commit-lost",
@@ -703,7 +872,8 @@ int main(int argc, char **argv)
                            "incomplete-offer-abort", "fresh-transport-recovery",
                            "source-owner-recovery", "receiver-owner-recovery",
                            "unoffered-abort-authorized", "unoffered-abort-deferred-job",
-                           "abort-supersedes-source-begin"};
+                           "abort-supersedes-source-begin", "prompt-left-first", "prompt-right-first",
+                           "prompt-simultaneous", "immediate-physical-release", "radio-retains-membership", "repeated-start-stale-clock", "radio-supersedes-abort", "early-recovery-first-start"};
     unsigned ran = 0;
     for (unsigned i = 0; i < sizeof(names) / sizeof(names[0]); ++i) {
         if (argc > 1 && strcmp(argv[1], names[i])) continue;
@@ -723,7 +893,13 @@ int main(int argc, char **argv)
         else if (i < 15) available_owner_recovers_without_replug(i == 13);
         else if (i == 15) unoffered_abort_preserves_authorized_commit();
         else if (i == 16) unoffered_abort_preserves_deferred_recording_job();
-        else failed_abort_supersedes_unconsumed_source_begin();
+        else if (i==17) failed_abort_supersedes_unconsumed_source_begin();
+        else if (i<21) prompt_group_start(i!=18,i==20);
+        else if (i==21) immediate_release_rejects_old_session();
+        else if (i==22) radio_loss_retains_physical_membership();
+        else if (i==23) repeated_paused_starts_and_stale_clock();
+        else if (i==24) radio_session_supersedes_unconsumed_abort();
+        else first_start_before_recovered_clock();
         printf("PASS %s\n", scenario); ++ran;
     }
     CHECK(ran);

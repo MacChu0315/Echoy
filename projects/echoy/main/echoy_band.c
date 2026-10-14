@@ -55,6 +55,8 @@ struct cooperation {
     bool candidate_exists, candidate_ready, candidate_failed, candidate_affects;
     uint64_t candidate_revision, settled_revision;
     bool active, follower, recovering, hold, incoming;
+    bool peer_looping;
+    uint32_t local_start_serial;
     uint32_t generation, session, offered, armed, authorized, committed, failed, aborted, last_transaction;
     uint64_t bound_revision, armed_revision;
     int64_t armed_at;
@@ -416,13 +418,20 @@ static bool apply_requested_edges(echoy_band_t *b, int64_t now)
         } else effective[count++] = e;
     }
     memcpy(b->deferred,deferred,sizeof(deferred));
+    bool parents[N];
+    for (int i=0;i<N;++i) parents[i]=wanted_parent(b,i);
     uint64_t before = echoy_arrange_revision(b->arrange);
     if (!echoy_arrange_set_edges(b->arrange,effective,count)) return false;
+    for (int i=0;i<N;++i) if (parents[i] && !wanted_parent(b,i)) {
+        echoy_arrange_release(b->arrange,i);
+        const echoy_arrange_tile_t *t=echoy_arrange_get_tile(b->arrange,i);
+        const echoy_arrange_clock_t *clock=echoy_arrange_get_clock(b->arrange,t->clock_id);
+        echoy_model_set_following(b->voices[i].model,false);
+        echoy_model_sync_clock(b->voices[i].model,clock->origin_us,clock->started);
+    }
     if (before != echoy_arrange_revision(b->arrange)) cancel_auto(b,-1,now);
     for (int i=0;i<N;++i) {
-        const echoy_arrange_tile_t *t=echoy_arrange_get_tile(b->arrange,i);
-        bool following=!b->deferred[i] &&
-            (wanted_parent(b,i) || (t->current.valid && t->current.source!=ECHOY_TILE_NONE));
+        bool following=!b->deferred[i] && wanted_parent(b,i);
         echoy_model_set_following(b->voices[i].model,following);
     }
     return true;
@@ -488,6 +497,7 @@ bool echoy_band_link_read(echoy_band_t *b, echoy_link_view_t *out)
     out->deferred=b->deferred[0];
     out->following=b->upstream_connected;
     out->clock_started=clock->started;
+    out->local_start_serial=c->local_start_serial;
     out->clock_origin_us=clock->origin_us;
     out->looping=t->loop;
     out->current=t->current.valid ? t->current.music :
@@ -531,12 +541,23 @@ bool echoy_band_link_update(echoy_band_t *b, const echoy_link_update_t *u, int64
     bool leaving=c->active && (!u->attached || new_session);
     if (leaving) {
         bool was_follower=c->follower;
-        if (was_follower && c->incoming && !b->deferred[0]) discard_candidate(b,false);
-        else unarm(b);
+        if (was_follower && c->incoming && !b->deferred[0]) {
+            discard_candidate(b,false);
+            if (u->attached) {
+                /* New radio-session admission may overwrite an unconsumed
+                 * ABORT. Later edits must use the committed upstream, never
+                 * the proposal that belonged to the abandoned session. */
+                b->empty_plan=(echoy_plan_t){.role=ECHOY_PULSE,.phrase=1,.density=.5,.duration=2.5};
+                const echoy_plan_t *old=c->accepted_upstream_valid ? &c->accepted_upstream : &b->empty_plan;
+                echoy_arrange_import(b->arrange,ECHOY_TILE_B,old);
+                c->upstream=*old; c->upstream_valid=true;
+                b->issued=echoy_arrange_revision(b->arrange);
+            }
+        } else unarm(b);
         c->offered=c->committed=c->failed=c->aborted=c->last_transaction=0;
         c->incoming=c->hold=false;
         c->active=false;
-        if (was_follower) {
+        if (was_follower && !u->attached) {
             echoy_band_set_upstream(b,false,NULL,false,0,false,now);
             c->accepted_upstream_valid=false;
         }
@@ -548,14 +569,21 @@ bool echoy_band_link_update(echoy_band_t *b, const echoy_link_update_t *u, int64
     c->follower=u->following;
     c->recovering=u->recovering;
     c->hold=u->hold_changes;
+    c->peer_looping=u->attached && u->peer_looping;
     if (!u->attached) return true;
+    bool acknowledged=u->clock_start_ack==c->local_start_serial;
     if (!u->following) {
         if (!echoy_band_establish_clock(b,now)) return false;
     } else {
         /* Contact feedback is immediate. Only OFFER may replace its musical
          * payload; repeated clock/status snapshots cannot replay an old plan. */
-        if (!echoy_band_set_upstream(b,true,NULL,u->clock_started,u->clock_origin_us,u->looping,now))
+        if (!echoy_band_set_upstream(b,true,NULL,u->clock_started && (!u->clock_sync || acknowledged),
+                                    u->clock_origin_us,u->looping,now))
             return false;
+    }
+    if (u->clock_sync && acknowledged && !b->deferred[0]) {
+        echoy_tile_id_t clock=echoy_arrange_get_tile(b->arrange,ECHOY_TILE_A)->clock_id;
+        if (!sync_clock(b,clock,u->clock_origin_us,u->clock_started,now)) return false;
     }
     if (u->command==ECHOY_LINK_NONE) return true;
     if (!u->transaction) return false;
@@ -1118,9 +1146,15 @@ void echoy_band_tick(echoy_band_t *b, int64_t now)
         const echoy_arrange_tile_t *t = echoy_arrange_get_tile(b->arrange, i);
         int64_t at = now + 50000;
         if (s.continuous) {
-            if (!echoy_arrange_enable_loop(b->arrange, i, now, &at)) {
+            bool running=c->active && !b->deferred[i] && c->peer_looping;
+            for (int j=0;j<N;++j) {
+                const echoy_arrange_tile_t *q=echoy_arrange_get_tile(b->arrange,j);
+                if (q->loop && q->clock_id==t->clock_id) running=true;
+            }
+            if (!echoy_arrange_enable_loop_shared(b->arrange, i, now, running, &at)) {
                 continue;
             }
+            if (i==ECHOY_TILE_A && !running && !++c->local_start_serial) ++c->local_start_serial;
         } else {
             bool running = false;
             for (int j = 0; j < N; j++) {

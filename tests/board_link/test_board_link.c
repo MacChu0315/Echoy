@@ -266,6 +266,7 @@ static void test_stale_fragments_crc_repair_and_delivery_identity(void)
     board_link_t *a = node(false, oa), *b = node(true, ob);
     a->peer_seen = true; a->peer_seen_at = 1000000;
     read_local(a, 1000000);
+    a->playback.next_send=INT64_MAX; /* Isolate fragment/delivery identity below. */
     send_next(a, 1000000);
     assert(have_packet && packet.payload[1] == WIRE_META);
     mosaico_network_message_t meta = packet;
@@ -564,7 +565,7 @@ static void test_empty_source_bad_clock_and_send_errors(void)
     run_pair(a, b, 1800000, 8000000);
     assert(a->transaction.phase == TX_DONE && b->transaction.phase == TX_DONE);
     assert(!ob->view.current.count && !ob->view.current.source_count);
-    b->rx.origin = 100000; b->clock.offset = -2000000;
+    b->rx.origin = b->playback.origin = 100000; b->clock.offset = -2000000;
     publish_attachment(b);
     assert(b->update.clock_origin_us == 600000);
     free_pair(a, b);
@@ -578,7 +579,7 @@ static void test_contact_queue_and_lifecycle(void)
     link_event_t lost = {.event = {.type = MOSAICO_NETWORK_EVENT_NEIGHBOR_DETACHED,
         .data.neighbor = {.peer_id = h->peer, .session_id = h->session, .local_edge = h->edge}}};
     process_event(h, &lost);
-    assert(!h->update.attached && h->update.recovering && h->update.connection_generation > generation);
+    assert(h->update.attached && h->update.recovering && h->update.connection_generation > generation);
     mosaico_mag_presence_event_t after_radio_release = {.attached_mask = 0};
     presence_event(&after_radio_release, h);
     assert(!h->update.attached && !h->update.recovering);

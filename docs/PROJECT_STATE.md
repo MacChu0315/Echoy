@@ -653,12 +653,12 @@ See `verification/second-device/README.md` for identities, verification and limi
 
 ## Remaining physical integration
 
-### Approved cooperation revision (2026-10-14, implementation not started)
+### Approved cooperation revision (2026-10-14, installed)
 
-The user explicitly approved the discussed rules below, revising the old
-separation behavior. They then asked whether to continue in the same session;
-this approval is preserved for the next implementation session and does not
-need to be requested again unless the scope materially changes.
+The user explicitly approved the rules below, revising the old separation
+behavior. They are now implemented and verified in the shared C/native simulator;
+both authorized devices have been updated. New physically joined behavior still
+needs user acceptance, distinct from delivery/startup verification.
 
 - A right-side follower with a playable phrase should show only Play in the
   existing middle button area, not a disabled Record beside Play.
@@ -675,11 +675,11 @@ state when separating, restore independent controls, keep a waiting follower's
 Play disabled until usable sound exists, and distinguish confirmed physical
 release from radio-only recovery. Preserve the previously accepted deferred
 join during recording/one-shot reply and explicit local playback permission.
-No new cooperation/UI implementation or frozen-HTML change has been made;
-both devices run the accepted sound package `5d4776c9ae6d`. Retain source
-baseline `0953c52` and its accepted audio configuration while implementing this
-revision. The code need not be reset to that commit; later commits record
-acceptance, synchronization and these approved decisions.
+Frozen HTML remains unchanged. Source baseline `0953c52`, its accepted package
+`5d4776c9ae6d` and the speaker profile remain preserved. Both devices now run
+cooperation package `2b984e511b98` with `CONFIG_ECHOY_OFFICE_VOICING_TRIAL=y`;
+no sound tuning, microphone capture, persistent-data change or remote write
+was introduced.
 
 The first Play can come from either side. Validate that a follower can start
 an otherwise paused group promptly without leaving the other device on a
@@ -688,17 +688,70 @@ to a paused peer. A solo replay must not wait on a historical group clock.
 Validate visible physical detach independently of the next musical commit,
 including stale transfers/queued starts and recording's deferred-join boundary.
 
-Read-only review confirms that C and frozen HTML preserve `clock.started` and
-old clock ownership after detach. The current strip disables Record for a
-follower but still draws the split layout. Magnetic release already calls
-`detach()` without waiting for radio acknowledgement, so the user's report of
-lingering connected state still needs a targeted sensor/session/UI trace;
-do not claim its exact failure layer is already proven.
+Pre-implementation review found historical `clock.started`/ownership and a
+split follower strip. The owner also derived following from the retained
+phrase's source until a later musical commit; that delay is reproduced and
+fixed. Confirmed magnetic release immediately removes membership and copies
+an independent phase while preserving music/PCM. Radio-only loss instead keeps
+physical membership and enters recovery. Host/native tests do not prove the
+actual sensor-release latency or identify every layer of the original report.
 
 Physical support currently covers two same-orientation horizontal boards.
 The application stores one active peer and ignores a second attach while one
 is active; the desktop three-tile model is not a completed three-board physical
 implementation. Do not claim arbitrary multi-device placement/order stability.
+
+### Cooperation revision verification and delivery (2026-10-14)
+
+The existing 244x84 middle strip now centers Play on paused followers, including
+a disabled waiting state. Native target visibility changes immediately and both
+sides of the full area work. A solo replay and an all-paused group's first local
+Play use the existing 50 ms lead; later participants align to the common bar.
+The private v2 protocol adds a bounded session-scoped CLOCK message with start
+acknowledgements and sequence fences. It cannot unpause the peer or retime fixed
+ARM/COMMIT boundaries. A first follower start before a recovered clock mapping
+is valid is copied/protected, mapped once ready and acknowledged; independent
+review found that boundary and its new regression first failed, then passed.
+A new radio session cannot expose an abandoned proposal after overwriting an
+unconsumed ABORT. Recording/one-shot deferred joins and explicit local permission
+remain intact.
+
+Final normal and ASan/UBSan/LeakSanitizer checks pass 26 real two-owner transport/
+PCM cases (36,969,333 assertions) and 51 runtime/configuration tests. The existing
+24 deferred cases, protocol/linked-owner/band/audio/speaker tests, 96 exact PCM
+windows, 43,536 music plans, 864 linked plans/1,552 arrangement transitions,
+CTest 2/2 and 12 launcher/HTTP tests pass. GSP 1.5.1 normal/reduced runs pass
+50 caption/visibility assertions and eight pointer flows each; the complete
+13-group native/PCM regression has zero late blocks/clipping and exact paused
+silence. Socket/LeakSanitizer sandbox restrictions were resolved by rerunning
+outside ptrace without weakening checks.
+
+All 404 existing scene objects and logical parents are unchanged; the generator
+adds only a transparent full-width Play target. Frozen v4 hashes, accepted DSP/
+PCM/device-profile sources and the band's entire preparation/voicing/calibration
+region remain identical to `0953c52`. The configured pinned-SDK package passes;
+its 2,122,368-byte application fits the 13 MiB OTA partition. Only the historical
+unused-factory-size warning remains. No new dependency or layout migration.
+
+Both authorized IDs now have package `2b984e511b98`, ELF
+`5a721bd70413aabd5716c646b5fd1d29091cffe6464e44c7d994e2923b5d5e95`.
+The user freshly confirmed separation >=15 cm on a nonmetal surface before the
+writes. Official single-package operations:
+
+- Left `f452a0`: operation `2650a532-634f-4e64-9334-4001b7bb20ca`, HEALTHY boot
+  `2026744546928028908`; magnetic baseline ready at 3520 ms.
+- Right `f40c6c`: operation `57e470ff-9cee-442f-a4e4-b4b6c70a3666`, HEALTHY boot
+  `9361312524343894444`; magnetic baseline ready at 3502 ms.
+
+Identity/HEALTHY/validation, unchanged bootloader and retained partition layout,
+actual Record-only homes, silent startup, zero application crashes and zero
+partial/write/deadline errors pass. Old Recovery reproduced its known startup
+watchdog reset on each board; metadata was preserved (no valid core), stable
+Recovery readiness was verified and one upgrade bundle was submitted per board.
+That Recovery defect remains unresolved. These are delivery/startup checks;
+new physically joined Play/detach acceptance and sustained RF/phase precision
+remain pending. Evidence, commands and retained baseline checks:
+`verification/cooperation-revision/README.md`.
 
 ### Dual-device basic physical flow accepted (2026-10-12)
 

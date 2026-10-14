@@ -112,6 +112,10 @@ class DeskCheck:
         return result.get('result')
 
     def tap(self, tile, name):
+        if name == 'transport':
+            rows = strip_events((self.output/'desk.log').read_text(), ready=True, tile=tile)
+            if rows and rows[-1].get('mode') == 'play_only':
+                name = 'transport_only'
         self.mark(f'tap {tile} {name}')
         self.call(tile, 'tap_object', {'name': name})
         self.call(tile, 'wait', {'frames': 3})
@@ -122,7 +126,7 @@ class DeskCheck:
         # enable/show submission plus the authoritative local playback state.
         def enabled(state):
             rows=strip_events((self.output/'desk.log').read_text(),ready=True,tile=tile)
-            return rows and rows[-1].get('mode')=='idle' and rows[-1].get('play')==1 and state['tiles'][tile]['phase']==0
+            return rows and rows[-1].get('mode') in ('idle', 'play_only') and rows[-1].get('play')==1 and state['tiles'][tile]['phase']==0
         self.until(enabled,tile+' native Play permission did not become ready',timeout=4)
 
     def record_ready(self, tile):

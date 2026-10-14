@@ -16,7 +16,12 @@ int main(void)
     assert(empty_frame.idle_alpha == 1 && empty_frame.play_glyph_alpha == 0);
     s.following = true;
     v = echoy_strip_compute(&s, false, false);
-    assert(v.mode == ECHOY_STRIP_RECORD_ONLY && !v.record_enabled && !v.play_enabled);
+    assert(!v.record_enabled && !v.play_enabled);
+    echoy_strip_motion_init(&empty_motion, v.mode, 0);
+    echoy_strip_motion_frame(&empty_motion, 0, &empty_frame);
+    assert(empty_frame.boundary == 0 && empty_frame.divider_alpha == 0);
+    assert(empty_frame.idle_alpha == 0 && empty_frame.play_glyph_alpha == 1);
+    assert(253 + empty_frame.shift + 48 == 240);
     s.following = false;
     v = echoy_strip_compute(&s, false, true);
     assert(v.mode == ECHOY_STRIP_RECORD_ONLY && !v.record_enabled && !v.single_enabled);
@@ -25,6 +30,11 @@ int main(void)
     s.following = true;
     v = echoy_strip_compute(&s, true, false);
     assert(!v.record_enabled && v.play_enabled);
+    echoy_strip_motion_init(&empty_motion, v.mode, 0);
+    echoy_strip_motion_frame(&empty_motion, 0, &empty_frame);
+    assert(empty_frame.boundary == 0 && empty_frame.divider_alpha == 0);
+    assert(empty_frame.idle_alpha == 0 && empty_frame.play_glyph_alpha == 1);
+    assert(253 + empty_frame.shift + 48 == 240);
     s.following = false;
     s.plan_pending = true;
     v = echoy_strip_compute(&s, true, false);

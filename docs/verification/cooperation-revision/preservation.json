@@ -1,0 +1,15 @@
+{
+  "accepted_baseline_preserved": "0953c52efec6127e2d933fce361c0f46bf2597d4",
+  "accepted_bundle_sha256_verified": true,
+  "band_preparation_dsp_region_byte_identical": true,
+  "unchanged_audio_files": [
+    "echoy_audio.c",
+    "echoy_device_pcm.c",
+    "platform_device.c"
+  ],
+  "office_voicing_enabled": true,
+  "microphone_and_reference_diagnostics_disabled": true,
+  "source_manifest_matches_current_files": true,
+  "package_sha256": "2b984e511b9837c34a37d818fb15d0335e67c9a4f4e4b88b203c790eb6af1727",
+  "elf_sha256": "5a721bd70413aabd5716c646b5fd1d29091cffe6464e44c7d994e2923b5d5e95"
+}

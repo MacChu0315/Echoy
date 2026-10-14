@@ -5,7 +5,7 @@ echoy_strip_state_t echoy_strip_compute(const echoy_snapshot_t *s, bool has_plan
     if (!s) {
         return out;
     }
-    out.mode = has_plan ? ECHOY_STRIP_IDLE : ECHOY_STRIP_RECORD_ONLY;
+    out.mode = s->following ? ECHOY_STRIP_PLAY_ONLY : has_plan ? ECHOY_STRIP_IDLE : ECHOY_STRIP_RECORD_ONLY;
     if (s->phase == ECHOY_COUNT_IN || s->phase == ECHOY_RECORDING) {
         out.mode = ECHOY_STRIP_CANCEL;
     } else if (s->phase >= ECHOY_PREPARING) {
@@ -86,15 +86,16 @@ static void colors(double *values, unsigned first, uint32_t rgb)
 static void targets(echoy_strip_mode_t mode, double out[ECHOY_STRIP_TWEENS])
 {
     bool split = mode == ECHOY_STRIP_IDLE, empty = mode == ECHOY_STRIP_RECORD_ONLY;
-    bool idle = split || empty, cancel = mode == ECHOY_STRIP_CANCEL;
+    bool play_only = mode == ECHOY_STRIP_PLAY_ONLY;
+    bool idle = split || empty || play_only, cancel = mode == ECHOY_STRIP_CANCEL;
     out[BOUNDARY] = split ? 122 : cancel || empty ? 244 : 0;
-    out[RECORD_ALPHA] = mode == ECHOY_STRIP_PAUSE ? 0 : 1;
+    out[RECORD_ALPHA] = mode == ECHOY_STRIP_PAUSE || play_only ? 0 : 1;
     out[PLAY_ALPHA] = cancel || empty ? 0 : 1;
-    out[IDLE_ALPHA] = idle ? 1 : 0;
-    out[PLAY_GLYPH_ALPHA] = split ? 1 : 0;
+    out[IDLE_ALPHA] = split || empty ? 1 : 0;
+    out[PLAY_GLYPH_ALPHA] = split || play_only ? 1 : 0;
     out[SINGLE_ALPHA] = idle ? 0 : 1;
     out[DIVIDER_ALPHA] = split ? 1 : 0;
-    out[SHIFT] = empty ? -61 : split ? 0 : 8;
+    out[SHIFT] = empty || play_only ? -61 : split ? 0 : 8;
     out[SCALE] = idle ? .97 : 1;
     colors(out, RECORD_R, cancel ? 0xf0e1d7 : 0xeee8df);
     colors(out, PLAY_R, mode == ECHOY_STRIP_PAUSE ? 0x455d38 : 0xe8ede1);

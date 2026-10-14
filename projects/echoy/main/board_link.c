@@ -38,7 +38,7 @@
 #define LINK_CLOCK_MAX_RTT_US INT64_C(80000)
 
 enum { WIRE_PING = 1, WIRE_PONG, WIRE_META, WIRE_CHUNK, WIRE_WANT,
-       WIRE_STATE, WIRE_ARM, WIRE_COMMIT, WIRE_ABORT };
+       WIRE_STATE, WIRE_ARM, WIRE_COMMIT, WIRE_ABORT, WIRE_CLOCK };
 enum { META_CLOCK = 1, META_LOOP = 2 };
 enum { STATE_DEFERRED = 1, STATE_READY = 2, STATE_FAILED = 4,
        STATE_ARMED = 8, STATE_AUTHORIZED = 16, STATE_COMMITTED = 32 };
@@ -109,6 +109,14 @@ typedef struct {
         int64_t t1, next_ping, best_rtt, best_offset, offset, window_start;
         int64_t pong_t1, pong_t2, last_log;
     } clock;
+    /* Session-scoped playback coordination, separate from immutable plan jobs.
+     * Follower start requests are acknowledged by the leader; packet sequences
+     * fence delayed status and cannot grant local playback permission. */
+    struct {
+        bool valid, peer_looping, start_pending;
+        uint32_t local_start, peer_start, revision, send_sequence, receive_sequence;
+        int64_t origin, local_origin, next_send;
+    } playback;
     /* One control lane cannot be occupied by data ACKs. Old-generation slots
      * stay reserved until their callbacks/timeouts, so retries never exceed
      * two physical chunks plus one control message in flight. */
@@ -179,6 +187,27 @@ static void publish_attachment(board_link_t *h)
         h->update.clock_origin_us = h->view.clock_origin_us;
         h->update.looping = h->view.looping;
     }
+    h->update.peer_looping = h->attached && h->playback.peer_looping;
+    h->update.clock_sync = h->attached &&
+        ((h->playback.valid && (!h->following || h->clock.valid)) ||
+         (h->following && h->playback.start_pending));
+    h->update.clock_start_ack = h->playback.local_start;
+    if (h->update.clock_sync) {
+        h->update.clock_started = true;
+        h->update.clock_origin_us = h->playback.origin;
+        if (h->following && !h->playback.valid && h->playback.start_pending) {
+            /* Metadata can precede the first usable offset estimate. Preserve
+             * the chosen local start until it can be sent in root time. */
+            h->update.clock_origin_us = h->playback.local_origin;
+        } else if (h->following) {
+            h->update.clock_origin_us += h->clock.offset;
+            if (h->update.clock_origin_us < 0) {
+                h->update.clock_origin_us %= LINK_PERIOD_US;
+                if (h->update.clock_origin_us < 0) h->update.clock_origin_us += LINK_PERIOD_US;
+            }
+            h->update.looping = h->playback.peer_looping;
+        }
+    }
     h->publish_pending = true;
 }
 
@@ -212,6 +241,7 @@ static void detach(board_link_t *h)
     memset(&h->transaction, 0, sizeof(h->transaction));
     memset(&h->rx, 0, sizeof(h->rx));
     memset(&h->clock, 0, sizeof(h->clock));
+    memset(&h->playback, 0, sizeof(h->playback));
     publish_attachment(h);
 }
 
@@ -324,9 +354,21 @@ static void attach(board_link_t *h, const mosaico_network_neighbor_event_t *n)
                       (n->local_edge == MOSAICO_EDGE_LEFT && n->peer_edge == MOSAICO_EDGE_RIGHT);
     if (!h->sensors_ready || !horizontal || n->relative_rotation != 0 ||
         !(h->contacts & mosaico_edge_to_mask(n->local_edge)) || !n->session_id || !n->peer_id) return;
-    if (h->attached) return;
+    if (h->attached && !(h->recovering && h->peer==n->peer_id && h->edge==n->local_edge)) return;
+    /* A fresh radio session on the same physical seam replaces protocol state
+     * without publishing a physical detach to the musical owner. */
+    bool retained=h->attached;
     h->recovering = false;
-    detach(h);
+    if (retained) {
+        h->have_view=h->peer_seen=h->peer_deferred=h->recovery_requested=false;
+        h->tx.active=false; h->tx.size=0;
+        h->control_retry_at=0;
+        memset(&h->transaction,0,sizeof(h->transaction));
+        memset(&h->rx,0,sizeof(h->rx));
+        memset(&h->clock,0,sizeof(h->clock));
+        memset(&h->playback,0,sizeof(h->playback));
+        memset(&h->update,0,sizeof(h->update));
+    } else detach(h);
     h->attached = true;
     if (!++h->connection_generation) ++h->connection_generation;
     h->following = n->local_edge == MOSAICO_EDGE_LEFT;
@@ -549,6 +591,37 @@ static void receive_control(board_link_t *h, const uint8_t *p, int64_t now)
     }
 }
 
+static void receive_playback_clock(board_link_t *h, const uint8_t *p, int64_t now)
+{
+    uint32_t sequence=get32(p+8), start=get32(p+12), ack=get32(p+16), revision=get32(p+20);
+    int64_t origin=get_time(p+24);
+    if (!sequence || (h->playback.receive_sequence && !newer(sequence,h->playback.receive_sequence)) ||
+        origin<0 || (p[32]&~3u) || p[33] || p[34] || p[35]) return;
+    h->playback.receive_sequence=sequence;
+    note_peer(h,now);
+    h->playback.peer_looping=(p[32]&2u)!=0;
+    if (!h->following) {
+        if ((p[32]&1u) && start && newer(start,h->playback.peer_start)) {
+            h->playback.peer_start=start;
+            /* The earlier first start wins a concurrent press; an already
+             * running source keeps its older origin. Paused history has no vote. */
+            if (!h->have_view || !h->view.looping || !h->playback.valid || origin<h->playback.origin)
+                h->playback.origin=origin;
+            h->playback.valid=true;
+            if (!++h->playback.revision) ++h->playback.revision;
+            h->playback.next_send=0;
+        }
+    } else if ((p[32]&1u) && ack==h->playback.local_start &&
+               (!h->playback.revision || revision==h->playback.revision ||
+                newer(revision,h->playback.revision))) {
+        h->playback.origin=origin;
+        h->playback.revision=revision;
+        h->playback.valid=true;
+        h->playback.start_pending=false;
+    }
+    publish_attachment(h);
+}
+
 static void receive_message(board_link_t *h, const mosaico_network_message_t *m, int64_t now)
 {
     const uint8_t *p = m->payload;
@@ -565,6 +638,7 @@ static void receive_message(board_link_t *h, const mosaico_network_message_t *m,
             h->clock.pong_t2 = now;
         }
         break;
+    case WIRE_CLOCK: if (n==36) receive_playback_clock(h,p,now); break;
     case WIRE_PONG: if (n == 36) receive_pong(h, p, now); break;
     case WIRE_META: if (n == 36) receive_meta(h, p, now); break;
     case WIRE_CHUNK: if (n > 20) receive_chunk(h, p, n, now); break;
@@ -615,8 +689,13 @@ static void process_event(board_link_t *h, const link_event_t *e)
         if (h->attached && e->event.data.neighbor.peer_id == h->peer &&
             e->event.data.neighbor.session_id == h->session &&
             e->event.data.neighbor.local_edge == h->edge) {
-            h->recovering = (h->contacts & mosaico_edge_to_mask(h->edge)) != 0;
-            detach(h);
+            if (h->contacts & mosaico_edge_to_mask(h->edge)) {
+                /* Radio loss cannot revoke confirmed physical membership. */
+                abort_transaction(h,true);
+            } else {
+                h->recovering=false;
+                detach(h);
+            }
         }
         break;
     case MOSAICO_NETWORK_EVENT_MESSAGE_RECEIVED:
@@ -852,7 +931,38 @@ static void read_local(board_link_t *h, int64_t now)
     if (now >= h->next_read) {
         h->next_read = now + 50000;
         bool unavailable = h->have_view && !h->view.available;
+        bool previous_loop=h->view.looping;
+        uint32_t previous_start=h->view.local_start_serial;
+        bool first_view=!h->have_view;
         if (h->read(h->ctx, &h->view)) {
+            if (first_view) h->playback.local_start=h->view.local_start_serial;
+            if (!first_view && previous_loop!=h->view.looping) h->playback.next_send=0;
+            bool start_changed=!first_view && previous_start!=h->view.local_start_serial;
+            if (h->following && first_view && h->view.looping && h->view.local_start_serial)
+                start_changed=true;
+            if (h->following && h->playback.start_pending && !h->playback.valid && h->clock.valid) {
+                h->playback.origin=h->playback.local_origin-h->clock.offset;
+                if (h->playback.origin<0) {
+                    h->playback.origin%=LINK_PERIOD_US;
+                    if (h->playback.origin<0) h->playback.origin+=LINK_PERIOD_US;
+                }
+                h->playback.valid=true;
+                h->playback.next_send=0;
+            }
+            if ((!h->following && !h->playback.valid && h->view.clock_started) || start_changed) {
+                int64_t origin=h->view.clock_origin_us-(h->following ? h->clock.offset : 0);
+                if (origin<0) { origin%=LINK_PERIOD_US; if (origin<0) origin+=LINK_PERIOD_US; }
+                if (h->following || !h->playback.peer_looping || !h->playback.valid || origin<h->playback.origin)
+                    h->playback.origin=origin;
+                h->playback.local_start=h->view.local_start_serial;
+                if (h->following && start_changed) {
+                    h->playback.start_pending=true;
+                    h->playback.local_origin=h->view.clock_origin_us;
+                }
+                h->playback.valid=!h->following || h->clock.valid;
+                if (!h->following && !++h->playback.revision) ++h->playback.revision;
+                h->playback.next_send=0;
+            }
             if (unavailable && h->view.available && h->transaction.phase == TX_ABORTED) {
                 h->recovery_requested = true;
                 h->rx.next_want = 0;
@@ -912,6 +1022,16 @@ static void send_next(board_link_t *h, int64_t now)
                    (!h->clock.waiting || now - h->clock.t1 >= 500000)) {
             if (now - h->clock.window_start >= 5000000) { h->clock.window_start = now; h->clock.samples = 0; }
             p[1] = WIRE_PING; put32(p + 8, ++h->clock.sequence); put_time(p + 12, now); length = 20;
+        } else if (h->have_view && (h->playback.valid || h->following) &&
+                   (!h->following || h->clock.valid) && now>=h->playback.next_send) {
+            p[1]=WIRE_CLOCK;
+            put32(p+8,++h->playback.send_sequence);
+            put32(p+12,h->view.local_start_serial);
+            put32(p+16,h->following ? 0 : h->playback.peer_start);
+            put32(p+20,h->playback.revision);
+            put_time(p+24,h->playback.origin);
+            p[32]=(h->playback.valid ? 1u : 0u) | (h->view.looping ? 2u : 0u);
+            length=36;
         } else if (h->following && now >= h->next_state) {
             p[1] = WIRE_STATE;
             put32(p + 8, h->transaction.id);
@@ -965,7 +1085,8 @@ static void send_next(board_link_t *h, int64_t now)
     pending->active = true;
     if (chunk) h->tx.queued += chunk;
     h->next_send = now + 5000;
-    if (p[1] == WIRE_PONG) h->clock.pong_pending = false;
+    if (p[1] == WIRE_CLOCK) h->playback.next_send=now+LINK_META_US;
+    else if (p[1] == WIRE_PONG) h->clock.pong_pending = false;
     else if (p[1] == WIRE_PING) {
         h->clock.waiting = true; h->clock.pending_sequence = h->clock.sequence;
         h->clock.t1 = now; h->clock.next_ping = now + 150000;

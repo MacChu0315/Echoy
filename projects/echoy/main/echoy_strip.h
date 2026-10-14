@@ -1,7 +1,8 @@
 #pragma once
 #include "echoy_model.h"
 typedef enum {
-    ECHOY_STRIP_IDLE, ECHOY_STRIP_CANCEL, ECHOY_STRIP_PAUSE, ECHOY_STRIP_RECORD_ONLY
+    ECHOY_STRIP_IDLE, ECHOY_STRIP_CANCEL, ECHOY_STRIP_PAUSE, ECHOY_STRIP_RECORD_ONLY,
+    ECHOY_STRIP_PLAY_ONLY
 } echoy_strip_mode_t;
 typedef struct {
     echoy_strip_mode_t mode;

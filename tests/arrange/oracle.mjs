@@ -35,6 +35,15 @@ function initialModel() {
     d.phrase = 1;
     for (const role of roles) d.memories[role] = 1;
   }
+  // Approved playback exception: a historical started clock has no vote when
+  // every current member is paused. Keep frozen musical algorithms unchanged.
+  const enable = m.enableLoop;
+  m.enableLoop = function(id, now) {
+    const d = this.tiles[id];
+    if (d.present && d.current && !Object.values(this.tiles).some(x => x.loop && x.clockId === d.clockId))
+      this.clocks[d.clockId].started = false;
+    return enable.call(this, id, now);
+  };
   return m;
 }
 const kinds = ['kick', 'rim', 'hat', 'tone', 'grain', 'chord'];

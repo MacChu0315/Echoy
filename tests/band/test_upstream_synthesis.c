@@ -224,7 +224,7 @@ static void reconnect_rejects_old_job_and_releases_replaced_banks(void)
     CHECK(joined.plan.source_count == 2);
     CHECK(joined.plan.source[0].step == 0 && joined.plan.source[1].step == 6);
     CHECK(echoy_band_set_upstream(band, false, NULL, false, 0, false, 11000000));
-    prepare(band, 11000000, 1);
+    prepare(band, 11000000, 0); /* Physical release retains the prepared PCM bank. */
     CHECK(synthesis.live == 1);
     CHECK(view(band, ECHOY_TILE_A).source == ECHOY_TILE_NONE);
     destroy(band);

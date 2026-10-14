@@ -17,7 +17,7 @@ from fontTools.ttLib import TTFont
 from PIL import Image, ImageChops, ImageFont
 
 from check_desk import DeskCheck, ROOT, TILES
-from check_home import compact_message, record_hint_visible
+from check_home import compact_message, record_hint_visible, strip_events
 
 SOLO, CONNECTED, WAITING, DEFERRED, FOLLOWING, RECOVERING = range(6)
 
@@ -72,6 +72,10 @@ class CooperationCheck(DeskCheck):
                           f'{tile} did not reach cooperation={expected}, phase={phase}')
 
     def caption_shot(self, tile, name):
+        def settled(_):
+            rows=strip_events((self.output/'desk.log').read_text(),tile=tile)
+            return rows and time.monotonic_ns()//1000 >= rows[-1]['at_us'] + rows[-1]['duration_ms']*1000 + 40000
+        self.until(settled,'Native strip transition did not settle')
         path = self.shot(tile, name)
         with Image.open(path) as source:
             image = source.convert('RGB')
@@ -168,7 +172,11 @@ class CooperationCheck(DeskCheck):
         self.until(lambda s: s['tiles']['A']['phase'] == 0 and self.stable(s), 'Leader reply did not finish')
         self.command('edges A B')
         self.cooperation('B', FOLLOWING, phase=0, stable=True)
-        self.caption_shot('B', 'following-idle')
+        play_only=self.caption_shot('B', 'following-idle')
+        with Image.open(play_only) as image:
+            ink=image.convert('RGB').crop((145,396,335,443))
+            assert not any(r>g+20 and r>b+20 for r,g,b in ink.getdata()), 'Follower still shows the orange Record glyph'
+            assert image.getpixel((240,401))[:3] == image.getpixel((200,401))[:3], 'Follower still shows the divider'
         self.play_ready('B')
         self.tap('B', 'transport')
         state = self.cooperation('B', FOLLOWING, phase=5)
@@ -179,6 +187,43 @@ class CooperationCheck(DeskCheck):
         self.cooperation('B', FOLLOWING, phase=0, stable=True)
         self.passed('Following text remains visible while idle and during explicitly requested playback')
 
+        # Both halves of the retained 244x84 area belong to centered Play.
+        for x in (140, 338):
+            self.play_ready('B')
+            before = time.monotonic_ns() // 1000
+            self.tap_at('B', x, 420)
+            state = self.cooperation('B', FOLLOWING, phase=5)
+            assert state['tiles']['B']['start_us'] - before < 300000
+            assert not state['tiles']['A']['loop'], 'Clock establishment granted peer playback'
+            self.tap('B', 'strip_action')
+            self.cooperation('B', FOLLOWING, phase=0, stable=True)
+        self.passed('Centered follower Play accepts both sides of its full area and starts a paused group promptly')
+
+        self.play_ready('B')
+        self.tap_at('B', 240, 420)
+        self.cooperation('B', FOLLOWING, phase=5)
+        retained = self.export('before-physical-release')['tiles']['B']['current']
+        self.command('edges')
+        state = self.cooperation('B', SOLO, phase=5)
+        assert state['tiles']['B']['source'] is None and state['tiles']['B']['clock'] == 'B'
+        assert state['tiles']['B']['loop'], 'Release muted existing playback'
+        self.until(lambda s: self.stable(s), 'Release did not settle')
+        after = self.export('after-physical-release')['tiles']['B']['current']
+        assert after['full'] == retained['full'] and after['rootSeed'] == retained['rootSeed']
+        self.tap('B', 'strip_action')
+        self.cooperation('B', SOLO, phase=0, stable=True)
+        self.play_ready('B')
+        before = time.monotonic_ns() // 1000
+        self.tap('B', 'transport')
+        state = self.cooperation('B', SOLO, phase=5)
+        assert state['tiles']['B']['start_us'] - before < 300000
+        self.shot('B', 'independent-playing')
+        self.tap('B', 'strip_action')
+        self.cooperation('B', SOLO, phase=0, stable=True)
+        self.passed('Native release restores independent controls, retains the phrase/play state and permits prompt replay')
+
+        self.command('edges A B')
+        self.cooperation('B', FOLLOWING, phase=0, stable=True)
         self.tap('A', 'settings')
         self.visual_ready('A', 'settings')
         self.tap('A', 'language_en')

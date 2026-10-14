@@ -224,6 +224,12 @@
         122,
         84
       ],
+      "transport_only": [
+        118,
+        378,
+        244,
+        84
+      ],
       "strip_action": [
         118,
         378,
@@ -236,24 +242,35 @@
         "record": false,
         "record_empty": true,
         "transport": false,
+        "transport_only": false,
+        "strip_action": false
+      },
+      "play_only": {
+        "record": false,
+        "record_empty": false,
+        "transport": false,
+        "transport_only": true,
         "strip_action": false
       },
       "idle": {
         "record": true,
         "record_empty": false,
         "transport": true,
+        "transport_only": false,
         "strip_action": false
       },
       "cancel": {
         "record": false,
         "record_empty": false,
         "transport": false,
+        "transport_only": false,
         "strip_action": true
       },
       "pause": {
         "record": false,
         "record_empty": false,
         "transport": false,
+        "transport_only": false,
         "strip_action": true
       }
     },

@@ -629,7 +629,7 @@ static void show_strip(echoy_ui_handle_t u, const echoy_snapshot_t *s, int64_t n
     if (u->platform.read_control && u->external.measurement_active) {
         v = (echoy_strip_state_t){.mode = ECHOY_STRIP_PAUSE, .single_enabled = true};
     }
-    static const char *mode_names[] = {"idle", "cancel", "pause", "record_only"};
+    static const char *mode_names[] = {"idle", "cancel", "pause", "record_only", "play_only"};
     int permissions =
         (int)v.record_enabled | ((int)v.play_enabled << 1) | ((int)v.single_enabled << 2);
     bool changed = u->strip_mode != (int)v.mode, preference = u->strip_reduced != u->reduced_motion;
@@ -647,7 +647,8 @@ static void show_strip(echoy_ui_handle_t u, const echoy_snapshot_t *s, int64_t n
         /* Use separate Record and Cancel/Pause targets so a delayed Cancel
          * event cannot start a new recording after returning to an empty tile.
          * Hidden targets must not intercept the visible control underneath. */
-        if (v.mode == ECHOY_STRIP_IDLE || v.mode == ECHOY_STRIP_RECORD_ONLY) {
+        if (v.mode == ECHOY_STRIP_IDLE || v.mode == ECHOY_STRIP_RECORD_ONLY ||
+            v.mode == ECHOY_STRIP_PLAY_ONLY) {
             SHOW(u, "strip_action", false);
             ENABLE(u, "strip_action", false);
         } else {
@@ -657,6 +658,8 @@ static void show_strip(echoy_ui_handle_t u, const echoy_snapshot_t *s, int64_t n
         ENABLE(u, "record", v.record_enabled);
         ENABLE(u, "record_empty", v.record_enabled);
         ENABLE(u, "transport", v.play_enabled);
+        ENABLE(u, "transport_only", v.play_enabled);
+        SHOW(u, "transport_only", v.mode == ECHOY_STRIP_PLAY_ONLY);
         SHOW(u, "record", v.mode == ECHOY_STRIP_IDLE);
         SHOW(u, "record_empty", v.mode == ECHOY_STRIP_RECORD_ONLY);
         SHOW(u, "transport", v.mode == ECHOY_STRIP_IDLE);

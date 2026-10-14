@@ -1,0 +1,7 @@
+{
+  "existing_objects_unchanged": 404,
+  "added_objects": [
+    "transport_only"
+  ],
+  "comparison": "Full object values with parent indices normalized to existing names"
+}

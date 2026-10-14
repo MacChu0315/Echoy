@@ -610,6 +610,23 @@
     {
       "type": "button",
       "parent": 37,
+      "name": "transport_only",
+      "x": 0,
+      "y": 0,
+      "w": 244,
+      "h": 84,
+      "callback": "transport_click",
+      "enabled": false,
+      "hidden": true,
+      "bg_color": "#00000000",
+      "bind": "transport_only_visible",
+      "bind_target": "visible",
+      "disabled_color": "#f1efe8",
+      "disabled_opacity": 0
+    },
+    {
+      "type": "button",
+      "parent": 37,
       "name": "record_empty",
       "x": 0,
       "y": 0,
@@ -758,7 +775,7 @@
     },
     {
       "type": "container",
-      "parent": 51,
+      "parent": 52,
       "name": "record_hint_surface",
       "x": 0,
       "y": 0,
@@ -771,7 +788,7 @@
     },
     {
       "type": "layer",
-      "parent": 51,
+      "parent": 52,
       "name": "record_hint_zh",
       "x": 0,
       "y": 0,
@@ -783,7 +800,7 @@
     },
     {
       "type": "label",
-      "parent": 53,
+      "parent": 54,
       "name": "record_hint_first",
       "x": 16,
       "y": 26,
@@ -797,7 +814,7 @@
     },
     {
       "type": "label",
-      "parent": 53,
+      "parent": 54,
       "name": "record_hint_second",
       "x": 16,
       "y": 68,
@@ -811,7 +828,7 @@
     },
     {
       "type": "layer",
-      "parent": 51,
+      "parent": 52,
       "name": "record_hint_en",
       "x": 0,
       "y": 0,
@@ -823,7 +840,7 @@
     },
     {
       "type": "label",
-      "parent": 56,
+      "parent": 57,
       "name": "record_hint_first_en",
       "x": 16,
       "y": 26,
@@ -837,7 +854,7 @@
     },
     {
       "type": "label",
-      "parent": 56,
+      "parent": 57,
       "name": "record_hint_second_en",
       "x": 16,
       "y": 68,
@@ -914,7 +931,7 @@
     },
     {
       "type": "label",
-      "parent": 62,
+      "parent": 63,
       "name": "identity_separator",
       "x": 94,
       "y": 26,
@@ -927,7 +944,7 @@
     },
     {
       "type": "label",
-      "parent": 62,
+      "parent": 63,
       "name": "phrase_title",
       "x": 110,
       "y": 25,
@@ -942,7 +959,7 @@
     },
     {
       "type": "label",
-      "parent": 62,
+      "parent": 63,
       "name": "status",
       "x": 24,
       "y": 339,
@@ -959,7 +976,7 @@
     },
     {
       "type": "label",
-      "parent": 62,
+      "parent": 63,
       "name": "volume_bottom",
       "x": 16,
       "y": 258,
@@ -975,7 +992,7 @@
     },
     {
       "type": "label",
-      "parent": 62,
+      "parent": 63,
       "name": "richness_top",
       "x": 400,
       "y": 102,
@@ -991,7 +1008,7 @@
     },
     {
       "type": "label",
-      "parent": 62,
+      "parent": 63,
       "name": "richness_bottom",
       "x": 400,
       "y": 258,
@@ -1007,7 +1024,7 @@
     },
     {
       "type": "layer",
-      "parent": 62,
+      "parent": 63,
       "name": "home_title_pulse",
       "x": 0,
       "y": 0,
@@ -1019,7 +1036,7 @@
     },
     {
       "type": "label",
-      "parent": 69,
+      "parent": 70,
       "name": "role_title_first",
       "x": 34,
       "y": 25,
@@ -1035,7 +1052,7 @@
     },
     {
       "type": "label",
-      "parent": 69,
+      "parent": 70,
       "name": "role_title_second",
       "x": 60,
       "y": 25,
@@ -1051,7 +1068,7 @@
     },
     {
       "type": "label",
-      "parent": 69,
+      "parent": 70,
       "name": "capture_status",
       "x": 24,
       "y": 339,
@@ -1068,7 +1085,7 @@
     },
     {
       "type": "layer",
-      "parent": 62,
+      "parent": 63,
       "name": "home_title_voice",
       "x": 0,
       "y": 0,
@@ -1080,7 +1097,7 @@
     },
     {
       "type": "label",
-      "parent": 73,
+      "parent": 74,
       "name": "role_title_first_voice",
       "x": 34,
       "y": 25,
@@ -1093,7 +1110,7 @@
     },
     {
       "type": "label",
-      "parent": 73,
+      "parent": 74,
       "name": "role_title_second_voice",
       "x": 60,
       "y": 25,
@@ -1106,7 +1123,7 @@
     },
     {
       "type": "label",
-      "parent": 73,
+      "parent": 74,
       "name": "capture_status_voice",
       "x": 24,
       "y": 339,
@@ -1123,7 +1140,7 @@
     },
     {
       "type": "layer",
-      "parent": 62,
+      "parent": 63,
       "name": "home_title_dust",
       "x": 0,
       "y": 0,
@@ -1135,7 +1152,7 @@
     },
     {
       "type": "label",
-      "parent": 77,
+      "parent": 78,
       "name": "role_title_first_dust",
       "x": 34,
       "y": 25,
@@ -1148,7 +1165,7 @@
     },
     {
       "type": "label",
-      "parent": 77,
+      "parent": 78,
       "name": "role_title_second_dust",
       "x": 60,
       "y": 25,
@@ -1161,7 +1178,7 @@
     },
     {
       "type": "label",
-      "parent": 77,
+      "parent": 78,
       "name": "capture_status_dust",
       "x": 24,
       "y": 339,
@@ -1178,7 +1195,7 @@
     },
     {
       "type": "layer",
-      "parent": 62,
+      "parent": 63,
       "name": "home_title_harmony",
       "x": 0,
       "y": 0,
@@ -1190,7 +1207,7 @@
     },
     {
       "type": "label",
-      "parent": 81,
+      "parent": 82,
       "name": "role_title_first_harmony",
       "x": 34,
       "y": 25,
@@ -1203,7 +1220,7 @@
     },
     {
       "type": "label",
-      "parent": 81,
+      "parent": 82,
       "name": "role_title_second_harmony",
       "x": 60,
       "y": 25,
@@ -1216,7 +1233,7 @@
     },
     {
       "type": "label",
-      "parent": 81,
+      "parent": 82,
       "name": "capture_status_harmony",
       "x": 24,
       "y": 339,
@@ -1233,7 +1250,7 @@
     },
     {
       "type": "container",
-      "parent": 62,
+      "parent": 63,
       "name": "strip_record_frame",
       "x": 118,
       "y": 378,
@@ -1242,7 +1259,7 @@
     },
     {
       "type": "layer",
-      "parent": 85,
+      "parent": 86,
       "name": "strip_record_native",
       "x": {
         "default": 0,
@@ -1258,7 +1275,7 @@
     },
     {
       "type": "image",
-      "parent": 86,
+      "parent": 87,
       "name": "record_icon",
       "x": 30,
       "y": 32,
@@ -1272,7 +1289,7 @@
     },
     {
       "type": "label",
-      "parent": 86,
+      "parent": 87,
       "name": "record_text",
       "x": 58,
       "y": 28,
@@ -1288,7 +1305,7 @@
     },
     {
       "type": "container",
-      "parent": 62,
+      "parent": 63,
       "name": "strip_play_frame",
       "x": 240,
       "y": 378,
@@ -1297,7 +1314,7 @@
     },
     {
       "type": "layer",
-      "parent": 89,
+      "parent": 90,
       "name": "strip_play_native",
       "x": {
         "default": 0,
@@ -1313,7 +1330,7 @@
     },
     {
       "type": "image",
-      "parent": 90,
+      "parent": 91,
       "name": "play_icon",
       "x": 28,
       "y": 30,
@@ -1327,7 +1344,7 @@
     },
     {
       "type": "label",
-      "parent": 90,
+      "parent": 91,
       "name": "play_text",
       "x": 60,
       "y": 28,
@@ -1343,7 +1360,7 @@
     },
     {
       "type": "container",
-      "parent": 62,
+      "parent": 63,
       "name": "strip_cancel_frame",
       "x": 118,
       "y": 378,
@@ -1352,7 +1369,7 @@
     },
     {
       "type": "layer",
-      "parent": 93,
+      "parent": 94,
       "name": "strip_cancel_native",
       "x": 0,
       "y": 0,
@@ -1364,7 +1381,7 @@
     },
     {
       "type": "image",
-      "parent": 94,
+      "parent": 95,
       "name": "cancel_icon",
       "x": 89,
       "y": 30,
@@ -1378,7 +1395,7 @@
     },
     {
       "type": "label",
-      "parent": 94,
+      "parent": 95,
       "name": "cancel_text",
       "x": 121,
       "y": 28,
@@ -1394,7 +1411,7 @@
     },
     {
       "type": "container",
-      "parent": 62,
+      "parent": 63,
       "name": "strip_pause_frame",
       "x": 118,
       "y": 378,
@@ -1403,7 +1420,7 @@
     },
     {
       "type": "layer",
-      "parent": 97,
+      "parent": 98,
       "name": "strip_pause_native",
       "x": 0,
       "y": 0,
@@ -1415,7 +1432,7 @@
     },
     {
       "type": "image",
-      "parent": 98,
+      "parent": 99,
       "name": "pause_icon",
       "x": 89,
       "y": 30,
@@ -1429,7 +1446,7 @@
     },
     {
       "type": "label",
-      "parent": 98,
+      "parent": 99,
       "name": "pause_text",
       "x": 121,
       "y": 28,
@@ -1445,7 +1462,7 @@
     },
     {
       "type": "layer",
-      "parent": 62,
+      "parent": 63,
       "name": "touch_hint_group",
       "x": 0,
       "y": 0,
@@ -1457,7 +1474,7 @@
     },
     {
       "type": "label",
-      "parent": 101,
+      "parent": 102,
       "name": "touch_hint",
       "x": 90,
       "y": 265,
@@ -1485,7 +1502,7 @@
     },
     {
       "type": "label",
-      "parent": 103,
+      "parent": 104,
       "name": "identity_separator_en",
       "x": {
         "default": 103,
@@ -1505,7 +1522,7 @@
     },
     {
       "type": "label",
-      "parent": 103,
+      "parent": 104,
       "name": "phrase_title_en",
       "x": {
         "default": 117,
@@ -1525,7 +1542,7 @@
     },
     {
       "type": "label",
-      "parent": 103,
+      "parent": 104,
       "name": "status_en",
       "x": 24,
       "y": 340,
@@ -1543,7 +1560,7 @@
     },
     {
       "type": "label",
-      "parent": 103,
+      "parent": 104,
       "name": "volume_bottom_en",
       "x": 16,
       "y": 258,
@@ -1560,7 +1577,7 @@
     },
     {
       "type": "label",
-      "parent": 103,
+      "parent": 104,
       "name": "richness_top_en",
       "x": 400,
       "y": 102,
@@ -1577,7 +1594,7 @@
     },
     {
       "type": "label",
-      "parent": 103,
+      "parent": 104,
       "name": "richness_bottom_en",
       "x": 400,
       "y": 258,
@@ -1594,7 +1611,7 @@
     },
     {
       "type": "layer",
-      "parent": 103,
+      "parent": 104,
       "name": "home_title_pulse_en",
       "x": 0,
       "y": 0,
@@ -1606,7 +1623,7 @@
     },
     {
       "type": "label",
-      "parent": 110,
+      "parent": 111,
       "name": "capture_status_en",
       "x": 24,
       "y": 340,
@@ -1624,7 +1641,7 @@
     },
     {
       "type": "label",
-      "parent": 110,
+      "parent": 111,
       "name": "role_title_pulse_en",
       "x": 34,
       "y": 26,
@@ -1637,7 +1654,7 @@
     },
     {
       "type": "layer",
-      "parent": 103,
+      "parent": 104,
       "name": "home_title_voice_en",
       "x": 0,
       "y": 0,
@@ -1649,7 +1666,7 @@
     },
     {
       "type": "label",
-      "parent": 113,
+      "parent": 114,
       "name": "role_title_voice_en",
       "x": 34,
       "y": 26,
@@ -1662,7 +1679,7 @@
     },
     {
       "type": "label",
-      "parent": 113,
+      "parent": 114,
       "name": "capture_status_voice_en",
       "x": 24,
       "y": 340,
@@ -1680,7 +1697,7 @@
     },
     {
       "type": "layer",
-      "parent": 103,
+      "parent": 104,
       "name": "home_title_dust_en",
       "x": 0,
       "y": 0,
@@ -1692,7 +1709,7 @@
     },
     {
       "type": "label",
-      "parent": 116,
+      "parent": 117,
       "name": "role_title_dust_en",
       "x": 34,
       "y": 26,
@@ -1705,7 +1722,7 @@
     },
     {
       "type": "label",
-      "parent": 116,
+      "parent": 117,
       "name": "capture_status_dust_en",
       "x": 24,
       "y": 340,
@@ -1723,7 +1740,7 @@
     },
     {
       "type": "layer",
-      "parent": 103,
+      "parent": 104,
       "name": "home_title_harmony_en",
       "x": 0,
       "y": 0,
@@ -1735,7 +1752,7 @@
     },
     {
       "type": "label",
-      "parent": 119,
+      "parent": 120,
       "name": "role_title_harmony_en",
       "x": 34,
       "y": 26,
@@ -1748,7 +1765,7 @@
     },
     {
       "type": "label",
-      "parent": 119,
+      "parent": 120,
       "name": "capture_status_harmony_en",
       "x": 24,
       "y": 340,
@@ -1766,7 +1783,7 @@
     },
     {
       "type": "container",
-      "parent": 103,
+      "parent": 104,
       "name": "strip_record_frame_en",
       "x": 118,
       "y": 378,
@@ -1775,7 +1792,7 @@
     },
     {
       "type": "layer",
-      "parent": 122,
+      "parent": 123,
       "name": "strip_record_native_en",
       "x": {
         "default": 0,
@@ -1791,7 +1808,7 @@
     },
     {
       "type": "image",
-      "parent": 123,
+      "parent": 124,
       "name": "record_icon_en",
       "x": 22,
       "y": 32,
@@ -1805,7 +1822,7 @@
     },
     {
       "type": "label",
-      "parent": 123,
+      "parent": 124,
       "name": "record_text_en",
       "x": 49,
       "y": 30,
@@ -1821,7 +1838,7 @@
     },
     {
       "type": "container",
-      "parent": 103,
+      "parent": 104,
       "name": "strip_play_frame_en",
       "x": 240,
       "y": 378,
@@ -1830,7 +1847,7 @@
     },
     {
       "type": "layer",
-      "parent": 126,
+      "parent": 127,
       "name": "strip_play_native_en",
       "x": {
         "default": 0,
@@ -1846,7 +1863,7 @@
     },
     {
       "type": "image",
-      "parent": 127,
+      "parent": 128,
       "name": "play_icon_en",
       "x": 30,
       "y": 30,
@@ -1860,7 +1877,7 @@
     },
     {
       "type": "label",
-      "parent": 127,
+      "parent": 128,
       "name": "play_text_en",
       "x": 61,
       "y": 30,
@@ -1876,7 +1893,7 @@
     },
     {
       "type": "container",
-      "parent": 103,
+      "parent": 104,
       "name": "strip_cancel_frame_en",
       "x": 118,
       "y": 378,
@@ -1885,7 +1902,7 @@
     },
     {
       "type": "layer",
-      "parent": 130,
+      "parent": 131,
       "name": "strip_cancel_native_en",
       "x": 0,
       "y": 0,
@@ -1897,7 +1914,7 @@
     },
     {
       "type": "image",
-      "parent": 131,
+      "parent": 132,
       "name": "cancel_icon_en",
       "x": 82,
       "y": 30,
@@ -1911,7 +1928,7 @@
     },
     {
       "type": "label",
-      "parent": 131,
+      "parent": 132,
       "name": "cancel_text_en",
       "x": 113,
       "y": 30,
@@ -1927,7 +1944,7 @@
     },
     {
       "type": "container",
-      "parent": 103,
+      "parent": 104,
       "name": "strip_pause_frame_en",
       "x": 118,
       "y": 378,
@@ -1936,7 +1953,7 @@
     },
     {
       "type": "layer",
-      "parent": 134,
+      "parent": 135,
       "name": "strip_pause_native_en",
       "x": 0,
       "y": 0,
@@ -1948,7 +1965,7 @@
     },
     {
       "type": "image",
-      "parent": 135,
+      "parent": 136,
       "name": "pause_icon_en",
       "x": 84,
       "y": 30,
@@ -1962,7 +1979,7 @@
     },
     {
       "type": "label",
-      "parent": 135,
+      "parent": 136,
       "name": "pause_text_en",
       "x": 115,
       "y": 30,
@@ -1978,7 +1995,7 @@
     },
     {
       "type": "layer",
-      "parent": 103,
+      "parent": 104,
       "name": "touch_hint_group_en",
       "x": 0,
       "y": 0,
@@ -1990,7 +2007,7 @@
     },
     {
       "type": "label",
-      "parent": 138,
+      "parent": 139,
       "name": "touch_hint_en",
       "x": 90,
       "y": 265,
@@ -2019,7 +2036,7 @@
     },
     {
       "type": "button",
-      "parent": 140,
+      "parent": 141,
       "name": "role_back",
       "x": 18,
       "y": 12,
@@ -2034,7 +2051,7 @@
     },
     {
       "type": "image",
-      "parent": 141,
+      "parent": 142,
       "name": "role_back_icon",
       "x": 29,
       "y": 29,
@@ -2048,7 +2065,7 @@
     },
     {
       "type": "container",
-      "parent": 140,
+      "parent": 141,
       "name": "role_battery_outline",
       "x": 407,
       "y": 42,
@@ -2060,7 +2077,7 @@
     },
     {
       "type": "container",
-      "parent": 140,
+      "parent": 141,
       "name": "role_battery_tip",
       "x": 428,
       "y": 46,
@@ -2070,7 +2087,7 @@
     },
     {
       "type": "container",
-      "parent": 140,
+      "parent": 141,
       "name": "role_battery_fill",
       "x": 410,
       "y": 45,
@@ -2082,7 +2099,7 @@
     },
     {
       "type": "label",
-      "parent": 140,
+      "parent": 141,
       "name": "role_battery_text",
       "x": 435,
       "y": 35,
@@ -2098,7 +2115,7 @@
     },
     {
       "type": "button",
-      "parent": 140,
+      "parent": 141,
       "name": "prev_role",
       "x": 28,
       "y": 117,
@@ -2115,7 +2132,7 @@
     },
     {
       "type": "image",
-      "parent": 147,
+      "parent": 148,
       "name": "role_prev_art",
       "x": 6,
       "y": 10,
@@ -2129,7 +2146,7 @@
     },
     {
       "type": "image",
-      "parent": 147,
+      "parent": 148,
       "name": "role_prev_arrow",
       "x": 32,
       "y": 96,
@@ -2143,7 +2160,7 @@
     },
     {
       "type": "button",
-      "parent": 140,
+      "parent": 141,
       "name": "next_role",
       "x": 368,
       "y": 117,
@@ -2160,7 +2177,7 @@
     },
     {
       "type": "image",
-      "parent": 150,
+      "parent": 151,
       "name": "role_next_art",
       "x": 6,
       "y": 10,
@@ -2174,7 +2191,7 @@
     },
     {
       "type": "image",
-      "parent": 150,
+      "parent": 151,
       "name": "role_next_arrow",
       "x": 32,
       "y": 96,
@@ -2188,7 +2205,7 @@
     },
     {
       "type": "container",
-      "parent": 140,
+      "parent": 141,
       "name": "role_card",
       "x": 124,
       "y": 105,
@@ -2201,7 +2218,7 @@
     },
     {
       "type": "image",
-      "parent": 153,
+      "parent": 154,
       "name": "role_main_art",
       "x": 13,
       "y": 3,
@@ -2215,7 +2232,7 @@
     },
     {
       "type": "button",
-      "parent": 140,
+      "parent": 141,
       "name": "phrase_1",
       "x": 24,
       "y": 284,
@@ -2232,7 +2249,7 @@
     },
     {
       "type": "layer",
-      "parent": 155,
+      "parent": 156,
       "name": "phrase_1_selected",
       "x": 0,
       "y": 0,
@@ -2244,7 +2261,7 @@
     },
     {
       "type": "container",
-      "parent": 156,
+      "parent": 157,
       "name": "phrase_1_selected_surface",
       "x": 0,
       "y": 0,
@@ -2257,7 +2274,7 @@
     },
     {
       "type": "container",
-      "parent": 157,
+      "parent": 158,
       "name": "phrase_1_selected_inner",
       "x": 1,
       "y": 1,
@@ -2268,7 +2285,7 @@
     },
     {
       "type": "container",
-      "parent": 155,
+      "parent": 156,
       "name": "phrase_1_bar_0",
       "x": 53,
       "y": 28,
@@ -2281,7 +2298,7 @@
     },
     {
       "type": "container",
-      "parent": 155,
+      "parent": 156,
       "name": "phrase_1_bar_1",
       "x": 60,
       "y": 19,
@@ -2294,7 +2311,7 @@
     },
     {
       "type": "container",
-      "parent": 155,
+      "parent": 156,
       "name": "phrase_1_bar_2",
       "x": 67,
       "y": 30,
@@ -2307,7 +2324,7 @@
     },
     {
       "type": "container",
-      "parent": 155,
+      "parent": 156,
       "name": "phrase_1_bar_3",
       "x": 74,
       "y": 24,
@@ -2320,7 +2337,7 @@
     },
     {
       "type": "container",
-      "parent": 155,
+      "parent": 156,
       "name": "phrase_1_bar_4",
       "x": 81,
       "y": 31,
@@ -2333,7 +2350,7 @@
     },
     {
       "type": "button",
-      "parent": 140,
+      "parent": 141,
       "name": "phrase_2",
       "x": 172,
       "y": 284,
@@ -2350,7 +2367,7 @@
     },
     {
       "type": "layer",
-      "parent": 164,
+      "parent": 165,
       "name": "phrase_2_selected",
       "x": 0,
       "y": 0,
@@ -2362,7 +2379,7 @@
     },
     {
       "type": "container",
-      "parent": 165,
+      "parent": 166,
       "name": "phrase_2_selected_surface",
       "x": 0,
       "y": 0,
@@ -2375,7 +2392,7 @@
     },
     {
       "type": "container",
-      "parent": 166,
+      "parent": 167,
       "name": "phrase_2_selected_inner",
       "x": 1,
       "y": 1,
@@ -2386,7 +2403,7 @@
     },
     {
       "type": "container",
-      "parent": 164,
+      "parent": 165,
       "name": "phrase_2_bar_0",
       "x": 53,
       "y": 22,
@@ -2399,7 +2416,7 @@
     },
     {
       "type": "container",
-      "parent": 164,
+      "parent": 165,
       "name": "phrase_2_bar_1",
       "x": 60,
       "y": 30,
@@ -2412,7 +2429,7 @@
     },
     {
       "type": "container",
-      "parent": 164,
+      "parent": 165,
       "name": "phrase_2_bar_2",
       "x": 67,
       "y": 25,
@@ -2425,7 +2442,7 @@
     },
     {
       "type": "container",
-      "parent": 164,
+      "parent": 165,
       "name": "phrase_2_bar_3",
       "x": 74,
       "y": 31,
@@ -2438,7 +2455,7 @@
     },
     {
       "type": "container",
-      "parent": 164,
+      "parent": 165,
       "name": "phrase_2_bar_4",
       "x": 81,
       "y": 20,
@@ -2451,7 +2468,7 @@
     },
     {
       "type": "button",
-      "parent": 140,
+      "parent": 141,
       "name": "phrase_3",
       "x": 320,
       "y": 284,
@@ -2468,7 +2485,7 @@
     },
     {
       "type": "layer",
-      "parent": 173,
+      "parent": 174,
       "name": "phrase_3_selected",
       "x": 0,
       "y": 0,
@@ -2480,7 +2497,7 @@
     },
     {
       "type": "container",
-      "parent": 174,
+      "parent": 175,
       "name": "phrase_3_selected_surface",
       "x": 0,
       "y": 0,
@@ -2493,7 +2510,7 @@
     },
     {
       "type": "container",
-      "parent": 175,
+      "parent": 176,
       "name": "phrase_3_selected_inner",
       "x": 1,
       "y": 1,
@@ -2504,7 +2521,7 @@
     },
     {
       "type": "container",
-      "parent": 173,
+      "parent": 174,
       "name": "phrase_3_bar_0",
       "x": 53,
       "y": 28,
@@ -2517,7 +2534,7 @@
     },
     {
       "type": "container",
-      "parent": 173,
+      "parent": 174,
       "name": "phrase_3_bar_1",
       "x": 60,
       "y": 24,
@@ -2530,7 +2547,7 @@
     },
     {
       "type": "container",
-      "parent": 173,
+      "parent": 174,
       "name": "phrase_3_bar_2",
       "x": 67,
       "y": 18,
@@ -2543,7 +2560,7 @@
     },
     {
       "type": "container",
-      "parent": 173,
+      "parent": 174,
       "name": "phrase_3_bar_3",
       "x": 74,
       "y": 22,
@@ -2556,7 +2573,7 @@
     },
     {
       "type": "container",
-      "parent": 173,
+      "parent": 174,
       "name": "phrase_3_bar_4",
       "x": 81,
       "y": 26,
@@ -2569,7 +2586,7 @@
     },
     {
       "type": "button",
-      "parent": 140,
+      "parent": 141,
       "name": "gallery_transport",
       "x": 120,
       "y": 380,
@@ -2586,7 +2603,7 @@
     },
     {
       "type": "image",
-      "parent": 182,
+      "parent": 183,
       "name": "gallery_play",
       "x": 61,
       "y": 30,
@@ -2601,7 +2618,7 @@
     },
     {
       "type": "image",
-      "parent": 182,
+      "parent": 183,
       "name": "gallery_pause",
       "x": 61,
       "y": 30,
@@ -2616,7 +2633,7 @@
     },
     {
       "type": "layer",
-      "parent": 140,
+      "parent": 141,
       "name": "role_zh",
       "x": 0,
       "y": 0,
@@ -2628,7 +2645,7 @@
     },
     {
       "type": "label",
-      "parent": 185,
+      "parent": 186,
       "name": "role_header",
       "x": 108,
       "y": 33,
@@ -2646,7 +2663,7 @@
     },
     {
       "type": "layer",
-      "parent": 185,
+      "parent": 186,
       "name": "role_copy_pulse_zh",
       "x": 0,
       "y": 0,
@@ -2658,7 +2675,7 @@
     },
     {
       "type": "label",
-      "parent": 187,
+      "parent": 188,
       "name": "role_name_pulse_zh",
       "x": 126,
       "y": 207,
@@ -2672,7 +2689,7 @@
     },
     {
       "type": "label",
-      "parent": 187,
+      "parent": 188,
       "name": "role_note_pulse_zh",
       "x": 26,
       "y": 253,
@@ -2686,7 +2703,7 @@
     },
     {
       "type": "label",
-      "parent": 187,
+      "parent": 188,
       "name": "role_prev_name_pulse_zh",
       "x": 29,
       "y": 182,
@@ -2700,7 +2717,7 @@
     },
     {
       "type": "label",
-      "parent": 187,
+      "parent": 188,
       "name": "role_next_name_pulse_zh",
       "x": 369,
       "y": 182,
@@ -2714,7 +2731,7 @@
     },
     {
       "type": "label",
-      "parent": 187,
+      "parent": 188,
       "name": "phrase_1_label_pulse_zh",
       "x": 25,
       "y": 329,
@@ -2731,7 +2748,7 @@
     },
     {
       "type": "label",
-      "parent": 187,
+      "parent": 188,
       "name": "phrase_2_label_pulse_zh",
       "x": 173,
       "y": 329,
@@ -2748,7 +2765,7 @@
     },
     {
       "type": "label",
-      "parent": 187,
+      "parent": 188,
       "name": "phrase_3_label_pulse_zh",
       "x": 321,
       "y": 329,
@@ -2765,7 +2782,7 @@
     },
     {
       "type": "layer",
-      "parent": 185,
+      "parent": 186,
       "name": "role_copy_voice_zh",
       "x": 0,
       "y": 0,
@@ -2777,7 +2794,7 @@
     },
     {
       "type": "label",
-      "parent": 195,
+      "parent": 196,
       "name": "role_name_voice_zh",
       "x": 126,
       "y": 207,
@@ -2791,7 +2808,7 @@
     },
     {
       "type": "label",
-      "parent": 195,
+      "parent": 196,
       "name": "role_note_voice_zh",
       "x": 26,
       "y": 253,
@@ -2805,7 +2822,7 @@
     },
     {
       "type": "label",
-      "parent": 195,
+      "parent": 196,
       "name": "role_prev_name_voice_zh",
       "x": 29,
       "y": 182,
@@ -2819,7 +2836,7 @@
     },
     {
       "type": "label",
-      "parent": 195,
+      "parent": 196,
       "name": "role_next_name_voice_zh",
       "x": 369,
       "y": 182,
@@ -2833,7 +2850,7 @@
     },
     {
       "type": "label",
-      "parent": 195,
+      "parent": 196,
       "name": "phrase_1_label_voice_zh",
       "x": 25,
       "y": 329,
@@ -2850,7 +2867,7 @@
     },
     {
       "type": "label",
-      "parent": 195,
+      "parent": 196,
       "name": "phrase_2_label_voice_zh",
       "x": 173,
       "y": 329,
@@ -2867,7 +2884,7 @@
     },
     {
       "type": "label",
-      "parent": 195,
+      "parent": 196,
       "name": "phrase_3_label_voice_zh",
       "x": 321,
       "y": 329,
@@ -2884,7 +2901,7 @@
     },
     {
       "type": "layer",
-      "parent": 185,
+      "parent": 186,
       "name": "role_copy_dust_zh",
       "x": 0,
       "y": 0,
@@ -2896,7 +2913,7 @@
     },
     {
       "type": "label",
-      "parent": 203,
+      "parent": 204,
       "name": "role_name_dust_zh",
       "x": 126,
       "y": 207,
@@ -2910,7 +2927,7 @@
     },
     {
       "type": "label",
-      "parent": 203,
+      "parent": 204,
       "name": "role_note_dust_zh",
       "x": 26,
       "y": 253,
@@ -2924,7 +2941,7 @@
     },
     {
       "type": "label",
-      "parent": 203,
+      "parent": 204,
       "name": "role_prev_name_dust_zh",
       "x": 29,
       "y": 182,
@@ -2938,7 +2955,7 @@
     },
     {
       "type": "label",
-      "parent": 203,
+      "parent": 204,
       "name": "role_next_name_dust_zh",
       "x": 369,
       "y": 182,
@@ -2952,7 +2969,7 @@
     },
     {
       "type": "label",
-      "parent": 203,
+      "parent": 204,
       "name": "phrase_1_label_dust_zh",
       "x": 25,
       "y": 329,
@@ -2969,7 +2986,7 @@
     },
     {
       "type": "label",
-      "parent": 203,
+      "parent": 204,
       "name": "phrase_2_label_dust_zh",
       "x": 173,
       "y": 329,
@@ -2986,7 +3003,7 @@
     },
     {
       "type": "label",
-      "parent": 203,
+      "parent": 204,
       "name": "phrase_3_label_dust_zh",
       "x": 321,
       "y": 329,
@@ -3003,7 +3020,7 @@
     },
     {
       "type": "layer",
-      "parent": 185,
+      "parent": 186,
       "name": "role_copy_harmony_zh",
       "x": 0,
       "y": 0,
@@ -3015,7 +3032,7 @@
     },
     {
       "type": "label",
-      "parent": 211,
+      "parent": 212,
       "name": "role_name_harmony_zh",
       "x": 126,
       "y": 207,
@@ -3029,7 +3046,7 @@
     },
     {
       "type": "label",
-      "parent": 211,
+      "parent": 212,
       "name": "role_note_harmony_zh",
       "x": 26,
       "y": 253,
@@ -3043,7 +3060,7 @@
     },
     {
       "type": "label",
-      "parent": 211,
+      "parent": 212,
       "name": "role_prev_name_harmony_zh",
       "x": 29,
       "y": 182,
@@ -3057,7 +3074,7 @@
     },
     {
       "type": "label",
-      "parent": 211,
+      "parent": 212,
       "name": "role_next_name_harmony_zh",
       "x": 369,
       "y": 182,
@@ -3071,7 +3088,7 @@
     },
     {
       "type": "label",
-      "parent": 211,
+      "parent": 212,
       "name": "phrase_1_label_harmony_zh",
       "x": 25,
       "y": 329,
@@ -3088,7 +3105,7 @@
     },
     {
       "type": "label",
-      "parent": 211,
+      "parent": 212,
       "name": "phrase_2_label_harmony_zh",
       "x": 173,
       "y": 329,
@@ -3105,7 +3122,7 @@
     },
     {
       "type": "label",
-      "parent": 211,
+      "parent": 212,
       "name": "phrase_3_label_harmony_zh",
       "x": 321,
       "y": 329,
@@ -3122,7 +3139,7 @@
     },
     {
       "type": "label",
-      "parent": 185,
+      "parent": 186,
       "name": "gallery_text",
       "x": 216,
       "y": 408,
@@ -3138,7 +3155,7 @@
     },
     {
       "type": "layer",
-      "parent": 140,
+      "parent": 141,
       "name": "role_en",
       "x": 0,
       "y": 0,
@@ -3150,7 +3167,7 @@
     },
     {
       "type": "label",
-      "parent": 220,
+      "parent": 221,
       "name": "role_header_en",
       "x": 108,
       "y": 35,
@@ -3168,7 +3185,7 @@
     },
     {
       "type": "layer",
-      "parent": 220,
+      "parent": 221,
       "name": "role_copy_pulse_en",
       "x": 0,
       "y": 0,
@@ -3180,7 +3197,7 @@
     },
     {
       "type": "label",
-      "parent": 222,
+      "parent": 223,
       "name": "role_name_pulse_en",
       "x": 126,
       "y": 207,
@@ -3194,7 +3211,7 @@
     },
     {
       "type": "label",
-      "parent": 222,
+      "parent": 223,
       "name": "role_note_pulse_en",
       "x": 26,
       "y": 253,
@@ -3208,7 +3225,7 @@
     },
     {
       "type": "label",
-      "parent": 222,
+      "parent": 223,
       "name": "role_prev_name_pulse_en",
       "x": 29,
       "y": 182,
@@ -3222,7 +3239,7 @@
     },
     {
       "type": "label",
-      "parent": 222,
+      "parent": 223,
       "name": "role_next_name_pulse_en",
       "x": 369,
       "y": 182,
@@ -3236,7 +3253,7 @@
     },
     {
       "type": "label",
-      "parent": 222,
+      "parent": 223,
       "name": "phrase_1_label_pulse_en",
       "x": 25,
       "y": 329,
@@ -3253,7 +3270,7 @@
     },
     {
       "type": "label",
-      "parent": 222,
+      "parent": 223,
       "name": "phrase_2_label_pulse_en",
       "x": 173,
       "y": 329,
@@ -3270,7 +3287,7 @@
     },
     {
       "type": "label",
-      "parent": 222,
+      "parent": 223,
       "name": "phrase_3_label_pulse_en",
       "x": 321,
       "y": 329,
@@ -3287,7 +3304,7 @@
     },
     {
       "type": "layer",
-      "parent": 220,
+      "parent": 221,
       "name": "role_copy_voice_en",
       "x": 0,
       "y": 0,
@@ -3299,7 +3316,7 @@
     },
     {
       "type": "label",
-      "parent": 230,
+      "parent": 231,
       "name": "role_name_voice_en",
       "x": 126,
       "y": 207,
@@ -3313,7 +3330,7 @@
     },
     {
       "type": "label",
-      "parent": 230,
+      "parent": 231,
       "name": "role_note_voice_en",
       "x": 26,
       "y": 253,
@@ -3327,7 +3344,7 @@
     },
     {
       "type": "label",
-      "parent": 230,
+      "parent": 231,
       "name": "role_prev_name_voice_en",
       "x": 29,
       "y": 182,
@@ -3341,7 +3358,7 @@
     },
     {
       "type": "label",
-      "parent": 230,
+      "parent": 231,
       "name": "role_next_name_voice_en",
       "x": 369,
       "y": 182,
@@ -3355,7 +3372,7 @@
     },
     {
       "type": "label",
-      "parent": 230,
+      "parent": 231,
       "name": "phrase_1_label_voice_en",
       "x": 25,
       "y": 329,
@@ -3372,7 +3389,7 @@
     },
     {
       "type": "label",
-      "parent": 230,
+      "parent": 231,
       "name": "phrase_2_label_voice_en",
       "x": 173,
       "y": 329,
@@ -3389,7 +3406,7 @@
     },
     {
       "type": "label",
-      "parent": 230,
+      "parent": 231,
       "name": "phrase_3_label_voice_en",
       "x": 321,
       "y": 329,
@@ -3406,7 +3423,7 @@
     },
     {
       "type": "layer",
-      "parent": 220,
+      "parent": 221,
       "name": "role_copy_dust_en",
       "x": 0,
       "y": 0,
@@ -3418,7 +3435,7 @@
     },
     {
       "type": "label",
-      "parent": 238,
+      "parent": 239,
       "name": "role_name_dust_en",
       "x": 126,
       "y": 207,
@@ -3432,7 +3449,7 @@
     },
     {
       "type": "label",
-      "parent": 238,
+      "parent": 239,
       "name": "role_note_dust_en",
       "x": 26,
       "y": 253,
@@ -3446,7 +3463,7 @@
     },
     {
       "type": "label",
-      "parent": 238,
+      "parent": 239,
       "name": "role_prev_name_dust_en",
       "x": 29,
       "y": 182,
@@ -3460,7 +3477,7 @@
     },
     {
       "type": "label",
-      "parent": 238,
+      "parent": 239,
       "name": "role_next_name_dust_en",
       "x": 369,
       "y": 182,
@@ -3474,7 +3491,7 @@
     },
     {
       "type": "label",
-      "parent": 238,
+      "parent": 239,
       "name": "phrase_1_label_dust_en",
       "x": 25,
       "y": 329,
@@ -3491,7 +3508,7 @@
     },
     {
       "type": "label",
-      "parent": 238,
+      "parent": 239,
       "name": "phrase_2_label_dust_en",
       "x": 173,
       "y": 329,
@@ -3508,7 +3525,7 @@
     },
     {
       "type": "label",
-      "parent": 238,
+      "parent": 239,
       "name": "phrase_3_label_dust_en",
       "x": 321,
       "y": 329,
@@ -3525,7 +3542,7 @@
     },
     {
       "type": "layer",
-      "parent": 220,
+      "parent": 221,
       "name": "role_copy_harmony_en",
       "x": 0,
       "y": 0,
@@ -3537,7 +3554,7 @@
     },
     {
       "type": "label",
-      "parent": 246,
+      "parent": 247,
       "name": "role_name_harmony_en",
       "x": 126,
       "y": 207,
@@ -3551,7 +3568,7 @@
     },
     {
       "type": "label",
-      "parent": 246,
+      "parent": 247,
       "name": "role_note_harmony_en",
       "x": 26,
       "y": 253,
@@ -3565,7 +3582,7 @@
     },
     {
       "type": "label",
-      "parent": 246,
+      "parent": 247,
       "name": "role_prev_name_harmony_en",
       "x": 29,
       "y": 182,
@@ -3579,7 +3596,7 @@
     },
     {
       "type": "label",
-      "parent": 246,
+      "parent": 247,
       "name": "role_next_name_harmony_en",
       "x": 369,
       "y": 182,
@@ -3593,7 +3610,7 @@
     },
     {
       "type": "label",
-      "parent": 246,
+      "parent": 247,
       "name": "phrase_1_label_harmony_en",
       "x": 25,
       "y": 329,
@@ -3610,7 +3627,7 @@
     },
     {
       "type": "label",
-      "parent": 246,
+      "parent": 247,
       "name": "phrase_2_label_harmony_en",
       "x": 173,
       "y": 329,
@@ -3627,7 +3644,7 @@
     },
     {
       "type": "label",
-      "parent": 246,
+      "parent": 247,
       "name": "phrase_3_label_harmony_en",
       "x": 321,
       "y": 329,
@@ -3644,7 +3661,7 @@
     },
     {
       "type": "label",
-      "parent": 220,
+      "parent": 221,
       "name": "gallery_text_en",
       "x": 216,
       "y": 408,
@@ -3672,7 +3689,7 @@
     },
     {
       "type": "button",
-      "parent": 255,
+      "parent": 256,
       "name": "settings_back",
       "x": 18,
       "y": 12,
@@ -3687,7 +3704,7 @@
     },
     {
       "type": "image",
-      "parent": 256,
+      "parent": 257,
       "name": "settings_back_icon",
       "x": 29,
       "y": 29,
@@ -3701,7 +3718,7 @@
     },
     {
       "type": "container",
-      "parent": 255,
+      "parent": 256,
       "name": "settings_battery_outline",
       "x": 407,
       "y": 42,
@@ -3713,7 +3730,7 @@
     },
     {
       "type": "container",
-      "parent": 255,
+      "parent": 256,
       "name": "settings_battery_tip",
       "x": 428,
       "y": 46,
@@ -3723,7 +3740,7 @@
     },
     {
       "type": "container",
-      "parent": 255,
+      "parent": 256,
       "name": "settings_battery_fill",
       "x": 410,
       "y": 45,
@@ -3735,7 +3752,7 @@
     },
     {
       "type": "label",
-      "parent": 255,
+      "parent": 256,
       "name": "settings_battery_text",
       "x": 435,
       "y": 35,
@@ -3751,7 +3768,7 @@
     },
     {
       "type": "button",
-      "parent": 255,
+      "parent": 256,
       "name": "settings_display",
       "x": 24,
       "y": 108,
@@ -3768,7 +3785,7 @@
     },
     {
       "type": "image",
-      "parent": 262,
+      "parent": 263,
       "name": "settings_display_icon",
       "x": 20,
       "y": 28,
@@ -3782,7 +3799,7 @@
     },
     {
       "type": "image",
-      "parent": 262,
+      "parent": 263,
       "name": "settings_display_next",
       "x": 388,
       "y": 28,
@@ -3796,7 +3813,7 @@
     },
     {
       "type": "container",
-      "parent": 255,
+      "parent": 256,
       "name": "settings_language",
       "x": 24,
       "y": 196,
@@ -3809,7 +3826,7 @@
     },
     {
       "type": "button",
-      "parent": 255,
+      "parent": 256,
       "name": "language_zh",
       "x": 244,
       "y": 203,
@@ -3826,7 +3843,7 @@
     },
     {
       "type": "layer",
-      "parent": 266,
+      "parent": 267,
       "name": "language_zh_selected",
       "x": 0,
       "y": 0,
@@ -3838,7 +3855,7 @@
     },
     {
       "type": "container",
-      "parent": 267,
+      "parent": 268,
       "name": "language_zh_selected_surface",
       "x": 0,
       "y": 0,
@@ -3851,7 +3868,7 @@
     },
     {
       "type": "label",
-      "parent": 266,
+      "parent": 267,
       "name": "language_zh_label",
       "x": 0,
       "y": 18,
@@ -3865,7 +3882,7 @@
     },
     {
       "type": "button",
-      "parent": 255,
+      "parent": 256,
       "name": "language_en",
       "x": 336,
       "y": 203,
@@ -3882,7 +3899,7 @@
     },
     {
       "type": "layer",
-      "parent": 270,
+      "parent": 271,
       "name": "language_en_selected",
       "x": 0,
       "y": 0,
@@ -3894,7 +3911,7 @@
     },
     {
       "type": "container",
-      "parent": 271,
+      "parent": 272,
       "name": "language_en_selected_surface",
       "x": 0,
       "y": 0,
@@ -3907,7 +3924,7 @@
     },
     {
       "type": "label",
-      "parent": 270,
+      "parent": 271,
       "name": "language_en_label",
       "x": 0,
       "y": 18,
@@ -3921,7 +3938,7 @@
     },
     {
       "type": "button",
-      "parent": 255,
+      "parent": 256,
       "name": "settings_guide",
       "x": 24,
       "y": 284,
@@ -3938,7 +3955,7 @@
     },
     {
       "type": "image",
-      "parent": 274,
+      "parent": 275,
       "name": "settings_guide_icon",
       "x": 20,
       "y": 28,
@@ -3952,7 +3969,7 @@
     },
     {
       "type": "image",
-      "parent": 274,
+      "parent": 275,
       "name": "settings_guide_next",
       "x": 388,
       "y": 28,
@@ -3966,7 +3983,7 @@
     },
     {
       "type": "button",
-      "parent": 255,
+      "parent": 256,
       "name": "settings_info",
       "x": 24,
       "y": 372,
@@ -3983,7 +4000,7 @@
     },
     {
       "type": "image",
-      "parent": 277,
+      "parent": 278,
       "name": "settings_info_icon",
       "x": 20,
       "y": 28,
@@ -3997,7 +4014,7 @@
     },
     {
       "type": "image",
-      "parent": 277,
+      "parent": 278,
       "name": "settings_info_next",
       "x": 388,
       "y": 28,
@@ -4011,7 +4028,7 @@
     },
     {
       "type": "layer",
-      "parent": 255,
+      "parent": 256,
       "name": "settings_header_zh",
       "x": 0,
       "y": 0,
@@ -4023,7 +4040,7 @@
     },
     {
       "type": "label",
-      "parent": 280,
+      "parent": 281,
       "name": "settings_header_text",
       "x": 108,
       "y": 33,
@@ -4040,7 +4057,7 @@
     },
     {
       "type": "layer",
-      "parent": 255,
+      "parent": 256,
       "name": "settings_header_en",
       "x": 0,
       "y": 0,
@@ -4052,7 +4069,7 @@
     },
     {
       "type": "label",
-      "parent": 282,
+      "parent": 283,
       "name": "settings_header_text_en",
       "x": 108,
       "y": 35,
@@ -4069,7 +4086,7 @@
     },
     {
       "type": "layer",
-      "parent": 255,
+      "parent": 256,
       "name": "settings_zh",
       "x": 0,
       "y": 0,
@@ -4081,7 +4098,7 @@
     },
     {
       "type": "label",
-      "parent": 284,
+      "parent": 285,
       "name": "settings_display_text",
       "x": 79,
       "y": 132,
@@ -4097,7 +4114,7 @@
     },
     {
       "type": "label",
-      "parent": 284,
+      "parent": 285,
       "name": "settings_language_text",
       "x": 44,
       "y": 220,
@@ -4113,7 +4130,7 @@
     },
     {
       "type": "label",
-      "parent": 284,
+      "parent": 285,
       "name": "settings_guide_text",
       "x": 79,
       "y": 308,
@@ -4129,7 +4146,7 @@
     },
     {
       "type": "label",
-      "parent": 284,
+      "parent": 285,
       "name": "settings_info_text",
       "x": 79,
       "y": 396,
@@ -4145,7 +4162,7 @@
     },
     {
       "type": "layer",
-      "parent": 255,
+      "parent": 256,
       "name": "settings_en",
       "x": 0,
       "y": 0,
@@ -4157,7 +4174,7 @@
     },
     {
       "type": "label",
-      "parent": 289,
+      "parent": 290,
       "name": "settings_display_text_en",
       "x": 79,
       "y": 132,
@@ -4173,7 +4190,7 @@
     },
     {
       "type": "label",
-      "parent": 289,
+      "parent": 290,
       "name": "settings_language_text_en",
       "x": 44,
       "y": 220,
@@ -4189,7 +4206,7 @@
     },
     {
       "type": "label",
-      "parent": 289,
+      "parent": 290,
       "name": "settings_guide_text_en",
       "x": 79,
       "y": 308,
@@ -4205,7 +4222,7 @@
     },
     {
       "type": "label",
-      "parent": 289,
+      "parent": 290,
       "name": "settings_info_text_en",
       "x": 79,
       "y": 396,
@@ -4233,7 +4250,7 @@
     },
     {
       "type": "button",
-      "parent": 294,
+      "parent": 295,
       "name": "display_back",
       "x": 18,
       "y": 12,
@@ -4248,7 +4265,7 @@
     },
     {
       "type": "image",
-      "parent": 295,
+      "parent": 296,
       "name": "display_back_icon",
       "x": 29,
       "y": 29,
@@ -4262,7 +4279,7 @@
     },
     {
       "type": "container",
-      "parent": 294,
+      "parent": 295,
       "name": "display_battery_outline",
       "x": 407,
       "y": 42,
@@ -4274,7 +4291,7 @@
     },
     {
       "type": "container",
-      "parent": 294,
+      "parent": 295,
       "name": "display_battery_tip",
       "x": 428,
       "y": 46,
@@ -4284,7 +4301,7 @@
     },
     {
       "type": "container",
-      "parent": 294,
+      "parent": 295,
       "name": "display_battery_fill",
       "x": 410,
       "y": 45,
@@ -4296,7 +4313,7 @@
     },
     {
       "type": "label",
-      "parent": 294,
+      "parent": 295,
       "name": "display_battery_text",
       "x": 435,
       "y": 35,
@@ -4312,7 +4329,7 @@
     },
     {
       "type": "container",
-      "parent": 294,
+      "parent": 295,
       "name": "display_rail",
       "x": 62,
       "y": 190,
@@ -4323,7 +4340,7 @@
     },
     {
       "type": "container",
-      "parent": 294,
+      "parent": 295,
       "name": "display_knob",
       "x": {
         "default": 404,
@@ -4340,7 +4357,7 @@
     },
     {
       "type": "layer",
-      "parent": 294,
+      "parent": 295,
       "name": "display_header_zh",
       "x": 0,
       "y": 0,
@@ -4352,7 +4369,7 @@
     },
     {
       "type": "label",
-      "parent": 303,
+      "parent": 304,
       "name": "display_header_text",
       "x": 108,
       "y": 33,
@@ -4369,7 +4386,7 @@
     },
     {
       "type": "layer",
-      "parent": 294,
+      "parent": 295,
       "name": "display_header_en",
       "x": 0,
       "y": 0,
@@ -4381,7 +4398,7 @@
     },
     {
       "type": "label",
-      "parent": 305,
+      "parent": 306,
       "name": "display_header_text_en",
       "x": 108,
       "y": 35,
@@ -4398,7 +4415,7 @@
     },
     {
       "type": "layer",
-      "parent": 294,
+      "parent": 295,
       "name": "display_zh",
       "x": 0,
       "y": 0,
@@ -4410,7 +4427,7 @@
     },
     {
       "type": "label",
-      "parent": 307,
+      "parent": 308,
       "name": "display_brightness_text",
       "x": 42,
       "y": 120,
@@ -4426,7 +4443,7 @@
     },
     {
       "type": "label",
-      "parent": 307,
+      "parent": 308,
       "name": "display_percent",
       "x": 336,
       "y": 120,
@@ -4443,7 +4460,7 @@
     },
     {
       "type": "label",
-      "parent": 307,
+      "parent": 308,
       "name": "display_soft",
       "x": 42,
       "y": 224,
@@ -4459,7 +4476,7 @@
     },
     {
       "type": "label",
-      "parent": 307,
+      "parent": 308,
       "name": "display_bright",
       "x": 338,
       "y": 224,
@@ -4476,7 +4493,7 @@
     },
     {
       "type": "label",
-      "parent": 307,
+      "parent": 308,
       "name": "display_note_1",
       "x": 42,
       "y": 278,
@@ -4492,7 +4509,7 @@
     },
     {
       "type": "layer",
-      "parent": 294,
+      "parent": 295,
       "name": "display_en",
       "x": 0,
       "y": 0,
@@ -4504,7 +4521,7 @@
     },
     {
       "type": "label",
-      "parent": 313,
+      "parent": 314,
       "name": "display_brightness_text_en",
       "x": 42,
       "y": 120,
@@ -4520,7 +4537,7 @@
     },
     {
       "type": "label",
-      "parent": 313,
+      "parent": 314,
       "name": "display_percent_en",
       "x": 336,
       "y": 120,
@@ -4537,7 +4554,7 @@
     },
     {
       "type": "label",
-      "parent": 313,
+      "parent": 314,
       "name": "display_soft_en",
       "x": 42,
       "y": 224,
@@ -4553,7 +4570,7 @@
     },
     {
       "type": "label",
-      "parent": 313,
+      "parent": 314,
       "name": "display_bright_en",
       "x": 338,
       "y": 224,
@@ -4570,7 +4587,7 @@
     },
     {
       "type": "label",
-      "parent": 313,
+      "parent": 314,
       "name": "display_note_1_en",
       "x": 42,
       "y": 278,
@@ -4598,7 +4615,7 @@
     },
     {
       "type": "button",
-      "parent": 319,
+      "parent": 320,
       "name": "guide_back",
       "x": 18,
       "y": 12,
@@ -4613,7 +4630,7 @@
     },
     {
       "type": "image",
-      "parent": 320,
+      "parent": 321,
       "name": "guide_back_icon",
       "x": 29,
       "y": 29,
@@ -4627,7 +4644,7 @@
     },
     {
       "type": "container",
-      "parent": 319,
+      "parent": 320,
       "name": "guide_battery_outline",
       "x": 407,
       "y": 42,
@@ -4639,7 +4656,7 @@
     },
     {
       "type": "container",
-      "parent": 319,
+      "parent": 320,
       "name": "guide_battery_tip",
       "x": 428,
       "y": 46,
@@ -4649,7 +4666,7 @@
     },
     {
       "type": "container",
-      "parent": 319,
+      "parent": 320,
       "name": "guide_battery_fill",
       "x": 410,
       "y": 45,
@@ -4661,7 +4678,7 @@
     },
     {
       "type": "label",
-      "parent": 319,
+      "parent": 320,
       "name": "guide_battery_text",
       "x": 435,
       "y": 35,
@@ -4677,7 +4694,7 @@
     },
     {
       "type": "label",
-      "parent": 319,
+      "parent": 320,
       "name": "guide_step_0",
       "x": 38,
       "y": 115,
@@ -4690,7 +4707,7 @@
     },
     {
       "type": "label",
-      "parent": 319,
+      "parent": 320,
       "name": "guide_step_1",
       "x": 38,
       "y": 201,
@@ -4703,7 +4720,7 @@
     },
     {
       "type": "label",
-      "parent": 319,
+      "parent": 320,
       "name": "guide_step_2",
       "x": 38,
       "y": 287,
@@ -4716,7 +4733,7 @@
     },
     {
       "type": "label",
-      "parent": 319,
+      "parent": 320,
       "name": "guide_step_3",
       "x": 38,
       "y": 373,
@@ -4729,7 +4746,7 @@
     },
     {
       "type": "layer",
-      "parent": 319,
+      "parent": 320,
       "name": "guide_header_zh",
       "x": 0,
       "y": 0,
@@ -4741,7 +4758,7 @@
     },
     {
       "type": "label",
-      "parent": 330,
+      "parent": 331,
       "name": "guide_header_text",
       "x": 108,
       "y": 33,
@@ -4758,7 +4775,7 @@
     },
     {
       "type": "layer",
-      "parent": 319,
+      "parent": 320,
       "name": "guide_header_en",
       "x": 0,
       "y": 0,
@@ -4770,7 +4787,7 @@
     },
     {
       "type": "label",
-      "parent": 332,
+      "parent": 333,
       "name": "guide_header_text_en",
       "x": 108,
       "y": 35,
@@ -4787,7 +4804,7 @@
     },
     {
       "type": "layer",
-      "parent": 319,
+      "parent": 320,
       "name": "guide_zh",
       "x": 0,
       "y": 0,
@@ -4799,7 +4816,7 @@
     },
     {
       "type": "label",
-      "parent": 334,
+      "parent": 335,
       "name": "guide_title_0",
       "x": 86,
       "y": 108,
@@ -4815,7 +4832,7 @@
     },
     {
       "type": "label",
-      "parent": 334,
+      "parent": 335,
       "name": "guide_body_0_0",
       "x": 86,
       "y": 138,
@@ -4831,7 +4848,7 @@
     },
     {
       "type": "label",
-      "parent": 334,
+      "parent": 335,
       "name": "guide_body_0_1",
       "x": 86,
       "y": 160,
@@ -4847,7 +4864,7 @@
     },
     {
       "type": "label",
-      "parent": 334,
+      "parent": 335,
       "name": "guide_title_1",
       "x": 86,
       "y": 194,
@@ -4863,7 +4880,7 @@
     },
     {
       "type": "label",
-      "parent": 334,
+      "parent": 335,
       "name": "guide_body_1_0",
       "x": 86,
       "y": 224,
@@ -4879,7 +4896,7 @@
     },
     {
       "type": "label",
-      "parent": 334,
+      "parent": 335,
       "name": "guide_body_1_1",
       "x": 86,
       "y": 246,
@@ -4895,7 +4912,7 @@
     },
     {
       "type": "label",
-      "parent": 334,
+      "parent": 335,
       "name": "guide_title_2",
       "x": 86,
       "y": 280,
@@ -4911,7 +4928,7 @@
     },
     {
       "type": "label",
-      "parent": 334,
+      "parent": 335,
       "name": "guide_body_2_0",
       "x": 86,
       "y": 310,
@@ -4927,7 +4944,7 @@
     },
     {
       "type": "label",
-      "parent": 334,
+      "parent": 335,
       "name": "guide_body_2_1",
       "x": 86,
       "y": 332,
@@ -4943,7 +4960,7 @@
     },
     {
       "type": "label",
-      "parent": 334,
+      "parent": 335,
       "name": "guide_title_3",
       "x": 86,
       "y": 366,
@@ -4959,7 +4976,7 @@
     },
     {
       "type": "label",
-      "parent": 334,
+      "parent": 335,
       "name": "guide_body_3_0",
       "x": 86,
       "y": 396,
@@ -4975,7 +4992,7 @@
     },
     {
       "type": "label",
-      "parent": 334,
+      "parent": 335,
       "name": "guide_body_3_1",
       "x": 86,
       "y": 418,
@@ -4991,7 +5008,7 @@
     },
     {
       "type": "layer",
-      "parent": 319,
+      "parent": 320,
       "name": "guide_en",
       "x": 0,
       "y": 0,
@@ -5003,7 +5020,7 @@
     },
     {
       "type": "label",
-      "parent": 347,
+      "parent": 348,
       "name": "guide_title_0_en",
       "x": 86,
       "y": 108,
@@ -5019,7 +5036,7 @@
     },
     {
       "type": "label",
-      "parent": 347,
+      "parent": 348,
       "name": "guide_body_0_0_en",
       "x": 86,
       "y": 138,
@@ -5035,7 +5052,7 @@
     },
     {
       "type": "label",
-      "parent": 347,
+      "parent": 348,
       "name": "guide_body_0_1_en",
       "x": 86,
       "y": 160,
@@ -5051,7 +5068,7 @@
     },
     {
       "type": "label",
-      "parent": 347,
+      "parent": 348,
       "name": "guide_title_1_en",
       "x": 86,
       "y": 194,
@@ -5067,7 +5084,7 @@
     },
     {
       "type": "label",
-      "parent": 347,
+      "parent": 348,
       "name": "guide_body_1_0_en",
       "x": 86,
       "y": 224,
@@ -5083,7 +5100,7 @@
     },
     {
       "type": "label",
-      "parent": 347,
+      "parent": 348,
       "name": "guide_body_1_1_en",
       "x": 86,
       "y": 246,
@@ -5099,7 +5116,7 @@
     },
     {
       "type": "label",
-      "parent": 347,
+      "parent": 348,
       "name": "guide_title_2_en",
       "x": 86,
       "y": 280,
@@ -5115,7 +5132,7 @@
     },
     {
       "type": "label",
-      "parent": 347,
+      "parent": 348,
       "name": "guide_body_2_0_en",
       "x": 86,
       "y": 310,
@@ -5131,7 +5148,7 @@
     },
     {
       "type": "label",
-      "parent": 347,
+      "parent": 348,
       "name": "guide_body_2_1_en",
       "x": 86,
       "y": 332,
@@ -5147,7 +5164,7 @@
     },
     {
       "type": "label",
-      "parent": 347,
+      "parent": 348,
       "name": "guide_title_3_en",
       "x": 86,
       "y": 366,
@@ -5163,7 +5180,7 @@
     },
     {
       "type": "label",
-      "parent": 347,
+      "parent": 348,
       "name": "guide_body_3_0_en",
       "x": 86,
       "y": 396,
@@ -5179,7 +5196,7 @@
     },
     {
       "type": "label",
-      "parent": 347,
+      "parent": 348,
       "name": "guide_body_3_1_en",
       "x": 86,
       "y": 418,
@@ -5207,7 +5224,7 @@
     },
     {
       "type": "button",
-      "parent": 360,
+      "parent": 361,
       "name": "info_back",
       "x": 18,
       "y": 12,
@@ -5222,7 +5239,7 @@
     },
     {
       "type": "image",
-      "parent": 361,
+      "parent": 362,
       "name": "info_back_icon",
       "x": 29,
       "y": 29,
@@ -5236,7 +5253,7 @@
     },
     {
       "type": "container",
-      "parent": 360,
+      "parent": 361,
       "name": "info_battery_outline",
       "x": 407,
       "y": 42,
@@ -5248,7 +5265,7 @@
     },
     {
       "type": "container",
-      "parent": 360,
+      "parent": 361,
       "name": "info_battery_tip",
       "x": 428,
       "y": 46,
@@ -5258,7 +5275,7 @@
     },
     {
       "type": "container",
-      "parent": 360,
+      "parent": 361,
       "name": "info_battery_fill",
       "x": 410,
       "y": 45,
@@ -5270,7 +5287,7 @@
     },
     {
       "type": "label",
-      "parent": 360,
+      "parent": 361,
       "name": "info_battery_text",
       "x": 435,
       "y": 35,
@@ -5286,7 +5303,7 @@
     },
     {
       "type": "label",
-      "parent": 360,
+      "parent": 361,
       "name": "info_brand",
       "x": 42,
       "y": 120,
@@ -5299,7 +5316,7 @@
     },
     {
       "type": "container",
-      "parent": 360,
+      "parent": 361,
       "name": "info_divider_platform",
       "x": 42,
       "y": 220,
@@ -5309,7 +5326,7 @@
     },
     {
       "type": "container",
-      "parent": 360,
+      "parent": 361,
       "name": "info_divider_version",
       "x": 42,
       "y": 286,
@@ -5319,7 +5336,7 @@
     },
     {
       "type": "container",
-      "parent": 360,
+      "parent": 361,
       "name": "info_divider_battery",
       "x": 42,
       "y": 352,
@@ -5329,7 +5346,7 @@
     },
     {
       "type": "layer",
-      "parent": 360,
+      "parent": 361,
       "name": "info_header_zh",
       "x": 0,
       "y": 0,
@@ -5341,7 +5358,7 @@
     },
     {
       "type": "label",
-      "parent": 371,
+      "parent": 372,
       "name": "info_header_text",
       "x": 108,
       "y": 33,
@@ -5358,7 +5375,7 @@
     },
     {
       "type": "layer",
-      "parent": 360,
+      "parent": 361,
       "name": "info_header_en",
       "x": 0,
       "y": 0,
@@ -5370,7 +5387,7 @@
     },
     {
       "type": "label",
-      "parent": 373,
+      "parent": 374,
       "name": "info_header_text_en",
       "x": 108,
       "y": 35,
@@ -5387,7 +5404,7 @@
     },
     {
       "type": "layer",
-      "parent": 360,
+      "parent": 361,
       "name": "info_zh",
       "x": 0,
       "y": 0,
@@ -5399,7 +5416,7 @@
     },
     {
       "type": "label",
-      "parent": 375,
+      "parent": 376,
       "name": "info_tagline",
       "x": 42,
       "y": 166,
@@ -5415,7 +5432,7 @@
     },
     {
       "type": "label",
-      "parent": 375,
+      "parent": 376,
       "name": "info_label_platform",
       "x": 42,
       "y": 232,
@@ -5431,7 +5448,7 @@
     },
     {
       "type": "label",
-      "parent": 375,
+      "parent": 376,
       "name": "info_value_platform",
       "x": 208,
       "y": 232,
@@ -5448,7 +5465,7 @@
     },
     {
       "type": "label",
-      "parent": 375,
+      "parent": 376,
       "name": "info_label_version",
       "x": 42,
       "y": 298,
@@ -5464,7 +5481,7 @@
     },
     {
       "type": "label",
-      "parent": 375,
+      "parent": 376,
       "name": "info_value_version",
       "x": 208,
       "y": 298,
@@ -5481,7 +5498,7 @@
     },
     {
       "type": "label",
-      "parent": 375,
+      "parent": 376,
       "name": "info_label_battery",
       "x": 42,
       "y": 364,
@@ -5497,7 +5514,7 @@
     },
     {
       "type": "label",
-      "parent": 375,
+      "parent": 376,
       "name": "info_value_battery",
       "x": 208,
       "y": 364,
@@ -5514,7 +5531,7 @@
     },
     {
       "type": "layer",
-      "parent": 360,
+      "parent": 361,
       "name": "info_en",
       "x": 0,
       "y": 0,
@@ -5526,7 +5543,7 @@
     },
     {
       "type": "label",
-      "parent": 383,
+      "parent": 384,
       "name": "info_tagline_en",
       "x": 42,
       "y": 166,
@@ -5542,7 +5559,7 @@
     },
     {
       "type": "label",
-      "parent": 383,
+      "parent": 384,
       "name": "info_label_platform_en",
       "x": 42,
       "y": 232,
@@ -5558,7 +5575,7 @@
     },
     {
       "type": "label",
-      "parent": 383,
+      "parent": 384,
       "name": "info_value_platform_en",
       "x": 208,
       "y": 232,
@@ -5575,7 +5592,7 @@
     },
     {
       "type": "label",
-      "parent": 383,
+      "parent": 384,
       "name": "info_label_version_en",
       "x": 42,
       "y": 298,
@@ -5591,7 +5608,7 @@
     },
     {
       "type": "label",
-      "parent": 383,
+      "parent": 384,
       "name": "info_value_version_en",
       "x": 208,
       "y": 298,
@@ -5608,7 +5625,7 @@
     },
     {
       "type": "label",
-      "parent": 383,
+      "parent": 384,
       "name": "info_label_battery_en",
       "x": 42,
       "y": 364,
@@ -5624,7 +5641,7 @@
     },
     {
       "type": "label",
-      "parent": 383,
+      "parent": 384,
       "name": "info_value_battery_en",
       "x": 208,
       "y": 364,
@@ -5653,7 +5670,7 @@
     },
     {
       "type": "image",
-      "parent": 391,
+      "parent": 392,
       "name": "status_art",
       "x": 210,
       "y": 160,
@@ -5670,7 +5687,7 @@
     },
     {
       "type": "container",
-      "parent": 391,
+      "parent": 392,
       "name": "status_art_fade",
       "x": 210,
       "y": 160,
@@ -5685,7 +5702,7 @@
     },
     {
       "type": "button",
-      "parent": 391,
+      "parent": 392,
       "name": "recover",
       "x": 36,
       "y": 372,
@@ -5702,7 +5719,7 @@
     },
     {
       "type": "layer",
-      "parent": 391,
+      "parent": 392,
       "name": "status_page_zh",
       "x": 0,
       "y": 0,
@@ -5714,7 +5731,7 @@
     },
     {
       "type": "label",
-      "parent": 395,
+      "parent": 396,
       "name": "problem_title",
       "x": 36,
       "y": 243,
@@ -5731,7 +5748,7 @@
     },
     {
       "type": "label",
-      "parent": 395,
+      "parent": 396,
       "name": "problem_body",
       "x": 40,
       "y": 292,
@@ -5748,7 +5765,7 @@
     },
     {
       "type": "label",
-      "parent": 395,
+      "parent": 396,
       "name": "recover_text",
       "x": 36,
       "y": 398,
@@ -5765,7 +5782,7 @@
     },
     {
       "type": "layer",
-      "parent": 391,
+      "parent": 392,
       "name": "status_page_en",
       "x": 0,
       "y": 0,
@@ -5777,7 +5794,7 @@
     },
     {
       "type": "label",
-      "parent": 399,
+      "parent": 400,
       "name": "problem_title_en",
       "x": 36,
       "y": 243,
@@ -5794,7 +5811,7 @@
     },
     {
       "type": "label",
-      "parent": 399,
+      "parent": 400,
       "name": "problem_body_en",
       "x": 40,
       "y": 292,
@@ -5811,7 +5828,7 @@
     },
     {
       "type": "label",
-      "parent": 399,
+      "parent": 400,
       "name": "recover_text_en",
       "x": 36,
       "y": 398,

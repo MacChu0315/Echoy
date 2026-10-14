@@ -1,0 +1,43 @@
+{
+  "package_sha256": "2b984e511b9837c34a37d818fb15d0335e67c9a4f4e4b88b203c790eb6af1727",
+  "elf_sha256": "5a721bd70413aabd5716c646b5fd1d29091cffe6464e44c7d994e2923b5d5e95",
+  "devices": {
+    "left": {
+      "device_id": "4553502d49524953010030eda0f452a0",
+      "boot_id": 2026744546928028908,
+      "firmware_sha256": "5a721bd70413aabd5716c646b5fd1d29091cffe6464e44c7d994e2923b5d5e95",
+      "uptime_us": 268537339,
+      "crash_count": 0,
+      "free_internal": 24311,
+      "free_spiram": 12258504,
+      "operation_id": "2650a532-634f-4e64-9334-4001b7bb20ca",
+      "healthy": true,
+      "validated": true,
+      "magnetic_baseline_ready": true,
+      "retained_bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "retained_partition_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+      "latest_audio": "I (243320) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=5761200 nonzero=0 peak=0 pa=0 activations=0 write_max=8455us partial=0 write_errors=0 deadline_misses=0",
+      "known_recovery_startup_crash": true,
+      "core_dump_valid": false
+    },
+    "right": {
+      "device_id": "4553502d49524953010030eda0f40c6c",
+      "boot_id": 9361312524343894444,
+      "firmware_sha256": "5a721bd70413aabd5716c646b5fd1d29091cffe6464e44c7d994e2923b5d5e95",
+      "uptime_us": 159505383,
+      "crash_count": 0,
+      "free_internal": 24323,
+      "free_spiram": 12258512,
+      "operation_id": "57e470ff-9cee-442f-a4e4-b4b6c70a3666",
+      "healthy": true,
+      "validated": true,
+      "magnetic_baseline_ready": true,
+      "retained_bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "retained_partition_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+      "latest_audio": "I (153272) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=3600960 nonzero=0 peak=0 pa=0 activations=0 write_max=8432us partial=0 write_errors=0 deadline_misses=0",
+      "known_recovery_startup_crash": true,
+      "core_dump_valid": false
+    }
+  },
+  "scope": "Authorized delivery, identity, retained Recovery/layout, separated startup calibration and silence; new physical joined behavior acceptance pending"
+}

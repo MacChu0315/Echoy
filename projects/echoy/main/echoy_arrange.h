@@ -94,6 +94,9 @@ bool echoy_arrange_set_present(echoy_arrange_t *model, echoy_tile_id_t tile, boo
 /* Validate the entire ordered chain before filtering absent endpoints. */
 bool echoy_arrange_set_edges(echoy_arrange_t *model,
                              const echoy_arrange_edge_t *edges, size_t count);
+/* Release a removed incoming edge immediately, retaining music, loop and phase.
+ * Remaining descendants keep this tile's new independent clock. */
+bool echoy_arrange_release(echoy_arrange_t *model, echoy_tile_id_t tile);
 bool echoy_arrange_edges_valid(const echoy_arrange_edge_t *edges, size_t count);
 /* Equivalent to ArrangeModel.change(): cancel pending and reject old jobs. */
 uint64_t echoy_arrange_invalidate(echoy_arrange_t *model);
@@ -112,6 +115,8 @@ bool echoy_arrange_tick(echoy_arrange_t *model, int64_t now_us,
                         echoy_arrange_commit_t *result);
 bool echoy_arrange_enable_loop(echoy_arrange_t *model, echoy_tile_id_t tile,
                                int64_t now_us, int64_t *start_us);
+bool echoy_arrange_enable_loop_shared(echoy_arrange_t *model, echoy_tile_id_t tile,
+                                      int64_t now_us, bool peer_playing, int64_t *start_us);
 bool echoy_arrange_mute(echoy_arrange_t *model, echoy_tile_id_t tile);
 double echoy_arrange_phase(const echoy_arrange_t *model, echoy_tile_id_t tile,
                            int64_t now_us);

@@ -398,6 +398,7 @@ static const view_default_t view_defaults[] = {
     {"touch_hint_group", GSP_ECHOY_OBJ_KEY_TOUCH_HINT_GROUP, 1, 1, -1, 0, 0, 0, 255, 65536, NULL},
     {"touch_hint_group_en", GSP_ECHOY_OBJ_KEY_TOUCH_HINT_GROUP_EN, 1, 1, -1, 0, 0, 0, 255, 65536, NULL},
     {"transport", GSP_ECHOY_OBJ_KEY_TRANSPORT, 1, 0, 0, 0, 0, 122, 255, 65536, NULL},
+    {"transport_only", GSP_ECHOY_OBJ_KEY_TRANSPORT_ONLY, 0, 0, 0, 0, 0, 0, 255, 65536, NULL},
     {"volume", GSP_ECHOY_OBJ_KEY_VOLUME, 1, 1, 15199199, 0, 89, 16, 255, 65536, NULL},
     {"volume_bottom", GSP_ECHOY_OBJ_KEY_VOLUME_BOTTOM, 1, 1, 6781018, 0, 258, 16, 255, 65536, "音量"},
     {"volume_bottom_en", GSP_ECHOY_OBJ_KEY_VOLUME_BOTTOM_EN, 1, 1, 6781018, 0, 258, 16, 255, 65536, "Volume"},

@@ -40,6 +40,11 @@
   calibration-safe magnetic field; a stable field can reject startup even with
   zero classified edges. Reconfirm physical placement before a later restart
   if the user has handled the devices since the last placement check.
+- Approved cooperation: physical release ends membership/following and the old
+  clock group immediately while retaining the current phrase and playing/paused
+  permission. Radio-only recovery keeps physical membership. A paused follower
+  uses centered Play; all-paused first Play may come from either side promptly,
+  and clock exchange never grants a paused peer playback permission.
 - Approved audio trial: device-only loudness gain with peak limiting may change
   musical dynamics. Preserve the frozen HTML and musical rules. Numerical
   synthesis optimizations must pass the existing HTML audio comparison budgets;

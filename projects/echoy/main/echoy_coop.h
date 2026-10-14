@@ -15,6 +15,8 @@ typedef enum {
 typedef struct {
     bool attached, following, recovering, hold_changes;
     bool valid, clock_started, looping, failed;
+    bool clock_sync, peer_looping;
+    uint32_t clock_start_ack;
     uint32_t connection_generation, session, transaction;
     uint64_t revision;
     echoy_link_command_t command;
@@ -24,6 +26,7 @@ typedef struct {
 
 typedef struct {
     bool available, deferred, following, clock_started, looping;
+    uint32_t local_start_serial;
     int64_t clock_origin_us;
     echoy_plan_t current, proposal;
     uint64_t requested_revision, proposal_revision;

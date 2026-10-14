@@ -127,6 +127,13 @@ static void pending_detach_keeps_committed_phrase(void)
     prepare(b, 5900000);
     read_local(b); assert(current.state.plan_pending);
     assert(echoy_band_set_upstream(b, false, NULL, false, 0, false, 6000000));
+    read_local(b);
+    assert(!current.state.following && current.cooperation == ECHOY_COOP_SOLO);
+    assert(current.clock == ECHOY_TILE_A && current.source == ECHOY_TILE_NONE);
+    assert(current.state.phase == ECHOY_PLAYING);
+    assert(memcmp(&current.plan, &retained, sizeof(retained)) == 0);
+    float pcm[2400];
+    assert(energy(b, 6000000, pcm, 2400) > 0);
     prepare(b, 6000000); echoy_band_tick(b, 7700000);
     read_local(b);
     assert(!current.state.following && current.source == ECHOY_TILE_NONE);
@@ -156,10 +163,30 @@ static void imminent_commit_survives_equivalent_clock(bool whole_bar)
     puts("PASS equivalent clock heartbeat preserves an imminent commit");
 }
 
+static void detached_replay_is_prompt(void)
+{
+    echoy_band_t *b = playing();
+    assert(echoy_band_action(b, ECHOY_TILE_A, ECHOY_ACT_PAUSE, 0, 6000000));
+    assert(echoy_band_set_upstream(b, false, NULL, false, 0, false, 6010000));
+    prepare(b, 6010000); echoy_band_tick(b, 6060000);
+    for (int i=0; i<3; ++i) {
+        int64_t now = 6100000 + i * 340000;
+        assert(echoy_band_action(b, ECHOY_TILE_A, ECHOY_ACT_TRANSPORT, 0, now));
+        echoy_band_tick(b, now);
+        read_local(b);
+        assert(current.state.phase == ECHOY_PLAYING);
+        assert(current.state.start_us == now + 50000);
+        assert(echoy_band_action(b, ECHOY_TILE_A, ECHOY_ACT_PAUSE, 0, now + 200000));
+    }
+    echoy_band_delete(b);
+    puts("PASS independent replay ignores the former group and historical solo clock");
+}
+
 int main(int argc, char **argv)
 {
     if (argc == 1 || !strcmp(argv[1], "pending")) pending_refresh();
     if (argc == 1 || !strcmp(argv[1], "equivalent")) equivalent_origins();
+    if (argc == 1 || !strcmp(argv[1], "solo")) detached_replay_is_prompt();
     if (argc == 1 || !strcmp(argv[1], "detach")) pending_detach_keeps_committed_phrase();
     if (argc == 1 || !strcmp(argv[1], "alignment")) pending_clock_alignment();
     if (argc == 1 || !strcmp(argv[1], "running")) positive_correction_does_not_suspend_playback();
