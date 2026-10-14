@@ -784,22 +784,37 @@ a same-orientation horizontal chain is proposed, not yet a confirmed new scope.
 No three-device implementation or third-device write has occurred. Preserve the
 accepted two-device behavior and sound while designing/validating that extension.
 
-Third-device intake: the user connected `/dev/ttyACM2` and confirmed intentional
-ROM Download Mode for installation. Official discovery reports endpoint
-`usb:location=1-8.4.3:1.0`; official no-reset/no-stub ROM probing verifies factory
-MAC `30:ed:a0:f4:0c:d8`. Formal ESP-Iris Device ID and existing app/Recovery cannot
-yet be read; do not infer that flash is empty or claim a live ID from the MAC.
-`recover --dry-run --source reviewed` passes with the pinned SDK: unique target
-and verified Recovery 0.1.4's four images. The first invocation lacked IDF_PATH
-and failed before probing; the pinned rerun passed. Reviewed images and accepted
-application package `2b984e511b98` are archived/verified locally. The proposed
-Recovery 0.1.4 + accepted Echoy installation awaits explicit scope and fresh
-separated/nonmetal placement confirmation; no flash write/reset was performed.
-Both existing devices are freshly reachable in normal mode with accepted ELF
-`5a721bd70413aabd5716c646b5fd1d29091cffe6464e44c7d994e2923b5d5e95` and crash count
-zero (Boot IDs `11368868697531345372` / `4144219012607374767`). These are later
-boots than the saved installation observations; their cause is not inferred.
-Evidence: `verification/third-device-intake.json`.
+Third-device baseline installation: the user explicitly approved reviewed
+Recovery 0.1.4 plus accepted Echoy `2b984e511b98` and freshly confirmed separated
+nonmetal placement. The ROM probe verified factory MAC `30:ed:a0:f4:0c:d8`;
+Recovery subsequently returned verified ID `4553502d49524953010030eda0f40cd8`.
+Recovery operation `a03669b4-37ca-4666-a231-adc60b8c232b`, boot
+`16758858234958354640`; application operation
+`a5593cdd-84f1-471d-85cf-bc2ac56f945d`, HEALTHY/validated boot
+`7287316600049295121`, same accepted ELF as the first two devices. Each step
+submitted one write. No first/second write, application code/sound change or
+three-board implementation occurred. The existing two-device accepted tag/package
+remain intact; third-device future upgrade permission is not implied by this
+completed two-step installation.
+
+Image/identity, expected partition migration, retained Recovery/bootloader,
+real Record-only home and startup audio/crash checks pass at 162.9 s. Inventory
+hashes cover the full 0x2000..0x8000 bootloader region; reviewed image plus 144
+`0xff` bytes matches pre/post inventory `925d2541ed213aa29f552f15ee6881b899dd72c4dbc81343ae2b4c88caa72cc4`.
+A file-only versus region-hash assertion initially failed; the public hashing
+implementation and exact bytes resolve it without another firmware write.
+
+**Outstanding:** third startup magnetic calibration fails. Both BMM150 sensors
+initialize, but three windows report `right_y=-88`, span 2..3, `edges=0x08`
+(LEFT, as defined by the pinned header). The initial description calling this
+bottom was corrected. Current app boot has zero crashes/output faults but
+physical linkage is unavailable. The exact environment versus hardware cause
+is not established. User repositioning confirmation is pending before a single
+normal third-device restart/recheck; do not reflash or loosen classification.
+Evidence: `verification/third-device/README.md`; initial ROM-only evidence remains
+`verification/third-device-intake.json`. Earlier first/second read-only status
+checks confirmed accepted firmware and zero crashes on later boots
+`11368868697531345372` / `4144219012607374767`; their reboot cause is not inferred.
 
 ### Dual-device basic physical flow accepted (2026-10-12)
 

@@ -1,0 +1,15 @@
+{
+  "expected_factory_mac": "30:ed:a0:f4:0c:d8",
+  "expected_recovery_version": "0.1.4",
+  "expected_recovery_image_sha256": "ce66912c5b161c81f9e147dbfc1788e05ae2335195e778a2950dd4b7391aa545",
+  "expected_bootloader_image_sha256": "7277fdf2382e967e370f1830138d75b8ad086f74ad2a2a1da44a045f9636c675",
+  "expected_source_partition_sector_sha256": "6f0d33a90336cf8a5361aadf787d819ab53e741d8f3c6614f0b8d40d28000fff",
+  "expected_application_partition_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+  "expected_application_elf_sha256": "5a721bd70413aabd5716c646b5fd1d29091cffe6464e44c7d994e2923b5d5e95",
+  "application_package_path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/dual-device/echoy-cooperation-revision-2b984e511b98.irisfw",
+  "application_package_sha256": "2b984e511b9837c34a37d818fb15d0335e67c9a4f4e4b88b203c790eb6af1727",
+  "formal_device_id": "4553502d49524953010030eda0f40cd8",
+  "expected_recovery_elf_sha256": "4b9c3296d2e218977d0a88d205f69f328ebb0a5867cd3fbde0e15a5fc6afc55b",
+  "expected_bootloader_flash_region_sha256": "925d2541ed213aa29f552f15ee6881b899dd72c4dbc81343ae2b4c88caa72cc4",
+  "bootloader_inventory_hash_scope": "0x2000..0x8000: reviewed bootloader file plus erased 0xff padding, not only the 24432-byte file."
+}
