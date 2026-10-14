@@ -119,11 +119,20 @@ static void preserves_note_with_upper_harmonics(void) {
         double third=frequency_energy(a->samples[2],1320);
         assert(fundamental>1 && third/fundamental>before*4);
         assert(frequency_energy(a->samples[2],550)<fundamental*.01);
+        if(role==ECHOY_HARMONY){
+            /* The office trial was physically too bright. Keep most of a
+             * known note in its body instead of the third/fourth/fifth partials.
+             * This is an independent frequency observation, not coefficient
+             * matching or proof of pleasant acoustic sound. */
+            double body=fundamental+frequency_energy(a->samples[2],880);
+            double bright=third+frequency_energy(a->samples[2],1760)+frequency_energy(a->samples[2],2200);
+            assert(bright<body*.10);
+        }
         echoy_audio_free_loops(a);
     }
 }
-/* At MIDI 126, an incorrectly retained fourth harmonic would fold to about
- * 641 Hz. An envelope can leak a little energy there, but no new low note may
+/* At MIDI 126, an incorrectly retained second harmonic would fold to about
+ * 320 Hz. An envelope can leak a little energy there, but no new low note may
  * appear. MIDI 127's fundamental itself exceeds Nyquist and must be silent. */
 static void rejects_folded_harmonics(void) {
     for(int note=126;note<=127;note++){
@@ -137,16 +146,18 @@ static void rejects_folded_harmonics(void) {
         if(note==127){for(unsigned i=0;i<N;i++)assert(a->samples[2][i]==0);}
         else {
             const double hz=440*exp2((note-69)/12.0);
-            assert(frequency_energy(a->samples[2],48000-4*hz)<frequency_energy(a->samples[2],hz)*.01);
+            assert(frequency_energy(a->samples[2],24000-2*hz)<frequency_energy(a->samples[2],hz)*.01);
         }
         echoy_audio_free_loops(a);
     }
 }
-/* The first in-phase speaker candidate raised this phrase's driven crest from
- * 10.45 to 15.57 dB and lost average output under the fixed peak limiter. The
- * accepted fixed-phase candidate stays below 12 dB on that exact plan. This is
- * a waveform regression, not a claim about the physical cause of distortion. */
-static void retained_phrase_does_not_stack_large_peaks(const char *path) {
+/* The user rejected the previous bright profile as too loud. Require actual
+ * pre-limiter headroom on the retained .761111-volume phrase, rather than the
+ * old crest-ratio target: the quieter waveform's relative crest may be greater
+ * even when its entire driven signal stays below the limiter. The previous
+ * .251812 output must also fall while remaining audible. This is a digital
+ * constraint, not a diagnosis of the physical cause of distortion. */
+static void retained_phrase_has_output_headroom(const char *path) {
     FILE *file=fopen(path,"rb");assert(file);
     uint8_t bytes[ECHOY_LINK_PLAN_MAX_BYTES];size_t n=fread(bytes,1,sizeof bytes,file);
     assert(fgetc(file)==EOF && fclose(file)==0);
@@ -167,9 +178,9 @@ static void retained_phrase_does_not_stack_large_peaks(const char *path) {
         assert(fabs(output)<=.600001);
     }
     double crest=20*log10(peak/sqrt(before_energy/(2*N)));
-    assert(crest<12);
-    assert(sqrt(after_energy/(2*N))>.23);
-    printf("retained Harmony driven crest %.3f dB, PCM RMS %.6f\n",crest,sqrt(after_energy/(2*N)));
+    assert(peak<ECHOY_DEVICE_PCM_CEILING);
+    assert(sqrt(after_energy/(2*N))>.07 && sqrt(after_energy/(2*N))<.22);
+    printf("retained Harmony pre-peak %.6f, driven crest %.3f dB, PCM RMS %.6f\n",peak,crest,sqrt(after_energy/(2*N)));
     echoy_audio_free_loops(a);
 }
-int main(int argc,char **argv){assert(argc==2);isolated_profile();allocation_failure_is_atomic();bad_input_is_atomic();legal_pitch_edges();preserves_note_with_upper_harmonics();rejects_folded_harmonics();retained_phrase_does_not_stack_large_peaks(argv[1]);puts("PASS speaker profile isolation, atomic failure, allocation, legal pitches, harmonic/alias probes and retained-phrase crest");}
+int main(int argc,char **argv){assert(argc==2);isolated_profile();allocation_failure_is_atomic();bad_input_is_atomic();legal_pitch_edges();preserves_note_with_upper_harmonics();rejects_folded_harmonics();retained_phrase_has_output_headroom(argv[1]);puts("PASS speaker profile isolation, atomic failure, allocation, legal pitches, harmonic/alias probes and retained-phrase headroom");}

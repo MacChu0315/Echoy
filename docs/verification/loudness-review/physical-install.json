@@ -14,8 +14,33 @@
   "startup_deadline_misses": 0,
   "free_internal": 24555,
   "free_spiram": 12262320,
-  "acoustic_acceptance": "Pending user listening; office at 30\u201350 cm, all roles/expressions. No all-role louder/cleaner claim.",
+  "acoustic_acceptance": {
+    "pulse_voice_dust": "User reports timbre and loudness are fine; retain the installed profile for these roles.",
+    "harmony": "No obvious breakup reported, but especially loud, sharp/bright and too electronic. Timbre/loudness rejected; Harmony-only refinement needed.",
+    "scope": "User listening feedback, not calibrated SPL or proof of exhaustive physical testing of each expression."
+  },
   "right_device": "Unchanged ordinary 09275b935ad8",
   "microphone_capture": false,
-  "scope": "Startup checks only; prepared-profile stack/timing and physical listening remain pending."
+  "scope": "Installation and subsequent role/playback telemetry plus partial user sound acceptance; Harmony refinement and mixed-version cooperation remain open.",
+  "post_listening": {
+    "boot_id": 1063869759841904881,
+    "crash_count": 0,
+    "partial_writes": 0,
+    "write_errors": 0,
+    "deadline_misses": 0,
+    "owner_render_max_us": 3966,
+    "write_max_us": 9674,
+    "prepare_last_us": 612138,
+    "prepare_last_scope": "Most recent preparation at later Dust state, not maximum Harmony time.",
+    "owner_stack_min_bytes": 8712,
+    "prepare_stack_min_bytes": 7948,
+    "free_internal": 24891,
+    "free_spiram": 11497036,
+    "current_snapshot_role": "Dust",
+    "current_snapshot_phrase": 1,
+    "current_snapshot_ui_volume": 1.0,
+    "source_seed": "95a8",
+    "source_count": 7,
+    "snapshot_scope": "Captured after feedback; not the actual earlier Harmony plan/volume."
+  }
 }

@@ -1,5 +1,10 @@
 # All-role loudness investigation
 
+Current device note: the first office profile below has been superseded on the
+left by the Harmony-only refinement `5d4776c9ae6d`. Pulse/Voice/Dust from this
+profile were accepted and remain unchanged. See `../harmony-softening/README.md`
+for current installation and remaining Harmony listening checks.
+
 The user reports residual Harmony distortion at approximately 80% and now
 requests greater loudness for **all four roles and all three expressions**.
 The intended use is an ordinary office, on a desk at 30–50 cm. This supersedes
@@ -159,7 +164,16 @@ There are zero startup crashes/partial writes/write errors/deadline misses.
 See `package.json` and `physical-install.json`.
 
 Right remains ordinary `09275b935ad8`. Both diagnostic capture entry points are
-disabled. User listening, real prepared-profile workload and mixed-version
-cooperation are pending; the user was asked first to compare all three Harmony
-expressions at default and approximately 80% volume. Do not promote this trial
-or describe all-role louder/cleaner output as accepted yet.
+disabled. The user now reports Pulse/Voice/Dust timbre and loudness are fine;
+retain those roles. Harmony has no obvious breakup, but is especially loud,
+sharp/bright and too electronic. Its timbre/balance need a Harmony-only revision.
+Do not promote the complete trial or describe all-role sound as accepted.
+
+After feedback, the cached left plan is Dust/Grains, UI 1.0, seven source notes
+and seed `95a8`; it is not the actual prior Harmony plan/volume. That source can
+be recomposed into Harmony for a matched numerical comparison, labelled as
+reconstructed. Current-boot logs show zero crashes/write/partial/deadline errors,
+render maximum 3966 us, owner stack minimum 8712 bytes and preparation stack
+minimum 7948 bytes. Latest preparation is 612138 us at the later Dust state,
+not a worst-case Harmony measurement. Mixed-version physical cooperation is
+still pending. See `physical-install.json` for provenance and limits.

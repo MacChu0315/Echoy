@@ -10,12 +10,19 @@ failure, unnecessary Dust allocation, loss of the intended note/harmonics and
 folded high harmonics. Removing the Harmony upper-harmonic Nyquist guard is
 confirmed to fail the explicit folded-frequency assertion.
 
-The retained exact Harmony phrase also checks the introduced candidate-crest
-regression: driven crest stays below 12 dB and output retains useful nonzero
-energy within the .60 sample ceiling. The initial in-phase candidate was
-15.57 dB; the chosen fixed-phase candidate is 11.23 dB. This is a digital
-waveform constraint, not diagnosis or acceptance of acoustic distortion.
-Removing the fixed Harmony phase offsets is confirmed to fail this crest test.
+Following the user's rejection of the first office Harmony as too loud/bright,
+the A4 spectral check limits the third-to-fifth harmonic energy relative to
+the fundamental/second harmonic. The old profile fails that assertion. The
+retained exact phrase must now have real pre-limiter headroom at .761111 volume
+and lower, nonzero PCM energy. This replaces its superseded >.23 RMS target.
+
+The quieter profile's relative crest is 12.58 dB, slightly above the preceding
+profile's 11.23 dB, but its driven peak is only .57238 and requires no limiting
+on this phrase. Requiring the old <12 dB crest ratio would reject a waveform
+that has more actual headroom. The regression therefore checks driven peak
+below .60 and useful RMS below .22. These are digital constraints, not diagnosis
+or acceptance of acoustic distortion. Removing the upper-harmonic Nyquist
+guard is confirmed to fail the second-harmonic folded-frequency assertion.
 
 Real job ownership, mutual exclusion with the older bass-only filter,
 all-or-nothing publication, common bars, failure retention, stale jobs and

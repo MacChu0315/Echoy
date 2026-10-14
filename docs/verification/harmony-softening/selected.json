@@ -1,0 +1,52 @@
+{
+  "selection": "B / Harmony trim0.8; only Harmony refinement",
+  "harmony_h1_h2_h3": [
+    0.6,
+    0.2,
+    0.1
+  ],
+  "removed_added_harmonics": [
+    4,
+    5
+  ],
+  "h2_h3_phase": [
+    "0",
+    "3pi/2"
+  ],
+  "office_gains": [
+    1.6,
+    0.78,
+    0.0634,
+    0.8
+  ],
+  "product_source_sha256": {
+    "projects/echoy/main/echoy_audio.c": "2d92efc9376ebf8182c0ac5fbab8b426637f14e7c9f2352600da65e9d716192a",
+    "projects/echoy/main/echoy_audio.h": "f05ed5860d6db3ccc2884704669e975d2a81450b244a2224710eff1ea3d23a14",
+    "projects/echoy/main/echoy_music.c": "b4dd6f3449dbb56c1122453c10c2461afc7872df2fd1c4ef7819f37925f96e33",
+    "projects/echoy/main/echoy_music.h": "369dd3803b89ccb9cce7f0f94d76313fdceaa5f8f7250b3152c1a88f48f77500",
+    "projects/echoy/main/echoy_device_pcm.c": "517316e8ffc78a8c4b2278ba4b0d69b96764cbdb2f0cf42899a129e3ed8bcd51",
+    "projects/echoy/main/echoy_device_pcm.h": "d58f25ee62e85ca2442910856b8f72e475ce0db58afecf62a262fe5c07febad9",
+    "projects/echoy/main/echoy_link_codec.c": "8fdf823a71f75467e72a83a1d771312f5038628a9c4d6c98ceb517c3bca0b66d",
+    "projects/echoy/main/echoy_link_codec.h": "434e7db076932f616288e9f7eb1d9d47b0952c2bf7aad550542170e23535322c"
+  },
+  "verification": {
+    "cases": 295,
+    "harmony_product_vs_offline_B_cases": 77,
+    "other_roles_product_vs_ad71b58_cases": 218,
+    "max_FULL_float_error": 0,
+    "max_PCM_LSB_error": 0,
+    "all_FULL_and_PCM_byte_identical": true,
+    "Source_Foreground_target_and_plan_unchanged": true,
+    "common_PCM_header_unchanged_vs_ad71b58": true,
+    "reference_pcm_partition": "one frame",
+    "product_pcm_partition": "240 frames",
+    "includes_warmup": true
+  },
+  "current_plan_provenance": "Actual captured current plan is Dust/expr1/seed95a8/density.5/UI1 with7 source notes. The3 Harmony cases are rebuilt from that source with echoy_compose, not actual Harmony captures.",
+  "old_residual_provenance": "The separate8534 plan is an actual historical Harmony capture, tested at UI.761111 and1.",
+  "limits": [
+    "This verifies numerical equivalence only; perceived softness, role balance and physical absence of breakup require listening acceptance.",
+    "Some300\u20131000Hz cases rise slightly; selection is not a universal clean-output threshold.",
+    "No additional R128/parameter scan, product edit, microphone, device write or playback was performed in this final check."
+  ]
+}

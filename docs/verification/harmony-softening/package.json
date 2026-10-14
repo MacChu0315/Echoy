@@ -1,0 +1,57 @@
+{
+  "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/dual-device/echoy-harmony-soft-5d4776c9ae6d.irisfw",
+  "sha256": "5d4776c9ae6dbacac3fd82b64d9bc0353d60ff52875fabae71e5450bfd7b7484",
+  "elf_sha256": "aacb24e1acc4e0a4f11a7cb10b08645f4d0a6e930e98ff19e9ae1675d79a01c7",
+  "manifest": {
+    "schema": "esp-iris-system-update/v1",
+    "manifest_sha256": "34e8e33950d47d5531bf08c281bfda090afe942aa9e2529df1a888ffa4289de1",
+    "key_id": null,
+    "chip_id": 32,
+    "flash_size": 16777216,
+    "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+    "components": [
+      {
+        "id": 1,
+        "kind": "partition_table",
+        "flags": 0,
+        "target_offset": 32768,
+        "size": 4096,
+        "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+        "file": "partition-table.bin"
+      },
+      {
+        "id": 2,
+        "kind": "application",
+        "flags": 0,
+        "target_offset": 2162688,
+        "size": 2118432,
+        "sha256": "77e2a1aee59bab0a28619a4cae1dca65a0fe7f8f79c2fa31d660aeae3c3036de",
+        "file": "ota_0.bin"
+      },
+      {
+        "id": 3,
+        "kind": "data",
+        "flags": 0,
+        "target_offset": 15728640,
+        "size": 377552,
+        "sha256": "061419154ab93d4b882d4cd4b71f3042534ec5c06506203bcdd7ac5aa813be1e",
+        "file": "ui_apps.bin"
+      }
+    ],
+    "signature_verified": false,
+    "release": "1.0.0",
+    "minimum_recovery_version": "0.1"
+  },
+  "config": {
+    "office_voicing_trial": true,
+    "harmony_bass_standalone": false,
+    "microphone_measurement": false,
+    "reference_tone": false
+  },
+  "source_sha256": {
+    "echoy_audio.c": "2d92efc9376ebf8182c0ac5fbab8b426637f14e7c9f2352600da65e9d716192a",
+    "echoy_band.c": "0a4e47523a548cd87dada49a21d454d99ad9f41621060aa6a3b4c655a573244e",
+    "platform_device.c": "e5cbd013d87429f15651d56be66d74a3fbdad3ab7370ec200cbfd78d704ee46e",
+    "echoy_device_pcm.c": "517316e8ffc78a8c4b2278ba4b0d69b96764cbdb2f0cf42899a129e3ed8bcd51"
+  }
+}

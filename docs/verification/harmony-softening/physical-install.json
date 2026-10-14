@@ -1,0 +1,37 @@
+{
+  "device_id": "4553502d49524953010030eda0f452a0",
+  "package": "5d4776c9ae6d",
+  "elf_sha256": "aacb24e1acc4e0a4f11a7cb10b08645f4d0a6e930e98ff19e9ae1675d79a01c7",
+  "operation_id": "4a18849d-b4ed-4e98-8ede-ba7071fcd78d",
+  "installed_boot_id": 15367590955867785783,
+  "current_boot_id": 1456888021128116879,
+  "healthy": true,
+  "validated": true,
+  "crash_count": 0,
+  "baseline_ready": true,
+  "startup_nonzero_pcm": 0,
+  "startup_partial_writes": 0,
+  "startup_write_errors": 0,
+  "startup_deadline_misses": 0,
+  "free_internal": 29075,
+  "free_spiram": 12264440,
+  "right_package": "09275b935ad8",
+  "microphone_capture": false,
+  "initial_calibration_failure": {
+    "boot_id": 15367590955867785783,
+    "right_y": [
+      917,
+      919,
+      918
+    ],
+    "span": [
+      3,
+      1,
+      1
+    ],
+    "classified_edges": "0x00",
+    "package_rewritten": false,
+    "resolution": "User placed devices at least15cm apart away from magnetic/metal sources and manually restarted left; new boot logs baseline ready at2114ms."
+  },
+  "listening_acceptance": "Pending Harmony softness, balance and continued no-breakup confirmation; other roles retain prior accepted profile byte-for-byte."
+}

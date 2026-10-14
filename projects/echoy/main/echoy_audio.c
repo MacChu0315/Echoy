@@ -315,12 +315,11 @@ static void render_note(float *dry, float *send, size_t frames, const echoy_note
                 if (frequencies[p] < SR / 2) {
                     float triangle = triangle_sample(work->triangle[p], oscillators[p].phase);
                     if (work->speaker_profile) {
-                        static const float upper[] = {.25f, .35f, .20f, .10f};
+                        static const float upper[] = {.20f, .10f};
                         /* Fixed per-note phase offsets reduce coincident peaks;
                          * no phase search or shared oscillator state at runtime. */
-                        static const uint32_t offsets[] = {0, UINT32_C(0xc0000000),
-                                                          0, UINT32_C(0x80000000)};
-                        for (unsigned harmonic = 2; harmonic <= 5; ++harmonic) {
+                        static const uint32_t offsets[] = {0, UINT32_C(0xc0000000)};
+                        for (unsigned harmonic = 2; harmonic <= 3; ++harmonic) {
                             if (frequencies[p] * harmonic < SR / 2) {
                                 oscillator_t overtone = oscillators[p];
                                 overtone.phase *= harmonic;
@@ -328,7 +327,7 @@ static void render_note(float *dry, float *send, size_t frames, const echoy_note
                                 value += upper[harmonic - 2] * oscillator_sample(&overtone, work->sine);
                             }
                         }
-                        value += .35f * oscillator_sample(&oscillators[p], work->sine) +
+                        value += .60f * oscillator_sample(&oscillators[p], work->sine) +
                                  triangle * (broken ? .15f : .22f);
                     } else {
                         value += oscillator_sample(&oscillators[p], work->sine) + triangle * (broken ? .15f : .22f);

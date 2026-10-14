@@ -366,14 +366,14 @@ The user approved the all-role voicing direction, with a left-only first trial;
 see `plans/2026-10-14-office-speaker-voicing.md`. The opt-in implementation keeps
 Source/Foreground, original normalization target and plan bytes unchanged.
 Fixed per-note harmonic phases reduce the extra waveform crest found in the
-first two offline candidates. The selected profile uses role gains
+first two offline candidates. The first office profile used role gains
 `1.6/.78/.0634/1.6`, retaining common drive 18, hardware volume 90, .60 ceiling
 and Harmony's 500 Hz cut. Pulse/Voice/Dust show higher weighted digital level;
 Harmony is near parity (some cases slightly lower) with more upper harmonics.
 Limiting remains stronger than the original profile: do not claim an acoustic
 fix or all-role physical loudness gain from these figures.
 
-Left now runs office trial `7307f8ed9a3e`, ELF
+The first office trial installed on the left was `7307f8ed9a3e`, ELF
 `133f0e68982ff07bd35be1ac76f1dddefe5bc8df76e8bc3bc0e99f0f4f9a29c9`,
 Boot ID `1063869759841904881`. Identity/HEALTHY/retained-layout and actual home,
 silent startup, zero crashes and magnetic baseline are verified. Right remains
@@ -381,11 +381,37 @@ ordinary `09275b935ad8`. Device microphone/reference diagnostics are off.
 Local DSP/band/runtime tests and sanitizers, 152 byte-identical prototype-to-
 production FULL/PCM comparisons, 13 native GSP/audio groups and ordinary/trial
 pinned-SDK builds pass. The native test uses one combined desktop PCM chain,
-not separate physical speakers. Physical sound, added preparation cost/stack
-under a real phrase and mixed-version cooperative playback await focused
-testing. The user has been asked first to record and compare Harmony's three
-expressions at default and approximately 80% volume, keeping the knob in place
-if it still distorts. Evidence: `verification/loudness-review/README.md`.
+not separate physical speakers. The user now accepts Pulse, Voice and Dust
+timbre/loudness and reports no obvious Harmony breakup, but rejects Harmony as
+especially loud, sharp/bright and too electronic. Retain the other three roles.
+The after-feedback snapshot is
+paused Dust/Grains at UI 1.0, seed `95a8` with seven source notes, not a snapshot
+of the earlier Harmony listening state. Current boot logs retain zero crashes,
+write/partial/deadline errors, owner render max 3966 us and preparation stack
+minimum 7948 bytes. The last preparation is 612138 us at the later Dust state,
+not a maximum Harmony workload measurement. Mixed-version cooperation still
+needs physical checking. Evidence: `verification/loudness-review/README.md`.
+
+Left now runs the Harmony-only softening package `5d4776c9ae6d`, ELF
+`aacb24e1acc4e0a4f11a7cb10b08645f4d0a6e930e98ff19e9ae1675d79a01c7`,
+current Boot ID `1456888021128116879`. Harmony retains its 500 Hz cut and fixed
+phases, with fundamental/second/third weights `.60/.20/.10`, added fourth/fifth
+removed and its trim reduced to `.8`. Pulse/Voice/Dust remain byte-identical to
+the accepted office version. Actual production/PCM comparison passes 295 cases
+(77 selected Harmony, 218 other roles), plus targeted DSP/band/runtime,
+13 native GSP groups and the pinned-SDK build.
+
+The successful installation's first boot `15367590955867785783` rejected a
+stable magnetic baseline (`right_y=917..919`, no classified edges). This was
+not an app crash; the cached paused/unconnected state had not proved a safe
+physical field. After the user separated the boards at least 15 cm and manually
+restarted left, the current boot reports baseline ready at 2114 ms, unchanged
+ELF, zero crashes and silent startup. No second firmware write was needed.
+`AGENTS.md` now makes that placement-check distinction explicit. New Harmony
+softness, balance and continued absence of breakup await listening; the user
+was asked to record and compare the three Harmony expressions at default volume
+against Voice. Right remains ordinary `09275b935ad8`.
+Evidence: `verification/harmony-softening/README.md`.
 The two-run microphone allowance remains exhausted.
 The pre-listening left phrase and exact C replay are preserved in
 `output/harmony-listening-20261014/`.

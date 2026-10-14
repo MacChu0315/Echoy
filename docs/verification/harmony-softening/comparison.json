@@ -1,0 +1,337 @@
+{
+  "status": "Recommend B with Harmony trim0.8 for one physical refinement trial; no product/device changes made here.",
+  "selected": {
+    "variant": "B",
+    "harmony_h1_h2_h3": [
+      0.6,
+      0.2,
+      0.1
+    ],
+    "added_h4_h5": "removed",
+    "h2_h3_phase": [
+      "0",
+      "3pi/2"
+    ],
+    "harmony_trim": 0.8,
+    "unchanged_other_trims": [
+      1.6,
+      0.78,
+      0.0634
+    ]
+  },
+  "preserved": "Original triangle, notes/timing/envelopes/fades, Harmony500Hz cut, common120Hz/drive18/ceiling.60, Source/Foreground/shared target, and other role synthesis.",
+  "baseline": "ad71b58 strong/bright office version, corresponding to the user report that it had no obvious breakup.",
+  "rationale": [
+    "B0.8 substantially reduces the1\u20133kHz band and digital level while retaining more upper content than A0.8. It is a measured compromise, not a claim that its sound has already been accepted.",
+    "Among the tested six combinations B0.8 has the fewest grid cases with a300\u20131000Hz increase (9/72) and the smallest maximum increase (+.518dB). Current reconstructed source has two small increases, maximum+.785dB. The increase is not hidden or treated as a proven clean threshold.",
+    "Higher trims1.0/1.2 raise more of the300\u20131000Hz band and reduce the level less, making them less aligned with the request that Harmony stop dominating.",
+    "A0.8 is softer in the1\u20133kHz band but shifts relatively more into300\u20131000Hz (16/72 grid increases; current maximum+1.164dB). Both A0.8 and B0.8 WAVs remain available for listening review.",
+    "No cross-role LUFS matching is used. Pulse, Voice and Dust were already accepted and remain unchanged."
+  ],
+  "full_report_path": "output/harmony-refinement-20261014/candidates/recommendation.json",
+  "full_report_sha256": "c466d08fe155f20f7fea83de56af3412639d4c9f7fd116594a1518c4ab968bbb",
+  "selected_grid": {
+    "rms_delta_db": {
+      "min": -7.127468612128517,
+      "median": -4.354811280339395,
+      "mean": -4.809604373568856,
+      "max": -2.611685584541537
+    },
+    "delta_lu": {
+      "min": -8.0,
+      "median": -5.3,
+      "mean": -5.629166666666666,
+      "max": -3.3
+    },
+    "attenuation_delta_db": {
+      "min": -6.025094707435717,
+      "median": -4.015382962787457,
+      "mean": -4.2012352318926425,
+      "max": -1.6828325989275141
+    },
+    "rms": {
+      "min": 0.0815629753866582,
+      "median": 0.11579033072363734,
+      "mean": 0.1221973377315049,
+      "max": 0.17145952267796274
+    },
+    "attenuation_db": {
+      "min": 0.0,
+      "median": 0.2588648823948609,
+      "mean": 0.4656319470166053,
+      "max": 1.8958880313517494
+    },
+    "band_rms_delta_db": {
+      "0-120": {
+        "min": -40.30526362321594,
+        "median": -8.593573710908075,
+        "mean": -12.064018662679329,
+        "max": -0.23009463293170188
+      },
+      "120-300": {
+        "min": -2.9991615968808287,
+        "median": -0.17424529058699884,
+        "mean": -0.2848042945836573,
+        "max": 2.699043403314419
+      },
+      "300-1000": {
+        "min": -4.741841229973423,
+        "median": -1.9417206835435366,
+        "mean": -1.8483796580440608,
+        "max": 0.5178995974988019
+      },
+      "1000-3000": {
+        "min": -17.157743356125398,
+        "median": -14.185464349653955,
+        "mean": -14.446193312277277,
+        "max": -11.86280310043478
+      },
+      "3000-12001": {
+        "min": -25.850666138934777,
+        "median": -3.88698667613514,
+        "mean": -9.135127265507597,
+        "max": -1.720072695450349
+      }
+    },
+    "body_increase_cases": 9
+  },
+  "reconstructed_current_source": [
+    {
+      "origin": 1,
+      "origin_name": "reconstructed_Harmony_from_current_Dust_source",
+      "seed": "95a8",
+      "phrase": 1,
+      "density": 0.5,
+      "volume": 1,
+      "variant": "B",
+      "trim": 0.8,
+      "baseline_rms": 0.18354652495604676,
+      "rms": 0.11530193986337792,
+      "rms_delta_db": -4.03819105011097,
+      "peak": 0.5999938962981048,
+      "baseline_peak": 0.5999938962981048,
+      "crest_db": 14.326204366784374,
+      "baseline_lufs": -14.4,
+      "lufs": -19.1,
+      "delta_lu": -4.7,
+      "baseline_attenuation_db": 6.5082158928482725,
+      "attenuation_db": 0.4728570111780024,
+      "attenuation_delta_db": -6.03535888167027,
+      "band_rms_delta_db": {
+        "0-120": -4.722750342465894,
+        "120-300": 2.8480780620668384,
+        "300-1000": -2.281626743693174,
+        "1000-3000": -13.454837173820366,
+        "3000-12001": -1.5625840179015482
+      },
+      "band_fraction": {
+        "0-120": 5.617420047320499e-05,
+        "120-300": 0.0944732583970076,
+        "300-1000": 0.8588613370142352,
+        "1000-3000": 0.04660042825828612,
+        "3000-12001": 8.802130082803561e-06
+      },
+      "baseline_band_fraction": {
+        "0-120": 6.576469783993752e-05,
+        "120-300": 0.019350045175473927,
+        "300-1000": 0.5731477899245333,
+        "1000-3000": 0.4074314225209434,
+        "3000-12001": 4.97768121044913e-06
+      },
+      "wrap_jump": 0,
+      "true_peak_dbtp": -4.4
+    },
+    {
+      "origin": 1,
+      "origin_name": "reconstructed_Harmony_from_current_Dust_source",
+      "seed": "95a8",
+      "phrase": 2,
+      "density": 0.5,
+      "volume": 1,
+      "variant": "B",
+      "trim": 0.8,
+      "baseline_rms": 0.2497616108544253,
+      "rms": 0.16052621741737558,
+      "rms_delta_db": -3.839594289701718,
+      "peak": 0.5999938962981048,
+      "baseline_peak": 0.5999938962981048,
+      "crest_db": 11.45201720200907,
+      "baseline_lufs": -11.0,
+      "lufs": -15.9,
+      "delta_lu": -4.9,
+      "baseline_attenuation_db": 5.601053077016371,
+      "attenuation_db": 0.64649944014318,
+      "attenuation_delta_db": -4.954553636873191,
+      "band_rms_delta_db": {
+        "0-120": -4.263588942611045,
+        "120-300": -4.8558646471869995,
+        "300-1000": 0.3156486429002807,
+        "1000-3000": -13.892664286747474,
+        "3000-12001": -1.7464998347735026
+      },
+      "band_fraction": {
+        "0-120": 1.4850652880773446e-05,
+        "120-300": 8.08069855452982e-05,
+        "300-1000": 0.936662711868914,
+        "1000-3000": 0.06323022922330655,
+        "3000-12001": 1.1401269378827658e-05
+      },
+      "baseline_band_fraction": {
+        "0-120": 1.6373631508800657e-05,
+        "120-300": 0.0001021118023136563,
+        "300-1000": 0.3597981601647079,
+        "1000-3000": 0.6400763132487888,
+        "3000-12001": 7.041152676375482e-06
+      },
+      "wrap_jump": 3.051850947599719e-05,
+      "true_peak_dbtp": -4.4
+    },
+    {
+      "origin": 1,
+      "origin_name": "reconstructed_Harmony_from_current_Dust_source",
+      "seed": "95a8",
+      "phrase": 3,
+      "density": 0.5,
+      "volume": 1,
+      "variant": "B",
+      "trim": 0.8,
+      "baseline_rms": 0.19590333894464174,
+      "rms": 0.13991625839778352,
+      "rms_delta_db": -2.923473105207331,
+      "peak": 0.5999938962981048,
+      "baseline_peak": 0.5999938962981048,
+      "crest_db": 12.645572990249281,
+      "baseline_lufs": -13.5,
+      "lufs": -17.3,
+      "delta_lu": -3.8,
+      "baseline_attenuation_db": 7.39547617664237,
+      "attenuation_db": 1.6012762480347622,
+      "attenuation_delta_db": -5.794199928607608,
+      "band_rms_delta_db": {
+        "0-120": -1.9489068552174005,
+        "120-300": 0.2842523973737026,
+        "300-1000": 0.784825056561925,
+        "1000-3000": -12.861371735843486,
+        "3000-12001": -1.3040153872770366
+      },
+      "band_fraction": {
+        "0-120": 5.0454596226315655e-05,
+        "120-300": 0.0031342587868477736,
+        "300-1000": 0.9359471186426492,
+        "1000-3000": 0.06086038333471413,
+        "3000-12001": 7.784639611009138e-06
+      },
+      "baseline_band_fraction": {
+        "0-120": 4.031290638198888e-05,
+        "120-300": 0.0014974843826981977,
+        "300-1000": 0.3984937327233935,
+        "1000-3000": 0.5999631084081453,
+        "3000-12001": 5.361579376474691e-06
+      },
+      "wrap_jump": 0,
+      "true_peak_dbtp": -4.4
+    }
+  ],
+  "historical_actual_harmony": [
+    {
+      "origin": 2,
+      "origin_name": "captured_old_residual_Harmony",
+      "seed": "8534",
+      "phrase": 2,
+      "density": 0.5,
+      "volume": 0.7611111111111111,
+      "variant": "B",
+      "trim": 0.8,
+      "baseline_rms": 0.25181159317349877,
+      "rms": 0.1345478522494491,
+      "rms_delta_db": -5.443979022367827,
+      "peak": 0.5723746452223274,
+      "baseline_peak": 0.5999938962981048,
+      "crest_db": 12.576072354278466,
+      "baseline_lufs": -11.3,
+      "lufs": -17.8,
+      "delta_lu": -6.5,
+      "baseline_attenuation_db": 3.2052526204763723,
+      "attenuation_db": 0,
+      "attenuation_delta_db": -3.2052526204763723,
+      "band_rms_delta_db": {
+        "0-120": -42.62478800299307,
+        "120-300": -9.404136605351885,
+        "300-1000": -1.402410001232714,
+        "1000-3000": -15.758887267892964,
+        "3000-12001": -3.3590575321417027
+      },
+      "band_fraction": {
+        "0-120": 1.3429443031031677e-09,
+        "120-300": 1.497110616357289e-05,
+        "300-1000": 0.9415040419475298,
+        "1000-3000": 0.05847278464423814,
+        "3000-12001": 8.200959181692793e-06
+      },
+      "baseline_band_fraction": {
+        "0-120": 7.016796789590243e-06,
+        "120-300": 3.726229916939169e-05,
+        "300-1000": 0.3712489950377666,
+        "1000-3000": 0.6287016516087962,
+        "3000-12001": 5.0742574881024645e-06
+      },
+      "wrap_jump": 3.051850947599719e-05,
+      "true_peak_dbtp": -4.8
+    },
+    {
+      "origin": 2,
+      "origin_name": "captured_old_residual_Harmony",
+      "seed": "8534",
+      "phrase": 2,
+      "density": 0.5,
+      "volume": 1,
+      "variant": "B",
+      "trim": 0.8,
+      "baseline_rms": 0.263215758525615,
+      "rms": 0.17076297816803226,
+      "rms_delta_db": -3.758363322944842,
+      "peak": 0.5999938962981048,
+      "baseline_peak": 0.5999938962981048,
+      "crest_db": 10.915062238075869,
+      "baseline_lufs": -10.9,
+      "lufs": -15.7,
+      "delta_lu": -4.8,
+      "baseline_attenuation_db": 5.191566692331564,
+      "attenuation_db": 0.3006983459598087,
+      "attenuation_delta_db": -4.8908683463717555,
+      "band_rms_delta_db": {
+        "0-120": -7.48040430382467,
+        "120-300": -6.469716322912051,
+        "300-1000": 0.30106753397898556,
+        "1000-3000": -14.069688459406482,
+        "3000-12001": -1.7842581916417304
+      },
+      "band_fraction": {
+        "0-120": 5.170742900581274e-06,
+        "120-300": 3.1891543885026585e-05,
+        "300-1000": 0.941286446689856,
+        "1000-3000": 0.05866826712413973,
+        "3000-12001": 8.22389924768594e-06
+      },
+      "baseline_band_fraction": {
+        "0-120": 1.2183078496988904e-05,
+        "120-300": 5.954027609033288e-05,
+        "300-1000": 0.36963979418752374,
+        "1000-3000": 0.6302832624967663,
+        "3000-12001": 5.219961116354942e-06
+      },
+      "wrap_jump": 3.051850947599719e-05,
+      "true_peak_dbtp": -4.4
+    }
+  ],
+  "verification": {
+    "cases": 539,
+    "harmony_plan_sets": 40,
+    "all_source_foreground_target_plan_unchanged": true,
+    "all_block_pcm_byte_identical": true,
+    "max_peak": 0.5999938962981048,
+    "max_true_peak": -4.2,
+    "max_wrap_jump": 0.0003051850947599719,
+    "all_repeated_pcm_equal": true
+  }
+}

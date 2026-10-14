@@ -3,8 +3,10 @@
 Status: the user approved the broader timbre direction on 2026-10-14, explicitly
 prioritizing louder/less-distorted output and a left-only first trial. Product
 implementation and local regressions are complete; the selected left-only trial
-`7307f8ed9a3e` is installed with healthy, calibrated, silent startup. Physical
-listening and workload acceptance remain open. Existing firmware-update authorization remains
+`7307f8ed9a3e` was installed with healthy, calibrated, silent startup. The user
+accepts Pulse/Voice/Dust but found Harmony too loud and bright without obvious
+breakup. Its Harmony-only refinement `5d4776c9ae6d` is now installed and
+calibrated; that refinement's physical listening remains open. Existing firmware-update authorization remains
 valid; do not request the same sound-direction approval again.
 
 ## Goal and acceptance
@@ -56,6 +58,15 @@ The bounded comparison improves each role's mean weighted digital level versus
 the original, but Harmony is marginal: its third expression ranges -.1 to
 +.3 LU. Limiting is still stronger than the original. This is an approved
 physical timbre trial, not proof that the louder/cleaner goal is achieved.
+
+After that first listening, keep the accepted Pulse/Voice/Dust exactly as above.
+The Harmony-only refinement uses `.60/.20/.10` for fundamental/second/third,
+removes added fourth/fifth, retains second/third phases `(0,3*pi/2)` and the
+triangle component, and reduces its trim to `.8`. The 500 Hz filter and common
+PCM remain. This directly addresses the user's rejected sharpness and excessive
+Harmony loudness; it is not a request to lower all roles. Numerical comparison,
+physical installation and remaining listening checks are in
+`../verification/harmony-softening/README.md`.
 
 Notes, timestamps, note lengths/envelopes and expression rules remain. Add
 harmonics separately to each synthesized note, never by distorting the mixed

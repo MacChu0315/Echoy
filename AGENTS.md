@@ -36,6 +36,10 @@
   stay off the audio owner. Keep boards separated on a nonmetal surface during
   startup magnetic calibration, then wait for the baseline-ready logs before
   testing a horizontal seam. Never substitute radio proximity for physical contact.
+  A paused/non-following or "not connected" cached state does not prove a
+  calibration-safe magnetic field; a stable field can reject startup even with
+  zero classified edges. Reconfirm physical placement before a later restart
+  if the user has handled the devices since the last placement check.
 - Approved audio trial: device-only loudness gain with peak limiting may change
   musical dynamics. Preserve the frozen HTML and musical rules. Numerical
   synthesis optimizations must pass the existing HTML audio comparison budgets;

@@ -9,7 +9,7 @@
 const float echoy_device_role_gains[4] = {1.6f, .52f, .0317f, 2.38f};
 /* Opt-in office-speaker listening profile. Keep the common peak bound; its
  * acoustic loudness/balance still requires physical listening acceptance. */
-const float echoy_office_role_gains[4] = {1.6f, .78f, .0634f, 1.6f};
+const float echoy_office_role_gains[4] = {1.6f, .78f, .0634f, .8f};
 
 void echoy_device_pcm_reset(echoy_device_pcm_t *state)
 {
