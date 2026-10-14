@@ -7,4 +7,14 @@ config ECHOY_AUDIO_DIAGNOSTICS
         Never plays automatically. Method 1 reads cached state, 2 requests a
         fixed one-second 1 kHz tone, and 3 cancels it. Music is paused and never
         resumed automatically. Keep disabled in normal product builds.
+config ECHOY_OUTPUT_MEASUREMENT
+    bool "Enable explicitly authorized bounded microphone/output measurement"
+    depends on !ECHOY_AUDIO_DIAGNOSTICS
+    default n
+    help
+        Temporary private service 0xECA2. Explicit start only, fixed 10.5-second
+        speaker test and microphone capture, with a 12-second deadline and at
+        most two starts per boot. The host also enforces the consent budget
+        across boots. Pause cancels; completion never resumes music. Keep
+        disabled in ordinary builds. Enabling this is not capture consent.
 endmenu

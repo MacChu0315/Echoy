@@ -1,0 +1,5 @@
+# Temporary, explicitly authorized diagnostic build only. Append to ordinary
+# defaults in a separate fresh build directory; never use for normal releases.
+CONFIG_ECHOY_OUTPUT_MEASUREMENT=y
+# Recovery/acceptance (3) + snapshots (3) + measurement (4).
+CONFIG_ESP_IRIS_MAX_RPC_HANDLERS=10

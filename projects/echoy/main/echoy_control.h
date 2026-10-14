@@ -47,6 +47,8 @@ typedef struct {
     bool present, preparing, preparation_failed, english, reduced_motion;
     /* Hardware adapters distinguish unavailable readings from real zeroes. */
     bool battery_unknown, imu_unknown;
+    /* Finite diagnostic only; ordinary touch recording never opens a mic. */
+    bool measurement_active, measurement_microphone;
     int tile, source, clock;
     echoy_condition_t condition;
     echoy_cooperation_t cooperation;

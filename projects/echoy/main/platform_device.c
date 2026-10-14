@@ -33,12 +33,18 @@
 #define DIAGNOSTIC_BYTES 512
 #define OWNER_TRACE_ROWS 16u
 static const char *TAG = "echoy_device";
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+/* A stopped/recreated runtime must not reset the authorization's boot budget. */
+static atomic_uint measure_boot_runs, measure_boot_sequence;
+#endif
 
 _Static_assert(BOARD_AUDIO_SAMPLE_RATE == 24000, "PCM limiter requires 24 kHz");
 
 typedef struct {
     unsigned probe_command; /* 0 UI, 1 reference tone, 2 cancel diagnostic. */
     unsigned probe_generation;
+    unsigned measure_command, measure_generation, measure_gain;
+    bool cancels_measurement;
     echoy_action_t action;
     double value;
     int64_t at;
@@ -105,6 +111,18 @@ struct echoy_device {
     bool probe_pending, probe_active;
     size_t probe_position;
     echoy_device_diagnostics_t probe, probe_cache;
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+    atomic_bool measure_busy, measure_job_pending, measure_job_done;
+    atomic_uint measure_sequence, measure_cancel_sequence;
+    bool measure_pending, measure_io, measure_ending, measure_job_in_flight;
+    bool measure_analyze, measure_analysis_ok, measure_publish_result;
+    unsigned measure_job_generation;
+    int64_t measure_started_us, measure_deadline_us;
+    echoy_output_measurement_phase_t measure_terminal;
+    echoy_output_measurement_status_t measure, measure_cache;
+    int16_t *measure_pcm;
+    echoy_output_measurement_result_t *measure_work, *measure_result_cache;
+#endif
 };
 
 static int64_t now_us(void *ctx)
@@ -112,6 +130,14 @@ static int64_t now_us(void *ctx)
     (void)ctx;
     return esp_timer_get_time();
 }
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+static void measure_cancel_generation(struct echoy_device *d, unsigned generation)
+{
+    unsigned previous = atomic_load(&d->measure_cancel_sequence);
+    while (previous < generation &&
+           !atomic_compare_exchange_weak(&d->measure_cancel_sequence, &previous, generation)) {}
+}
+#endif
 static int32_t trace_elapsed(int64_t now, int64_t before)
 {
     int64_t elapsed = now - before;
@@ -215,7 +241,14 @@ static bool perform_action(void *ctx, echoy_action_t action, double value, int64
     if (action == ECHOY_ACT_PRESENT) {
         return false;
     }
-    const command_t command = {.action = action, .value = value, .at = at};
+    command_t command = {.action = action, .value = value, .at = at};
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+    if (atomic_load(&d->measure_busy)) {
+        command.cancels_measurement = true;
+        command.measure_generation = atomic_load(&d->measure_sequence);
+        measure_cancel_generation(d, command.measure_generation);
+    }
+#endif
     if (xQueueSend(d->commands, &command, 0) != pdTRUE) {
         /* Do not lose Cancel and later execute an older Record. Fail silent,
          * discard all queued actions, and require explicit recovery. */
@@ -284,8 +317,12 @@ esp_err_t echoy_device_probe_request(echoy_device_handle_t d, bool start)
     if (start) {
         xSemaphoreTake(d->view_lock, portMAX_DELAY);
         bool ready = d->cache.condition == ECHOY_NORMAL;
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+        ready &= !atomic_load(&d->measure_busy);
+#endif
+        bool admitted = ready && !atomic_exchange(&d->probe_busy, true);
         xSemaphoreGive(d->view_lock);
-        if (!ready || atomic_exchange(&d->probe_busy, true)) {
+        if (!admitted) {
             return ESP_ERR_INVALID_STATE;
         }
     } else if (!atomic_load(&d->probe_busy)) {
@@ -304,6 +341,127 @@ esp_err_t echoy_device_probe_request(echoy_device_handle_t d, bool start)
     return ESP_OK;
 #endif
 }
+esp_err_t echoy_device_measure_get(echoy_device_handle_t d,
+                                   echoy_output_measurement_status_t *out)
+{
+    if (!d || !out) return ESP_ERR_INVALID_ARG;
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+    xSemaphoreTake(d->view_lock, portMAX_DELAY);
+    *out = d->measure_cache;
+    out->requested_generation = atomic_load(&d->measure_sequence);
+    out->runs_started = atomic_load(&measure_boot_runs);
+    out->runs_remaining = ECHOY_OUTPUT_MEASUREMENT_MAX_RUNS - out->runs_started;
+    if (out->result_ready && atomic_load(&d->measure_cancel_sequence) >= out->generation) {
+        out->phase = ECHOY_OUTPUT_MEASUREMENT_CANCELLED;
+        out->result_ready = false;
+    }
+    xSemaphoreGive(d->view_lock);
+#else
+    *out = (echoy_output_measurement_status_t){.phase=ECHOY_OUTPUT_MEASUREMENT_DISABLED};
+#endif
+    return ESP_OK;
+}
+esp_err_t echoy_device_measure_result(echoy_device_handle_t d, unsigned run_id,
+                                      echoy_output_measurement_result_t *out)
+{
+    if (!d || !out || !run_id) return ESP_ERR_INVALID_ARG;
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+    xSemaphoreTake(d->view_lock, portMAX_DELAY);
+    bool ready = d->measure_cache.result_ready && d->measure_cache.generation == run_id &&
+                 d->measure_cache.phase == ECHOY_OUTPUT_MEASUREMENT_COMPLETE &&
+                 atomic_load(&d->measure_cancel_sequence) < run_id;
+    if (ready) *out = *d->measure_result_cache;
+    xSemaphoreGive(d->view_lock);
+    return ready ? ESP_OK : ESP_ERR_INVALID_STATE;
+#else
+    return ESP_ERR_NOT_SUPPORTED;
+#endif
+}
+esp_err_t echoy_device_measure_request(echoy_device_handle_t d, bool start, unsigned gain,
+                                       echoy_output_measurement_status_t *out)
+{
+#if !CONFIG_ECHOY_OUTPUT_MEASUREMENT
+    (void)d; (void)start; (void)gain; (void)out;
+    return ESP_ERR_NOT_SUPPORTED;
+#else
+    if (!d || (start && (gain > 30 || gain % 6))) return ESP_ERR_INVALID_ARG;
+    if (atomic_load(&d->stopping) || !atomic_load(&d->activated)) return ESP_ERR_INVALID_STATE;
+    if (!start) {
+        unsigned generation = atomic_load(&d->measure_sequence);
+        if (!atomic_load(&d->measure_busy)) {
+            if (out) echoy_device_measure_get(d, out);
+            return ESP_OK;
+        }
+        /* Invalidate before queue admission: even a dropped Cancel stops I/O. */
+        measure_cancel_generation(d, generation);
+        command_t command = {.measure_command=2, .measure_generation=generation};
+        if (xQueueSend(d->commands, &command, 0) != pdTRUE) {
+            atomic_store(&d->queue_fault, true);
+            return ESP_ERR_NO_MEM;
+        }
+        if (out) echoy_device_measure_get(d, out);
+        return ESP_OK;
+    }
+    xSemaphoreTake(d->view_lock, portMAX_DELAY);
+    if (atomic_load(&d->measure_busy) || atomic_load(&d->probe_busy) ||
+        atomic_load(&d->stopping) || d->cache.condition != ECHOY_NORMAL ||
+        atomic_load(&measure_boot_runs) >= ECHOY_OUTPUT_MEASUREMENT_MAX_RUNS) {
+        xSemaphoreGive(d->view_lock);
+        return ESP_ERR_INVALID_STATE;
+    }
+    unsigned previous_runs = atomic_load(&measure_boot_runs);
+    do {
+        if (previous_runs >= ECHOY_OUTPUT_MEASUREMENT_MAX_RUNS) {
+            xSemaphoreGive(d->view_lock);
+            return ESP_ERR_INVALID_STATE;
+        }
+    } while (!atomic_compare_exchange_weak(&measure_boot_runs, &previous_runs, previous_runs + 1));
+    unsigned runs = previous_runs + 1;
+    unsigned generation = atomic_fetch_add(&measure_boot_sequence, 1) + 1;
+    atomic_store(&d->measure_sequence, generation);
+    atomic_store(&d->measure_busy, true);
+    command_t command = {.measure_command=1, .measure_generation=generation, .measure_gain=gain};
+    if (xQueueSend(d->commands, &command, 0) != pdTRUE) {
+        atomic_fetch_sub(&measure_boot_runs, 1);
+        atomic_store(&d->measure_busy, false);
+        atomic_store(&d->queue_fault, true);
+        xSemaphoreGive(d->view_lock);
+        return ESP_ERR_NO_MEM;
+    }
+    d->measure_cache = (echoy_output_measurement_status_t){
+        .phase=ECHOY_OUTPUT_MEASUREMENT_STARTING, .generation=generation,
+        .requested_generation=generation, .runs_started=runs,
+        .runs_remaining=ECHOY_OUTPUT_MEASUREMENT_MAX_RUNS-runs, .input_gain_db=(float)gain};
+    if (out) *out = d->measure_cache;
+    xSemaphoreGive(d->view_lock);
+    return ESP_OK;
+#endif
+}
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+static bool measure_cancelled(void *ctx)
+{
+    struct echoy_device *d = ctx;
+    return atomic_load(&d->stopping) ||
+           atomic_load(&d->measure_cancel_sequence) >= d->measure_job_generation;
+}
+static void measure_mark_end(struct echoy_device *d,
+    echoy_output_measurement_phase_t phase, esp_err_t error)
+{
+    d->measure_pending = false;
+    d->measure_ending = true;
+    d->measure_terminal = phase;
+    d->measure.error_code = error;
+    d->measure.result_ready = false;
+    if (phase != ECHOY_OUTPUT_MEASUREMENT_COMPLETE)
+        measure_cancel_generation(d, atomic_load(&d->measure_sequence));
+}
+static void measure_clear_pcm(struct echoy_device *d)
+{
+    /* Volatile stores also erase the buffer immediately before it is freed. */
+    volatile int16_t *samples = d->measure_pcm;
+    for (size_t i = 0; i < ECHOY_OUTPUT_MEASUREMENT_TOTAL_FRAMES; ++i) samples[i] = 0;
+}
+#endif
 static void finish_probe(struct echoy_device *d, echoy_probe_phase_t phase, esp_err_t error)
 {
     unsigned generation = atomic_load(&d->probe_sequence);
@@ -337,6 +495,10 @@ static void publish(struct echoy_device *d)
     d->staging.imu_unknown = true;
     d->staging.condition = d->condition;
     d->staging.state.fault = d->condition != ECHOY_NORMAL;
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+    d->staging.measurement_active = atomic_load(&d->measure_busy);
+    d->staging.measurement_microphone = d->measure_io;
+#endif
     int64_t wait_started = now_us(d);
     /* A preempted UI/radio reader must not delay the PCM deadline. Keep its
      * coherent previous snapshot and retry publication on the next block. */
@@ -351,6 +513,30 @@ static void publish(struct echoy_device *d)
     int64_t acquired = now_us(d);
     d->cache = d->staging;
     d->probe_cache = d->probe;
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+    if (d->measure.generation == atomic_load(&d->measure_sequence)) {
+        if (d->measure.result_ready &&
+            atomic_load(&d->measure_cancel_sequence) >= d->measure.generation) {
+            d->measure.phase = ECHOY_OUTPUT_MEASUREMENT_CANCELLED;
+            d->measure.result_ready = d->measure_publish_result = false;
+        }
+        if (d->measure_publish_result) {
+            echoy_output_measurement_result_t *previous = d->measure_result_cache;
+            d->measure_result_cache = d->measure_work;
+            d->measure_work = previous;
+            d->measure_publish_result = false;
+        }
+        d->measure_cache = d->measure;
+        d->measure_cache.runs_started = atomic_load(&measure_boot_runs);
+        d->measure_cache.runs_remaining =
+            ECHOY_OUTPUT_MEASUREMENT_MAX_RUNS - d->measure_cache.runs_started;
+        if (!d->measure_ending && !d->measure_job_in_flight &&
+            d->measure.phase >= ECHOY_OUTPUT_MEASUREMENT_COMPLETE) {
+            atomic_store(&d->measure_busy, false);
+            d->cache.measurement_active = false;
+        }
+    }
+#endif
     if (link_due) {
         d->link_view_staging.available=d->band && d->condition==ECHOY_NORMAL;
         d->link_cache=d->link_view_staging;
@@ -384,7 +570,20 @@ static void fail_audio(struct echoy_device *d, board_audio_t **audio, const char
     if (*audio) {
         board_audio_get_stats(*audio, &d->last_audio_stats);
     }
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+    if (d->measure_io)
+        d->measure.elapsed_us = (uint64_t)(now_us(d) - d->measure_started_us);
+#endif
     const esp_err_t close_error = board_audio_close(audio);
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+    if (atomic_load(&d->measure_busy)) {
+        if (d->measure.generation != atomic_load(&d->measure_sequence))
+            d->measure = (echoy_output_measurement_status_t){
+                .generation=atomic_load(&d->measure_sequence)};
+        d->measure_io = false;
+        measure_mark_end(d, ECHOY_OUTPUT_MEASUREMENT_FAILED, error);
+    }
+#endif
     if (d->trace_pending) {
         trace_log_deadline(d, error);
     } else {
@@ -438,6 +637,159 @@ static bool open_audio(struct echoy_device *d, board_audio_t **audio)
     }
     return true;
 }
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+static void measure_close(struct echoy_device *d, board_audio_t **audio)
+{
+    if (!d->measure_io) return;
+    esp_err_t error = board_audio_close(audio);
+    d->measure_io = false;
+    d->measure.elapsed_us = (uint64_t)(now_us(d) - d->measure_started_us);
+    if (error != ESP_OK) {
+        d->fatal = true;
+        d->shutdown_error = error;
+        fail_audio(d, audio, "measurement shutdown", error);
+    } else if (!atomic_load(&d->stopping) && !d->audio_fault) {
+        open_audio(d, audio); /* Only silent TX is restored, never playback permission. */
+    }
+}
+static void measure_progress(struct echoy_device *d, board_audio_t **audio)
+{
+    if (!atomic_load(&d->measure_busy)) return;
+    unsigned generation = atomic_load(&d->measure_sequence);
+    bool cancelled = atomic_load(&d->measure_cancel_sequence) >= generation;
+    if (d->measure.generation != generation) return; /* FIFO admission still pending. */
+    if (cancelled && d->measure.phase == ECHOY_OUTPUT_MEASUREMENT_COMPLETE) {
+        d->measure.phase = ECHOY_OUTPUT_MEASUREMENT_CANCELLED;
+        d->measure.result_ready = d->measure_publish_result = false;
+    }
+    if ((d->measure_pending || d->measure_io) &&
+        (cancelled || d->condition != ECHOY_NORMAL)) {
+        measure_mark_end(d, d->condition == ECHOY_NORMAL ? ECHOY_OUTPUT_MEASUREMENT_CANCELLED
+                                                       : ECHOY_OUTPUT_MEASUREMENT_FAILED,
+                         d->condition == ECHOY_NORMAL ? ESP_OK : ESP_ERR_INVALID_STATE);
+    }
+    if (d->measure_pending && !d->measure_ending) {
+        d->measure_pending = false;
+        /* Copy the paused model once before RX is opened. During capture only
+         * the small status/state fields are published, never a whole view. */
+        echoy_band_read(d->band, ECHOY_TILE_A, &d->staging);
+        esp_err_t error = board_audio_close(audio);
+        if (error != ESP_OK) {
+            d->fatal = true; d->shutdown_error = error;
+            fail_audio(d, audio, "measurement speaker handoff", error);
+        } else if (atomic_load(&d->stopping) ||
+                   atomic_load(&d->measure_cancel_sequence) >= generation) {
+            measure_mark_end(d, ECHOY_OUTPUT_MEASUREMENT_CANCELLED, ESP_OK);
+            if (!atomic_load(&d->stopping)) open_audio(d, audio);
+        } else {
+            d->measure_started_us = now_us(d);
+            d->measure_deadline_us = d->measure_started_us +
+                (int64_t)ECHOY_OUTPUT_MEASUREMENT_HARD_LIMIT_MS * 1000;
+            error = board_audio_measure_open(audio, (unsigned)d->measure.input_gain_db,
+                                              d->measure_deadline_us);
+            if (error != ESP_OK) {
+                fail_audio(d, audio, "measurement initialization", error);
+            } else {
+                d->measure_io = true;
+                d->measure.phase = ECHOY_OUTPUT_MEASUREMENT_CAPTURING;
+            }
+        }
+    }
+    if (d->measure_ending) {
+        measure_close(d, audio);
+        if (!d->measure_job_in_flight) {
+            d->measure_analyze = d->measure_terminal == ECHOY_OUTPUT_MEASUREMENT_COMPLETE;
+            d->measure_job_generation = generation;
+            d->measure_job_in_flight = true;
+            d->measure.phase = d->measure_analyze ? ECHOY_OUTPUT_MEASUREMENT_ANALYZING
+                                                : ECHOY_OUTPUT_MEASUREMENT_STOPPING;
+            atomic_store(&d->measure_job_pending, true);
+        }
+        if (atomic_exchange(&d->measure_job_done, false)) {
+            d->measure_job_in_flight = false;
+            d->measure_ending = false;
+            if (d->measure_terminal == ECHOY_OUTPUT_MEASUREMENT_COMPLETE) {
+                if (cancelled) d->measure_terminal = ECHOY_OUTPUT_MEASUREMENT_CANCELLED;
+                else if (!d->measure_analysis_ok) {
+                    d->measure_terminal = ECHOY_OUTPUT_MEASUREMENT_FAILED;
+                    d->measure.error_code = ESP_ERR_INVALID_RESPONSE;
+                }
+            }
+            d->measure.phase = d->measure_terminal;
+            d->measure.result_ready = d->measure_terminal == ECHOY_OUTPUT_MEASUREMENT_COMPLETE;
+            d->measure_publish_result = d->measure.result_ready;
+            if (d->band) echoy_band_action(d->band, ECHOY_TILE_A, ECHOY_ACT_PAUSE, 0, now_us(d));
+        }
+    }
+}
+static void measure_publish_capture(struct echoy_device *d)
+{
+    if (xSemaphoreTake(d->view_lock, 0) != pdTRUE) {
+        ++d->cache_busy;
+        return;
+    }
+    d->measure_cache = d->measure;
+    d->cache.measurement_active = true;
+    d->cache.measurement_microphone = true;
+    d->cache.state = d->staging.state;
+    xSemaphoreGive(d->view_lock);
+}
+static void measure_block(struct echoy_device *d, board_audio_t **audio)
+{
+    unsigned generation = atomic_load(&d->measure_sequence);
+    if (atomic_load(&d->stopping) || atomic_load(&d->measure_cancel_sequence) >= generation) {
+        measure_mark_end(d, ECHOY_OUTPUT_MEASUREMENT_CANCELLED, ESP_OK);
+        measure_progress(d, audio);
+        return;
+    }
+    if (now_us(d) >= d->measure_deadline_us) {
+        fail_audio(d, audio, "measurement hard deadline", ESP_ERR_TIMEOUT);
+        return;
+    }
+    size_t offset = d->measure.frames_captured;
+    echoy_output_measurement_render(offset, d->block->pcm, BLOCK_FRAMES);
+    size_t written = 0;
+    esp_err_t error = board_audio_write(*audio, d->block->pcm, BLOCK_FRAMES, &written);
+    d->measure.frames_written += written;
+    if (error != ESP_OK || written != BLOCK_FRAMES) {
+        fail_audio(d, audio, "measurement PCM output", error != ESP_OK ? error : ESP_ERR_INVALID_SIZE);
+        return;
+    }
+    if (now_us(d) >= d->measure_deadline_us) {
+        fail_audio(d, audio, "measurement hard deadline", ESP_ERR_TIMEOUT);
+        return;
+    }
+    if (atomic_load(&d->stopping) || atomic_load(&d->measure_cancel_sequence) >= generation) {
+        measure_mark_end(d, ECHOY_OUTPUT_MEASUREMENT_CANCELLED, ESP_OK);
+        measure_progress(d, audio);
+        return;
+    }
+    size_t read = 0;
+    error = board_audio_measure_read(*audio, d->measure_pcm + offset, BLOCK_FRAMES, &read);
+    d->measure.frames_captured += read;
+    d->measure.elapsed_us = (uint64_t)(now_us(d) - d->measure_started_us);
+    if (error != ESP_OK || read != BLOCK_FRAMES) {
+        fail_audio(d, audio, "measurement PCM input", error != ESP_OK ? error : ESP_ERR_INVALID_SIZE);
+    } else if (now_us(d) >= d->measure_deadline_us) {
+        fail_audio(d, audio, "measurement hard deadline", ESP_ERR_TIMEOUT);
+    } else if (d->measure.frames_captured == ECHOY_OUTPUT_MEASUREMENT_TOTAL_FRAMES) {
+        measure_mark_end(d, ECHOY_OUTPUT_MEASUREMENT_COMPLETE, ESP_OK);
+        measure_progress(d, audio);
+    }
+}
+static void measure_prepare(struct echoy_device *d)
+{
+    if (!atomic_exchange(&d->measure_job_pending, false)) return;
+    d->measure_analysis_ok = d->measure_analyze && echoy_output_measurement_analyze(
+        d->measure_pcm, ECHOY_OUTPUT_MEASUREMENT_TOTAL_FRAMES, d->measure_work,
+        measure_cancelled, d);
+    /* No raw microphone recording survives analysis or a cancelled run. */
+    measure_clear_pcm(d);
+    if (!d->measure_analysis_ok || measure_cancelled(d))
+        memset(d->measure_work, 0, sizeof(*d->measure_work));
+    atomic_store(&d->measure_job_done, true);
+}
+#endif
 static void prepare_worker(void *arg)
 {
     struct echoy_device *d = arg;
@@ -448,6 +800,9 @@ static void prepare_worker(void *arg)
              (unsigned)(echoy_device_role_gains[0]*1000), (unsigned)(echoy_device_role_gains[1]*1000),
              (unsigned)(echoy_device_role_gains[2]*1000), (unsigned)(echoy_device_role_gains[3]*1000));
     while (!atomic_load(&d->stopping)) {
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+        measure_prepare(d);
+#endif
         char diagnostic[DIAGNOSTIC_BYTES];
         if (xQueueReceive(d->diagnostics, diagnostic, 0) == pdTRUE) {
             ESP_LOGI(TAG, "%s", diagnostic);
@@ -507,6 +862,27 @@ static bool process_commands(struct echoy_device *d, board_audio_t **audio)
     /* Bounded batch preserves FIFO order (especially Record then Cancel). */
     for (unsigned i = 0; i < COMMAND_COUNT && xQueueReceive(d->commands, &command, 0) == pdTRUE;
          ++i) {
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+        if (command.measure_command) {
+            if (command.measure_generation != atomic_load(&d->measure_sequence) ||
+                !atomic_load(&d->measure_busy)) continue;
+            if (command.measure_command == 1) {
+                d->measure = (echoy_output_measurement_status_t){
+                    .phase=ECHOY_OUTPUT_MEASUREMENT_STARTING,
+                    .generation=command.measure_generation, .input_gain_db=(float)command.measure_gain};
+                d->measure_publish_result = false;
+                if (d->band) echoy_band_action(d->band, ECHOY_TILE_A, ECHOY_ACT_PAUSE, 0, now_us(d));
+                if (d->band && *audio && d->condition == ECHOY_NORMAL &&
+                    !atomic_load(&d->probe_busy)) {
+                    d->measure_pending = true;
+                    flush = true;
+                } else {
+                    measure_mark_end(d, ECHOY_OUTPUT_MEASUREMENT_FAILED, ESP_ERR_INVALID_STATE);
+                }
+            }
+            continue;
+        }
+#endif
         if (command.probe_command) {
             if (command.probe_generation != atomic_load(&d->probe_sequence) ||
                 !atomic_load(&d->probe_busy)) {
@@ -528,6 +904,19 @@ static bool process_commands(struct echoy_device *d, board_audio_t **audio)
             }
             continue;
         }
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+        if (command.cancels_measurement) {
+            if (command.measure_generation == atomic_load(&d->measure_sequence)) {
+                measure_cancel_generation(d, command.measure_generation);
+                if (d->measure.phase == ECHOY_OUTPUT_MEASUREMENT_COMPLETE) {
+                    d->measure.phase = ECHOY_OUTPUT_MEASUREMENT_CANCELLED;
+                    d->measure.result_ready = d->measure_publish_result = false;
+                }
+            }
+            /* The cancelling touch is consumed; a separate later touch may play. */
+            continue;
+        }
+#endif
         /* A real UI action interrupts the diagnostic, preserving user control. */
         if (atomic_load(&d->probe_busy)) {
             finish_probe(d, ECHOY_PROBE_CANCELLED, ESP_OK);
@@ -617,7 +1006,10 @@ static void owner_worker(void *arg)
         trace_begin(d);
         update_health(d);
         trace_mark(d, TRACE_HEALTH);
-        process_link(d);
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+        if (!d->measure_io)
+#endif
+            process_link(d);
         trace_mark(d, TRACE_LINK);
         bool flush = process_commands(d, &audio);
         trace_mark(d, TRACE_COMMANDS);
@@ -633,7 +1025,11 @@ static void owner_worker(void *arg)
             if (d->trace_active) d->trace_active->flags |= TRACE_FLUSH;
             echoy_device_pcm_reset(&d->pcm_processor);
         }
-        if (flush && audio) {
+        if (flush && audio
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+            && !d->measure_io
+#endif
+        ) {
             esp_err_t error = board_audio_flush(audio);
             if (error != ESP_OK) {
                 fail_audio(d, &audio, "clear queued sound", error);
@@ -642,6 +1038,17 @@ static void owner_worker(void *arg)
                 d->origin_us = now_us(d) + QUEUE_US;
             }
         }
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+        measure_progress(d, &audio);
+        if (d->measure_io) {
+            measure_publish_capture(d);
+            measure_block(d, &audio);
+            /* RX has only its ordinary bounded DMA queue. Defer musical job
+             * completion, link snapshots, UI view copies and logging until
+             * capture is closed; each round services TX/RX immediately. */
+            continue;
+        }
+#endif
 #if CONFIG_ECHOY_AUDIO_DIAGNOSTICS
         if (d->probe_pending && audio && d->condition == ECHOY_NORMAL) {
             esp_err_t error = board_audio_readback(audio, &d->probe.before);
@@ -730,7 +1137,15 @@ static void owner_worker(void *arg)
             fail_audio(d, &audio, "estimated output deadline", ESP_ERR_TIMEOUT);
             continue;
         }
-        if (d->probe_active) {
+        if (
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+            atomic_load(&d->measure_busy)
+#else
+            false
+#endif
+        ) {
+            memset(d->block->pcm, 0, sizeof(d->block->pcm));
+        } else if (d->probe_active) {
             if (d->trace_active) d->trace_active->flags |= TRACE_PROBE;
             echoy_audio_probe_render(d->probe_position, d->block->pcm, BLOCK_FRAMES);
         } else {
@@ -772,6 +1187,9 @@ static void owner_worker(void *arg)
     }
     atomic_store(&d->accepting, false);
     esp_err_t error = board_audio_close(&audio);
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+    d->measure_io = false;
+#endif
     if (error != ESP_OK) {
         d->shutdown_error = error;
         ESP_LOGE(TAG, "speaker shutdown: %s", esp_err_to_name(error));
@@ -818,6 +1236,14 @@ static void release_context(struct echoy_device *d)
         vEventGroupDelete(d->done);
     }
     free(d->block);
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+    if (d->measure_pcm) {
+        measure_clear_pcm(d);
+        free(d->measure_pcm);
+    }
+    free(d->measure_work);
+    free(d->measure_result_cache);
+#endif
     free(d);
 }
 esp_err_t echoy_device_start(echoy_device_handle_t *out, echoy_platform_t *platform)
@@ -838,6 +1264,24 @@ esp_err_t echoy_device_start(echoy_device_handle_t *out, echoy_platform_t *platf
     atomic_init(&d->activated, false);
     atomic_init(&d->probe_busy, false);
     atomic_init(&d->probe_sequence, 0);
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+    atomic_init(&d->measure_busy, false);
+    atomic_init(&d->measure_job_pending, false);
+    atomic_init(&d->measure_job_done, false);
+    atomic_init(&d->measure_sequence, 0);
+    atomic_init(&d->measure_cancel_sequence, 0);
+    d->measure.phase = ECHOY_OUTPUT_MEASUREMENT_IDLE;
+    d->measure_cache = d->measure;
+    d->measure_pcm = heap_caps_calloc(ECHOY_OUTPUT_MEASUREMENT_TOTAL_FRAMES,
+                                      sizeof(int16_t), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    d->measure_work = heap_caps_calloc(1, sizeof(*d->measure_work), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    d->measure_result_cache = heap_caps_calloc(1, sizeof(*d->measure_result_cache),
+                                             MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    if (!d->measure_pcm || !d->measure_work || !d->measure_result_cache) {
+        release_context(d);
+        return ESP_ERR_NO_MEM;
+    }
+#endif
     d->condition = ECHOY_LOADING;
     d->cache = (echoy_control_view_t){
         .memories = {1, 1, 1, 1},
@@ -938,6 +1382,11 @@ esp_err_t echoy_device_stop(echoy_device_handle_t *handle, uint32_t timeout_ms)
         }
         vTaskDelay(1);
     }
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+    /* Cleanup errors retain contexts for retry, but never retain raw capture.
+     * Both producers have exited, so neither can race this erasure. */
+    measure_clear_pcm(d);
+#endif
     if (d->health) {
         int64_t remaining_ms = (deadline - now_us(d)) / 1000;
         if (remaining_ms <= 0) {

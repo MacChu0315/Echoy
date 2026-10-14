@@ -8,6 +8,7 @@
 static echoy_ui_handle_t ui;
 static bool initializing;
 static unsigned submitted, capacity;
+static bool measurement_test;
 
 /* Model the bounded ESP-IDF queue while its render task is occupied by the
  * first frame. Forward accepted calls to the actual simulator, not a fake UI. */
@@ -62,6 +63,15 @@ static bool action(void *ctx, echoy_action_t kind, double value, int64_t at)
 {
     (void)ctx;
     (void)at;
+    if (measurement_test) {
+        fprintf(stderr, "MEASUREMENT_FIXTURE action=%u\n", (unsigned)kind);
+        if (kind == ECHOY_ACT_PAUSE) {
+            view.measurement_active = view.measurement_microphone = false;
+            fprintf(stderr, "MEASUREMENT_FIXTURE cancelled\n");
+            return true;
+        }
+        return false;
+    }
     if (kind == ECHOY_ACT_TAP) {
         view.battery_unknown = !view.battery_unknown;
         view.battery = view.battery_unknown ? 0 : 37;
@@ -78,6 +88,11 @@ static bool action(void *ctx, echoy_action_t kind, double value, int64_t at)
 esp_gsp_err_t gsp_bridge_app_init(esp_gsp_handle_t gsp)
 {
     capacity = getenv("ECHOY_TEST_QUEUE_DEPTH") ? (unsigned)atoi(getenv("ECHOY_TEST_QUEUE_DEPTH")) : 64;
+    if (getenv("ECHOY_TEST_MEASUREMENT")) {
+        measurement_test = true;
+        view.measurement_active = true;
+        view.measurement_microphone = atoi(getenv("ECHOY_TEST_MEASUREMENT")) == 1;
+    }
     if (getenv("ECHOY_TEST_LOADING")) {
         view.condition = ECHOY_LOADING;
         view.state.fault = true;

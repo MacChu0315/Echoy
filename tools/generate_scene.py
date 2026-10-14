@@ -75,6 +75,8 @@ def add(kind,name,x,y,w,h,parent=-1,**kw):
 # makes even the old home-only scene almost fill the 1 MiB UI partition.
 home_status_zh='中央试奏 · 录制才保存准备录制预备-1234录入 / 准备新的声音下一小节生效等共同拍点试听试听一次 · 结束自动停等共同拍点开始已取消，原节奏保留没有录入，原节奏保留新声音没有准备好，原来的继续已连接等待左侧录制乐句录完后加入结束后加入跟随左侧连接恢复中'
 home_status_en='Tap to try · Record to keep Preparing to record Ready · 1234 Recording / Preparing a new sound Changes at the next bar Audition at the shared beat One reply · Stops at the end Waiting for the shared beat Cancelled; original rhythm kept No notes captured; original kept Preparation failed; current sound continues Connected Waiting for left phrase recording Join after recording Join when done Following left Reconnecting'
+home_status_zh+='麦克风采集中 · 点暂停停止声音测量'
+home_status_en+=' Microphone active · Pause to stop Sound measurement'
 role_names_zh='脉冲声线微尘和声'
 phrase_names_zh='重音切分留白短句轻答长线颗粒点缀余韵短和弦分解接句'
 phrase_names_en='Accent Syncopation Space Short phrase Light reply Long line Grains Touches Trails Short chords Arpeggio Answer'

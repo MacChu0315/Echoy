@@ -5,10 +5,17 @@ root=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
 board_build=$(mktemp -d /tmp/echoy-board-audio-tests.XXXXXX)
 trap 'rm -rf "$board_build"' EXIT HUP INT TERM
 codec="$root/projects/echoy/managed_components/espressif__esp_codec_dev"
+for measurement in 0 1; do
 "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -Wpedantic -UNDEBUG -g -O1 \
-    ${BOARD_AUDIO_TEST_CFLAGS:-} -DCONFIG_CODEC_ES8311_SUPPORT=1 \
+    ${BOARD_AUDIO_TEST_CFLAGS:-} -DCONFIG_CODEC_ES8311_SUPPORT=1 -DCONFIG_ECHOY_OUTPUT_MEASUREMENT=$measurement -Wl,--wrap=calloc \
     -I"$root/tests/board_audio/stubs" -I"$root/projects/echoy/main" \
     -I"$codec/include" -I"$codec/interface" -I"$codec/device/include" \
     "$root/tests/board_audio/test_board_audio.c" "$root/projects/echoy/main/board_audio.c" \
     -o "$board_build/test_board_audio"
 "$board_build/test_board_audio"
+if [ "$measurement" = 1 ]; then
+    for cleanup_case in i2c rx destructor; do
+        BOARD_AUDIO_CLEANUP_CASE="$cleanup_case" "$board_build/test_board_audio"
+    done
+fi
+done

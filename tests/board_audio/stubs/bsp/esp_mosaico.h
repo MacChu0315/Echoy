@@ -6,6 +6,7 @@
 #define BSP_AUDIO_I2S_SCLK 37
 #define BSP_AUDIO_I2S_LRCLK 49
 #define BSP_AUDIO_I2S_SDOUT 52
+#define BSP_AUDIO_I2S_DSIN 40
 #define BSP_AUDIO_CODEC_I2C_ADDR (0x19u << 1)
 #define BSP_I2C_PORT 0
 typedef enum { BSP_BOARD_VARIANT_V1_0, BSP_BOARD_VARIANT_V1_2 } bsp_board_variant_t;

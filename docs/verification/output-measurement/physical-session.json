@@ -1,0 +1,19 @@
+{
+  "consent_id": "right-output-measurement-2026-10-14",
+  "attempts_consumed": 2,
+  "max_attempts": 2,
+  "ambient_constraint": "After both runs, user reported ongoing office speech and no focused listening. Do not treat harmonic results as controlled acoustic evidence.",
+  "raw_waveforms_exported": false,
+  "production_audio_changed": false,
+  "restored": {
+    "package": "09275b935ad8",
+    "operation_id": "c7affeb8-807f-4ddc-b1fa-2b76c28d0538",
+    "status": "succeeded",
+    "firmware_sha256": "8c180bbaf1b34e6cf2e2dd1ca961c5a78347ffcbbd125b90a2ef647cc8cd4d5d",
+    "boot_id": 9290375684351501747,
+    "crash_count": 0,
+    "microphone_diagnostic_compiled": false,
+    "baseline_ready": false,
+    "pending": "Right startup classifier rejected a stable bottom-edge field (0x04); user asked to separate farther and restart when convenient."
+  }
+}

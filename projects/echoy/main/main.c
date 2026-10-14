@@ -14,6 +14,7 @@
 #include "platform_device.h"
 #include "echoy_audio_diagnostics.h"
 #include "echoy_snapshot_diagnostics.h"
+#include "echoy_measurement_diagnostics.h"
 #include "sdkconfig.h"
 #include "ui_bundle.h"
 
@@ -22,6 +23,10 @@
 #endif
 #if CONFIG_ESP_GSP_QUEUE_DEPTH < 64
 #error "Echoy startup requires ESP_GSP_QUEUE_DEPTH >= 64; regenerate from current defaults"
+#endif
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT && CONFIG_ESP_IRIS_MAX_RPC_HANDLERS < 10
+/* Recovery/acceptance: 3; read-only snapshots: 3; bounded measurement: 4. */
+#error "Output measurement requires ESP_IRIS_MAX_RPC_HANDLERS >= 10"
 #endif
 
 static const char *TAG = "echoy";
@@ -148,5 +153,9 @@ void app_main(void)
 #if CONFIG_ECHOY_AUDIO_DIAGNOSTICS
     CHECK_START(echoy_audio_diagnostics_register(s_device));
     ESP_LOGI(TAG, "Explicit audio diagnostics ready: RPC 0xECA0; no automatic tone");
+#endif
+#if CONFIG_ECHOY_OUTPUT_MEASUREMENT
+    CHECK_START(echoy_measurement_diagnostics_register(s_device));
+    ESP_LOGI(TAG, "Bounded output measurement ready: RPC 0xECA2; microphone inactive until explicit start");
 #endif
 }

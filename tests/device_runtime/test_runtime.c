@@ -19,6 +19,18 @@ static atomic_bool fake_write_delay_entered;
 static atomic_llong observed_write_delay_us;
 static _Thread_local bool slow_cache_reader;
 static atomic_bool reader_holds_cache, release_cache_reader;
+static atomic_bool hold_measure_completion, measure_completion_blocked;
+bool __real_echoy_band_action(echoy_band_t *, echoy_tile_id_t, echoy_action_t, double, int64_t);
+bool __wrap_echoy_band_action(echoy_band_t *band, echoy_tile_id_t tile, echoy_action_t action,
+                              double value, int64_t at)
+{
+    if (action == ECHOY_ACT_PAUSE && atomic_load(&fake_analysis_calls) &&
+        atomic_load(&hold_measure_completion)) {
+        atomic_store(&measure_completion_blocked, true);
+        while (atomic_load(&hold_measure_completion)) fake_sleep_ms(1);
+    }
+    return __real_echoy_band_action(band, tile, action, value, at);
+}
 BaseType_t __real_xSemaphoreTake(SemaphoreHandle_t, TickType_t);
 BaseType_t __wrap_xSemaphoreTake(SemaphoreHandle_t mutex, TickType_t timeout)
 {
@@ -683,10 +695,264 @@ static void image_storage_uses_psram(void)
     stop(&device);
     puts("PASS retained image storage requires free-compatible PSRAM without internal fallback");
 }
+static echoy_output_measurement_status_t measure_until(echoy_device_handle_t d,
+    echoy_output_measurement_phase_t phase)
+{
+    echoy_output_measurement_status_t s;
+    int64_t end = esp_timer_get_time() + 4000000;
+    do {
+        assert(echoy_device_measure_get(d, &s) == ESP_OK);
+        if (s.phase == phase) return s;
+        fake_sleep_ms(1);
+    } while (esp_timer_get_time() < end);
+    fprintf(stderr, "measurement phase %d expected %d err %d frames %u\n",
+            s.phase, phase, s.error_code, s.frames_captured);
+    abort();
+}
+static void measurement_complete(void)
+{
+    echoy_device_handle_t d; start(&d);
+    echoy_output_measurement_status_t s;
+    assert(echoy_device_measure_get(d, &s) == ESP_OK);
+    assert(s.phase == ECHOY_OUTPUT_MEASUREMENT_IDLE && s.runs_remaining == 2);
+    assert(atomic_load(&fake_measure_open_calls) == 0);
+    assert(echoy_device_measure_request(d, true, 17, &s) == ESP_ERR_INVALID_ARG);
+    assert(echoy_device_measure_request(d, true, 36, &s) == ESP_ERR_INVALID_ARG);
+    assert(echoy_device_measure_get(NULL, &s) == ESP_ERR_INVALID_ARG);
+    assert(echoy_device_measure_get(d, NULL) == ESP_ERR_INVALID_ARG);
+    assert(action(ECHOY_ACT_EXAMPLE, 0)); until(ECHOY_NORMAL, ECHOY_PREVIEW, 5);
+    assert(action(ECHOY_ACT_PAUSE, 0)); until(ECHOY_NORMAL, ECHOY_IDLE, 5);
+    assert(action(ECHOY_ACT_TRANSPORT, 0)); until(ECHOY_NORMAL, ECHOY_PLAYING, 5);
+    assert(view().state.continuous);
+    assert(echoy_device_measure_request(d, true, 18, &s) == ESP_OK);
+    assert(s.generation == 1 && s.runs_started == 1 && s.runs_remaining == 1);
+    assert(echoy_device_measure_request(d, true, 18, NULL) == ESP_ERR_INVALID_STATE);
+    assert(echoy_device_probe_request(d, true) == ESP_ERR_INVALID_STATE);
+    s = measure_until(d, ECHOY_OUTPUT_MEASUREMENT_COMPLETE);
+    assert(s.result_ready && s.frames_captured == ECHOY_OUTPUT_MEASUREMENT_TOTAL_FRAMES &&
+           s.frames_written == ECHOY_OUTPUT_MEASUREMENT_TOTAL_FRAMES);
+    assert(!atomic_load(&fake_measure_live) && atomic_load(&fake_analysis_calls) == 1);
+    assert(fake_measure_pcm_cleared());
+    assert(atomic_load(&fake_measure_gain) == 18);
+    echoy_output_measurement_result_t *r = calloc(1, sizeof(*r)); assert(r);
+    assert(echoy_device_measure_result(d, 2, r) == ESP_ERR_INVALID_STATE);
+    assert(echoy_device_measure_result(d, 1, r) == ESP_OK);
+    assert(r->tones_analyzed == 15);
+    assert(view().state.seed == 5 && view().state.phase == ECHOY_IDLE && !view().state.continuous);
+    int reads = atomic_load(&fake_measure_read_calls);
+    for (int i=0; i<100; ++i) assert(echoy_device_measure_get(d, &s) == ESP_OK);
+    assert(atomic_load(&fake_measure_read_calls) == reads);
+    assert(echoy_device_measure_request(d, true, 0, &s) == ESP_OK);
+    assert(s.generation == 2 && !s.runs_remaining);
+    assert(echoy_device_measure_result(d, 1, r) == ESP_ERR_INVALID_STATE);
+    assert(echoy_device_measure_request(d, false, 0, NULL) == ESP_OK);
+    measure_until(d, ECHOY_OUTPUT_MEASUREMENT_CANCELLED);
+    assert(echoy_device_measure_request(d, true, 18, NULL) == ESP_ERR_INVALID_STATE);
+    free(r); stop(&d);
+    start(&d); /* Runtime recreation during one boot cannot replenish the two-run allowance. */
+    assert(echoy_device_measure_request(d, true, 18, NULL) == ESP_ERR_INVALID_STATE);
+    stop(&d);
+    puts("PASS bounded explicit measurement keeps rhythm, copies result and never resumes music");
+}
+static void measurement_cancel(void)
+{
+    echoy_device_handle_t d; start(&d); block_writer();
+    assert(echoy_device_measure_request(d, true, 18, NULL) == ESP_OK);
+    assert(action(ECHOY_ACT_PAUSE, 0));
+    fake_hold_write(false);
+    measure_until(d, ECHOY_OUTPUT_MEASUREMENT_CANCELLED);
+    assert(atomic_load(&fake_measure_open_calls) == 0);
+    assert(echoy_device_measure_request(d, true, 24, NULL) == ESP_OK);
+    measure_until(d, ECHOY_OUTPUT_MEASUREMENT_CAPTURING);
+    assert(action(ECHOY_ACT_RECORD, 0));
+    echoy_output_measurement_status_t s = measure_until(d, ECHOY_OUTPUT_MEASUREMENT_CANCELLED);
+    assert(s.frames_captured < ECHOY_OUTPUT_MEASUREMENT_TOTAL_FRAMES && !s.result_ready);
+    assert(!atomic_load(&fake_measure_live) && !atomic_load(&fake_analysis_calls));
+    assert(view().state.phase == ECHOY_IDLE && !view().state.continuous);
+    stop(&d); puts("PASS queued and active cancellation cannot start stale capture or recording");
+}
+static void measurement_fault(const char *which)
+{
+    echoy_device_handle_t d; start(&d);
+    if (!strcmp(which, "open")) atomic_store(&fake_measure_open_failure, 1);
+    if (!strcmp(which, "flush")) atomic_store(&fake_flush_failure, 1);
+    assert(echoy_device_measure_request(d, true, 18, NULL) == ESP_OK);
+    if (strcmp(which, "open") && strcmp(which, "flush")) {
+        measure_until(d, ECHOY_OUTPUT_MEASUREMENT_CAPTURING);
+        if (!strcmp(which, "read")) atomic_store(&fake_measure_read_failure, 1);
+        if (!strcmp(which, "partial_read")) atomic_store(&fake_measure_partial, 1);
+        if (!strcmp(which, "partial_read_ok")) atomic_store(&fake_measure_partial, 2);
+        if (!strcmp(which, "partial_write")) atomic_store(&fake_partial_next, 1);
+        if (!strcmp(which, "partial_write_ok")) atomic_store(&fake_partial_next, 2);
+        if (!strcmp(which, "deadline")) atomic_store(&fake_measure_expire, 1);
+        if (!strcmp(which, "close")) {
+            atomic_store(&fake_close_failure, 1);
+            assert(echoy_device_measure_request(d, false, 0, NULL) == ESP_OK);
+        }
+        if (!strcmp(which, "reopen")) {
+            atomic_store(&fake_open_failure, 1);
+            assert(echoy_device_measure_request(d, false, 0, NULL) == ESP_OK);
+        }
+    }
+    echoy_output_measurement_status_t s = measure_until(d, ECHOY_OUTPUT_MEASUREMENT_FAILED);
+    assert(s.error_code != ESP_OK && !s.result_ready && !atomic_load(&fake_measure_live));
+    assert(fake_measure_pcm_cleared());
+    until(ECHOY_AUDIO_FAULT, ECHOY_IDLE, 0);
+    int writes = atomic_load(&fake_write_calls); fake_sleep_ms(30);
+    assert(atomic_load(&fake_write_calls) == writes);
+    if (!strcmp(which, "close")) {
+        assert(echoy_device_stop(&d, 2000) == ESP_FAIL); assert(d);
+        retained_failure = d; /* Hardware ownership failure deliberately retains all context. */
+    } else stop(&d);
+    puts("PASS measurement I/O/start/cleanup failure stops capture and exposes fault");
+}
+static void measurement_analysis_stop(void)
+{
+    echoy_device_handle_t d; start(&d);
+    atomic_store(&fake_analysis_hold, 1);
+    assert(echoy_device_measure_request(d, true, 18, NULL) == ESP_OK);
+    measure_until(d, ECHOY_OUTPUT_MEASUREMENT_ANALYZING);
+    int64_t end = esp_timer_get_time()+1000000;
+    while (!atomic_load(&fake_analysis_blocked)) {assert(esp_timer_get_time()<end);fake_sleep_ms(1);}
+    int writes=atomic_load(&fake_write_calls); fake_sleep_ms(30);
+    assert(!atomic_load(&fake_measure_live) && atomic_load(&fake_write_calls)>writes);
+    assert(echoy_device_stop(&d, 10) == ESP_ERR_TIMEOUT && d);
+    atomic_store(&fake_analysis_hold, 0); stop(&d);
+    puts("PASS analysis stays off audio owner; shutdown retains buffer until worker stops");
+}
+static void measurement_analysis_cancel(void)
+{
+    echoy_device_handle_t d; start(&d);
+    atomic_store(&fake_analysis_hold, 1);
+    assert(echoy_device_measure_request(d, true, 18, NULL) == ESP_OK);
+    measure_until(d, ECHOY_OUTPUT_MEASUREMENT_ANALYZING);
+    assert(echoy_device_measure_request(d, false, 0, NULL) == ESP_OK);
+    assert(echoy_device_measure_request(d, true, 18, NULL) == ESP_ERR_INVALID_STATE);
+    atomic_store(&fake_analysis_hold, 0);
+    echoy_output_measurement_status_t s=measure_until(d, ECHOY_OUTPUT_MEASUREMENT_CANCELLED);
+    assert(!s.result_ready && !atomic_load(&fake_measure_live));
+    assert(echoy_device_measure_request(d, true, 12, NULL) == ESP_OK);
+    measure_until(d, ECHOY_OUTPUT_MEASUREMENT_CAPTURING);
+    assert(echoy_device_measure_request(d, false, 0, NULL) == ESP_OK);
+    s=measure_until(d, ECHOY_OUTPUT_MEASUREMENT_CANCELLED);
+    assert(s.generation==2 && !s.result_ready);
+    stop(&d); puts("PASS cancelled analysis cannot publish stale results into a later run");
+}
+static void measurement_disabled(void)
+{
+    echoy_device_handle_t d; start(&d);
+    echoy_output_measurement_status_t s;
+    assert(echoy_device_measure_get(d, &s)==ESP_OK);
+    assert(s.phase==ECHOY_OUTPUT_MEASUREMENT_DISABLED);
+    assert(echoy_device_measure_request(d,true,18,NULL)==ESP_ERR_NOT_SUPPORTED);
+    assert(!atomic_load(&fake_measure_open_calls));
+    assert(!view().measurement_active && !view().measurement_microphone);
+    stop(&d); puts("PASS ordinary builds never permit microphone measurement");
+}
+static void *hold_measure_read(void *opaque)
+{
+    echoy_output_measurement_status_t s;
+    slow_cache_reader = true;
+    assert(echoy_device_measure_get(opaque, &s) == ESP_OK);
+    slow_cache_reader = false;
+    return NULL;
+}
+static void measurement_reader(void)
+{
+    echoy_device_handle_t d; start(&d);
+    assert(echoy_device_measure_request(d,true,6,NULL)==ESP_OK);
+    measure_until(d,ECHOY_OUTPUT_MEASUREMENT_CAPTURING);
+    pthread_t reader; assert(!pthread_create(&reader,NULL,hold_measure_read,d));
+    int64_t end=esp_timer_get_time()+1000000;
+    while(!atomic_load(&reader_holds_cache)){assert(esp_timer_get_time()<end);fake_sleep_ms(1);}
+    int reads=atomic_load(&fake_measure_read_calls); fake_sleep_ms(30);
+    assert(atomic_load(&fake_measure_read_calls)>reads);
+    assert(echoy_device_measure_request(d,false,0,NULL)==ESP_OK);
+    while(atomic_load(&fake_measure_live)){assert(esp_timer_get_time()<end);fake_sleep_ms(1);}
+    reads=atomic_load(&fake_measure_read_calls);fake_sleep_ms(20);
+    assert(atomic_load(&fake_measure_read_calls)==reads);
+    atomic_store(&release_cache_reader,true); assert(!pthread_join(reader,NULL));
+    measure_until(d,ECHOY_OUTPUT_MEASUREMENT_CANCELLED);
+    assert(fake_measure_pcm_cleared()); stop(&d);
+    puts("PASS slow measurement RPC reader cannot block capture or cancellation cleanup");
+}
+static void measurement_capture_stop(void)
+{
+    echoy_device_handle_t d; start(&d);
+    assert(echoy_device_measure_request(d,true,30,NULL)==ESP_OK);
+    measure_until(d,ECHOY_OUTPUT_MEASUREMENT_CAPTURING);
+    stop(&d); assert(!atomic_load(&fake_measure_live));
+    assert(!atomic_load(&fake_analysis_calls));
+    puts("PASS shutdown closes active microphone before freeing capture storage");
+}
+static void measurement_allocation_failure(void)
+{
+    echoy_device_handle_t d=NULL;
+    atomic_store(&fake_measure_alloc_failure,1);
+    assert(echoy_device_start(&d,&p)==ESP_ERR_NO_MEM && !d);
+    assert(!atomic_load(&fake_open_calls) && !atomic_load(&fake_measure_open_calls));
+    puts("PASS missing PSRAM does not fall back to internal memory or start audio");
+}
+static void measurement_cancel_at_publication(void)
+{
+    echoy_device_handle_t d; start(&d);
+    atomic_store(&hold_measure_completion, true);
+    assert(echoy_device_measure_request(d,true,18,NULL)==ESP_OK);
+    int64_t end=esp_timer_get_time()+3000000;
+    while(!atomic_load(&measure_completion_blocked)){assert(esp_timer_get_time()<end);fake_sleep_ms(1);}
+    assert(action(ECHOY_ACT_PAUSE,0));
+    atomic_store(&hold_measure_completion,false);
+    echoy_output_measurement_status_t s=measure_until(d,ECHOY_OUTPUT_MEASUREMENT_CANCELLED);
+    assert(!s.result_ready && fake_measure_pcm_cleared());
+    echoy_output_measurement_result_t *result=calloc(1,sizeof(*result));assert(result);
+    assert(echoy_device_measure_result(d,s.generation,result)==ESP_ERR_INVALID_STATE);
+    free(result);stop(&d);
+    puts("PASS cancellation after analysis completion still prevents publishing a result");
+}
+static void measurement_retained_cleanup(bool health)
+{
+    echoy_device_handle_t d; start(&d);
+    assert(echoy_device_measure_request(d,true,18,NULL)==ESP_OK);
+    measure_until(d,ECHOY_OUTPUT_MEASUREMENT_CAPTURING);
+    int64_t end=esp_timer_get_time()+1000000;
+    unsigned tone_blocks = ECHOY_OUTPUT_MEASUREMENT_LEAD_FRAMES / 240u + 20u;
+    while(atomic_load(&fake_measure_read_calls)<tone_blocks){assert(esp_timer_get_time()<end);fake_sleep_ms(1);}
+    /* The first tone has been captured; do not inspect storage while RX owns it. */
+    atomic_store(health ? &fake_health_stop_timeout : &fake_close_failure,1);
+    assert(echoy_device_stop(&d,2000)==(health ? ESP_ERR_TIMEOUT : ESP_FAIL) && d);
+    assert(!atomic_load(&fake_measure_live) && fake_measure_pcm_cleared());
+    if(health) stop(&d); else retained_failure=d;
+    puts("PASS failed shutdown retains lifecycle context but erases raw microphone samples");
+}
+static void measurement_overflow(void)
+{
+    echoy_device_handle_t d; start(&d); block_writer();
+    assert(echoy_device_measure_request(d, true, 18, NULL) == ESP_OK);
+    for (int i=0; i<40; ++i) action(ECHOY_ACT_VOLUME, .5);
+    assert(echoy_device_measure_request(d, false, 0, NULL) == ESP_ERR_NO_MEM);
+    fake_hold_write(false);
+    measure_until(d, ECHOY_OUTPUT_MEASUREMENT_FAILED);
+    until(ECHOY_AUDIO_FAULT, ECHOY_IDLE, 0);
+    assert(!atomic_load(&fake_measure_open_calls));
+    stop(&d); puts("PASS overflowing cancel invalidates the queued run and fails silent");
+}
 int main(int argc, char **argv)
 {
     assert(argc == 2);
-    if (!strcmp(argv[1], "image_storage"))
+    if (!strcmp(argv[1], "measure_complete")) measurement_complete();
+    else if (!strcmp(argv[1], "measure_cancel")) measurement_cancel();
+    else if (!strcmp(argv[1], "measure_analysis_stop")) measurement_analysis_stop();
+    else if (!strcmp(argv[1], "measure_analysis_cancel")) measurement_analysis_cancel();
+    else if (!strcmp(argv[1], "measure_disabled")) measurement_disabled();
+    else if (!strcmp(argv[1], "measure_reader")) measurement_reader();
+    else if (!strcmp(argv[1], "measure_capture_stop")) measurement_capture_stop();
+    else if (!strcmp(argv[1], "measure_alloc_failure")) measurement_allocation_failure();
+    else if (!strcmp(argv[1], "measure_publish_cancel")) measurement_cancel_at_publication();
+    else if (!strcmp(argv[1], "measure_stop_close")) measurement_retained_cleanup(false);
+    else if (!strcmp(argv[1], "measure_stop_health")) measurement_retained_cleanup(true);
+    else if (!strcmp(argv[1], "measure_overflow")) measurement_overflow();
+    else if (!strncmp(argv[1], "measure_fault_", 14)) measurement_fault(argv[1]+14);
+    else if (!strcmp(argv[1], "image_storage"))
         image_storage_uses_psram();
     else if (!strcmp(argv[1], "link"))
         linked_snapshot_queue();

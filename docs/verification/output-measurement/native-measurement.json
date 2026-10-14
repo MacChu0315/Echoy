@@ -1,0 +1,8 @@
+{
+  "passed": [
+    "visible measurement caption and full-size Pause",
+    "pad/volume/role/settings cannot disturb the fixed test",
+    "Pause reaches controller and restores normal strip"
+  ],
+  "scope": "official GSP and production C UI; fixture state, no microphone or physical I/O"
+}

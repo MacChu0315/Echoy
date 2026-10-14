@@ -11,6 +11,9 @@ gsp_add_backend(echoy_backend
     INCLUDE_DIRECTORIES "${APP}/main"
     SCENES "${APP}/ui/main.json")
 target_link_libraries(echoy_backend PRIVATE m)
+find_package(Threads REQUIRED)
+target_sources(echoy_backend PRIVATE "${APP}/main/echoy_art_producer.c")
+target_link_libraries(echoy_backend PRIVATE Threads::Threads)
 foreach(call esp_gsp_component_set_visible esp_gsp_component_set_enabled
              esp_gsp_component_set_color_rgb888 esp_gsp_component_set_value
              esp_gsp_component_set_text esp_gsp_component_set_property)

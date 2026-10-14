@@ -17,13 +17,21 @@ class DeviceRuntime(unittest.TestCase):
         main=ROOT/'projects/echoy/main'
         command=['cc','-std=c11','-O1','-g','-Wall','-Wextra','-Werror','-Wno-sign-compare','-pthread',
                  '-DCONFIG_ECHOY_AUDIO_DIAGNOSTICS=1',
+                 '-DCONFIG_ECHOY_OUTPUT_MEASUREMENT=1',
                  '-I'+str(HERE/'stubs'),'-I'+str(HERE),'-I'+str(main),
                  str(HERE/'test_runtime.c'),str(HERE/'fakes.c'),
-                 *[str(main/(name+'.c')) for name in ['platform_device','echoy_band','echoy_model','echoy_music','echoy_arrange','echoy_audio','echoy_audio_probe','echoy_device_pcm']],
+                 *[str(main/(name+'.c')) for name in ['platform_device','echoy_band','echoy_model','echoy_music','echoy_arrange','echoy_audio','echoy_audio_probe','echoy_device_pcm','echoy_output_measurement']],
+                 '-Wl,--wrap=echoy_output_measurement_analyze',
+                 '-Wl,--wrap=echoy_band_action',
                  '-Wl,--wrap=fake_log','-Wl,--wrap=xSemaphoreTake','-Wl,--wrap=board_audio_write','-Wl,--wrap=echoy_band_create','-Wl,--wrap=echoy_band_prepare_job','-Wl,--wrap=echoy_band_calibrate_job','-lm','-o',str(cls.binary)]
         if os.environ.get('ECHOY_RUNTIME_SANITIZE')=='1':
             command[1:1]=['-fsanitize=address,undefined','-fno-omit-frame-pointer','-fno-pie','-no-pie']
         subprocess.run(command,check=True)
+        cls.normal_binary=Path(cls.temp.name)/'runtime-normal-check'
+        normal=[arg.replace('-DCONFIG_ECHOY_OUTPUT_MEASUREMENT=1','-DCONFIG_ECHOY_OUTPUT_MEASUREMENT=0')
+                for arg in command]
+        normal[-1]=str(cls.normal_binary)
+        subprocess.run(normal,check=True)
     @classmethod
     def tearDownClass(cls):cls.temp.cleanup()
     def run_case(self,name):
@@ -57,4 +65,23 @@ class DeviceRuntime(unittest.TestCase):
     def test_reference_tone_ui_cancel(self):self.run_case('probe_cancel')
     def test_reference_tone_readback_failure(self):self.run_case('probe_failure')
     def test_reference_tone_partial_write(self):self.run_case('probe_partial')
+    def test_measurement_explicit_bounded_and_budget(self):self.run_case('measure_complete')
+    def test_measurement_cancel_fifo_and_any_ui_action(self):self.run_case('measure_cancel')
+    def test_measurement_worker_shutdown_race(self):self.run_case('measure_analysis_stop')
+    def test_measurement_cancelled_analysis_cannot_publish_stale_result(self):self.run_case('measure_analysis_cancel')
+    def test_measurement_reader_cannot_block_capture_or_cancel(self):self.run_case('measure_reader')
+    def test_measurement_shutdown_during_capture(self):self.run_case('measure_capture_stop')
+    def test_measurement_requires_psram(self):self.run_case('measure_alloc_failure')
+    def test_measurement_cancel_at_result_publication(self):self.run_case('measure_publish_cancel')
+    def test_measurement_failed_stop_erases_raw_capture(self):
+        for case in ('close','health'):
+            with self.subTest(case=case):self.run_case('measure_stop_'+case)
+    def test_normal_build_cannot_open_microphone(self):
+        result=subprocess.run([str(self.normal_binary),'measure_disabled'],capture_output=True,text=True,timeout=10)
+        self.assertEqual(result.returncode,0,result.stdout+'\n'+result.stderr)
+    def test_measurement_cancel_overflow_stops(self):self.run_case('measure_overflow')
+    def test_measurement_failures(self):
+        for case in ('open','flush','read','partial_read','partial_write','partial_read_ok',
+                     'partial_write_ok','deadline','close','reopen'):
+            with self.subTest(case=case):self.run_case('measure_fault_'+case)
 if __name__=='__main__':unittest.main(verbosity=2)

@@ -146,6 +146,14 @@ int main(void)
     v->state.notice = ECHOY_NOTICE_CANCELLED;
     v->preparation_failed = true;
     expect(ui, 3000000, "录入 · 1 / 4 · 录完后加入", "Recording · 1 / 4 · Join after recording");
+    v->state.phase = ECHOY_IDLE;
+    v->measurement_active = v->measurement_microphone = true;
+    expect(ui, 3000000, "麦克风采集中 · 点暂停停止", "Microphone active · Pause to stop");
+    assert(!value(&cache, "role")->enabled && !value(&cache, "settings")->enabled);
+    assert(!value(&cache, "record_hint_popup")->visible);
+    assert(!value(&cache, "touch_hint_group")->visible);
+    v->measurement_microphone = false;
+    expect(ui, 3000000, "声音测量 · 点暂停停止", "Sound measurement · Pause to stop");
     free(ui);
     return 0;
 }

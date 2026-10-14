@@ -3,6 +3,7 @@
 #include "board_audio.h"
 #include "board_health.h"
 #include "echoy_band.h"
+#include "echoy_output_measurement.h"
 #include "esp_heap_caps.h"
 #include "esp_timer.h"
 #include "freertos/event_groups.h"
@@ -25,6 +26,19 @@ atomic_int fake_calibration_failure;
 atomic_int fake_probe_calls, fake_probe_failure;
 atomic_int fake_image_alloc_calls, fake_image_alloc_failure;
 atomic_uint fake_image_alloc_caps;
+atomic_int fake_measure_open_calls, fake_measure_read_calls, fake_measure_live;
+atomic_int fake_measure_open_failure, fake_measure_read_failure, fake_measure_partial;
+atomic_int fake_measure_expire, fake_measure_gain;
+atomic_int fake_analysis_calls, fake_analysis_blocked, fake_analysis_hold;
+atomic_int fake_measure_alloc_failure;
+static int16_t *measure_storage;
+bool fake_measure_pcm_cleared(void)
+{
+    assert(measure_storage);
+    for (size_t i=0; i<ECHOY_OUTPUT_MEASUREMENT_TOTAL_FRAMES; ++i)
+        if (measure_storage[i]) return false;
+    return true;
+}
 static atomic_int health_percent = -1;
 static atomic_bool hold_write, hold_create, hold_prepare, write_blocked, prepare_blocked, create_blocked;
 void fake_sleep_ms(unsigned ms)
@@ -37,7 +51,8 @@ int64_t esp_timer_get_time(void)
 {
     struct timespec t;
     clock_gettime(CLOCK_MONOTONIC, &t);
-    return (int64_t)t.tv_sec * 1000000 + t.tv_nsec / 1000;
+    return (int64_t)t.tv_sec * 1000000 + t.tv_nsec / 1000 +
+           (atomic_load(&fake_measure_live) && atomic_load(&fake_measure_expire) ? 13000000 : 0);
 }
 const char *esp_err_to_name(esp_err_t error)
 {
@@ -50,7 +65,15 @@ void fake_log(const char *tag, const char *fmt, ...)
 }
 void *heap_caps_calloc(size_t count, size_t size, unsigned caps)
 {
-    (void)caps;
+    if (count == ECHOY_OUTPUT_MEASUREMENT_TOTAL_FRAMES ||
+        size == sizeof(echoy_output_measurement_result_t)) {
+        assert(caps == (MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
+        if (atomic_load(&fake_measure_alloc_failure)) return NULL;
+    }
+    if (count == ECHOY_OUTPUT_MEASUREMENT_TOTAL_FRAMES) {
+        measure_storage = calloc(count, size);
+        return measure_storage;
+    }
     return calloc(count, size);
 }
 void *heap_caps_malloc(size_t size, unsigned caps)
@@ -311,7 +334,33 @@ bool fake_prepare_is_blocked(void) { return atomic_load(&prepare_blocked); }
 struct board_audio {
     board_audio_stats_t stats;
     int64_t next_write;
+    bool measuring;
+    size_t measurement_position;
 };
+esp_err_t board_audio_measure_open(board_audio_t **out, unsigned gain, int64_t deadline_us)
+{
+    assert(deadline_us > esp_timer_get_time());
+    assert(deadline_us <= esp_timer_get_time() + 12000000);
+    atomic_fetch_add(&fake_measure_open_calls, 1);
+    atomic_store(&fake_measure_gain, (int)gain);
+    *out = NULL;
+    if (atomic_exchange(&fake_measure_open_failure, 0)) return ESP_FAIL;
+    *out = calloc(1, sizeof(**out));
+    assert(*out);
+    (*out)->measuring = true;
+    atomic_store(&fake_measure_live, 1);
+    return ESP_OK;
+}
+esp_err_t board_audio_measure_read(board_audio_t *a, int16_t *pcm, size_t frames, size_t *read)
+{
+    assert(a && a->measuring);
+    atomic_fetch_add(&fake_measure_read_calls, 1);
+    int partial = atomic_exchange(&fake_measure_partial, 0);
+    *read = partial ? frames / 2 : frames;
+    echoy_output_measurement_render(a->measurement_position, pcm, *read);
+    a->measurement_position += *read;
+    return atomic_exchange(&fake_measure_read_failure, 0) || partial == 1 ? ESP_FAIL : ESP_OK;
+}
 esp_err_t board_audio_open(board_audio_t **out)
 {
     *out = NULL;
@@ -332,7 +381,7 @@ esp_err_t board_audio_write(board_audio_t *a, const int16_t *pcm, size_t frames,
         fake_sleep_ms(1);
     }
     atomic_store(&write_blocked, false);
-    bool partial = atomic_exchange(&fake_partial_next, 0);
+    int partial = atomic_exchange(&fake_partial_next, 0);
     *written = partial ? frames / 2 : frames;
     for (size_t i = 0; i < *written; i++)
         if (pcm[i]) {
@@ -342,6 +391,10 @@ esp_err_t board_audio_write(board_audio_t *a, const int16_t *pcm, size_t frames,
         }
     a->stats.frames_written += *written;
     a->stats.write_calls++;
+    if (a->measuring) {
+        fake_sleep_ms(1); /* Keep cancellation observable; the fixed sample count remains exact. */
+        return partial == 1 ? ESP_ERR_TIMEOUT : ESP_OK;
+    }
     a->next_write += (int64_t)(*written * 1000000 / BOARD_AUDIO_SAMPLE_RATE);
     struct timespec t = {a->next_write / 1000000, (a->next_write % 1000000) * 1000};
     clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &t, NULL);
@@ -361,6 +414,7 @@ esp_err_t board_audio_close(board_audio_t **a)
     if (!a || !*a)
         return ESP_OK;
     atomic_fetch_add(&fake_close_calls, 1);
+    if ((*a)->measuring) atomic_store(&fake_measure_live, 0);
     free(*a);
     *a = NULL;
     return atomic_exchange(&fake_close_failure, 0) ? ESP_FAIL : ESP_OK;
@@ -426,6 +480,20 @@ echoy_band_t *__wrap_echoy_band_create(void)
 bool fake_create_is_blocked(void)
 {
     return atomic_load(&create_blocked);
+}
+bool __real_echoy_output_measurement_analyze(const int16_t *, size_t,
+    echoy_output_measurement_result_t *, echoy_output_measurement_cancel_fn, void *);
+bool __wrap_echoy_output_measurement_analyze(const int16_t *pcm, size_t frames,
+    echoy_output_measurement_result_t *result, echoy_output_measurement_cancel_fn cancel, void *ctx)
+{
+    assert(!atomic_load(&fake_measure_live));
+    atomic_fetch_add(&fake_analysis_calls, 1);
+    while (atomic_load(&fake_analysis_hold)) {
+        atomic_store(&fake_analysis_blocked, 1);
+        fake_sleep_ms(1);
+    }
+    atomic_store(&fake_analysis_blocked, 0);
+    return __real_echoy_output_measurement_analyze(pcm, frames, result, cancel, ctx);
 }
 bool __real_echoy_band_prepare_job(echoy_band_job_t *job);
 bool __wrap_echoy_band_prepare_job(echoy_band_job_t *job)

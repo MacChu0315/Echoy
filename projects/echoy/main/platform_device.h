@@ -4,6 +4,7 @@
 #include "board_link.h"
 #include "echoy_ui.h"
 #include "esp_err.h"
+#include "echoy_output_measurement.h"
 
 typedef struct echoy_device *echoy_device_handle_t;
 typedef enum {
@@ -28,6 +29,17 @@ typedef struct {
  * no hardware access. Start pauses music; one-second test never resumes it. */
 esp_err_t echoy_device_probe_request(echoy_device_handle_t device, bool start);
 esp_err_t echoy_device_probe_get(echoy_device_handle_t device, echoy_device_diagnostics_t *out);
+/* Diagnostic-only, explicit finite admission. At most two accepted starts per
+ * boot; a host authorization ledger must retain the budget across reboots.
+ * Cancel never starts I/O. All hardware work remains on the audio owner. */
+esp_err_t echoy_device_measure_request(echoy_device_handle_t device, bool start,
+                                       unsigned input_gain_db,
+                                       echoy_output_measurement_status_t *out);
+esp_err_t echoy_device_measure_get(echoy_device_handle_t device,
+                                   echoy_output_measurement_status_t *out);
+/* Copies the completed current run only; no hardware access or borrowed PCM. */
+esp_err_t echoy_device_measure_result(echoy_device_handle_t device, unsigned run_id,
+                                      echoy_output_measurement_result_t *out);
 /* Link-worker callbacks: cached reads and copied latest-state admission only. */
 bool echoy_device_link_read(void *device, echoy_link_view_t *out);
 bool echoy_device_link_receive(void *device, const board_link_update_t *update);

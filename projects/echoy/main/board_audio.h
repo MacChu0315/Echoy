@@ -41,6 +41,25 @@ esp_err_t board_audio_readback(board_audio_t *audio, board_audio_probe_t *out);
  * No samples are resampled or duplicated: signed 16-bit mono at 24 kHz. */
 esp_err_t board_audio_open(board_audio_t **out);
 
+/* Explicit diagnostic handle only; CONFIG_ECHOY_OUTPUT_MEASUREMENT must be set.
+ * The caller closes the normal handle first. Deadline is an absolute
+ * esp_timer_get_time() timestamp, at most 12 seconds ahead including setup.
+ * Gain is fixed at 0/6/12/18/24/30 dB. RX begins only in this explicit open.
+ * After DMA is cleared to silence, diagnostic open unmutes DAC and enables PA
+ * so the caller's initial quiet interval can settle the output chain. It does
+ * not create tones or read samples. Normal board_audio_open stays muted.
+ * The audio owner must keep servicing the finite run and close on every exit;
+ * there is no background recorder or second task controlling the hardware. */
+esp_err_t board_audio_measure_open(board_audio_t **out, unsigned input_gain_db,
+                                  int64_t hard_deadline_us);
+
+/* Reads at most MAX_FRAMES. Reports exactly the complete samples consumed,
+ * including an error's partial prefix; never retry/replay that prefix. Every
+ * PCM wait is bounded by the absolute run deadline and a 40 ms operation deadline.
+ * Transfer errors or receive queue overflow stop RX/PA/TX and latch a fault; close consumes the failed handle. */
+esp_err_t board_audio_measure_read(board_audio_t *audio, int16_t *pcm, size_t frames,
+                                  size_t *read_frames);
+
 /* At most MAX_FRAMES per call. written_frames reports only fully accepted
  * samples, including a partial write on error; never replay that prefix.
  * A write failure immediately disables PA and latches a fault until close/open.
@@ -60,5 +79,7 @@ esp_err_t board_audio_get_stats(const board_audio_t *audio, board_audio_stats_t 
 /* Mutes before cleanup, consumes *audio and sets it to NULL. Shared BSP rails
  * and I2C bus remain available to display/touch/Recovery. If an SDK resource
  * destructor fails, later open calls return INVALID_STATE until reboot;
- * private handles are never reused or reconstructed. Closing NULL is a no-op. */
+ * private handles are never reused or reconstructed. Diagnostic close stops RX
+ * before codec I2C and blocks later opens on any cleanup error. It may finish
+ * I2C shutdown after the acquisition deadline. Closing NULL is a no-op. */
 esp_err_t board_audio_close(board_audio_t **audio);

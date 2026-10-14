@@ -34,7 +34,8 @@ def main():
             '-Wl,--gc-sections', '-pthread', '-lm', '-o', str(executable)], check=True)
         for case in ('single-read', 'feedback-first', 'latest-wins', 'latest-after-last',
                      'hover-progress', 'drag-progress', 'quick-role-return',
-                     'idle-pointer-art', 'volume-pointer-art', 'capture-dirty-art'):
+                     'idle-pointer-art', 'volume-pointer-art', 'capture-dirty-art',
+                     'measurement-pending-density'):
             result = subprocess.run([str(executable), case], text=True, capture_output=True)
             if result.returncode:
                 print(result.stderr)

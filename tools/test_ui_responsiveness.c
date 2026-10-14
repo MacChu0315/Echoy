@@ -192,6 +192,18 @@ int main(int argc, char **argv)
             assert(invalidations == 2 && "A newly recorded cell must paint without waiting for the animation interval");
             assert(u->last_capture_mask == 5);
         }
+    } else if (!strcmp(argv[1], "measurement-pending-density")) {
+        u->route = HOME;
+        refresh(u, test_now, true);
+        u->density_dirty = true;
+        u->density_due_us = test_now - 1;
+        u->richness = .9;
+        u->drag = 2;
+        u->platform.perform_action = set_volume; /* Rejects an unexpected density action. */
+        owner.measurement_active = owner.measurement_microphone = true;
+        tick(NULL, u);
+        assert(!u->density_dirty && !u->drag && u->richness == owner.state.density);
+        assert(!volume_actions && "A stale delayed drag must not cancel measurement");
     } else if (!strcmp(argv[1], "single-read")) {
         tick(NULL, u);
         assert(reads == 1 && "A tick must read the controller snapshot once");

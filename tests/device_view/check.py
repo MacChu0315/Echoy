@@ -1,6 +1,7 @@
 """Native unknown-battery UI regression; never opens a physical device."""
 import argparse
 import json
+import os
 from pathlib import Path
 import socket
 import subprocess
@@ -17,6 +18,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--build-dir", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--measurement", choices=["1", "2"], help="test-only capture/analysis view")
     args = parser.parse_args()
     out = args.output.resolve()
     out.mkdir(parents=True, exist_ok=True)
@@ -51,8 +53,11 @@ def main():
             until(ready.exists, "host readiness")
             state = json.loads(ready.read_text())
             assert state["pid"] == host.pid
+            env = dict(os.environ)
+            if args.measurement:
+                env["ECHOY_TEST_MEASUREMENT"] = args.measurement
             backend = subprocess.Popen([manifest["executable"], "--endpoint", state["backend"],
-                                        "--duration-ms", "14000"], stdout=backend_log, stderr=subprocess.STDOUT)
+                                        "--duration-ms", "14000"], env=env, stdout=backend_log, stderr=subprocess.STDOUT)
             processes.append(backend)
             until(lambda: "HEALTH_FIXTURE init=0" in (out / "backend.log").read_text(),
                   "unknown-battery UI must initialize successfully")
@@ -82,6 +87,40 @@ def main():
                     image = Image.open(path).convert("RGB")
                     assert image.size == (480, 480)
                     return image
+                if args.measurement:
+                    until(lambda: "mode=pause record=0 play=0 single=1" in (out / "backend.log").read_text(),
+                          "measurement must expose the existing full Pause button")
+                    shot("measurement-active")
+                    pad()
+                    tap("role")
+                    tap("settings")
+                    call("feed_pointer", {"x": 48, "y": 190, "pressed": True})
+                    call("feed_pointer", {"x": 48, "y": 250, "pressed": True})
+                    call("feed_pointer", {"x": 48, "y": 250, "pressed": False})
+                    settle()
+                    log = (out / "backend.log").read_text()
+                    assert "MEASUREMENT_FIXTURE action=" not in log, log
+                    assert "ECHOY_ROUTE route=role_page" not in log
+                    assert "ECHOY_ROUTE route=settings_page" not in log
+                    shot("measurement-controls-blocked")
+                    tap("strip_action")
+                    until(lambda: "MEASUREMENT_FIXTURE cancelled" in (out / "backend.log").read_text(),
+                          "native Pause must reach the controller")
+                    until(lambda: "mode=record_only record=1 play=0 single=0" in (out / "backend.log").read_text(),
+                          "cancelled measurement must restore the normal empty strip")
+                    shot("measurement-cancelled")
+                    assert backend.wait(timeout=16) == 0
+                    call("quit")
+                    assert host.wait(timeout=6) == 0
+                    log = (out / "backend.log").read_text()
+                    assert "ECHOY_UI_ERROR" not in log and "last_error=0" in log and "cleanup=0" in log
+                    assert log.count("MEASUREMENT_FIXTURE action=") == 1
+                    result = {"passed": ["visible measurement caption and full-size Pause",
+                        "pad/volume/role/settings cannot disturb the fixed test", "Pause reaches controller and restores normal strip"],
+                        "scope": "official GSP and production C UI; fixture state, no microphone or physical I/O"}
+                    (out / "checks.json").write_text(json.dumps(result, indent=2) + "\n")
+                    print(json.dumps(result, indent=2))
+                    return
                 unknown = shot("unknown-home")
                 assert unknown.getpixel((405, 42)) == unknown.getpixel((395, 42))
                 pad()

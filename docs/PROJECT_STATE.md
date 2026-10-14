@@ -302,10 +302,40 @@ The user also confirmed left Play/Pause and then the silent Harmony home are
 normal. No audio deadline misses, partial writes, write errors or reboots were
 observed. The worker's minimum unused stack was 9200 bytes for Voice and 3648
 after Harmony; left internal free after that check was 25271 bytes. Both
-boards were paused and separated again before updating the right. A same-version
-cooperation check is now pending: left Voice, right Dust; join silently, play
-both, pause right and change left expression. Capture its result before claiming
-the new package's physical cooperation acceptance.
+boards were paused and separated again before updating the right. On 2026-10-14
+the user confirmed the requested same-version cooperation check is normal:
+silent initial following, explicit playback, right Pause remaining effective
+while left expression changes, with no reported stop/reboot/desynchronization
+or spontaneous sound. Fresh live queries retain both installed Boot IDs with
+zero crash counts and no output/partial/deadline errors in current telemetry.
+This is user acceptance and status evidence, not a timed replay of each action.
+See `verification/background-home/physical-acceptance.json`.
+
+The remaining task is Harmony output distortion. On 2026-10-14, after clarifying
+the right Mosaico's onboard microphone will observe its own speaker, the user
+explicitly approved the bounded trial in `plans/2026-10-13-output-measurement.md`:
+at most two explicit runs, each at most 12 seconds, local results only. The
+diagnostic is implemented and locally verified. Both allowed runs completed:
+216000 TX/RX frames in 9.044084 s at input gain 0 dB, then 252000 frames in
+10.543422 s at gain 12 dB with a longer silent settle. Neither had I/O errors or
+ADC clipping. The user then clarified that people were continually talking in
+the office and they were not listening closely. Do not use these statistics as
+controlled acoustic evidence or a basis for new sound parameters. The user
+cannot leave the office; defer listening-dependent validation until convenient.
+No production sound profile has changed; Harmony distortion remains unresolved.
+
+The two-attempt consent is exhausted, including across reboots. No further
+microphone capture is authorized. Raw PCM was erased after analysis; only local
+metrics were exported. Right device is back on accepted ordinary package
+`09275b935ad8`, ELF `8c180bbaf1b34e6cf2e2dd1ca961c5a78347ffcbbd125b90a2ef647cc8cd4d5d`,
+Boot ID `9290375684351501747`, crash count zero; the left was not reflashed.
+The restored right boot rejected a stable bottom-edge magnetic field during
+calibration, so physical linking is not yet revalidated. The user has been
+asked to separate it farther from tiles/magnets and restart only the right
+when convenient. Do not describe this pending calibration as a healthy link.
+The ordinary package contains no microphone diagnostic entry point.
+See `verification/output-measurement/README.md`; local attempt ledger is
+`output/harmony-measurement-20261014/consent-ledger.json` and must not be reset.
 Verification and limitations:
 `verification/capture-quality/README.md`. Current native build is
 `projects/echoy/build-sim-capture-quality`; no new persistent browser preview

@@ -15,6 +15,7 @@ typedef struct test_i2s_channel *i2s_chan_handle_t;
 #define I2S_MCLK_MULTIPLE_256 256
 #define I2S_GPIO_UNUSED -1
 #define I2S_DIR_TX 1
+#define I2S_DIR_RX 2
 #define I2S_COMM_MODE_STD 1
 typedef struct { int id, role; uint32_t dma_desc_num, dma_frame_num; bool auto_clear; } i2s_chan_config_t;
 typedef struct { uint32_t sample_rate_hz; int mclk_multiple, clk_src; } i2s_std_clk_config_t;
@@ -33,3 +34,10 @@ esp_err_t i2s_channel_disable(i2s_chan_handle_t);
 esp_err_t i2s_del_channel(i2s_chan_handle_t);
 esp_err_t i2s_channel_preload_data(i2s_chan_handle_t,const void *,size_t,size_t *);
 esp_err_t i2s_channel_write(i2s_chan_handle_t,const void *,size_t,size_t *,uint32_t);
+
+esp_err_t i2s_channel_read(i2s_chan_handle_t,void *,size_t,size_t *,uint32_t);
+
+typedef struct { size_t size; void *data; } i2s_event_data_t;
+typedef bool (*i2s_isr_callback_t)(i2s_chan_handle_t, i2s_event_data_t *, void *);
+typedef struct { i2s_isr_callback_t on_recv_q_ovf; } i2s_event_callbacks_t;
+esp_err_t i2s_channel_register_event_callback(i2s_chan_handle_t, const i2s_event_callbacks_t *, void *);

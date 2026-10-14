@@ -3,7 +3,8 @@
 Status: explicitly approved and implemented on 2026-10-13. Package `09275b935ad8`
 is installed on both authorized boards. Counted left recording, perceived
 response improvement, pause and Harmony home passed the targeted physical
-check; same-version cooperation feedback is pending. Evidence:
+check; on 2026-10-14 the user also confirmed normal same-version cooperation.
+Evidence:
 `../verification/background-home/README.md`.
 
 ## Problem and evidence

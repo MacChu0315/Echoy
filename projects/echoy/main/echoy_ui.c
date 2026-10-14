@@ -187,6 +187,12 @@ static void read_state(echoy_ui_handle_t u, echoy_snapshot_t *out)
     u->battery = u->external.battery;
     u->volume = u->external.volume;
     u->reduced_motion = u->external.reduced_motion;
+    if (u->external.measurement_active) {
+        /* A delayed richness drag from before the explicit measurement must
+         * not become a new action that cancels the bounded run. */
+        u->density_dirty = false;
+        u->drag = 0;
+    }
     if (!u->density_dirty) {
         u->richness = u->external.state.density;
     }
@@ -240,6 +246,10 @@ static void set_condition(echoy_ui_handle_t u, echoy_condition_t condition)
 }
 static void commit_density(echoy_ui_handle_t u, int64_t now)
 {
+    if (u->density_dirty && u->platform.read_control) {
+        echoy_snapshot_t state;
+        read_state(u, &state);
+    }
     if (u->density_dirty) {
         act(u, ECHOY_ACT_DENSITY, u->richness, now);
         u->density_dirty = false;
@@ -616,6 +626,9 @@ static void show_strip(echoy_ui_handle_t u, const echoy_snapshot_t *s, int64_t n
 {
     bool preparing = u->density_dirty || (u->platform.read_control && u->external.preparing);
     echoy_strip_state_t v = echoy_strip_compute(s, current_plan(u)->count != 0, preparing);
+    if (u->platform.read_control && u->external.measurement_active) {
+        v = (echoy_strip_state_t){.mode = ECHOY_STRIP_PAUSE, .single_enabled = true};
+    }
     static const char *mode_names[] = {"idle", "cancel", "pause", "record_only"};
     int permissions =
         (int)v.record_enabled | ((int)v.play_enabled << 1) | ((int)v.single_enabled << 2);
@@ -689,6 +702,7 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
 {
     const echoy_plan_t *plan = current_plan(u);
     bool cap = capturing(s->phase), busy = s->phase >= ECHOY_PREPARING;
+    bool measuring = u->platform.read_control && u->external.measurement_active;
     echoy_cooperation_t cooperation = u->platform.read_control ? u->external.cooperation
                                                               : ECHOY_COOP_SOLO;
     /* Once Record has been used or a phrase exists, first-use guidance is done. */
@@ -699,7 +713,7 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
     if (s->following) {
         u->record_hint_until_us = 0;
     }
-    bool hint = !plan->count && s->phase == ECHOY_IDLE && !s->following &&
+    bool hint = !measuring && !plan->count && s->phase == ECHOY_IDLE && !s->following &&
                 !s->plan_pending && !u->density_dirty &&
                 !(u->platform.read_control && u->external.preparing) &&
                 now < u->record_hint_until_us;
@@ -777,13 +791,18 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
         size_t used = strlen(status);
         snprintf(status + used, sizeof(status) - used, "%s%s", used ? " · " : "", link_status);
     }
+    if (measuring) {
+        strcpy(status, u->external.measurement_microphone
+                           ? tr(u, "麦克风采集中 · 点暂停停止", "Microphone active · Pause to stop")
+                           : tr(u, "声音测量 · 点暂停停止", "Sound measurement · Pause to stop"));
+    }
     if (status[0]) {
         local_text(u, "status", status);
     }
     SHOW(u, "status", status[0] && !cap);
     SHOW(u, "status_en", status[0] && !cap);
-    SHOW(u, "touch_hint_group", !plan->count && !cap);
-    SHOW(u, "touch_hint_group_en", !plan->count && !cap);
+    SHOW(u, "touch_hint_group", !plan->count && !cap && !measuring);
+    SHOW(u, "touch_hint_group_en", !plan->count && !cap && !measuring);
     for (unsigned r = 0; r < 4; r++) {
         for (unsigned en = 0; en < 2; en++) {
             char key[96];
@@ -800,8 +819,8 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
             SHOW(u, key, selected);
         }
     }
-    ENABLE(u, "role", !cap);
-    ENABLE(u, "settings", !cap);
+    ENABLE(u, "role", !cap && !measuring);
+    ENABLE(u, "settings", !cap && !measuring);
     SHOW(u, "pad_border", !plan->count && !cap);
     ENABLE(u, "gallery_transport",
            !cap && (busy || (plan->count && !s->plan_pending && !u->density_dirty)));
@@ -866,6 +885,9 @@ static void refresh(echoy_ui_handle_t u, int64_t now, bool input_turn)
     echoy_snapshot_t s;
     read_state(u, &s);
     board_touch_trace_note_phase(s.phase);
+    if (u->platform.read_control && u->external.measurement_active && u->route != HOME) {
+        select_route(u, HOME);
+    }
     if (s.fault && u->condition == ECHOY_NORMAL) {
         u->condition = ECHOY_AUDIO_FAULT;
     }
@@ -1044,13 +1066,15 @@ static void pointer(esp_gsp_handle_t gsp, int32_t x, int32_t y, bool pressed, vo
     read_state(u, &s);
     int64_t now = now_us(u);
     bool tap_submitted = false;
+    bool measuring = u->platform.read_control && u->external.measurement_active;
+    if (measuring) u->drag = 0;
     if (pressed) {
         echoy_display_touch(&u->display, now);
     }
     if (pressed && !u->pressed) {
         u->drag = 0;
         u->drag_y = y;
-        if (u->condition == ECHOY_NORMAL && !u->removed) {
+        if (u->condition == ECHOY_NORMAL && !u->removed && !measuring) {
             if (u->route == HOME) {
                 if (y >= 89 && y < 296 && x >= 16 && x < 80) {
                     u->drag = 1;
@@ -1124,6 +1148,11 @@ static void event(esp_gsp_handle_t gsp, const esp_gsp_event_t *e, void *ctx)
         return;
     }
     if (u->condition != ECHOY_NORMAL || u->removed) {
+        return;
+    }
+    if (u->platform.read_control && u->external.measurement_active) {
+        if (gsp_echoy_event_is_strip_action_click(e)) act(u, ECHOY_ACT_PAUSE, 0, now);
+        refresh(u, now, true);
         return;
     }
     echoy_strip_state_t strip = echoy_strip_compute(

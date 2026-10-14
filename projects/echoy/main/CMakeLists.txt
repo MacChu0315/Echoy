@@ -2,6 +2,7 @@ idf_component_register(
     SRCS "main.c" "echoy_ui.c" "echoy_strip.c" "echoy_strip_image.c" "echoy_model.c" "echoy_music.c" "echoy_view_cache.c" "echoy_art.c" "echoy_art_image.c" "echoy_audio.c" "echoy_arrange.c" "echoy_band.c" "board_display.c"
         "platform_device.c" "board_audio.c" "board_health.c"
         "echoy_audio_probe.c" "echoy_audio_diagnostics.c"
+        "echoy_output_measurement.c" "echoy_measurement_diagnostics.c"
         "echoy_snapshot_diagnostics.c" "board_touch_trace.c"
         "echoy_art_producer.c"
         "echoy_device_pcm.c"

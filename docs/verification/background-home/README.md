@@ -90,7 +90,12 @@ recording/preview windows were around 60–70ms maxima; these are not pure frame
 render timings. Complex Harmony raster work still reached 145215us in the
 worker, demonstrating why it must not run on the touch/UI owner.
 
-A same-version physical cooperation check is pending: silent initial following,
-both playing, right pause, then a left expression update while right stays
-silent. Acoustic Harmony quality remains open and its output profile is unchanged;
+On 2026-10-14 the user confirmed that the requested same-version physical
+cooperation check is normal: silent initial following, both playing, right
+pause, then a left expression update while right stays silent. Fresh live
+queries retain both previous healthy Boot IDs, with zero crash counts and no
+audio write/partial/deadline errors in the current telemetry. This is user
+acceptance plus status evidence, not a new timed replay of every action; see
+[physical-acceptance.json](physical-acceptance.json).
+Acoustic Harmony quality remains open and its output profile is unchanged;
 the separate exact-plan/clean-level evidence is in `../harmony-stages/README.md`.

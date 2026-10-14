@@ -1,0 +1,506 @@
+{
+  "device_id": "4553502d49524953010030eda0f40c6c",
+  "boot_id": 16884746491454155462,
+  "expected_elf_sha256": "96e0a4693768b5f8904e3633db25103b469896018f6b1559df1e7ad6dae9a17e",
+  "action": "collect",
+  "status": {
+    "schema": 1,
+    "phase": 6,
+    "generation": 1,
+    "requested_generation": 1,
+    "runs_started": 1,
+    "runs_remaining": 1,
+    "frames_written": 252000,
+    "frames_captured": 252000,
+    "elapsed_us": 10543422,
+    "input_gain_db": 12,
+    "error_code": 0,
+    "result_ready": true
+  },
+  "run_id": 1,
+  "summary": {
+    "run_id": 1,
+    "flags": 264,
+    "frames_captured": 252000,
+    "tones_analyzed": 15,
+    "capture_adc_peak": 0.449646,
+    "capture_clipped": 0,
+    "capture_near_clip": 0,
+    "noise": {
+      "flags": 9,
+      "sample_count": 14400,
+      "clipped": 0,
+      "near_clip": 0,
+      "adc_peak": 0.0027770996,
+      "rms": 0.00079245184,
+      "dc": -1.9137065e-06,
+      "ac_rms": 0.00079244951
+    }
+  },
+  "tones": [
+    {
+      "run_id": 1,
+      "index": 0,
+      "flags": 57,
+      "frequency_hz": 220,
+      "pcm_peak": 0.12,
+      "window_start": 49800,
+      "sample_count": 4800,
+      "adc_peak": 0.0054016113,
+      "rms": 0.0013284523,
+      "dc": -2.0332336e-05,
+      "clipped": 0,
+      "near_clip": 0,
+      "harmonic_amplitude": [
+        0.00073703541,
+        2.8226585e-05,
+        5.4562275e-05,
+        1.0759451e-05,
+        1.3731626e-05
+      ],
+      "harmonic_ratio": [
+        0.038297459,
+        0.074029379,
+        0.014598282,
+        0.01863089
+      ],
+      "harmonic_rss_ratio": 0.086644471,
+      "fundamental_snr_db": -3.6399648
+    },
+    {
+      "run_id": 1,
+      "index": 1,
+      "flags": 57,
+      "frequency_hz": 220,
+      "pcm_peak": 0.23999999,
+      "window_start": 63000,
+      "sample_count": 4800,
+      "adc_peak": 0.0043334961,
+      "rms": 0.0014900805,
+      "dc": -2.9118855e-05,
+      "clipped": 0,
+      "near_clip": 0,
+      "harmonic_amplitude": [
+        0.001362466,
+        0.00019565293,
+        0.00012954674,
+        1.0151885e-05,
+        8.2805927e-05
+      ],
+      "harmonic_ratio": [
+        0.14360206,
+        0.095082544,
+        0.007451111,
+        0.060776509
+      ],
+      "harmonic_rss_ratio": 0.18278825,
+      "fundamental_snr_db": 1.6967815
+    },
+    {
+      "run_id": 1,
+      "index": 2,
+      "flags": 57,
+      "frequency_hz": 220,
+      "pcm_peak": 0.35999998,
+      "window_start": 76200,
+      "sample_count": 4800,
+      "adc_peak": 0.0073547363,
+      "rms": 0.001996981,
+      "dc": 7.1252187e-05,
+      "clipped": 0,
+      "near_clip": 0,
+      "harmonic_amplitude": [
+        0.0020755369,
+        0.00021042985,
+        0.00020134746,
+        4.3088112e-05,
+        0.00014904232
+      ],
+      "harmonic_ratio": [
+        0.10138574,
+        0.097009823,
+        0.020759983,
+        0.071809046
+      ],
+      "harmonic_rss_ratio": 0.15898897,
+      "fundamental_snr_db": 5.3528771
+    },
+    {
+      "run_id": 1,
+      "index": 3,
+      "flags": 57,
+      "frequency_hz": 330,
+      "pcm_peak": 0.12,
+      "window_start": 89400,
+      "sample_count": 4800,
+      "adc_peak": 0.007598877,
+      "rms": 0.0024195085,
+      "dc": -8.093516e-06,
+      "clipped": 0,
+      "near_clip": 0,
+      "harmonic_amplitude": [
+        0.0016327385,
+        5.0218252e-05,
+        7.9077152e-05,
+        2.4264826e-05,
+        0.00015550833
+      ],
+      "harmonic_ratio": [
+        0.03075707,
+        0.04843222,
+        0.014861428,
+        0.095243864
+      ],
+      "harmonic_rss_ratio": 0.11217813,
+      "fundamental_snr_db": 3.2686007
+    },
+    {
+      "run_id": 1,
+      "index": 4,
+      "flags": 57,
+      "frequency_hz": 330,
+      "pcm_peak": 0.23999999,
+      "window_start": 102600,
+      "sample_count": 4800,
+      "adc_peak": 0.010070801,
+      "rms": 0.0030192984,
+      "dc": -3.8922626e-05,
+      "clipped": 0,
+      "near_clip": 0,
+      "harmonic_amplitude": [
+        0.0033092459,
+        0.00018848114,
+        0.00026865341,
+        9.4648836e-05,
+        0.0010062282
+      ],
+      "harmonic_ratio": [
+        0.056955919,
+        0.081182666,
+        0.02860133,
+        0.3040657
+      ],
+      "harmonic_rss_ratio": 0.32110524,
+      "fundamental_snr_db": 9.4048491
+    },
+    {
+      "run_id": 1,
+      "index": 5,
+      "flags": 57,
+      "frequency_hz": 330,
+      "pcm_peak": 0.35999998,
+      "window_start": 115800,
+      "sample_count": 4800,
+      "adc_peak": 0.010406494,
+      "rms": 0.0040892987,
+      "dc": -3.2386779e-05,
+      "clipped": 0,
+      "near_clip": 0,
+      "harmonic_amplitude": [
+        0.0047308574,
+        0.00042150976,
+        0.00057537941,
+        0.00018465721,
+        0.0024893936
+      ],
+      "harmonic_ratio": [
+        0.089097962,
+        0.12162265,
+        0.039032504,
+        0.52620345
+      ],
+      "harmonic_rss_ratio": 0.54876602,
+      "fundamental_snr_db": 12.509066
+    },
+    {
+      "run_id": 1,
+      "index": 6,
+      "flags": 57,
+      "frequency_hz": 440,
+      "pcm_peak": 0.12,
+      "window_start": 129000,
+      "sample_count": 4800,
+      "adc_peak": 0.0065002441,
+      "rms": 0.0024997878,
+      "dc": -3.329595e-05,
+      "clipped": 0,
+      "near_clip": 0,
+      "harmonic_amplitude": [
+        0.0031483285,
+        5.6820703e-05,
+        0.00053163705,
+        5.7013767e-05,
+        0.0001518096
+      ],
+      "harmonic_ratio": [
+        0.018047895,
+        0.16886327,
+        0.018109217,
+        0.048219111
+      ],
+      "harmonic_rss_ratio": 0.17746425,
+      "fundamental_snr_db": 8.9718685
+    },
+    {
+      "run_id": 1,
+      "index": 7,
+      "flags": 57,
+      "frequency_hz": 440,
+      "pcm_peak": 0.23999999,
+      "window_start": 142200,
+      "sample_count": 4800,
+      "adc_peak": 0.012298584,
+      "rms": 0.0048325374,
+      "dc": -4.0988922e-05,
+      "clipped": 0,
+      "near_clip": 0,
+      "harmonic_amplitude": [
+        0.0061827512,
+        0.00038540334,
+        0.0021111954,
+        0.00019310192,
+        0.001177504
+      ],
+      "harmonic_ratio": [
+        0.062335249,
+        0.34146535,
+        0.031232363,
+        0.19044983
+      ],
+      "harmonic_rss_ratio": 0.39715347,
+      "fundamental_snr_db": 14.833903
+    },
+    {
+      "run_id": 1,
+      "index": 8,
+      "flags": 57,
+      "frequency_hz": 440,
+      "pcm_peak": 0.35999998,
+      "window_start": 155400,
+      "sample_count": 4800,
+      "adc_peak": 0.020355225,
+      "rms": 0.0075431322,
+      "dc": -4.73849e-05,
+      "clipped": 0,
+      "near_clip": 0,
+      "harmonic_amplitude": [
+        0.0091630872,
+        0.00074145762,
+        0.0044109393,
+        0.00031968084,
+        0.0026625693
+      ],
+      "harmonic_ratio": [
+        0.08091788,
+        0.48138136,
+        0.034887895,
+        0.29057556
+      ],
+      "harmonic_rss_ratio": 0.56914586,
+      "fundamental_snr_db": 18.251104
+    },
+    {
+      "run_id": 1,
+      "index": 9,
+      "flags": 57,
+      "frequency_hz": 660,
+      "pcm_peak": 0.12,
+      "window_start": 168600,
+      "sample_count": 4800,
+      "adc_peak": 0.01083374,
+      "rms": 0.0060524256,
+      "dc": 1.0115305e-05,
+      "clipped": 0,
+      "near_clip": 0,
+      "harmonic_amplitude": [
+        0.0075465115,
+        0.00033547793,
+        0.0038807059,
+        0.00013752836,
+        0.0003451661
+      ],
+      "harmonic_ratio": [
+        0.044454705,
+        0.51423842,
+        0.018224098,
+        0.0457385
+      ],
+      "harmonic_rss_ratio": 0.51849926,
+      "fundamental_snr_db": 16.565193
+    },
+    {
+      "run_id": 1,
+      "index": 10,
+      "flags": 537,
+      "frequency_hz": 660,
+      "pcm_peak": 0.23999999,
+      "window_start": 181800,
+      "sample_count": 4800,
+      "adc_peak": 0.02822876,
+      "rms": 0.014282581,
+      "dc": 2.9182434e-06,
+      "clipped": 0,
+      "near_clip": 0,
+      "harmonic_amplitude": [
+        0.014978909,
+        0.0011546225,
+        0.013103324,
+        0.00042940618,
+        0.002609144
+      ],
+      "harmonic_ratio": [
+        0.077083223,
+        0.87478495,
+        0.028667387,
+        0.17418785
+      ],
+      "harmonic_rss_ratio": 0.895742,
+      "fundamental_snr_db": 22.519871
+    },
+    {
+      "run_id": 1,
+      "index": 11,
+      "flags": 537,
+      "frequency_hz": 660,
+      "pcm_peak": 0.35999998,
+      "window_start": 195000,
+      "sample_count": 4800,
+      "adc_peak": 0.042266846,
+      "rms": 0.023540968,
+      "dc": 1.3154347e-05,
+      "clipped": 0,
+      "near_clip": 0,
+      "harmonic_amplitude": [
+        0.022261877,
+        0.0020682432,
+        0.023663394,
+        0.0014051644,
+        0.0061576217
+      ],
+      "harmonic_ratio": [
+        0.092905164,
+        1.062956,
+        0.063119762,
+        0.27659941
+      ],
+      "harmonic_rss_ratio": 1.1040825,
+      "fundamental_snr_db": 25.961504
+    },
+    {
+      "run_id": 1,
+      "index": 12,
+      "flags": 537,
+      "frequency_hz": 1000,
+      "pcm_peak": 0.12,
+      "window_start": 208200,
+      "sample_count": 4800,
+      "adc_peak": 0.028747559,
+      "rms": 0.016414991,
+      "dc": 1.6613007e-05,
+      "clipped": 0,
+      "near_clip": 0,
+      "harmonic_amplitude": [
+        0.022454357,
+        0.0011281297,
+        0.0057072719,
+        0.00011480492,
+        0.0001710096
+      ],
+      "harmonic_ratio": [
+        0.050241016,
+        0.25417215,
+        0.0051128129,
+        0.0076158759
+      ],
+      "harmonic_rss_ratio": 0.25925234,
+      "fundamental_snr_db": 26.03628
+    },
+    {
+      "run_id": 1,
+      "index": 13,
+      "flags": 537,
+      "frequency_hz": 1000,
+      "pcm_peak": 0.23999999,
+      "window_start": 221400,
+      "sample_count": 4800,
+      "adc_peak": 0.067749023,
+      "rms": 0.036131859,
+      "dc": 4.6482088e-05,
+      "clipped": 0,
+      "near_clip": 0,
+      "harmonic_amplitude": [
+        0.046291608,
+        0.0035780133,
+        0.021123834,
+        0.0008678775,
+        0.0025355124
+      ],
+      "harmonic_ratio": [
+        0.077292912,
+        0.45632103,
+        0.018748052,
+        0.054772615
+      ],
+      "harmonic_rss_ratio": 0.46642748,
+      "fundamental_snr_db": 32.320312
+    },
+    {
+      "run_id": 1,
+      "index": 14,
+      "flags": 537,
+      "frequency_hz": 1000,
+      "pcm_peak": 0.35999998,
+      "window_start": 234600,
+      "sample_count": 4800,
+      "adc_peak": 0.10681152,
+      "rms": 0.057558715,
+      "dc": -1.4273325e-05,
+      "clipped": 0,
+      "near_clip": 0,
+      "harmonic_amplitude": [
+        0.07103432,
+        0.004823972,
+        0.03848277,
+        0.0034213541,
+        0.0078894245
+      ],
+      "harmonic_ratio": [
+        0.06791044,
+        0.541749,
+        0.048164804,
+        0.11106497
+      ],
+      "harmonic_rss_ratio": 0.55924869,
+      "fundamental_snr_db": 36.039631
+    }
+  ],
+  "sequence_profile": {
+    "name": "settled-10.5s",
+    "duration_ms": 10500,
+    "lead_frames": 48000,
+    "noise_start": 28800,
+    "noise_frames": 14400,
+    "first_tone_window": 49800
+  },
+  "note": "Relative output-chain measurements; ADC flags invalidate interpretation. Not calibrated SPL or speaker THD; microphone noise/nonlinearity remain.",
+  "rpc_operation_ids": [
+    "a962abcd-8dd2-4fa8-8694-c7c938d5c477",
+    "b1ae5cc3-3510-4724-891f-86200709fcad",
+    "d63f898d-9f83-4364-a429-5265c5b6a987",
+    "a5459d93-0a1a-4180-8f0b-c1ed3bb0378b",
+    "b77e7cb6-a5cb-49d3-8d40-7bab3d93aae4",
+    "d1d67c17-d07b-4b0d-be64-31e225d29e42",
+    "30b29119-912f-40bc-849e-5a6759f18f6f",
+    "e1e0ec97-cc07-431e-af05-0312ca7c1000",
+    "224172d2-7ac8-4207-b7e7-76c7a111bd6d",
+    "01e439a4-805d-4fc9-ae12-ae12ee982706",
+    "40a80066-6671-4fed-bfe0-cb638304a708",
+    "d7524d42-f7ac-4dd5-9e1d-f29656d11603",
+    "ac195b7e-80de-4b00-b030-87e8debeb1d5",
+    "1cc4ae4d-d7dc-4d9b-9a7c-6026813b6b7e",
+    "6e1f07da-24d3-4ec2-ae04-5925c92e76e2",
+    "b06c7f96-4a48-4f1a-9b1c-b6f9d489ba0f",
+    "ff8bbf41-b95b-49a3-bb1e-5a55b83f7cf6",
+    "85cf78c2-7ccb-4dc8-a97a-c29ccb0faff6"
+  ]
+}
