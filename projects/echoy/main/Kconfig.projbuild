@@ -18,3 +18,15 @@ config ECHOY_OUTPUT_MEASUREMENT
         across boots. Pause cancels; completion never resumes music. Keep
         disabled in ordinary builds. Enabling this is not capture consent.
 endmenu
+
+menu "Echoy device audio trials"
+config ECHOY_HARMONY_BASS_TRIAL
+    bool "Apply the approved 500 Hz Harmony bass-cut trial to prepared loops"
+    default n
+    help
+        Filters only the normalized Harmony FULL loop before the existing role
+        gain. Runs during background sound preparation, never on the PCM owner.
+        Other roles, notes, timing, UI volume and the .60 output ceiling remain
+        unchanged. No gain compensation and no microphone capture. Keep off
+        for ordinary releases until physical listening acceptance is complete.
+endmenu

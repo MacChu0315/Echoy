@@ -1,0 +1,218 @@
+{
+  "plan_sha256": "3095f5b66309f7fe4e1f668582d096dc79db4f5256ba1aae1570e20be81df112",
+  "source_sha256": {
+    "echoy_audio.c": "34a263646c27a0cb933ef633306d0b7fb5ac054f356b023f69fd4d56a04157ae",
+    "echoy_device_pcm.c": "f888c952ad5ae1c774f552020efed20f2227edb11bcc53c74aed5b012cf10c6a",
+    "echoy_device_pcm.h": "4433aaa5d0ddbf0420ca33ba7de635de4be52aecd11998ac4f83c110c693ebf3",
+    "echoy_music.c": "b4dd6f3449dbb56c1122453c10c2461afc7872df2fd1c4ef7819f37925f96e33",
+    "echoy_link_codec.c": "8fdf823a71f75467e72a83a1d771312f5038628a9c4d6c98ceb517c3bca0b66d"
+  },
+  "scope": "Original C prepare + production periodic filter + unchanged role gain/bus/PCM; steady single-tile loop only, not acoustic acceptance.",
+  "comparison": {
+    "passed": 24,
+    "checks": [
+      {
+        "case": "baseline-v0.650000000",
+        "file": "plan.echp",
+        "sha256": "3095f5b66309f7fe4e1f668582d096dc79db4f5256ba1aae1570e20be81df112"
+      },
+      {
+        "case": "baseline-v0.650000000",
+        "file": "filtered_full.f32",
+        "sha256": "688220a85caa8c2ac6f1fe95484354b0fa8c1a1003a330aaec147095d3cb25b5"
+      },
+      {
+        "case": "baseline-v0.650000000",
+        "file": "input.f32",
+        "sha256": "3ddd145378e4f122b936ba8e91ea6fe4cc27b2babe02013ab8625c7157983e56"
+      },
+      {
+        "case": "baseline-v0.650000000",
+        "file": "hp_drive.f32",
+        "sha256": "96b20a00c666a4c7c188fadd76088df804056fb2c3bf8b0ae464eb6e8f9fcf9d"
+      },
+      {
+        "case": "baseline-v0.650000000",
+        "file": "limiter_gain.f32",
+        "sha256": "142d38949707adad5aab70962225858e2d8dfa30c93f87a9c911e1714ed3f4cb"
+      },
+      {
+        "case": "baseline-v0.650000000",
+        "file": "pcm.s16",
+        "sha256": "a8e94debb0acb693eaea5b9d6bc83dad62343ec24fc0d810bdfda26a0e0a776e"
+      },
+      {
+        "case": "baseline-v1.000000000",
+        "file": "plan.echp",
+        "sha256": "3095f5b66309f7fe4e1f668582d096dc79db4f5256ba1aae1570e20be81df112"
+      },
+      {
+        "case": "baseline-v1.000000000",
+        "file": "filtered_full.f32",
+        "sha256": "688220a85caa8c2ac6f1fe95484354b0fa8c1a1003a330aaec147095d3cb25b5"
+      },
+      {
+        "case": "baseline-v1.000000000",
+        "file": "input.f32",
+        "sha256": "2b52381a73b292682e77f4deacd8354c808a4b028f4e36c22e924a56b91328f5"
+      },
+      {
+        "case": "baseline-v1.000000000",
+        "file": "hp_drive.f32",
+        "sha256": "ec848eb073bb8e772e3f85ef12a6003aa0188f350a22472c9e86e0c1ff0bf659"
+      },
+      {
+        "case": "baseline-v1.000000000",
+        "file": "limiter_gain.f32",
+        "sha256": "f8670fe73e4d77c2748c2316a20356aa63c328d240967f167a3059ab64549f2f"
+      },
+      {
+        "case": "baseline-v1.000000000",
+        "file": "pcm.s16",
+        "sha256": "4883b1a9ef347a82314fddb5ea6b8109bf0c3d9d78793d750995b94640a0c082"
+      },
+      {
+        "case": "hp500-v0.650000000",
+        "file": "plan.echp",
+        "sha256": "3095f5b66309f7fe4e1f668582d096dc79db4f5256ba1aae1570e20be81df112"
+      },
+      {
+        "case": "hp500-v0.650000000",
+        "file": "filtered_full.f32",
+        "sha256": "23f11ac42efd4a2ec1a11f3a5cee4c90bd145b6906117752b9f898abdb58d407"
+      },
+      {
+        "case": "hp500-v0.650000000",
+        "file": "input.f32",
+        "sha256": "bc25945b1b9bb44c3fa53acad0c7da297bdd39b4541fd0b8a0632bdad024cf4c"
+      },
+      {
+        "case": "hp500-v0.650000000",
+        "file": "hp_drive.f32",
+        "sha256": "a18f6ec267adfebb84987788be86a332a7905ce542047916f4875eb3e5b4246e"
+      },
+      {
+        "case": "hp500-v0.650000000",
+        "file": "limiter_gain.f32",
+        "sha256": "835e652fd891b82b555931a79494d6bf6f88c60f00ddd13ed84615d3ddc8018b"
+      },
+      {
+        "case": "hp500-v0.650000000",
+        "file": "pcm.s16",
+        "sha256": "c78c2403c6e8bb7582766444170e167814de5a9335de2559058e4b5830ff25f1"
+      },
+      {
+        "case": "hp500-v1.000000000",
+        "file": "plan.echp",
+        "sha256": "3095f5b66309f7fe4e1f668582d096dc79db4f5256ba1aae1570e20be81df112"
+      },
+      {
+        "case": "hp500-v1.000000000",
+        "file": "filtered_full.f32",
+        "sha256": "23f11ac42efd4a2ec1a11f3a5cee4c90bd145b6906117752b9f898abdb58d407"
+      },
+      {
+        "case": "hp500-v1.000000000",
+        "file": "input.f32",
+        "sha256": "7b796a4b46e6e8dddf3d4e842ce10d45b32187ab5979394fc392b01f2cda09a1"
+      },
+      {
+        "case": "hp500-v1.000000000",
+        "file": "hp_drive.f32",
+        "sha256": "4dd898b7335ea58d6a96a480e7aba26798cc3736bd60a6673a66cf5669bf91c9"
+      },
+      {
+        "case": "hp500-v1.000000000",
+        "file": "limiter_gain.f32",
+        "sha256": "31c71a3b5825ce2928ffdb72a677a9d5f36e08b96d0b1d8a1520e5b02c40daa4"
+      },
+      {
+        "case": "hp500-v1.000000000",
+        "file": "pcm.s16",
+        "sha256": "cc1a0d34ffce992139522f44ac601ea18dceef5963f08c88ddedc0afd00e9371"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "case": "baseline-v0.650000000",
+      "volume": 0.65,
+      "highpass_hz": 0,
+      "pcm_peak": 0.5999938962981048,
+      "pcm_rms": 0.30217198932745803,
+      "change_db": {
+        "pcm_rms": 0.0,
+        "pre_limiter_rms": 0.0,
+        "pcm_band_120-300": 0.0,
+        "pcm_band_300-1000": 0.0
+      },
+      "boundaries": {
+        "bank_jump": 0.0,
+        "raw_bank_jump": 0.0,
+        "pcm_jump": 3.051850947599719e-05,
+        "pcm_peak_near_boundary_1ms": 0.0011902218695638905,
+        "pre_limiter_jump": 1.6800440789666027e-06
+      }
+    },
+    {
+      "case": "baseline-v1.000000000",
+      "volume": 1.0,
+      "highpass_hz": 0,
+      "pcm_peak": 0.5999938962981048,
+      "pcm_rms": 0.323547592858243,
+      "change_db": {
+        "pcm_rms": 0.0,
+        "pre_limiter_rms": 0.0,
+        "pcm_band_120-300": 0.0,
+        "pcm_band_300-1000": 0.0
+      },
+      "boundaries": {
+        "bank_jump": 0.0,
+        "raw_bank_jump": 0.0,
+        "pcm_jump": 6.103701895199438e-05,
+        "pcm_peak_near_boundary_1ms": 0.0017090365306558428,
+        "pre_limiter_jump": 2.584491085144691e-06
+      }
+    },
+    {
+      "case": "hp500-v0.650000000",
+      "volume": 0.65,
+      "highpass_hz": 500,
+      "pcm_peak": 0.5999938962981048,
+      "pcm_rms": 0.24124170707650952,
+      "change_db": {
+        "pcm_rms": -1.9560362153328528,
+        "pre_limiter_rms": -5.346711665543296,
+        "pcm_band_120-300": -9.448119870333148,
+        "pcm_band_300-1000": -1.442071048383292
+      },
+      "boundaries": {
+        "bank_jump": 2.717048118938692e-06,
+        "raw_bank_jump": 0.0,
+        "pcm_jump": 3.051850947599719e-05,
+        "pcm_peak_near_boundary_1ms": 0.0006714072084719382,
+        "pre_limiter_jump": 3.968464443460107e-05
+      }
+    },
+    {
+      "case": "hp500-v1.000000000",
+      "volume": 1.0,
+      "highpass_hz": 500,
+      "pcm_peak": 0.5999938962981048,
+      "pcm_rms": 0.27371359286283525,
+      "change_db": {
+        "pcm_rms": -1.4528361537975765,
+        "pre_limiter_rms": -5.346711722878313,
+        "pcm_band_120-300": -7.702169321749414,
+        "pcm_band_300-1000": -0.8686128586542521
+      },
+      "boundaries": {
+        "bank_jump": 2.717048118938692e-06,
+        "raw_bank_jump": 0.0,
+        "pcm_jump": 6.103701895199438e-05,
+        "pcm_peak_near_boundary_1ms": 0.0010071108127079073,
+        "pre_limiter_jump": 6.105310603743419e-05
+      }
+    }
+  ]
+}

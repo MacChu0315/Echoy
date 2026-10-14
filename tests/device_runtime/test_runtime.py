@@ -18,11 +18,13 @@ class DeviceRuntime(unittest.TestCase):
         command=['cc','-std=c11','-O1','-g','-Wall','-Wextra','-Werror','-Wno-sign-compare','-pthread',
                  '-DCONFIG_ECHOY_AUDIO_DIAGNOSTICS=1',
                  '-DCONFIG_ECHOY_OUTPUT_MEASUREMENT=1',
+                 '-DCONFIG_ECHOY_HARMONY_BASS_TRIAL=0',
                  '-I'+str(HERE/'stubs'),'-I'+str(HERE),'-I'+str(main),
                  str(HERE/'test_runtime.c'),str(HERE/'fakes.c'),
                  *[str(main/(name+'.c')) for name in ['platform_device','echoy_band','echoy_model','echoy_music','echoy_arrange','echoy_audio','echoy_audio_probe','echoy_device_pcm','echoy_output_measurement']],
                  '-Wl,--wrap=echoy_output_measurement_analyze',
                  '-Wl,--wrap=echoy_band_action',
+                 '-Wl,--wrap=echoy_audio_cut_harmony_bass',
                  '-Wl,--wrap=fake_log','-Wl,--wrap=xSemaphoreTake','-Wl,--wrap=board_audio_write','-Wl,--wrap=echoy_band_create','-Wl,--wrap=echoy_band_prepare_job','-Wl,--wrap=echoy_band_calibrate_job','-lm','-o',str(cls.binary)]
         if os.environ.get('ECHOY_RUNTIME_SANITIZE')=='1':
             command[1:1]=['-fsanitize=address,undefined','-fno-omit-frame-pointer','-fno-pie','-no-pie']
@@ -32,12 +34,21 @@ class DeviceRuntime(unittest.TestCase):
                 for arg in command]
         normal[-1]=str(cls.normal_binary)
         subprocess.run(normal,check=True)
+        cls.trial_binary=Path(cls.temp.name)/'runtime-harmony-trial-check'
+        trial=[arg.replace('-DCONFIG_ECHOY_HARMONY_BASS_TRIAL=0','-DCONFIG_ECHOY_HARMONY_BASS_TRIAL=1')
+               for arg in normal]
+        trial[-1]=str(cls.trial_binary)
+        subprocess.run(trial,check=True)
     @classmethod
     def tearDownClass(cls):cls.temp.cleanup()
-    def run_case(self,name):
-        result=subprocess.run([str(self.binary),name],capture_output=True,text=True,timeout=10)
-        self.assertEqual(result.returncode,0,result.stdout+'\n'+result.stderr)
-        self.assertIn('PASS ',result.stdout)
+    def run_case(self,name,binary=None):
+        binaries=[binary] if binary else [self.binary]
+        if binary is None and not name.startswith('measure_'):
+            binaries += [self.normal_binary,self.trial_binary]
+        for target in binaries:
+            result=subprocess.run([str(target),name],capture_output=True,text=True,timeout=10)
+            self.assertEqual(result.returncode,0,str(target)+'\n'+result.stdout+'\n'+result.stderr)
+            self.assertIn('PASS ',result.stdout)
     def test_link_snapshots_preserve_audio_owner_and_silence(self):self.run_case('link')
     def test_retained_image_storage_is_psram_without_fallback(self):self.run_case('image_storage')
     def test_cache_unknown_battery_and_blocked_io(self):self.run_case('cache')
@@ -80,6 +91,10 @@ class DeviceRuntime(unittest.TestCase):
         result=subprocess.run([str(self.normal_binary),'measure_disabled'],capture_output=True,text=True,timeout=10)
         self.assertEqual(result.returncode,0,result.stdout+'\n'+result.stderr)
     def test_measurement_cancel_overflow_stops(self):self.run_case('measure_overflow')
+    def test_harmony_trial_disabled_in_ordinary_build(self):self.run_case('harmony_disabled',self.normal_binary)
+    def test_harmony_trial_stays_on_worker_and_paused(self):self.run_case('harmony_worker',self.trial_binary)
+    def test_harmony_trial_failure_keeps_old_valid_bank(self):self.run_case('harmony_failure',self.trial_binary)
+    def test_harmony_trial_stale_job_cannot_play(self):self.run_case('harmony_stale',self.trial_binary)
     def test_measurement_failures(self):
         for case in ('open','flush','read','partial_read','partial_write','partial_read_ok',
                      'partial_write_ok','deadline','close','reopen'):

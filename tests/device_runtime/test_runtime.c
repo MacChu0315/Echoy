@@ -936,10 +936,85 @@ static void measurement_overflow(void)
     assert(!atomic_load(&fake_measure_open_calls));
     stop(&d); puts("PASS overflowing cancel invalidates the queued run and fails silent");
 }
+static void harmony_start(echoy_device_handle_t *d)
+{
+    start(d);
+    assert(action(ECHOY_ACT_ROLE,ECHOY_HARMONY));
+    assert(action(ECHOY_ACT_EXAMPLE,0));
+    until(ECHOY_NORMAL,ECHOY_PREVIEW,5);
+    assert(view().plan.role==ECHOY_HARMONY);
+    assert(action(ECHOY_ACT_PAUSE,0));until(ECHOY_NORMAL,ECHOY_IDLE,5);
+}
+static void harmony_trial_disabled(void)
+{
+    echoy_device_handle_t d;harmony_start(&d);
+    assert(!atomic_load(&fake_harmony_cut_calls));
+    stop(&d);puts("PASS ordinary build leaves Harmony synthesis unchanged");
+}
+static void harmony_trial_worker_and_pause(void)
+{
+    echoy_device_handle_t d;harmony_start(&d);
+    assert(atomic_load(&fake_harmony_cut_calls)==1);
+    atomic_store(&fake_harmony_cut_hold,true);
+    assert(action(ECHOY_ACT_PHRASE,2));
+    int64_t end=esp_timer_get_time()+2000000;
+    while(!atomic_load(&fake_harmony_cut_blocked)){assert(esp_timer_get_time()<end);fake_sleep_ms(1);}
+    int writes=atomic_load(&fake_write_calls);fake_sleep_ms(40);
+    assert(atomic_load(&fake_write_calls)>writes && view().plan.phrase==1);
+    assert(view().state.phase==ECHOY_IDLE && !view().state.continuous);
+    atomic_store(&fake_harmony_cut_hold,false);
+    do {if(view().plan.phrase==2)break;fake_sleep_ms(1);}while(esp_timer_get_time()<end);
+    assert(view().plan.phrase==2 && view().state.phase==ECHOY_IDLE && !view().state.continuous);
+    assert(action(ECHOY_ACT_TRANSPORT,0));until(ECHOY_NORMAL,ECHOY_PLAYING,5);
+    fake_sleep_ms(80);
+    assert(action(ECHOY_ACT_PAUSE,0));until(ECHOY_NORMAL,ECHOY_IDLE,5);fake_sleep_ms(30);
+    assert(!atomic_load(&fake_nonzero_since_flush));
+    stop(&d);puts("PASS Harmony trial prepares off owner, remains paused and Pause clears PCM");
+}
+static void harmony_trial_failure(void)
+{
+    echoy_device_handle_t d;harmony_start(&d);
+    unsigned calibrations=atomic_load(&fake_calibration_calls);
+    atomic_store(&fake_harmony_cut_failure,1);
+    assert(action(ECHOY_ACT_PHRASE,2));
+    int64_t end=esp_timer_get_time()+2000000;
+    while(!view().preparation_failed){assert(esp_timer_get_time()<end);fake_sleep_ms(1);}
+    echoy_control_view_t v=view();
+    assert(v.condition==ECHOY_NORMAL && v.plan.phrase==1 && v.plan.role==ECHOY_HARMONY);
+    assert(!v.state.continuous && v.state.phase==ECHOY_IDLE);
+    assert(atomic_load(&fake_calibration_calls)==calibrations);
+    assert(action(ECHOY_ACT_PHRASE,3));
+    do {if(view().plan.phrase==3)break;fake_sleep_ms(1);}while(esp_timer_get_time()<end);
+    assert(view().plan.phrase==3 && !view().preparation_failed && !view().state.continuous);
+    stop(&d);puts("PASS failed Harmony filter rejects whole job and retains previous valid sound");
+}
+static void harmony_trial_cancel_stale(void)
+{
+    echoy_device_handle_t d;harmony_start(&d);
+    atomic_store(&fake_harmony_cut_hold,true);
+    assert(action(ECHOY_ACT_PHRASE,2));
+    int64_t end=esp_timer_get_time()+2000000;
+    while(!atomic_load(&fake_harmony_cut_blocked)){assert(esp_timer_get_time()<end);fake_sleep_ms(1);}
+    assert(action(ECHOY_ACT_PHRASE,3)); /* Supersede the immutable phrase-2 job. */
+    assert(action(ECHOY_ACT_PAUSE,0));
+    fake_sleep_ms(20);
+    atomic_store(&fake_harmony_cut_hold,false);
+    while(atomic_load(&fake_harmony_cut_blocked)){assert(esp_timer_get_time()<end);fake_sleep_ms(1);}
+    do {if(view().plan.phrase==3)break;fake_sleep_ms(1);}while(esp_timer_get_time()<end);
+    echoy_control_view_t v=view();
+    assert(v.state.phase==ECHOY_IDLE && !v.state.continuous && v.plan.phrase==3);
+    assert(atomic_load(&fake_harmony_cut_calls)>=3);
+    assert(!atomic_load(&fake_nonzero_since_flush));
+    stop(&d);puts("PASS cancelled stale Harmony worker cannot publish or replay its bank");
+}
 int main(int argc, char **argv)
 {
     assert(argc == 2);
-    if (!strcmp(argv[1], "measure_complete")) measurement_complete();
+    if (!strcmp(argv[1], "harmony_disabled")) harmony_trial_disabled();
+    else if (!strcmp(argv[1], "harmony_worker")) harmony_trial_worker_and_pause();
+    else if (!strcmp(argv[1], "harmony_failure")) harmony_trial_failure();
+    else if (!strcmp(argv[1], "harmony_stale")) harmony_trial_cancel_stale();
+    else if (!strcmp(argv[1], "measure_complete")) measurement_complete();
     else if (!strcmp(argv[1], "measure_cancel")) measurement_cancel();
     else if (!strcmp(argv[1], "measure_analysis_stop")) measurement_analysis_stop();
     else if (!strcmp(argv[1], "measure_analysis_cancel")) measurement_analysis_cancel();

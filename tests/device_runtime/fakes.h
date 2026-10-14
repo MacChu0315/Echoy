@@ -8,6 +8,8 @@ extern atomic_int fake_task_failure, fake_health_stop_timeout, fake_event_tail_r
 extern atomic_int fake_watermark_after_exit, fake_nonzero_blocks;
 extern atomic_int fake_nonzero_since_flush;
 extern atomic_int fake_calibration_failure;
+extern atomic_int fake_calibration_calls, fake_harmony_cut_calls, fake_harmony_cut_failure;
+extern atomic_bool fake_harmony_cut_hold, fake_harmony_cut_blocked;
 extern atomic_int fake_probe_calls, fake_probe_failure;
 extern atomic_int fake_image_alloc_calls, fake_image_alloc_failure;
 extern atomic_uint fake_image_alloc_caps;

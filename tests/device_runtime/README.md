@@ -15,7 +15,7 @@ and the normal leak checks. Some restricted execution environments prevent
 LeakSanitizer from inspecting threads; this produces its `ptrace` fatal error,
 not a passing leak result. Run the same local test outside that restriction.
 
-The original 27 runtime checks remain. The suite now has 39 test methods,
+The original 27 runtime checks remain. The suite now has 43 test methods,
 including diagnostic failure subcases, and separately compiles an ordinary
 build to verify that its measurement API cannot open a microphone. They cover:
 
@@ -44,6 +44,12 @@ build to verify that its measurement API cannot open a microphone. They cover:
   analysis and a cancellation arriving immediately before result publication
   cannot publish a stale result. Failed shutdown can retain lifecycle context
   for retry but still erases raw microphone samples after both workers exit.
+- The optional Harmony bass trial runs only on the priority-1 preparation
+  worker, before role calibration. A blocked filter cannot block audio; a
+  failed or superseded job cannot replace the valid bank or restore playback.
+  Ordinary builds never invoke the filter. The original 27 lifecycle checks
+  run in measurement, ordinary and Harmony-trial builds, retaining the existing
+  calibration-failure injection and Pause/PCM-flush regressions.
 
 The microphone fixture renders the known sequence into the capture buffer and
 paces each 240-frame diagnostic block at 1 ms to keep these host checks short.

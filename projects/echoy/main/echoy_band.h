@@ -34,6 +34,10 @@ const echoy_arrange_t *echoy_band_arrangement(const echoy_band_t *band);
 echoy_band_job_t *echoy_band_take_job(echoy_band_t *band);
 /* No access to band: safe on a worker while UI/audio continue. */
 bool echoy_band_prepare_job(echoy_band_job_t *job);
+/* Optional device Harmony trial on the worker-owned prepared job, once only
+ * before calibration/finish. Only Harmony FULL loops change; no normalization.
+ * Failure invalidates the whole job so partially processed banks cannot commit. */
+bool echoy_band_cut_harmony_bass_job(echoy_band_job_t *job);
 /* Optional device output calibration on an owned, prepared job; once only,
  * before finish_job. Gains follow Pulse/Voice/Dust/Harmony and must be 0..4.
  * Scales musical FULL buffers only; shared synthesis and cue buffers are unchanged. */

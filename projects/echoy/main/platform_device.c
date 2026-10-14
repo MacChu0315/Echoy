@@ -815,6 +815,9 @@ static void prepare_worker(void *arg)
         }
         int64_t start = now_us(d);
         prepared_t result = {.job = job, .ok = echoy_band_prepare_job(job)};
+#if CONFIG_ECHOY_HARMONY_BASS_TRIAL
+        if (result.ok) result.ok = echoy_band_cut_harmony_bass_job(job);
+#endif
         if (result.ok) {
             result.ok = echoy_band_calibrate_job(job, echoy_device_role_gains);
             result.calibration_failed = !result.ok;

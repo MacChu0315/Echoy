@@ -1,0 +1,16 @@
+{
+  "package": "abcdec27b6fe",
+  "device_id": "4553502d49524953010030eda0f452a0",
+  "boot_id": 8257068652410574677,
+  "elf_sha256": "0020c2b944e8c77039df96ad67807128dcbf308b1b418aba7fc3b3483bfce1d7",
+  "operation_id": "0edb8829-7b08-4f99-9974-344da959adb6",
+  "healthy": true,
+  "validated": true,
+  "crash_count": 0,
+  "baseline_ready": true,
+  "free_internal": 24555,
+  "speaker_initially_silent": true,
+  "acoustic_acceptance": "pending",
+  "right_device": "retains ordinary 09275b935ad8",
+  "microphone_capture": false
+}

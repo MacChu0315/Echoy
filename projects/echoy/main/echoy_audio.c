@@ -1,4 +1,5 @@
 #include "echoy_audio.h"
+#include <float.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -584,6 +585,59 @@ echoy_audio_result_t echoy_audio_prepare(const echoy_plan_t *plan, bool original
     return ECHOY_AUDIO_OK;
 }
 void echoy_audio_free_loops(echoy_audio_loops_t *loops) { free(loops); }
+
+bool echoy_audio_cut_harmony_bass(float *samples, size_t frames)
+{
+    if (!samples || frames != ECHOY_AUDIO_LOOP_FRAMES) return false;
+    /* Fixed float coefficients from the selected 500 Hz / 24 kHz Butterworth
+     * candidate. Keep the recurrence identical to the existing float biquad;
+     * this function is opt-in and never changes synthesis or normalization. */
+    biquad_t state = {.b0=.9115866422653198f, .b1=-1.8231732845306396f,
+        .b2=.9115866422653198f, .a1=-1.8153411149978638f, .a2=.8310055732727051f};
+    float input_peak = 0;
+    for (size_t i = 0; i < frames; ++i) {
+        if (!isfinite(samples[i]) || !isfinite(filter_sample(&state, samples[i])))
+            return false;
+        input_peak = fmaxf(input_peak, fabsf(samples[i]));
+    }
+    biquad_t before = state;
+    for (size_t i = 0; i < frames; ++i) {
+        if (!isfinite(filter_sample(&state, samples[i]))) return false;
+    }
+    /* Compare float representations, including signed zero. Exact equality
+     * proves the complete checked period repeats; this is the normal path for
+     * prepared Harmony banks, including the selected offline candidate. */
+    bool exact = memcmp(&before.x1, &state.x1, sizeof(float)) == 0 &&
+                 memcmp(&before.x2, &state.x2, sizeof(float)) == 0 &&
+                 memcmp(&before.y1, &state.y1, sizeof(float)) == 0 &&
+                 memcmp(&before.y2, &state.y2, sizeof(float)) == 0;
+    if (!exact) {
+        /* Float rounding can form a tiny cycle rather than one exact state.
+         * Check EVERY sample from adjacent periodic starts before accepting it.
+         * 4.7e-7 * 4(role trim) * .45(bus) * 18(drive) < .5/32767:
+         * the absolute gain-only budget is under half a signed-16-bit LSB.
+         * The relative limit also scales down with the actual input peak. */
+        float tolerance = fminf(4.7e-7f,
+            fmaxf(32 * FLT_TRUE_MIN, 32 * FLT_EPSILON * input_peak));
+        biquad_t adjacent = state;
+        biquad_t commit = state;
+        for (size_t i = 0; i < frames; ++i) {
+            float previous = filter_sample(&before, samples[i]);
+            float next = filter_sample(&adjacent, samples[i]);
+            if (!isfinite(previous) || !isfinite(next) || fabsf(previous - next) > tolerance)
+                return false;
+        }
+        state = commit;
+    } else {
+        state = before;
+    }
+    /* This exact pass was already checked while input was immutable. Keeping
+     * original x1/x2 in local state makes in-place output equivalent to it. */
+    for (size_t i = 0; i < frames; ++i)
+        samples[i] = filter_sample(&state, samples[i]);
+    return true;
+}
+
 echoy_audio_result_t echoy_audio_render_cue(echoy_audio_cue_t cue, echoy_audio_buffer_t **out)
 {
     if (out) *out = NULL;

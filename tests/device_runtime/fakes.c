@@ -23,6 +23,8 @@ atomic_int fake_partial_next, fake_open_failure, fake_close_failure, fake_flush_
 atomic_int fake_task_failure, fake_health_stop_timeout, fake_event_tail_reads_after_delete;
 atomic_int fake_watermark_after_exit, fake_nonzero_blocks, fake_nonzero_since_flush;
 atomic_int fake_calibration_failure;
+atomic_int fake_calibration_calls, fake_harmony_cut_calls, fake_harmony_cut_failure;
+atomic_bool fake_harmony_cut_hold, fake_harmony_cut_blocked;
 atomic_int fake_probe_calls, fake_probe_failure;
 atomic_int fake_image_alloc_calls, fake_image_alloc_failure;
 atomic_uint fake_image_alloc_caps;
@@ -258,6 +260,8 @@ struct fake_task {
     pthread_t thread;
     TaskFunction_t fn;
     void *ctx;
+    const char *name;
+    unsigned priority;
     atomic_bool exited;
     struct fake_task *next;
 };
@@ -274,9 +278,7 @@ static void *entry(void *p)
 BaseType_t xTaskCreate(TaskFunction_t fn, const char *name, unsigned stack, void *ctx,
                        unsigned priority, TaskHandle_t *out)
 {
-    (void)name;
     (void)stack;
-    (void)priority;
     int index = atomic_fetch_add(&task_creates, 1) + 1;
     if (atomic_load(&fake_task_failure) == index)
         return pdFALSE;
@@ -284,6 +286,8 @@ BaseType_t xTaskCreate(TaskFunction_t fn, const char *name, unsigned stack, void
     assert(t);
     t->fn = fn;
     t->ctx = ctx;
+    t->name = name;
+    t->priority = priority;
     t->next = tasks;
     tasks = t;
     *out = t;
@@ -509,6 +513,20 @@ bool __wrap_echoy_band_prepare_job(echoy_band_job_t *job)
 bool __real_echoy_band_calibrate_job(echoy_band_job_t *job, const float gains[4]);
 bool __wrap_echoy_band_calibrate_job(echoy_band_job_t *job, const float gains[4])
 {
+    atomic_fetch_add(&fake_calibration_calls,1);
     if (atomic_exchange(&fake_calibration_failure,0)) return false;
     return __real_echoy_band_calibrate_job(job,gains);
+}
+bool __real_echoy_audio_cut_harmony_bass(float *, size_t);
+bool __wrap_echoy_audio_cut_harmony_bass(float *samples, size_t frames)
+{
+    assert(self && !strcmp(self->name,"echoy_prepare") && self->priority==1);
+    atomic_fetch_add(&fake_harmony_cut_calls,1);
+    while (atomic_load(&fake_harmony_cut_hold)) {
+        atomic_store(&fake_harmony_cut_blocked,true);
+        fake_sleep_ms(1);
+    }
+    atomic_store(&fake_harmony_cut_blocked,false);
+    if (atomic_exchange(&fake_harmony_cut_failure,0)) return false;
+    return __real_echoy_audio_cut_harmony_bass(samples,frames);
 }

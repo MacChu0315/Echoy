@@ -1,0 +1,56 @@
+{
+  "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/dual-device/echoy-harmony-bass-abcdec27b6fe.irisfw",
+  "sha256": "abcdec27b6fea3db4e2c6d9b7293deb0b8d4f84ab1ffb78b750fde992566b4b6",
+  "elf_sha256": "0020c2b944e8c77039df96ad67807128dcbf308b1b418aba7fc3b3483bfce1d7",
+  "manifest": {
+    "schema": "esp-iris-system-update/v1",
+    "manifest_sha256": "e8a503fb1a2145f42b2607b16a7d086cd928d1a74281a8133ce47f245d5b3c1c",
+    "key_id": null,
+    "chip_id": 32,
+    "flash_size": 16777216,
+    "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+    "components": [
+      {
+        "id": 1,
+        "kind": "partition_table",
+        "flags": 0,
+        "target_offset": 32768,
+        "size": 4096,
+        "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+        "file": "partition-table.bin"
+      },
+      {
+        "id": 2,
+        "kind": "application",
+        "flags": 0,
+        "target_offset": 2162688,
+        "size": 2116480,
+        "sha256": "06b1f40ec6df7f596606d1bcd6316029a86de001a5aa8cea6a724584900f0f0c",
+        "file": "ota_0.bin"
+      },
+      {
+        "id": 3,
+        "kind": "data",
+        "flags": 0,
+        "target_offset": 15728640,
+        "size": 377552,
+        "sha256": "061419154ab93d4b882d4cd4b71f3042534ec5c06506203bcdd7ac5aa813be1e",
+        "file": "ui_apps.bin"
+      }
+    ],
+    "signature_verified": false,
+    "release": "1.0.0",
+    "minimum_recovery_version": "0.1"
+  },
+  "config": {
+    "harmony_bass_trial": true,
+    "microphone_measurement": false,
+    "reference_tone": false
+  },
+  "source_sha256": {
+    "echoy_audio.c": "34a263646c27a0cb933ef633306d0b7fb5ac054f356b023f69fd4d56a04157ae",
+    "echoy_band.c": "f80948ca2422c083119d01d4e33471d92538635b437d9f3886b270173ce4e7d9",
+    "platform_device.c": "dd044c1e3149154e90d0e1c964bf36d0970849de1b48533a7db259d006bd168e",
+    "echoy_device_pcm.c": "f888c952ad5ae1c774f552020efed20f2227edb11bcc53c74aed5b012cf10c6a"
+  }
+}

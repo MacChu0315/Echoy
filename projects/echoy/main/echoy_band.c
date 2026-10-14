@@ -43,7 +43,7 @@ struct echoy_band_job {
     uint32_t generation;
     uint8_t inaudible_mask;
     struct bank *banks[N];
-    bool ok, staged, calibrated;
+    bool ok, staged, calibrated, bass_cut_attempted, handed_off;
 };
 struct queued_action { echoy_action_t action; double value; };
 struct cooperation {
@@ -885,7 +885,7 @@ echoy_band_job_t *echoy_band_take_job(echoy_band_t *b)
 }
 bool echoy_band_prepare_job(echoy_band_job_t *j)
 {
-    if (!j || j->ok) {
+    if (!j || j->ok || j->bass_cut_attempted || j->handed_off) {
         return false;
     }
     for (int i = 0; i < N; i++) {
@@ -909,9 +909,25 @@ bool echoy_band_prepare_job(echoy_band_job_t *j)
     j->ok = true;
     return true;
 }
+bool echoy_band_cut_harmony_bass_job(echoy_band_job_t *j)
+{
+    if (!j || !j->ok || j->staged || j->calibrated || j->bass_cut_attempted || j->handed_off)
+        return false;
+    j->bass_cut_attempted = true;
+    for (int i = 0; i < N; ++i) {
+        if (!j->banks[i] || j->arrangement.plans[i].music.role != ECHOY_HARMONY) continue;
+        echoy_audio_loops_t *loops = j->banks[i]->loops;
+        if (!echoy_audio_cut_harmony_bass(loops->samples[ECHOY_AUDIO_FULL], loops->frames)) {
+            /* Earlier banks may already be processed. None can be published. */
+            j->ok = false;
+            return false;
+        }
+    }
+    return true;
+}
 bool echoy_band_calibrate_job(echoy_band_job_t *j, const float role_gains[4])
 {
-    if (!j || !j->ok || j->staged || j->calibrated || !role_gains) return false;
+    if (!j || !j->ok || j->staged || j->calibrated || j->handed_off || !role_gains) return false;
     for (unsigned role=0; role<4; ++role)
         if (!isfinite(role_gains[role]) || role_gains[role] < 0 || role_gains[role] > 4)
             return false;
@@ -968,6 +984,7 @@ bool echoy_band_finish_job(echoy_band_t *b, echoy_band_job_t *j, int64_t now)
         return false;
     }
     echoy_band_discard_job(b->ready);
+    j->handed_off = true;
     b->ready = j;
     b->cooperation->candidate_ready=true;
     echoy_band_tick(b, now);

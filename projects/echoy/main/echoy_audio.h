@@ -37,6 +37,18 @@ echoy_audio_result_t echoy_audio_prepare(const echoy_plan_t *plan, bool original
                                        echoy_audio_loops_t **out);
 void echoy_audio_free_loops(echoy_audio_loops_t *loops);
 
+/* Optional device voicing: 500 Hz second-order Butterworth high-pass on one
+ * prepared Harmony FULL loop, before role trim. Exactly LOOP_FRAMES samples
+ * at SAMPLE_RATE are required. No normalization, allocation, or shared state.
+ * Warm immutable input before writing; normally the float boundary state is
+ * exactly periodic. Otherwise every adjacent-period sample must agree within
+ * min(4.7e-7, 32*FLT_EPSILON*input_peak), with a 32*FLT_TRUE_MIN floor on the
+ * relative term. At most three read-only source passes (the third checks two
+ * states in parallel) plus one in-place pass are performed.
+ * False (bad arguments, nonfinite/overflow, or period error above that budget)
+ * leaves every input byte unchanged. Call off the realtime output thread. */
+bool echoy_audio_cut_harmony_bass(float *samples, size_t frames);
+
 /* Short tap and timing-cue buffers start at sample zero. Scheduling the .003s
  * tap lead and the two count-in/four recording beats belongs to the caller. */
 echoy_audio_result_t echoy_audio_render_cue(echoy_audio_cue_t cue, echoy_audio_buffer_t **out);

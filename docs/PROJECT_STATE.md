@@ -219,11 +219,13 @@ redraw immediately. Coverage/pitch-cache optimizations have zero differences
 over 3,712 frames / 99,716,368 pixels. Bottom geometry is unchanged. Current
 recording/countdown, musical rules and sound parameters are preserved.
 
-Both authorized devices now run background-home package `09275b935ad8`, ELF
+Both authorized devices accepted background-home package `09275b935ad8`, ELF
 `8c180bbaf1b34e6cf2e2dd1ca961c5a78347ffcbbd125b90a2ef647cc8cd4d5d`.
 Left HEALTHY boot `15237885666942643151`, right `9386692617368392907`; exact
 operations/retained-layout checks are in `verification/background-home/device-startup.json`.
-Both actual homes and separated magnetic calibrations pass. This supersedes
+Both actual homes and separated magnetic calibrations passed. The later
+left-only Harmony trial is recorded below; the right retains this ordinary
+package. This superseded
 diagnostic package `73058c98b7ce`, whose initial checks remain in
 `verification/capture-quality/device-startup.json`. Sound quality is still open.
 
@@ -323,6 +325,27 @@ the office and they were not listening closely. Do not use these statistics as
 controlled acoustic evidence or a basis for new sound parameters. The user
 cannot leave the office; defer listening-dependent validation until convenient.
 No production sound profile has changed; Harmony distortion remains unresolved.
+
+The user later resumed focused listening and reported distortion both on the
+desk and while holding the left tile, with lower sounds worse. This makes desk
+contact alone insufficient to explain the complaint. After digital comparison,
+the user approved the stronger Harmony-only 500 Hz bass-cut trial (thinner bass,
+about 2 dB lower average PCM for the preserved phrase), initially on the left
+only. Implementation is complete under the default-off
+`CONFIG_ECHOY_HARMONY_BASS_TRIAL`; see `plans/2026-10-14-harmony-bass-trial.md`.
+Left now runs trial package `abcdec27b6fe`, ELF
+`0020c2b944e8c77039df96ad67807128dcbf308b1b418aba7fc3b3483bfce1d7`,
+Boot ID `8257068652410574677`; startup is healthy, calibrated and silent with
+zero crashes. Both microphone/reference-tone diagnostics are disabled. The
+right retains ordinary `09275b935ad8`. Numerical, worker/job ownership, common
+bar and paused-update tests pass; focused listening of the new left build is
+pending. No acoustic fix has been claimed. See `verification/harmony-bass/README.md`.
+The pre-listening left phrase and exact C replay are preserved in
+`output/harmony-listening-20261014/`.
+The post-listening left snapshot is from new power-on Boot ID
+`12437594786588333002` and is empty; no crash/dump was reported. The cause of
+that power cycle is awaiting the user's clarification, so do not claim a
+post-listening snapshot of the same phrase or infer a firmware crash.
 
 The two-attempt consent is exhausted, including across reboots. No further
 microphone capture is authorized. Raw PCM was erased after analysis; only local
