@@ -653,9 +653,12 @@ See `verification/second-device/README.md` for identities, verification and limi
 
 ## Remaining physical integration
 
-### Requested cooperation revision (2026-10-14, discussion only)
+### Approved cooperation revision (2026-10-14, implementation not started)
 
-The user requests these changes, explicitly revising the old separation rules:
+The user explicitly approved the discussed rules below, revising the old
+separation behavior. They then asked whether to continue in the same session;
+this approval is preserved for the next implementation session and does not
+need to be requested again unless the scope materially changes.
 
 - A right-side follower with a playable phrase should show only Play in the
   existing middle button area, not a disabled Record beside Play.
@@ -667,13 +670,23 @@ The user requests these changes, explicitly revising the old separation rules:
 - Confirmed additional choice: if joined devices are all paused, the first
   device pressed should start promptly; later entrants align to the common bar.
 
-Recommendations discussed: retain the current phrase and existing playing/paused
+Also approved: retain the current phrase and existing playing/paused
 state when separating, restore independent controls, keep a waiting follower's
 Play disabled until usable sound exists, and distinguish confirmed physical
 release from radio-only recovery. Preserve the previously accepted deferred
 join during recording/one-shot reply and explicit local playback permission.
-No new cooperation/UI code or frozen-HTML change has been made in this turn;
-right synchronization used the already accepted sound package only.
+No new cooperation/UI implementation or frozen-HTML change has been made;
+both devices run the accepted sound package `5d4776c9ae6d`. Retain source
+baseline `0953c52` and its accepted audio configuration while implementing this
+revision. The code need not be reset to that commit; later commits record
+acceptance, synchronization and these approved decisions.
+
+The first Play can come from either side. Validate that a follower can start
+an otherwise paused group promptly without leaving the other device on a
+different clock, and that clock coordination never grants playback permission
+to a paused peer. A solo replay must not wait on a historical group clock.
+Validate visible physical detach independently of the next musical commit,
+including stale transfers/queued starts and recording's deferred-join boundary.
 
 Read-only review confirms that C and frozen HTML preserve `clock.started` and
 old clock ownership after detach. The current strip disables Record for a
