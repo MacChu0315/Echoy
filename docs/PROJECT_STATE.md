@@ -809,8 +809,18 @@ initialize, but three windows report `right_y=-88`, span 2..3, `edges=0x08`
 (LEFT, as defined by the pinned header). The initial description calling this
 bottom was corrected. Current app boot has zero crashes/output faults but
 physical linkage is unavailable. The exact environment versus hardware cause
-is not established. User repositioning confirmation is pending before a single
-normal third-device restart/recheck; do not reflash or loosen classification.
+is not established. After the user confirmed repositioning, one official normal
+restart (`d9a0854b-0203-4272-b129-0d1d732831be`) produced boot
+`13092980898669071311`. Same accepted ELF, normal home, zero crashes/output faults
+pass at 84.0 s, but all three windows again reject LEFT `0x08`, with right-Y now
+near 0 rather than -88. The user additionally confirms a bare device with no
+external magnetic accessories. Do not keep retrying startup or loosen thresholds.
+The pinned classifier's LEFT predicate requires averaged left-X saturation; the
+BMM150 fixed-point driver can return -32768 without a register-read error. Actual
+left-X and the hardware cause remain unmeasured because the installed application
+has no full-axis readback. A local startup-only diagnostic package `2cfd9f7c2bbd`
+is prepared/verified; third-only update approval is pending. No new device write
+has occurred. See `verification/magnet-diagnostics/README.md`.
 Evidence: `verification/third-device/README.md`; initial ROM-only evidence remains
 `verification/third-device-intake.json`. Earlier first/second read-only status
 checks confirmed accepted firmware and zero crashes on later boots

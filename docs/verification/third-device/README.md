@@ -54,3 +54,20 @@ until calibration succeeds. Repositioning confirmation is requested before one
 normal third-device restart. Do not reflash, relax classifier thresholds or
 claim magnetic readiness/third-board cooperation from the normal home screen.
 This authorization does not automatically cover later third-device upgrades.
+
+## One relocated/bare-device recheck
+
+The user confirmed repositioning, then confirmed that the third device is bare
+and has no external magnetic accessories. One official gateway `device.restart`
+operation `d9a0854b-0203-4272-b129-0d1d732831be` succeeds. New normal boot
+`13092980898669071311` retains the accepted ELF and zero crashes/audio errors.
+At 84.0 s, all three calibration windows still report LEFT `0x08`; right-Y now
+approaches zero (previously -88). [Recheck result](recheck-result.json),
+[magnetic/audio trace](recheck-magnetic-audio.log), [real home](recheck-home.png).
+No additional restart, firmware write or sensor-threshold relaxation followed.
+
+The pinned classifier requires left-X saturation for LEFT. Its BMM150 fixed-point
+API may return the -32768 overflow marker while register reading succeeds. The
+installed firmware does not expose full axes, so no exact left-X or hardware
+cause is claimed. A bounded startup-only readback package is prepared locally
+in `../magnet-diagnostics/`; third-only update approval is pending.

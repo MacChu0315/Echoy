@@ -1,0 +1,18 @@
+{
+  "device_id": "4553502d49524953010030eda0f40cd8",
+  "user_confirmations": [
+    "Moved third device away from the other devices/metal/magnetic fixtures before this one normal restart.",
+    "Third device is bare, with no external magnetic accessories."
+  ],
+  "restart_operation": "d9a0854b-0203-4272-b129-0d1d732831be",
+  "previous_boot_id": 7287316600049295121,
+  "new_boot_id": 13092980898669071311,
+  "firmware_sha256": "5a721bd70413aabd5716c646b5fd1d29091cffe6464e44c7d994e2923b5d5e95",
+  "crash_count": 0,
+  "observed_uptime_us": 83965014,
+  "magnetic_baseline_ready": false,
+  "link_available": false,
+  "magnetic_observation": "right_y changed from -88 to approximately 0; edges remained 0x08 (LEFT) in all three rejected windows.",
+  "inference_from_pinned_source": "LEFT requires the averaged left-X reading to satisfy saturation threshold <=-30000 or >=30000; actual left-X value is not exposed in the installed application. Fixed-point BMM150 driver can output -32768 without an I2C read error; this is a hypothesis to distinguish, not a measured diagnosis.",
+  "next_step": "Diagnostic package 2cfd9f7c2bbd prepared locally; exact third-only application update approval pending. No second restart or new application write performed."
+}

@@ -1,0 +1,10 @@
+I (3045) echoy-link: calibrating magnetometers; keep tiles separated until baseline ready
+I (3065) S31-Mosaico-Sensor: BMM150[0] initialized: address=0x11 shared_INT=2
+I (3065) S31-Mosaico-Sensor: BMM150[1] initialized: address=0x12 shared_INT=2
+I (3135) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=0 nonzero=0 peak=0 pa=0 activations=0 write_max=0us partial=0 write_errors=0 deadline_misses=0
+W (3395) mosaico_mag: baseline rejected: right_y=-2 span=8 edges=0x08 attempts=1
+W (3795) mosaico_mag: baseline rejected: right_y=0 span=2 edges=0x08 attempts=2
+W (4195) mosaico_mag: baseline rejected: right_y=0 span=2 edges=0x08 attempts=3
+W (4195) echoy-link: link unavailable: magnetometer baseline/classification failed; restart with tiles separated
+I (33135) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=720240 nonzero=0 peak=0 pa=0 activations=0 write_max=8449us partial=0 write_errors=0 deadline_misses=0
+I (63135) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=1440240 nonzero=0 peak=0 pa=0 activations=0 write_max=8452us partial=0 write_errors=0 deadline_misses=0

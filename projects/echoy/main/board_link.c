@@ -314,6 +314,17 @@ static void disable_sensors(board_link_t *h, const char *reason)
     ESP_LOGW(TAG, "link unavailable: %s; restart with tiles separated", reason);
 }
 
+#ifdef CONFIG_ECHOY_MAGNET_DIAGNOSTICS
+static unsigned sentinel_axes(const struct bmm150_mag_data *data)
+{
+    /* The pinned fixed-point BMM150 API uses INT16_MIN as its overflow output.
+     * Equality is evidence of the sentinel, not a diagnosis of its cause. */
+    return (data->x == INT16_MIN ? 1u : 0u) |
+           (data->y == INT16_MIN ? 2u : 0u) |
+           (data->z == INT16_MIN ? 4u : 0u);
+}
+#endif
+
 static void sample_sensors(board_link_t *h, int64_t now)
 {
     if (!h->sensors_ready || now < h->next_sensor) {
@@ -333,7 +344,23 @@ static void sample_sensors(board_link_t *h, int64_t now)
     };
     mosaico_mag_classification_t result = {0};
     mosaico_mag_calibration_state_t previous = h->classifier.calibration_state;
-    if (mosaico_mag_classifier_process(&h->classifier, &sample, &result) != ESP_OK ||
+#ifdef CONFIG_ECHOY_MAGNET_DIAGNOSTICS
+    unsigned rejections = h->classifier.calibration_rejections;
+#endif
+    esp_err_t classified = mosaico_mag_classifier_process(&h->classifier, &sample, &result);
+#ifdef CONFIG_ECHOY_MAGNET_DIAGNOSTICS
+    if (h->classifier.calibration_rejections != rejections) {
+        /* Link worker only; at most the three rejected startup windows.
+         * These are the successful BSP read outputs for the final sample in
+         * that window, not raw ADC registers or the classifier's average. */
+        ESP_LOGW(TAG, "ECHOY_MAG_BOOT attempt=%u left_x=%ld left_y=%ld left_z=%ld "
+                 "left_sentinel_bits=%u right_x=%ld right_y=%ld right_z=%ld right_sentinel_bits=%u",
+                 (unsigned)h->classifier.calibration_rejections,
+                 (long)left.x, (long)left.y, (long)left.z, sentinel_axes(&left),
+                 (long)right.x, (long)right.y, (long)right.z, sentinel_axes(&right));
+    }
+#endif
+    if (classified != ESP_OK ||
         h->classifier.calibration_state == MOSAICO_MAG_CALIBRATION_FAILED) {
         disable_sensors(h, "magnetometer baseline/classification failed");
         return;

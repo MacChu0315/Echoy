@@ -1,0 +1,2 @@
+# Temporary third-device startup readback; preserve the accepted office profile.
+CONFIG_ECHOY_MAGNET_DIAGNOSTICS=y
