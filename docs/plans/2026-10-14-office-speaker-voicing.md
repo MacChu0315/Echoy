@@ -8,8 +8,10 @@ accepts Pulse/Voice/Dust but found Harmony too loud and bright without obvious
 breakup. Its Harmony-only refinement `5d4776c9ae6d` is now installed and
 calibrated. The user explicitly accepts that refinement's sound/balance and
 reports no obvious breakup, completing the current sound-tuning round.
-Retain the accepted device configuration; the right-device rollout remains
-pending. Existing firmware-update authorization remains
+Retain the accepted device configuration; the user-requested right-device
+rollout is complete on the same package, with startup and calibration verified.
+The confirmed implementation baseline is commit `0953c52`; a fresh same-profile
+physical cooperation check remains pending. Existing firmware-update authorization remains
 valid; do not request the same sound-direction approval again.
 
 ## Goal and acceptance

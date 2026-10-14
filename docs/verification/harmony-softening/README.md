@@ -101,6 +101,21 @@ left ELF/Boot ID, zero crashes and zero partial/write/deadline errors after
 listening. Render maximum is 4048 us, write maximum 8591 us, owner/preparation
 stack minima 8724/7956 bytes, and latest preparation 591155 us. These are
 observed runtime values, not worst-case timing or acoustic measurements.
-Right remains `09275b935ad8`; its update and same-profile cooperation check
-remain pending. No firmware write, microphone capture, computer playback or
+Right was still `09275b935ad8` at that acceptance snapshot. No firmware write, microphone capture, computer playback or
 additional tuning occurred when recording acceptance. See `acceptance.json`.
+
+The user subsequently requested synchronization and freshly confirmed both
+boards paused and separated at least 15 cm. Right now runs the identical
+`5d4776c9ae6d`/ELF above: operation `4956865b-08b5-45dd-868d-d238535aedd6`,
+Boot ID `7939481319926026302`. HEALTHY/validated, retained bootloader/partition
+hashes, actual home, silent startup and baseline ready at 3493 ms pass; current
+startup crash/partial/write/deadline counts are zero. The left's observed
+Boot ID is now `11284810966805748568`, with the same accepted ELF and zero
+crashes. No left rewrite occurred in this synchronization. See `right-sync.json`.
+A new same-profile cooperation test has not been claimed from startup checks.
+
+At the user's explicit request, `accepted-baseline.json` pins implementation
+commit `0953c52efec6127e2d933fce361c0f46bf2597d4`, package/ELF/source hashes,
+configuration and the preserved local firmware artifact. Sources read directly
+from that commit match the installed manifest. Proposed cooperation/button
+revisions are not part of this confirmed baseline and remain discussion only.

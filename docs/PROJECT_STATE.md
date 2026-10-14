@@ -418,9 +418,18 @@ partial writes, write errors and deadline misses after listening. Owner render
 maximum is 4048 us, write maximum 8591 us and preparation stack minimum 7956
 bytes; latest preparation is 591155 us, not a worst-case bound. This is user
 listening acceptance and runtime evidence, not calibrated acoustic measurement.
-Right remains ordinary `09275b935ad8`; synchronizing the accepted image to that
-device and a same-profile cooperation check remain pending. No new firmware
-write or sound change was made when recording this acceptance.
+Recording that acceptance made no sound/firmware change. The user then explicitly
+requested right-device synchronization. Both devices now run accepted package
+`5d4776c9ae6d` with the same ELF. Right operation
+`4956865b-08b5-45dd-868d-d238535aedd6`, Boot ID `7939481319926026302`:
+HEALTHY/validated, retained Recovery/layout, actual home, silent startup and
+magnetic baseline ready at 3493 ms pass, with zero crashes/output errors.
+The left was not rewritten; its later observed Boot ID is
+`11284810966805748568`, same ELF and zero crashes. A same-profile physical
+cooperation check remains pending. The user explicitly requested a preserved
+commit baseline: implementation `0953c52efec6127e2d933fce361c0f46bf2597d4`
+matches the installed package source hashes, recorded in
+`verification/harmony-softening/accepted-baseline.json`.
 Evidence: `verification/harmony-softening/README.md`.
 The two-run microphone allowance remains exhausted.
 The pre-listening left phrase and exact C replay are preserved in
@@ -643,6 +652,40 @@ are retained in the evidence, not classified as new application failures.
 See `verification/second-device/README.md` for identities, verification and limits.
 
 ## Remaining physical integration
+
+### Requested cooperation revision (2026-10-14, discussion only)
+
+The user requests these changes, explicitly revising the old separation rules:
+
+- A right-side follower with a playable phrase should show only Play in the
+  existing middle button area, not a disabled Record beside Play.
+- Devices that are not physically joined are independent. Pressing Play on a
+  separated device must not wait for an old shared bar, including after Pause.
+- Physical separation must end the cooperative relationship and visible
+  connected/following state. Retaining a cooperative phrase must not imply
+  retaining membership of its former clock group.
+- Confirmed additional choice: if joined devices are all paused, the first
+  device pressed should start promptly; later entrants align to the common bar.
+
+Recommendations discussed: retain the current phrase and existing playing/paused
+state when separating, restore independent controls, keep a waiting follower's
+Play disabled until usable sound exists, and distinguish confirmed physical
+release from radio-only recovery. Preserve the previously accepted deferred
+join during recording/one-shot reply and explicit local playback permission.
+No new cooperation/UI code or frozen-HTML change has been made in this turn;
+right synchronization used the already accepted sound package only.
+
+Read-only review confirms that C and frozen HTML preserve `clock.started` and
+old clock ownership after detach. The current strip disables Record for a
+follower but still draws the split layout. Magnetic release already calls
+`detach()` without waiting for radio acknowledgement, so the user's report of
+lingering connected state still needs a targeted sensor/session/UI trace;
+do not claim its exact failure layer is already proven.
+
+Physical support currently covers two same-orientation horizontal boards.
+The application stores one active peer and ignores a second attach while one
+is active; the desktop three-tile model is not a completed three-board physical
+implementation. Do not claim arbitrary multi-device placement/order stability.
 
 ### Dual-device basic physical flow accepted (2026-10-12)
 

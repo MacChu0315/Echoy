@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-14",
+  "package": "5d4776c9ae6d",
+  "elf_sha256": "aacb24e1acc4e0a4f11a7cb10b08645f4d0a6e930e98ff19e9ae1675d79a01c7",
+  "device_id": "4553502d49524953010030eda0f40c6c",
+  "boot_id": 7939481319926026302,
+  "operation_id": "4956865b-08b5-45dd-868d-d238535aedd6",
+  "healthy": true,
+  "validated": true,
+  "crash_count": 0,
+  "baseline_ready": true,
+  "startup_silent": true,
+  "partial_writes": 0,
+  "write_errors": 0,
+  "deadline_misses": 0,
+  "free_internal": 24531,
+  "free_spiram": 12262300,
+  "left_device_id": "4553502d49524953010030eda0f452a0",
+  "left_observed_boot_id": 11284810966805748568,
+  "left_same_elf": true,
+  "placement": "User explicitly confirmed both paused and separated at least15cm before right update.",
+  "scope": "Right update and startup checks. No new acoustic or same-version cooperation acceptance was inferred. Proposed revised cooperation/UI rules are not in this package."
+}

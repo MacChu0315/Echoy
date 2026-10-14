@@ -1,0 +1,18 @@
+{
+  "implementation_commit": "0953c52efec6127e2d933fce361c0f46bf2597d4",
+  "implementation_title": "fix: soften and rebalance office Harmony voice",
+  "package_sha256": "5d4776c9ae6dbacac3fd82b64d9bc0353d60ff52875fabae71e5450bfd7b7484",
+  "elf_sha256": "aacb24e1acc4e0a4f11a7cb10b08645f4d0a6e930e98ff19e9ae1675d79a01c7",
+  "immutable_local_bundle": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/dual-device/echoy-harmony-soft-5d4776c9ae6d.irisfw",
+  "device_defaults": "projects/echoy/sdkconfig.defaults;projects/echoy/sdkconfig.application.defaults;projects/echoy/sdkconfig.office-voicing-trial.defaults",
+  "source_sha256": {
+    "echoy_audio.c": "2d92efc9376ebf8182c0ac5fbab8b426637f14e7c9f2352600da65e9d716192a",
+    "echoy_band.c": "0a4e47523a548cd87dada49a21d454d99ad9f41621060aa6a3b4c655a573244e",
+    "platform_device.c": "e5cbd013d87429f15651d56be66d74a3fbdad3ab7370ec200cbfd78d704ee46e",
+    "echoy_device_pcm.c": "517316e8ffc78a8c4b2278ba4b0d69b96764cbdb2f0cf42899a129e3ed8bcd51"
+  },
+  "accepted_scope": "User accepted all four role timbres/levels, with no obvious Harmony breakup, and explicitly requested preserving this confirmed firmware in a commit.",
+  "both_devices_installed": true,
+  "verification": "Source hashes read back from the implementation commit match the verified installed package manifest.",
+  "excluded": "New play-only follower controls and physical-group playback/detach rules are discussed separately and not implemented in this baseline."
+}
