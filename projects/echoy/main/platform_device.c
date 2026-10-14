@@ -21,6 +21,9 @@
 #ifdef ESP_PLATFORM
 #include "sdkconfig.h"
 #endif
+#if CONFIG_ECHOY_HARMONY_BASS_TRIAL && CONFIG_ECHOY_OFFICE_VOICING_TRIAL
+#error "Echoy audio trials are mutually exclusive"
+#endif
 
 #define BLOCK_FRAMES 240u
 #define QUEUE_US                                                                                   \
@@ -793,12 +796,17 @@ static void measure_prepare(struct echoy_device *d)
 static void prepare_worker(void *arg)
 {
     struct echoy_device *d = arg;
+#if CONFIG_ECHOY_OFFICE_VOICING_TRIAL
+    const float *role_gains = echoy_office_role_gains;
+#else
+    const float *role_gains = echoy_device_role_gains;
+#endif
     xEventGroupWaitBits(d->done, STARTED, pdFALSE, pdTRUE, portMAX_DELAY);
     echoy_band_t *band = atomic_load(&d->stopping) ? NULL : echoy_band_create();
     xQueueSend(d->startup, &band, portMAX_DELAY);
     ESP_LOGI(TAG, "musical role gain milli: pulse=%u voice=%u dust=%u harmony=%u",
-             (unsigned)(echoy_device_role_gains[0]*1000), (unsigned)(echoy_device_role_gains[1]*1000),
-             (unsigned)(echoy_device_role_gains[2]*1000), (unsigned)(echoy_device_role_gains[3]*1000));
+             (unsigned)(role_gains[0]*1000), (unsigned)(role_gains[1]*1000),
+             (unsigned)(role_gains[2]*1000), (unsigned)(role_gains[3]*1000));
     while (!atomic_load(&d->stopping)) {
 #if CONFIG_ECHOY_OUTPUT_MEASUREMENT
         measure_prepare(d);
@@ -815,11 +823,13 @@ static void prepare_worker(void *arg)
         }
         int64_t start = now_us(d);
         prepared_t result = {.job = job, .ok = echoy_band_prepare_job(job)};
-#if CONFIG_ECHOY_HARMONY_BASS_TRIAL
+#if CONFIG_ECHOY_OFFICE_VOICING_TRIAL
+        if (result.ok) result.ok = echoy_band_voice_for_speaker_job(job);
+#elif CONFIG_ECHOY_HARMONY_BASS_TRIAL
         if (result.ok) result.ok = echoy_band_cut_harmony_bass_job(job);
 #endif
         if (result.ok) {
-            result.ok = echoy_band_calibrate_job(job, echoy_device_role_gains);
+            result.ok = echoy_band_calibrate_job(job, role_gains);
             result.calibration_failed = !result.ok;
         }
         result.elapsed_us = now_us(d) - start;

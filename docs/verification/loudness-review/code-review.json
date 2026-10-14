@@ -1,0 +1,30 @@
+{
+  "candidate_sha256": "7019838e88cc1a4a197b52d2b77c251d40d559a1ecded6987423789565843f5d",
+  "blocking_findings": [],
+  "code_review": [
+    "workspace_init resets speaker_profile=false on original prepare and tap-cue paths; only the temporary replacement render sets true.",
+    "helper validates plan/counts/target/frame count, nonoverlapping sample ranges and finite input buffers before allocation or writes; output stays private until all rendering/normalization/Harmony filtering succeeds.",
+    "Only memcpy to FULL publishes data. Source/Foreground/target/plan are read only. Dust returns without allocation or mutation.",
+    "New harmonics are synthesized per note. Voice and Harmony frequency guards exclude harmonics at/above Nyquist; unsigned Harmony phase multiplication implements modulo phase without out-of-range table indexing.",
+    "One567216-byte temporary heap allocation on host ABI. workspace327216,extraFULL240000; old prepare workspace is freed before this allocation. Existing live and newly prepared loop banks remain resident.",
+    "prepare_worker invokes office band helper between prepare and calibration, selects separate office role gains, and uses mutually exclusive office/old-Harmony preprocessor branches plus compile-time conflict error.",
+    "Failed office DSP leaves calibration_failed false and invalidates job via band helper, so owner retains old valid sound rather than converting the failure into hardware shutdown."
+  ],
+  "checks_executed": {
+    "ordinary_baseline": "Compiled git HEAD original audio.c and candidate snapshot independently with cc -std=c11 -O2. Seed0x8534,all12roles/expressions,all3banks,targetRMS,and3cue types produce byte-identical output.",
+    "ordinary_output_sha256": "44878f26ac316a5eaa6d644dd471ffbfdd0f695f0f65fed0135b6cc530e60887",
+    "boundary_probe": "16 cases across all4roles and target_rms0,DBL_MIN,FLT_TRUE_MIN,1e-30:all accepted,all output finite,Source/Foreground/target unchanged; non-Dust zero-target outputs entirely zero.",
+    "host_stack_usage": "-fstack-usage: helper144bytes dynamic,bounded; render1216bytes static; Harmony filter176bytes static. These are host compiler numbers, not ESP32-S31 worst-case proof."
+  },
+  "nonblocking_test_gaps": [
+    "legal_pitch_edges asserts finiteness, which cannot catch removal of a Nyquist harmonic guard. One high-note spectral assertion would test absence of a known folded harmonic.",
+    "Existing in-repo bad-input tests cover NAN target and one partial buffer alias but do not explicitly retain zero/subnormal-target regressions; the limited output-only probe passed.",
+    "Current fresh-prepare isolation check compares two executions of the modified renderer. The independent HEAD-vs-candidate ordinary comparison above closes that gap for the specified12case/cue corpus."
+  ],
+  "limits": [
+    "Current candidate timbre parameters and role gains are work in progress; no acoustic/loudness acceptance is inferred.",
+    "No product or docs files modified; no hardware, microphone, playback or newfirmware operations.",
+    "No repetition of band suites; no broad input search.",
+    "Target malloc preference is PSRAM for allocations above16384bytes, but generic malloc may fallback. OOM handling is atomic; target headroom/timing remain part of final artifact/performance verification."
+  ]
+}

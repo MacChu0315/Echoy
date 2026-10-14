@@ -43,7 +43,7 @@ struct echoy_band_job {
     uint32_t generation;
     uint8_t inaudible_mask;
     struct bank *banks[N];
-    bool ok, staged, calibrated, bass_cut_attempted, handed_off;
+    bool ok, staged, calibrated, bass_cut_attempted, speaker_voicing_attempted, handed_off;
 };
 struct queued_action { echoy_action_t action; double value; };
 struct cooperation {
@@ -885,7 +885,7 @@ echoy_band_job_t *echoy_band_take_job(echoy_band_t *b)
 }
 bool echoy_band_prepare_job(echoy_band_job_t *j)
 {
-    if (!j || j->ok || j->bass_cut_attempted || j->handed_off) {
+    if (!j || j->ok || j->bass_cut_attempted || j->speaker_voicing_attempted || j->handed_off) {
         return false;
     }
     for (int i = 0; i < N; i++) {
@@ -911,14 +911,37 @@ bool echoy_band_prepare_job(echoy_band_job_t *j)
 }
 bool echoy_band_cut_harmony_bass_job(echoy_band_job_t *j)
 {
-    if (!j || !j->ok || j->staged || j->calibrated || j->bass_cut_attempted || j->handed_off)
-        return false;
+    if (!j || !j->ok || j->staged || j->calibrated || j->bass_cut_attempted ||
+        j->speaker_voicing_attempted || j->handed_off) return false;
     j->bass_cut_attempted = true;
     for (int i = 0; i < N; ++i) {
         if (!j->banks[i] || j->arrangement.plans[i].music.role != ECHOY_HARMONY) continue;
         echoy_audio_loops_t *loops = j->banks[i]->loops;
         if (!echoy_audio_cut_harmony_bass(loops->samples[ECHOY_AUDIO_FULL], loops->frames)) {
             /* Earlier banks may already be processed. None can be published. */
+            j->ok = false;
+            return false;
+        }
+    }
+    return true;
+}
+bool echoy_band_voice_for_speaker_job(echoy_band_job_t *j)
+{
+    if (!j || !j->ok || j->staged || j->calibrated || j->handed_off ||
+        j->bass_cut_attempted || j->speaker_voicing_attempted) return false;
+    j->speaker_voicing_attempted = true;
+    /* Check every bank before modifying any. The worker cannot alter a bank
+     * retained by a prepared/live voice or another consumer. */
+    for (int i = 0; i < N; ++i) {
+        if (j->banks[i] && (j->banks[i]->refs != 1 || !j->banks[i]->loops)) {
+            j->ok = false;
+            return false;
+        }
+    }
+    for (int i = 0; i < N; ++i) {
+        if (j->banks[i] && !echoy_audio_voice_for_speaker(
+                &j->arrangement.plans[i].music, j->banks[i]->loops)) {
+            /* A preceding bank may have succeeded; reject the whole job. */
             j->ok = false;
             return false;
         }

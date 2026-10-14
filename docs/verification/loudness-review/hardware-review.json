@@ -1,0 +1,127 @@
+{
+  "scope": "Read-only hardware/output-path audit; no hardware operations, new firmware, test tones, microphone use or product/document edits.",
+  "versions": {
+    "esp_idf": "7b9cc1ac79f865983f59bb8ff3ff43eb74ff1dbe",
+    "bsp": "a2c985ad698b3f04a21c63e006b43e7e948bc1d7",
+    "esp_codec_dev": "1.6.2",
+    "target": "esp32s31"
+  },
+  "facts": [
+    "Official V1.0 schematic page 4 was downloaded and visually inspected. It agrees with the previously saved official V1.2 page 4 on NS4150B, R28/R29=100 kOhm and the printed Av=240k/RIN formula: nominal voltage gain 2.4, or 7.6042 dB. This is a schematic design value, not a measurement of the fitted board.",
+    "Both schematics connect NS4150B VCC to VDD, not VOUT_BOOST. V1.0 page 5 shows VDD behind the input/battery power-selection and power-switch path. Therefore neither USB attachment nor pa_voltage=5.0 proves 5.0 V at the amplifier under musical load.",
+    "The pinned BSP reads its variant from eFuse USER_DATA, choosing V1.0 for 1.0 and V1.2 for 1.1/1.2. This selects I2C/LCD/codec-power pins, not an amplifier BOM audit.",
+    "App/BSP GPIO52 drives ES8311 DSDIN (DAC serial input), GPIO40 receives ASDOUT, GPIO45 enables PA, GPIO37=BCLK,49=WS,54=MCLK. The guide DIN/DOUT names use codec-side direction and are not a reason to swap app pins.",
+    "Hardware volume 90 maps to -5 dB through the explicit 0:-50 dB,100:0 dB curve. Driver hw_gain=20log10(3.3/5)+0=-3.6091 dB; ES8311 subtracts it, requests -1.3909 dB and quantizes to 0xBC=-1.5 dB. 0xBC was historically read back in the authorized 2026-10-10 reference; this audit made no fresh register reads.",
+    "pa_gain is a software compensation term, not a command that changes analog amplifier gain. Supplying the schematic +7.6042 dB at volume 90 produces 0xAD=-9 dB, lowering codec output by 7.5 dB. It does not make the board louder.",
+    "The ESP32-S31 uses I2S HW version 2. Pinned Philips defaults select a one-bit shift, left alignment, MSB first, little-endian memory. The app selects mono LEFT,16-bit data/slot,24 kHz,MCLK256. The public codec adapter maps channel=1 to slot0; IDF uses two wire slots and one active DMA slot. The old ESP32-only mono16 pair-swap warning does not apply to the S31 path. No obvious wrong-slot, byte-order, bit-shift or duplicated-sample bug was found.",
+    "The resulting clocks are nominal WS24 kHz,BCLK768 kHz,MCLK6.144 MHz; ES8311 has a matching 6.144 MHz/24 kHz coefficient. Historical serial register0x09=0x0C agrees with 16-bit standard I2S. Pin-level timing was not measured.",
+    "Existing output still has fixed role gains {1.6,.52,.0317,2.38},UI linear gain and .45 bus gain,120 Hz high-pass,drive18,1ms lookahead peak limiting with .60 ceiling and40ms release. Harmony500 is before role gain. This limiter intentionally changes waveform dynamics below int16 clipping, so clipped=0 is not proof of transparent sound or clean analog output."
+  ],
+  "volume_mapping_calculations": [
+    {
+      "volume": 90,
+      "configured_pa_gain_db": 0,
+      "calculated_hw_gain_db": -3.609121289162627,
+      "dac_requested_db": -1.3908787108373728,
+      "register_0x32": "0xbc",
+      "dac_quantized_db": -1.5,
+      "level_change_vs_current_db": 0.0
+    },
+    {
+      "volume": 93,
+      "configured_pa_gain_db": 0,
+      "calculated_hw_gain_db": -3.609121289162627,
+      "dac_requested_db": 0.1091212891626272,
+      "register_0x32": "0xbf",
+      "dac_quantized_db": 0.0,
+      "level_change_vs_current_db": 1.5
+    },
+    {
+      "volume": 100,
+      "configured_pa_gain_db": 0,
+      "calculated_hw_gain_db": -3.609121289162627,
+      "dac_requested_db": 3.609121289162627,
+      "register_0x32": "0xc6",
+      "dac_quantized_db": 3.5,
+      "level_change_vs_current_db": 5.0
+    },
+    {
+      "volume": 90,
+      "configured_pa_gain_db": 7.60422483423212,
+      "calculated_hw_gain_db": 3.995103545069493,
+      "dac_requested_db": -8.995103545069494,
+      "register_0x32": "0xad",
+      "dac_quantized_db": -9.0,
+      "level_change_vs_current_db": -7.5
+    },
+    {
+      "volume": 100,
+      "configured_pa_gain_db": 7.60422483423212,
+      "calculated_hw_gain_db": 3.995103545069493,
+      "dac_requested_db": -3.995103545069493,
+      "register_0x32": "0xb7",
+      "dac_quantized_db": -4.0,
+      "level_change_vs_current_db": -2.5
+    }
+  ],
+  "conditional_headroom_model": {
+    "source": "Everest ES8311 Rev17.0 Feb2026 manufacturer search-index table: differential full-scale output typical1.8*AVDD/3.3 Vrms, tested at48kHz,AVDD3.3V. Direct PDF fetch was unavailable; indexed manufacturer content was available. Treat as a nominal model, not this physical sample's measured voltage.",
+    "at_pcm_peak_0_60_hw90_pa2_4": {
+      "requested_amp_sine_vrms": 2.180896207144346,
+      "requested_amp_peak_v": 3.084252994271577
+    },
+    "at_pcm_peak_0_60_hw100_pa2_4": {
+      "requested_amp_sine_vrms": 3.8782428205967716,
+      "requested_amp_peak_v": 5.484663595064041
+    },
+    "interpretation": "The hw100 request would be about5.48V peak, above even an ideal5V BTL unclipped peak under these nominal assumptions. No-load ideal rail bounds are already optimistic. This is a reason not to promise clean +5dB simply by selecting100; exact supply, load, fitted BOM and speaker excursion/thermal limits remain unknown."
+  },
+  "realistic_controls_and_limits": [
+    "Separate software waveform distortion from physical frequency/power limits using the preserved exact C/PCM rendering. No more microphone captures are authorized.",
+    "A correct pa_gain description could reduce analog drive, but it opposes the requested louder output at the same settings. It is not free hardware headroom.",
+    "Volume90→93 adds1.5dB and90→100 adds5dB after the app limiter, increasing every role's physical peak and average level. Both can worsen existing distortion; no change is recommended solely from register range.",
+    "The current UI target .761111→1 has at most2.371dB linear pre-limiter gain increase; a .60-limited passage can gain much less RMS and no digital peak. Raising drive18 also primarily adds gain reduction on already limited passages.",
+    "All12 cases need individual peak/RMS/crest-factor/limiter-reduction and spectral results through the actual chain. Role/expression spectral and transient work may improve usable average level within a fixed peak, but changes timbre/dynamics and cannot establish the speaker's clean acoustic power.",
+    "Do not infer all-role loudness from Harmony alone or assume codec/BSP agreement rules out bad speaker, wrong fitted resistor, poor rail headroom, mechanical vibration or wiring. None is proven by this audit.",
+    "Speaker impedance, rated continuous power, frequency response, actual VDD under load, fitted amplifier/resistors and acoustic SPL remain unverified. These prevent a defensible numeric clean-loudness promise."
+  ],
+  "source_caution": "The Espressif-hosted URL ending NS4150B.pdf actually contains NS4150 V1.0 May2011, whose feedback-resistor text is300k, not the board drawing's240k. Do not silently use it as proof of the exact fitted NS4150B gain or clean output rating. The current Nsiway NS4150B page confirms identity but was not fully fetchable.",
+  "sources": {
+    "v1_0_guide": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s31/esp-mosaico/user_guide_v1.0.html",
+    "v1_0_schematic": "https://dl.espressif.com/AE/SCH_SCH_ESP-Mosaico_CoreBoard_V1_0_2026-08-18.pdf",
+    "v1_0_pdf_sha256": "587853ee8493be2fc52b2cba347386febefe33fac51bb6b5a9a47f0067d6e213",
+    "v1_2_schematic": "https://dl.espressif.com/AE/Mosaico/SCH_SCH_ESP-Mosaico_CoreBoard_V1_2_1_2026-09-24.pdf",
+    "es8311_manufacturer": "https://www.everest-semi.com/pdf/ES8311%20PB.pdf",
+    "nsiway_product": "https://en.nsiway.com.cn/list_38/82.html",
+    "old_ns4150_not_exact_b": "https://dl.espressif.com/dl/schematics/NS4150B.pdf",
+    "application": [
+      "projects/echoy/main/board_audio.c:394",
+      "projects/echoy/main/board_audio.c:428",
+      "projects/echoy/main/board_audio.c:436",
+      "projects/echoy/main/echoy_device_pcm.c:9",
+      "projects/echoy/main/echoy_band.c:1262"
+    ],
+    "codec": [
+      "projects/echoy/managed_components/espressif__esp_codec_dev/esp_codec_dev_vol.c:50",
+      "projects/echoy/managed_components/espressif__esp_codec_dev/device/es8311/es8311.c:350",
+      "projects/echoy/managed_components/espressif__esp_codec_dev/platform/audio_codec_data_i2s.c:616"
+    ],
+    "pinned_idf": [
+      "../.toolchains/esp-idf-7b9cc1a/components/esp_driver_i2s/include/driver/i2s_std.h:140",
+      "../.toolchains/esp-idf-7b9cc1a/components/esp_hal_i2s/i2s_hal.c:165",
+      "../.toolchains/esp-idf-7b9cc1a/components/soc/esp32s31/include/soc/soc_caps.h:667",
+      "../.toolchains/esp-idf-7b9cc1a/docs/en/api-reference/peripherals/i2s.rst:526"
+    ],
+    "pinned_bsp": [
+      "../esp-mosaico-vibe/submodule/esp-mosaico-bsp/components/esp-mosaico-bsp/onboard/audio.c:98",
+      "../esp-mosaico-vibe/submodule/esp-mosaico-bsp/components/esp-mosaico-bsp/onboard/esp_mosaico.c:33",
+      "../esp-mosaico-vibe/submodule/esp-mosaico-bsp/components/esp-mosaico-bsp/include/bsp/esp_mosaico.h:109"
+    ]
+  },
+  "performed_checks": [
+    "Read pinned application/BSP/codec/IDF source and recorded dependency hashes.",
+    "Fetched public official V1.0 PDF and visually inspected pages4(audio) and5(power); visually inspected saved official V1.2 page4.",
+    "Calculated volume mappings and conditional nominal peak headroom locally in Python.",
+    "No firmware build, playback, microphone, new register reads, hardware writes or remote repository writes."
+  ]
+}

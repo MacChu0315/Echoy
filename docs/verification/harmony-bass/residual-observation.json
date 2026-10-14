@@ -1,0 +1,330 @@
+{
+  "user_feedback": {
+    "improvement": true,
+    "thinner_timbre_accepted": true,
+    "remaining_distortion": "small amount, repeats at approximately the same sound each loop",
+    "all_role_loudness_requested": true
+  },
+  "snapshot": {
+    "device_id": "4553502d49524953010030eda0f452a0",
+    "boot_id": 8257068652410574677,
+    "metadata": {
+      "schema": 1,
+      "token": "0000000000000001",
+      "size": 805,
+      "crc32": "e1d278cc",
+      "volume": 1,
+      "phase": 0,
+      "generation": 5,
+      "revision": 3,
+      "committed_revision": 3,
+      "plan_pending": false,
+      "preparing": false,
+      "preparation_failed": false,
+      "continuous": false,
+      "following": false,
+      "condition": 0,
+      "cooperation": 0,
+      "tile": 0,
+      "source": -1,
+      "clock": 0,
+      "state_role": 3,
+      "state_phrase": 2,
+      "seed": 34100,
+      "plan_role": 3,
+      "plan_phrase": 2,
+      "density": 0.5,
+      "events": 11,
+      "source_count": 6,
+      "start_us": 4786015599,
+      "clock_origin_us": 4786015599,
+      "apply_at_us": 0,
+      "chunk_max": 512
+    },
+    "plan_sha256": "cdbd19101eef0dbb8816f67b1fe48bcab6af6488e2df26c545c23c51501f062e",
+    "rpc_operation_ids": [
+      "9c973d53-a92a-451a-b20d-a3661fe7c23a",
+      "abef5629-ed05-4fa4-a806-49e39bf5a8be",
+      "66f4f6e8-52b1-439d-964b-51734040b8e0"
+    ],
+    "note": "Coherent cached current plan; volume is the exact UI target, not a smoothed PCM sample gain"
+  },
+  "snapshot_scope": "Read after feedback: paused, UI target volume 1.0. This target is not an instantaneous hardware amplitude measurement.",
+  "current_boot_telemetry": {
+    "boot_id": 8257068652410574677,
+    "crash_count": 0,
+    "partial_writes": 0,
+    "write_errors": 0,
+    "deadline_misses": 0,
+    "prepare_us": 773708
+  },
+  "digital_output_levels": [
+    {
+      "volume": 0.65,
+      "peak": 0.5999938962981048,
+      "rms": 0.2625089996920234,
+      "change_from_full_db": -0.9120216258019566
+    },
+    {
+      "volume": 0.8,
+      "peak": 0.5999938962981048,
+      "rms": 0.2784450857827076,
+      "change_from_full_db": -0.40011441680199517
+    },
+    {
+      "volume": 1.0,
+      "peak": 0.5999938962981048,
+      "rms": 0.29157163915415096,
+      "change_from_full_db": 0.0
+    }
+  ],
+  "next_step": "All-role/all-expression loudness work, targeting ordinary office listening on a desk at 30–50 cm. Gain-only and device voicing candidates remain offline; no all-role profile installed.",
+  "accepted_as_final": false,
+  "microphone_capture": false,
+  "followup_at_reduced_volume": {
+    "user_report": "Some distortion remains at approximately 80%",
+    "snapshot": {
+      "device_id": "4553502d49524953010030eda0f452a0",
+      "boot_id": 8257068652410574677,
+      "metadata": {
+        "schema": 1,
+        "token": "0000000000000002",
+        "size": 805,
+        "crc32": "e1d278cc",
+        "volume": 0.7611111111111111,
+        "phase": 0,
+        "generation": 9,
+        "revision": 3,
+        "committed_revision": 3,
+        "plan_pending": false,
+        "preparing": false,
+        "preparation_failed": false,
+        "continuous": false,
+        "following": false,
+        "condition": 0,
+        "cooperation": 0,
+        "tile": 0,
+        "source": -1,
+        "clock": 0,
+        "state_role": 3,
+        "state_phrase": 2,
+        "seed": 34100,
+        "plan_role": 3,
+        "plan_phrase": 2,
+        "density": 0.5,
+        "events": 11,
+        "source_count": 6,
+        "start_us": 8571015599,
+        "clock_origin_us": 4786015599,
+        "apply_at_us": 0,
+        "chunk_max": 512
+      },
+      "plan_sha256": "cdbd19101eef0dbb8816f67b1fe48bcab6af6488e2df26c545c23c51501f062e",
+      "rpc_operation_ids": [
+        "d74c3c3e-17c9-4b03-90e5-83b0cbf36c71",
+        "e6f477ab-ecda-40c7-bc98-2f842b3c4d9f",
+        "0a6d6afb-56ff-4019-b7b9-90d61c8fe706"
+      ],
+      "note": "Coherent cached current plan; volume is the exact UI target, not a smoothed PCM sample gain"
+    },
+    "same_plan_bytes": true,
+    "digital_replay": {
+      "cases": [
+        {
+          "seed": "8534",
+          "role": 3,
+          "phrase": 2,
+          "density": 0.5,
+          "volume": 0.7611111111111111,
+          "role_gain": 2.38000011,
+          "candidate": 0,
+          "residual_plan": true,
+          "frames": 120000,
+          "events": 11,
+          "target_rms": 0.045,
+          "raw_bank_rms": 0.045000000460925435,
+          "bank_rms": 0.02515681515058533,
+          "bank_peak": 0.08173443377017975,
+          "clipped_samples": 0,
+          "block_partition_verified": true,
+          "pcm": {
+            "rms": 0.2751309806531648,
+            "peak": 0.5999938962981048,
+            "crest_db": 6.7721467244881755,
+            "mean": 4.676452935372016e-06,
+            "band_power": {
+              "0-120": 3.0082966974419393e-07,
+              "120-300": 8.320065102075044e-06,
+              "300-1000": 0.07563519060073072,
+              "1000-3000": 5.292218459049768e-05,
+              "3000-12001": 3.228350791284324e-07
+            },
+            "band_rms": {
+              "0-120": 0.0005484794159712778,
+              "120-300": 0.0028844523053909287,
+              "300-1000": 0.27501852774082464,
+              "1000-3000": 0.007274763541895893,
+              "3000-12001": 0.0005681857787101261
+            },
+            "band_fraction": {
+              "0-120": 3.974126387383343e-06,
+              "120-300": 0.00010991266351826284,
+              "300-1000": 0.999182717039611,
+              "1000-3000": 0.0006991313404622324,
+              "3000-12001": 4.264830021015754e-06
+            }
+          },
+          "pre_limiter": {
+            "rms": 0.3677893667576165,
+            "peak": 1.224346399307251,
+            "crest_db": 10.44610278510975,
+            "mean": -1.4341396683366092e-07,
+            "band_power": {
+              "0-120": 2.3295671758434595e-10,
+              "120-300": 2.6526651911236622e-06,
+              "300-1000": 0.13517696661539397,
+              "1000-3000": 8.879531734797652e-05,
+              "3000-12001": 6.034690787328114e-07
+            },
+            "band_rms": {
+              "0-120": 1.5262919693962423e-05,
+              "120-300": 0.001628700460834853,
+              "300-1000": 0.3676642036089371,
+              "1000-3000": 0.009423126728850489,
+              "3000-12001": 0.0007768327224910209
+            },
+            "band_fraction": {
+              "0-120": 1.7221734918468037e-09,
+              "120-300": 1.9610293801653765e-05,
+              "300-1000": 0.9993194917377872,
+              "1000-3000": 0.0006564349949747302,
+              "3000-12001": 4.4612512629800895e-06
+            }
+          },
+          "effective_attenuation": {
+            "active_fraction": 0.8340666666666666,
+            "reduction_db": {
+              "0": 0.00024850885085343256,
+              "50": 0.8594738467428875,
+              "95": 4.485642613132132,
+              "100": 6.195062397617104
+            },
+            "active_fraction_over_db": {
+              "0.1": 0.7253217168891376,
+              "1": 0.4745224202701623,
+              "3": 0.21315242586523858,
+              "6": 0.0009391735272959795
+            },
+            "energy_reduction_db": 2.5211918030311535
+          },
+          "ceiling_sample_fraction": 0.00285,
+          "near_ceiling_fraction": 0.0252,
+          "pcm_repeat_max_integer_delta": 0.0
+        },
+        {
+          "seed": "8534",
+          "role": 3,
+          "phrase": 2,
+          "density": 0.5,
+          "volume": 1,
+          "role_gain": 2.38000011,
+          "candidate": 0,
+          "residual_plan": true,
+          "frames": 120000,
+          "events": 11,
+          "target_rms": 0.045,
+          "raw_bank_rms": 0.045000000460925435,
+          "bank_rms": 0.02515681515058533,
+          "bank_peak": 0.08173443377017975,
+          "clipped_samples": 0,
+          "block_partition_verified": true,
+          "pcm": {
+            "rms": 0.29157163915415096,
+            "peak": 0.5999938962981048,
+            "crest_db": 6.26803107981182,
+            "mean": -2.5505335652740076e-05,
+            "band_power": {
+              "0-120": 6.164051685523333e-07,
+              "120-300": 1.81108574559054e-05,
+              "300-1000": 0.08493417112434899,
+              "1000-3000": 6.075747641508378e-05,
+              "3000-12001": 3.648956498829655e-07
+            },
+            "band_rms": {
+              "0-120": 0.0007851147486529172,
+              "120-300": 0.004255685309783302,
+              "300-1000": 0.29143467728523487,
+              "1000-3000": 0.007794708231555802,
+              "3000-12001": 0.000604065931735076
+            },
+            "band_fraction": {
+              "0-120": 7.250629520270032e-06,
+              "120-300": 0.00021303377130271666,
+              "300-1000": 0.9990607474628713,
+              "1000-3000": 0.0007146759543027993,
+              "3000-12001": 4.292182002745364e-06
+            }
+          },
+          "pre_limiter": {
+            "rms": 0.4832268830930054,
+            "peak": 1.6086534261703491,
+            "crest_db": 10.446228022599687,
+            "mean": -2.7919187016633983e-08,
+            "band_power": {
+              "0-120": 3.936371451766963e-10,
+              "120-300": 4.579030424014835e-06,
+              "300-1000": 0.23334931635983333,
+              "1000-3000": 0.00015328302117319884,
+              "3000-12001": 1.0417387134872623e-06
+            },
+            "band_rms": {
+              "0-120": 1.9840290954940564e-05,
+              "120-300": 0.0021398669173607115,
+              "300-1000": 0.48306243526052955,
+              "1000-3000": 0.012380752043926848,
+              "3000-12001": 0.001020656021138984
+            },
+            "band_fraction": {
+              "0-120": 1.6857528367096277e-09,
+              "120-300": 1.960971829322086e-05,
+              "300-1000": 0.9993194921207582,
+              "1000-3000": 0.0006564352244912054,
+              "3000-12001": 4.461250704841647e-06
+            }
+          },
+          "effective_attenuation": {
+            "active_fraction": 0.8352833333333334,
+            "reduction_db": {
+              "0": 0.00024850885085343256,
+              "50": 2.4032511774881686,
+              "95": 6.797147516954749,
+              "100": 8.566224595886345
+            },
+            "active_fraction_over_db": {
+              "0.1": 0.8558972005507114,
+              "1": 0.6623900073827245,
+              "3": 0.4465351078476365,
+              "6": 0.12468822954286969
+            },
+            "energy_reduction_db": 4.388113575883849
+          },
+          "ceiling_sample_fraction": 0.006233333333333333,
+          "near_ceiling_fraction": 0.034133333333333335,
+          "pcm_repeat_max_integer_delta": 0.0
+        }
+      ],
+      "change_from_reduced_to_full": {
+        "rms_change_db": 0.5041156446763553,
+        "pre_limiter_rms_change_db": 2.371038361048961,
+        "band_rms_change_db": {
+          "0-120": 3.1154560468863486,
+          "120-300": 3.378122878784665,
+          "300-1000": 0.5035854719006654,
+          "1000-3000": 0.5996196372294273,
+          "3000-12001": 0.5318796706184917
+        }
+      },
+      "scope": "Unchanged actual C with the installed Harmony-only 500 Hz filter; digital metrics are not acoustic acceptance."
+    }
+  }
+}

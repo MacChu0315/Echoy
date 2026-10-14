@@ -6,8 +6,11 @@ especially in lower sounds. The earlier two microphone attempts are exhausted
 and were contaminated by office speech. This trial does not use a microphone.
 
 Status: implemented and verified locally; left-only package `abcdec27b6fe` is
-installed and its silent startup/calibration are confirmed. Focused listening
-is pending. See `../verification/harmony-bass/README.md`.
+installed and its silent startup/calibration are confirmed. The user accepts
+the thinner timbre and reports improvement, but repeatable distortion remains
+at full and at the later .761111 target volume. This is not a complete acoustic
+fix. The user has since reopened loudness tuning for all roles/expressions;
+see `../verification/harmony-bass/README.md` and `../verification/loudness-review/README.md`.
 
 Only the left device will receive the first listening build. Preserve rhythm,
 pitch, expression rules, other roles, UI layout/controls, manual brightness,

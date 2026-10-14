@@ -22,6 +22,7 @@ endmenu
 menu "Echoy device audio trials"
 config ECHOY_HARMONY_BASS_TRIAL
     bool "Apply the approved 500 Hz Harmony bass-cut trial to prepared loops"
+    depends on !ECHOY_OFFICE_VOICING_TRIAL
     default n
     help
         Filters only the normalized Harmony FULL loop before the existing role
@@ -29,4 +30,15 @@ config ECHOY_HARMONY_BASS_TRIAL
         Other roles, notes, timing, UI volume and the .60 output ceiling remain
         unchanged. No gain compensation and no microphone capture. Keep off
         for ordinary releases until physical listening acceptance is complete.
+config ECHOY_OFFICE_VOICING_TRIAL
+    bool "Apply the approved office speaker-voicing trial to prepared loops"
+    default n
+    help
+        Applies the office listening trial to the prepared loops of all roles,
+        followed by its separate role-gain table. The office helper includes
+        the Harmony bass cut, so the older Harmony-only trial cannot also run.
+        Runs only on the background preparation worker. Notes, timing, playback
+        permission, UI volume and the .60 output ceiling remain unchanged.
+        Does not enable microphone capture or reference-tone diagnostics.
+        Keep disabled in ordinary releases pending physical acceptance.
 endmenu

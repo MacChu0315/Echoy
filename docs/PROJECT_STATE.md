@@ -313,7 +313,8 @@ zero crash counts and no output/partial/deadline errors in current telemetry.
 This is user acceptance and status evidence, not a timed replay of each action.
 See `verification/background-home/physical-acceptance.json`.
 
-The remaining task is Harmony output distortion. On 2026-10-14, after clarifying
+The remaining audio task is Harmony output distortion and, as reopened below,
+greater useful loudness across all roles/expressions. On 2026-10-14, after clarifying
 the right Mosaico's onboard microphone will observe its own speaker, the user
 explicitly approved the bounded trial in `plans/2026-10-13-output-measurement.md`:
 at most two explicit runs, each at most 12 seconds, local results only. The
@@ -333,13 +334,59 @@ the user approved the stronger Harmony-only 500 Hz bass-cut trial (thinner bass,
 about 2 dB lower average PCM for the preserved phrase), initially on the left
 only. Implementation is complete under the default-off
 `CONFIG_ECHOY_HARMONY_BASS_TRIAL`; see `plans/2026-10-14-harmony-bass-trial.md`.
-Left now runs trial package `abcdec27b6fe`, ELF
+The first left-only trial was package `abcdec27b6fe`, ELF
 `0020c2b944e8c77039df96ad67807128dcbf308b1b418aba7fc3b3483bfce1d7`,
 Boot ID `8257068652410574677`; startup is healthy, calibrated and silent with
 zero crashes. Both microphone/reference-tone diagnostics are disabled. The
 right retains ordinary `09275b935ad8`. Numerical, worker/job ownership, common
-bar and paused-update tests pass; focused listening of the new left build is
-pending. No acoustic fix has been claimed. See `verification/harmony-bass/README.md`.
+bar and paused-update tests pass. The user reports improvement and accepts the
+thinner timbre, but a small amount of distortion repeats at the same sound in
+each loop. It is not yet accepted as a complete fix. The post-feedback snapshot
+is paused at UI target volume 1.0, Harmony/Arpeggio, seed `8534`, 11 events/six
+source notes, with no preparation error. Current-boot logs have zero crashes,
+partial writes, write errors or deadline misses. The current exact plan is
+preserved in `verification/harmony-bass/residual-plan.echp`.
+The user reports residual distortion at approximately 80%; exact readback is
+UI target .7611111111111111, with the same plan SHA, revision and Boot ID.
+Actual-C replay including the installed filter reaches the .60 ceiling there;
+raising it to full increases average PCM by only .504 dB. This does not identify
+the physical cause. Do not keep thinning the accepted timbre without new
+evidence. See `verification/harmony-bass/README.md`.
+
+The user explicitly reopened loudness tuning for all four roles and all three
+expressions, targeting ordinary office listening on a desk at 30–50 cm.
+Lowering the final volume alone does not satisfy this goal. A 578-case offline
+audit finds clear digital headroom for Dust, modest additional average output
+for Voice, and little benefit from simply increasing Pulse/Harmony gain.
+Digital RMS is not acoustic loudness or a role-balancing target. Hardware audit
+found no obvious pinned-S31 I2S format error; actual amplifier supply/loading
+and clean speaker output remain unmeasured. Raising hardware volume would
+increase drive after the digital limiter and is not established as a solution.
+The user approved the all-role voicing direction, with a left-only first trial;
+see `plans/2026-10-14-office-speaker-voicing.md`. The opt-in implementation keeps
+Source/Foreground, original normalization target and plan bytes unchanged.
+Fixed per-note harmonic phases reduce the extra waveform crest found in the
+first two offline candidates. The selected profile uses role gains
+`1.6/.78/.0634/1.6`, retaining common drive 18, hardware volume 90, .60 ceiling
+and Harmony's 500 Hz cut. Pulse/Voice/Dust show higher weighted digital level;
+Harmony is near parity (some cases slightly lower) with more upper harmonics.
+Limiting remains stronger than the original profile: do not claim an acoustic
+fix or all-role physical loudness gain from these figures.
+
+Left now runs office trial `7307f8ed9a3e`, ELF
+`133f0e68982ff07bd35be1ac76f1dddefe5bc8df76e8bc3bc0e99f0f4f9a29c9`,
+Boot ID `1063869759841904881`. Identity/HEALTHY/retained-layout and actual home,
+silent startup, zero crashes and magnetic baseline are verified. Right remains
+ordinary `09275b935ad8`. Device microphone/reference diagnostics are off.
+Local DSP/band/runtime tests and sanitizers, 152 byte-identical prototype-to-
+production FULL/PCM comparisons, 13 native GSP/audio groups and ordinary/trial
+pinned-SDK builds pass. The native test uses one combined desktop PCM chain,
+not separate physical speakers. Physical sound, added preparation cost/stack
+under a real phrase and mixed-version cooperative playback await focused
+testing. The user has been asked first to record and compare Harmony's three
+expressions at default and approximately 80% volume, keeping the knob in place
+if it still distorts. Evidence: `verification/loudness-review/README.md`.
+The two-run microphone allowance remains exhausted.
 The pre-listening left phrase and exact C replay are preserved in
 `output/harmony-listening-20261014/`.
 The post-listening left snapshot is from new power-on Boot ID
@@ -779,8 +826,8 @@ adds 1 ms lookahead and clears its tail on pause/fault/reopen. Physical recordin
 and repeated playback/pause were observed: peak 29,490, gain reduction active,
 zero clipping/output errors/deadline misses, render+conversion maximum 3,211 us.
 On 2026-10-10 the user chose to keep the current volume for now ("音量就先这样吧").
-Retain these output parameters; stop further loudness tuning unless
-requested. This is provisional retention, not a claim of complete acoustic-quality
+That retention decision was superseded by the user's explicit all-role loudness
+request on 2026-10-14, described above. It was provisional retention, not a claim of complete acoustic-quality
 acceptance. See `verification/loudness-limiter/README.md`.
 Use the official Mosaico workflow; generic IDF flash targets point at retained
 factory Recovery and are blocked. Let Recovery finish initialization before
@@ -853,11 +900,11 @@ volume, versus 8.52 dB for Dust, so no additional gain-only package was installe
 Retain the audio profile established in `7c431dacfd59`. That package's logs confirm
 Harmony phrase 2 (Broken), and the user subsequently explicitly confirmed that
 phrase 3 (Answer), the original problematic expression, also has no obvious
-distortion at the same higher volume. Physical listening follow-up is closed
-for this trial. On 2026-10-10 the user decided to retain the current volume
-("音量上就先这样吧"). Keep the output parameters from `7c431dacfd59`;
-the current package(s) listed in the memory section retain those same parameters;
-stop further loudness tuning unless requested. This is provisional retention,
+distortion at the same higher volume. Physical listening follow-up was closed
+for that trial. On 2026-10-10 the user decided to retain the current volume
+("音量上就先这样吧"). The current packages retain the common output parameters from
+`7c431dacfd59`, with the additional left-only Harmony trial described above.
+The 2026-10-14 all-role loudness request explicitly reopens tuning. This was provisional retention,
 not a claim of measured acoustic performance or the absolute hardware limit.
 Any future substantial loudness improvement needs acoustic/output-chain
 measurement or a separately evaluated spectral adjustment.

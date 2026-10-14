@@ -9,6 +9,23 @@ import tempfile
 import unittest
 ROOT=Path(__file__).resolve().parents[2]
 HERE=Path(__file__).resolve().parent
+class OfficeConfiguration(unittest.TestCase):
+    def test_two_voicing_trials_cannot_be_compiled_together(self):
+        main=ROOT/'projects/echoy/main'
+        result=subprocess.run(['cc','-std=c11','-fsyntax-only',
+                               '-DCONFIG_ECHOY_HARMONY_BASS_TRIAL=1',
+                               '-DCONFIG_ECHOY_OFFICE_VOICING_TRIAL=1',
+                               '-I'+str(HERE/'stubs'),'-I'+str(main),
+                               str(main/'platform_device.c')],capture_output=True,text=True)
+        self.assertNotEqual(result.returncode,0)
+        self.assertIn('Echoy audio trials are mutually exclusive',result.stderr)
+    def test_office_defaults_disable_other_trials_and_microphone(self):
+        defaults=ROOT/'projects/echoy/sdkconfig.office-voicing-trial.defaults'
+        self.assertTrue(defaults.is_file(),'office trial needs its own isolated defaults')
+        text=defaults.read_text()
+        self.assertIn('CONFIG_ECHOY_OFFICE_VOICING_TRIAL=y',text)
+        for name in ('ECHOY_HARMONY_BASS_TRIAL','ECHOY_OUTPUT_MEASUREMENT','ECHOY_AUDIO_DIAGNOSTICS'):
+            self.assertIn('# CONFIG_'+name+' is not set',text)
 class DeviceRuntime(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -19,12 +36,16 @@ class DeviceRuntime(unittest.TestCase):
                  '-DCONFIG_ECHOY_AUDIO_DIAGNOSTICS=1',
                  '-DCONFIG_ECHOY_OUTPUT_MEASUREMENT=1',
                  '-DCONFIG_ECHOY_HARMONY_BASS_TRIAL=0',
+                 '-DCONFIG_ECHOY_OFFICE_VOICING_TRIAL=0',
                  '-I'+str(HERE/'stubs'),'-I'+str(HERE),'-I'+str(main),
                  str(HERE/'test_runtime.c'),str(HERE/'fakes.c'),
                  *[str(main/(name+'.c')) for name in ['platform_device','echoy_band','echoy_model','echoy_music','echoy_arrange','echoy_audio','echoy_audio_probe','echoy_device_pcm','echoy_output_measurement']],
                  '-Wl,--wrap=echoy_output_measurement_analyze',
                  '-Wl,--wrap=echoy_band_action',
                  '-Wl,--wrap=echoy_audio_cut_harmony_bass',
+                 '-Wl,--wrap=echoy_band_cut_harmony_bass_job',
+                 '-Wl,--wrap=echoy_band_voice_for_speaker_job',
+                 '-Wl,--wrap=echoy_audio_voice_for_speaker',
                  '-Wl,--wrap=fake_log','-Wl,--wrap=xSemaphoreTake','-Wl,--wrap=board_audio_write','-Wl,--wrap=echoy_band_create','-Wl,--wrap=echoy_band_prepare_job','-Wl,--wrap=echoy_band_calibrate_job','-lm','-o',str(cls.binary)]
         if os.environ.get('ECHOY_RUNTIME_SANITIZE')=='1':
             command[1:1]=['-fsanitize=address,undefined','-fno-omit-frame-pointer','-fno-pie','-no-pie']
@@ -39,12 +60,20 @@ class DeviceRuntime(unittest.TestCase):
                for arg in normal]
         trial[-1]=str(cls.trial_binary)
         subprocess.run(trial,check=True)
+        cls.office_binary=Path(cls.temp.name)/'runtime-office-trial-check'
+        office=[arg.replace('-DCONFIG_ECHOY_OFFICE_VOICING_TRIAL=0','-DCONFIG_ECHOY_OFFICE_VOICING_TRIAL=1')
+                   .replace('-DCONFIG_ECHOY_AUDIO_DIAGNOSTICS=1','-DCONFIG_ECHOY_AUDIO_DIAGNOSTICS=0')
+                for arg in normal]
+        office[-1]=str(cls.office_binary)
+        subprocess.run(office,check=True)
     @classmethod
     def tearDownClass(cls):cls.temp.cleanup()
     def run_case(self,name,binary=None):
         binaries=[binary] if binary else [self.binary]
         if binary is None and not name.startswith('measure_'):
             binaries += [self.normal_binary,self.trial_binary]
+            if not name.startswith('probe'):
+                binaries.append(self.office_binary)
         for target in binaries:
             result=subprocess.run([str(target),name],capture_output=True,text=True,timeout=10)
             self.assertEqual(result.returncode,0,str(target)+'\n'+result.stdout+'\n'+result.stderr)
@@ -95,6 +124,12 @@ class DeviceRuntime(unittest.TestCase):
     def test_harmony_trial_stays_on_worker_and_paused(self):self.run_case('harmony_worker',self.trial_binary)
     def test_harmony_trial_failure_keeps_old_valid_bank(self):self.run_case('harmony_failure',self.trial_binary)
     def test_harmony_trial_stale_job_cannot_play(self):self.run_case('harmony_stale',self.trial_binary)
+    def test_office_voicing_disabled_in_ordinary_build(self):self.run_case('office_disabled',self.normal_binary)
+    def test_office_all_roles_use_one_voicing_and_office_trims(self):self.run_case('office_roles',self.office_binary)
+    def test_office_worker_keeps_old_publication_and_pause(self):self.run_case('office_worker',self.office_binary)
+    def test_office_failure_keeps_old_valid_bank(self):self.run_case('office_failure',self.office_binary)
+    def test_office_stale_job_cannot_play(self):self.run_case('office_stale',self.office_binary)
+    def test_office_shutdown_retains_worker_owned_job(self):self.run_case('office_stop',self.office_binary)
     def test_measurement_failures(self):
         for case in ('open','flush','read','partial_read','partial_write','partial_read_ok',
                      'partial_write_ok','deadline','close','reopen'):

@@ -1,0 +1,59 @@
+{
+  "source_sha256": {
+    "projects/echoy/main/echoy_audio.c": "34a263646c27a0cb933ef633306d0b7fb5ac054f356b023f69fd4d56a04157ae",
+    "projects/echoy/main/echoy_audio.h": "81695cb2aaf66a172eb864284b1babb74d9da2f8a989abb99195043105226c66",
+    "projects/echoy/main/echoy_music.c": "b4dd6f3449dbb56c1122453c10c2461afc7872df2fd1c4ef7819f37925f96e33",
+    "projects/echoy/main/echoy_music.h": "369dd3803b89ccb9cce7f0f94d76313fdceaa5f8f7250b3152c1a88f48f77500",
+    "projects/echoy/main/echoy_device_pcm.c": "f888c952ad5ae1c774f552020efed20f2227edb11bcc53c74aed5b012cf10c6a",
+    "projects/echoy/main/echoy_device_pcm.h": "4433aaa5d0ddbf0420ca33ba7de635de4be52aecd11998ac4f83c110c693ebf3",
+    "projects/echoy/main/echoy_link_codec.c": "8fdf823a71f75467e72a83a1d771312f5038628a9c4d6c98ceb517c3bca0b66d",
+    "projects/echoy/main/echoy_link_codec.h": "434e7db076932f616288e9f7eb1d9d47b0952c2bf7aad550542170e23535322c",
+    "projects/echoy/main/echoy_band.c": "f80948ca2422c083119d01d4e33471d92538635b437d9f3886b270173ce4e7d9",
+    "projects/echoy/main/platform_device.c": "dd044c1e3149154e90d0e1c964bf36d0970849de1b48533a7db259d006bd168e"
+  },
+  "measurement_source_sha256": "073469c5f6f5c3e68c29a83b72006594542400745fc0aa4cdd441ebe0f71f142",
+  "analysis_source_sha256": "9038cbf45ff5b743d6e6ff89f981b379270f8eaadb2d1c34f7c85b36d2f8217c",
+  "residual_plan_sha256": "cdbd19101eef0dbb8816f67b1fe48bcab6af6488e2df26c545c23c51501f062e",
+  "git_head": "b0ec9d5f2ffe70810321280e9b5fdd0f790a5fcf",
+  "compiler": "cc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "architecture": "x86_64",
+  "compile_command": [
+    "cc",
+    "-std=c11",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-I/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/loudness-review-20261014/levels/source",
+    "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/loudness-review-20261014/levels/measure.c",
+    "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/loudness-review-20261014/levels/source/echoy_audio.c",
+    "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/loudness-review-20261014/levels/source/echoy_music.c",
+    "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/loudness-review-20261014/levels/source/echoy_device_pcm.c",
+    "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/loudness-review-20261014/levels/source/echoy_link_codec.c",
+    "-lm",
+    "-o",
+    "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/loudness-review-20261014/levels/measure"
+  ],
+  "sample_rate": 24000,
+  "warmup_periods": 1,
+  "retained_periods": 2,
+  "period_frames": 60000,
+  "current_trim": [
+    1.6,
+    0.52,
+    0.0317,
+    2.38
+  ],
+  "global_drive": 18,
+  "ceiling": 0.6,
+  "bus_gain": 0.45,
+  "harmony_periodic_highpass_hz": 500,
+  "active_limiter_input_threshold": 0.0001,
+  "caveats": [
+    "Digital RMS is not calibrated SPL or perceived loudness.",
+    "Steady single-device FULL banks only; no onset, crossfade, cues or multiple audible tiles.",
+    "No hardware voltage/acoustic measurement or new microphone capture.",
+    "Effective attenuation uses actual applied gain on non-negligible delayed samples, not limited counters.",
+    "Role-trim candidates are offline probes, not approval for physical volume increases."
+  ]
+}

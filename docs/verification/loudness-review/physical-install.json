@@ -1,0 +1,21 @@
+{
+  "device_id": "4553502d49524953010030eda0f452a0",
+  "boot_id": 1063869759841904881,
+  "operation_id": "0b67f292-8b2c-4135-95d9-f5cc309e3be8",
+  "package": "7307f8ed9a3e",
+  "elf_sha256": "133f0e68982ff07bd35be1ac76f1dddefe5bc8df76e8bc3bc0e99f0f4f9a29c9",
+  "healthy": true,
+  "validated": true,
+  "crash_count": 0,
+  "baseline_ready": true,
+  "startup_pcm_nonzero": 0,
+  "startup_partial_writes": 0,
+  "startup_write_errors": 0,
+  "startup_deadline_misses": 0,
+  "free_internal": 24555,
+  "free_spiram": 12262320,
+  "acoustic_acceptance": "Pending user listening; office at 30\u201350 cm, all roles/expressions. No all-role louder/cleaner claim.",
+  "right_device": "Unchanged ordinary 09275b935ad8",
+  "microphone_capture": false,
+  "scope": "Startup checks only; prepared-profile stack/timing and physical listening remain pending."
+}

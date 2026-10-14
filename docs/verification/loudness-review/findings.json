@@ -1,0 +1,47 @@
+{
+  "scope": "578 offline steady single-tile FULL-bank cases through unchanged production C, Harmony-only existing 500 Hz helper before role trim; no physical playback or microphone use.",
+  "gain_candidate_rms_delta_median_db": {
+    "Pulse_1.6_to_2.0": {
+      "ui_.65": 0.6485576661603127,
+      "ui_1": 0.46459138313042336
+    },
+    "Voice_.52_to_.78": {
+      "ui_.65": 2.2231222818001193,
+      "ui_1": 1.723657016931394
+    },
+    "Dust_.0317_to_.0634": {
+      "ui_.65": 6.0206016527722,
+      "ui_1": 6.020595164553506
+    },
+    "Dust_.0317_to_.0951": {
+      "ui_.65": 9.542425130627059,
+      "ui_1": 9.542417414354945
+    }
+  },
+  "interpretation": [
+    "Pulse already reaches the .60 ceiling in all 36 current cases at each tested UI volume. At UI1 its median energy attenuation is 10.01 dB; increasing trim to2 raises RMS by only .46 dB and attenuation to11.48 dB. Inspect its spectral/attack allocation before another gain-only change.",
+    "Voice also touches the peak ceiling, but current UI1 energy attenuation is about2.00 dB. The .78 trim yields1.72 dB median RMS increase, with stronger attenuation3.73 dB; this is available average-level change through compression, not unused peak headroom.",
+    "Dust uses much less digital amplitude. At UI1 baseline peak ranges .09717..16031; 2x candidate peaks remain <=.32063 and3x <=.48094 with no effective attenuation. It has the clearest digital headroom, but its mainly1\u20133kHz spectrum means RMS must not determine perceived balance.",
+    "Harmony remains at2.38 plus the existing500Hz helper. The exact residual plan .761111\u21921 gains only .5041 dB PCM RMS while pre-limiter RMS rises2.3710 dB. More gain primarily drives attenuation; no gain increase is proposed here.",
+    "For the exact residual plan at .761111, 99.9183% of PCM energy lies in300\u20131000Hz and only .01139% below300Hz. This narrows the digital spectral observation; it does not localize the audible breakup to a component or exclude distortion within300\u20131000Hz.",
+    "All baseline/candidate outputs are below the digital ceiling and have zero out-of-range samples. This does not establish absence of limiter waveform changes or analog/acoustic distortion."
+  ],
+  "evidence_files": [
+    "source-manifest.json",
+    "source/",
+    "measure.c",
+    "run.py",
+    "cases.json",
+    "metrics.csv",
+    "summary.json",
+    "role-summary.json",
+    "validation.json",
+    "residual-plan.echp"
+  ],
+  "limits": [
+    "Only six seeds, densities .5 and1, UI .65 and1, plus one exact residual plan at .761111 and1.",
+    "No linked multi-tile mixing, switching fades, cues, startup transient, supply loading or physical speaker transfer is reproduced.",
+    "All twelve expressions are quantified separately in summary.json; per-role aggregates do not replace expression-level checks.",
+    "No blind hardware/PA volume raise follows from these data."
+  ]
+}

@@ -1,0 +1,579 @@
+{
+  "status": "Bounded phase experiment complete. Fixed phases improve the digital candidate; no further scans, physical conclusions or device operations.",
+  "fixed_trim": [
+    1.6,
+    0.78,
+    0.0634,
+    1.6
+  ],
+  "fixed_phase_quarters": {
+    "Pulse_H3_H5": [
+      1,
+      3
+    ],
+    "Voice_H2_H3": [
+      3,
+      0
+    ],
+    "Harmony_H2_H3_H4_H5": [
+      0,
+      3,
+      0,
+      2
+    ]
+  },
+  "phase_units": "quarter cycles:0=0,1=pi/2,2=pi,3=3pi/2; fundamental phase remains unchanged",
+  "representative_selection": "Both representative plans: PCM RMS increases, pre-limiter crest decreases, actual applied-gain energy attenuation does not increase (1e-6 dB arithmetic tolerance). Maximize the smaller of two RMS gains, then the mean. One fixed code per role.",
+  "selection_counts": {
+    "0": {
+      "tested": 16,
+      "eligible": 10
+    },
+    "1": {
+      "tested": 16,
+      "eligible": 11
+    },
+    "3": {
+      "tested": 256,
+      "eligible": 237
+    }
+  },
+  "findings": [
+    "The two representative plans support the identified introduced digital peak-stacking issue: changing phase alone improved RMS and pre-limiter crest while reducing actual limiter energy attenuation versus candidate2 zero phase.",
+    "All twelve expression groups have a positive mean paired R128 change versus the original baseline, but Harmony is marginal: expression3 ranges-.1..+.3LU with a mean+.083LU. Do not claim every case or every listener gets a loudness improvement.",
+    "Phase-selected Pulse/Voice/Dust have stronger digital gains. Source, Foreground, original normalization target, note/envelope timings and encoded plans remain unchanged.",
+    "Versus the original baseline, Pulse/Voice/Harmony still have more limiter attenuation. This does not satisfy the earlier stricter no-heavier-limiting condition against the original baseline.",
+    "The exact residual plan atUI.761111 moves from candidate2 pre-crest15.569dB to11.228dB, but the original is10.446dB. Its selected R128 is-11.3LUFS versus original-11.7, and selected energy attenuation3.205dB versus original2.521.",
+    "The same residual plan has about62.87% of selected PCM energy in1\u20133kHz, versus roughly.07% in the original. The changed timbre is substantial; digital LUFS does not establish30\u201350cm small-speaker SPL or clean physical sound.",
+    "Production echoy_audio_voice_for_speaker matched the fixed phase winner byte-for-byte in all152 checked plans/volumes: zero FULL float error and zero final PCM LSB error. Harmony500 is applied exactly once.",
+    "No microphone, hardware, real playback, product-code edit, dependency installation or commit was performed in this experiment."
+  ],
+  "residual": [
+    {
+      "mode": "verify",
+      "role": 3,
+      "seed": "8534",
+      "phrase": 2,
+      "density": 0.5,
+      "volume": 0.7611111111111111,
+      "code": 140,
+      "quarters": [
+        0,
+        3,
+        0,
+        2
+      ],
+      "vs_baseline_rms_db": -0.7692755076099399,
+      "vs_zero_rms_db": 3.169011133392399,
+      "baseline_lufs": -11.7,
+      "zero_lufs": -14.5,
+      "selected_lufs": -11.3,
+      "vs_baseline_lu": 0.4,
+      "vs_zero_lu": 3.2,
+      "baseline_attenuation_db": 2.5211918030314613,
+      "zero_attenuation_db": 6.336839940803726,
+      "selected_attenuation_db": 3.2052526204763723,
+      "vs_baseline_attenuation_db": 0.684060817444911,
+      "vs_zero_attenuation_db": -3.1315873203273537,
+      "baseline_pre_crest_db": 10.44610278510943,
+      "zero_pre_crest_db": 15.569268584590734,
+      "selected_pre_crest_db": 11.228386182000252,
+      "pcm_peak": 0.5999938962981048,
+      "pcm_true_peak_dbtp": -4.3,
+      "selected_band_fraction": {
+        "0-120": 7.016796789590243e-06,
+        "120-300": 3.726229916939169e-05,
+        "300-1000": 0.3712489950377666,
+        "1000-3000": 0.6287016516087962,
+        "3000-12001": 5.0742574881024645e-06
+      },
+      "vs_baseline_band_rms_db": {
+        "0-120": 1.6996967386703319,
+        "120-300": -5.467056346788474,
+        "300-1000": -5.06907177456271,
+        "1000-3000": 28.76958279493161,
+        "3000-12001": -0.0145677609445821
+      }
+    },
+    {
+      "mode": "verify",
+      "role": 3,
+      "seed": "8534",
+      "phrase": 2,
+      "density": 0.5,
+      "volume": 1,
+      "code": 140,
+      "quarters": [
+        0,
+        3,
+        0,
+        2
+      ],
+      "vs_baseline_rms_db": -0.8886678353191968,
+      "vs_zero_rms_db": 3.2096784331789885,
+      "baseline_lufs": -11.2,
+      "zero_lufs": -14.1,
+      "selected_lufs": -10.9,
+      "vs_baseline_lu": 0.3,
+      "vs_zero_lu": 3.2,
+      "baseline_attenuation_db": 4.388113575884225,
+      "zero_attenuation_db": 8.36382001348525,
+      "selected_attenuation_db": 5.191566692331564,
+      "vs_baseline_attenuation_db": 0.8034531164473391,
+      "vs_zero_attenuation_db": -3.1722533211536863,
+      "baseline_pre_crest_db": 10.446228022599337,
+      "zero_pre_crest_db": 15.569251041718772,
+      "selected_pre_crest_db": 11.228371815403788,
+      "pcm_peak": 0.5999938962981048,
+      "pcm_true_peak_dbtp": -4.3,
+      "selected_band_fraction": {
+        "0-120": 1.2183078496988904e-05,
+        "120-300": 5.954027609033288e-05,
+        "300-1000": 0.36963979418752374,
+        "1000-3000": 0.6302832624967663,
+        "3000-12001": 5.219961116354942e-06
+      },
+      "vs_baseline_band_rms_db": {
+        "0-120": 1.3651454400685132,
+        "120-300": -6.425043950599967,
+        "300-1000": -5.2067995989105125,
+        "1000-3000": 28.565598205776034,
+        "3000-12001": -0.038776448001456826
+      }
+    }
+  ],
+  "verification": {
+    "scan_cases": 582,
+    "followup_cases": 456,
+    "source_foreground_target_plan_preserved": true,
+    "all_followup_blocks_bit_identical": true,
+    "max_wrap_jump": 0.0003357036042359691,
+    "all_repeat_pcm_equal": true,
+    "max_sample_peak": 0.5999938962981048,
+    "max_true_peak_dbtp": -3.8,
+    "wav_files": 14
+  },
+  "production_equivalence": {
+    "cases": 152,
+    "max_float_error": 0,
+    "max_pcm_lsb_error": 0,
+    "float_different_cases": 0,
+    "pcm_different_cases": 0,
+    "max_pcm_rms_lsb_error": 0,
+    "source_foreground_target_preserved": true,
+    "product_source_sha256": {
+      "projects/echoy/main/echoy_audio.c": "1d7570dc22bce878b2bcb8cfdbb8d7c0cff4eaf940b2708a46efc527dc82312a",
+      "projects/echoy/main/echoy_audio.h": "f05ed5860d6db3ccc2884704669e975d2a81450b244a2224710eff1ea3d23a14",
+      "projects/echoy/main/echoy_music.c": "b4dd6f3449dbb56c1122453c10c2461afc7872df2fd1c4ef7819f37925f96e33",
+      "projects/echoy/main/echoy_music.h": "369dd3803b89ccb9cce7f0f94d76313fdceaa5f8f7250b3152c1a88f48f77500",
+      "projects/echoy/main/echoy_device_pcm.c": "c2c812770cdfb7d3601d631d1ddfcb211156d98ebd4e6b4816b2484a2171d1fc",
+      "projects/echoy/main/echoy_device_pcm.h": "d58f25ee62e85ca2442910856b8f72e475ce0db58afecf62a262fe5c07febad9",
+      "projects/echoy/main/echoy_link_codec.c": "8fdf823a71f75467e72a83a1d771312f5038628a9c4d6c98ceb517c3bca0b66d",
+      "projects/echoy/main/echoy_link_codec.h": "434e7db076932f616288e9f7eb1d9d47b0952c2bf7aad550542170e23535322c"
+    },
+    "comparison": "Production echoy_audio_voice_for_speaker vs frozen phase winner; production helper includes Harmony500 once; selected gains checked byte-for-byte against echoy_office_role_gains."
+  },
+  "previous_versions": [
+    {
+      "directory": "output/loudness-review-20261014/voicing",
+      "verified_unchanged_files": 83
+    },
+    {
+      "directory": "output/voicing-2",
+      "verified_unchanged_files": 122
+    }
+  ],
+  "caveats": [
+    "R128 output is rounded to0.1LU, and the clips are five seconds long.",
+    "Root may consider a physical timbre comparison; these data alone are not acceptance of louder/cleaner output.",
+    "The phase test addresses an introduced waveform crest issue; it does not identify the cause of the original audible breakup."
+  ],
+  "complete_report": "output/loudness-review-20261014/phase-probe/review.json",
+  "complete_report_sha256": "8fd51fc4927a52edb3d6d18e5a22ca9fea1a5e118db228cf7b9b7000b4373c3c",
+  "groups": [
+    {
+      "role": 0,
+      "phrase": 1,
+      "count": 12,
+      "vs_baseline_rms_db": {
+        "min": 0.662799480862259,
+        "mean": 0.7433914935725969,
+        "max": 0.7887897610068071
+      },
+      "vs_baseline_lu": {
+        "min": 1.3,
+        "mean": 1.4833333333333334,
+        "max": 1.6
+      },
+      "vs_baseline_attenuation_db": {
+        "min": 2.2234417634029313,
+        "mean": 2.2847588244111656,
+        "max": 2.357404634919474
+      },
+      "selected_pre_crest_db": {
+        "min": 19.619196156565717,
+        "mean": 21.039669703466515,
+        "max": 22.195774304266305
+      },
+      "selected_band_fraction_mean": {
+        "0-120": 0.09555311475084267,
+        "120-300": 0.47820427524213516,
+        "300-1000": 0.4059790631732428,
+        "1000-3000": 0.004231173180596942,
+        "3000-12001": 0.016032373653356507
+      }
+    },
+    {
+      "role": 0,
+      "phrase": 2,
+      "count": 12,
+      "vs_baseline_rms_db": {
+        "min": 0.7631889042087132,
+        "mean": 0.9110649228296218,
+        "max": 1.0927273592046447
+      },
+      "vs_baseline_lu": {
+        "min": 1.0,
+        "mean": 1.508333333333333,
+        "max": 1.7
+      },
+      "vs_baseline_attenuation_db": {
+        "min": 1.4505171929107732,
+        "mean": 1.9922556216811784,
+        "max": 2.149871768487051
+      },
+      "selected_pre_crest_db": {
+        "min": 20.726369307666708,
+        "mean": 21.433576282182354,
+        "max": 22.97747286224968
+      },
+      "selected_band_fraction_mean": {
+        "0-120": 0.08921268973862843,
+        "120-300": 0.5027714303280083,
+        "300-1000": 0.3831457573841852,
+        "1000-3000": 0.004827925164549192,
+        "3000-12001": 0.020042197384773565
+      }
+    },
+    {
+      "role": 0,
+      "phrase": 3,
+      "count": 12,
+      "vs_baseline_rms_db": {
+        "min": 0.9223602964255575,
+        "mean": 0.9687331470853024,
+        "max": 1.0493464588055306
+      },
+      "vs_baseline_lu": {
+        "min": 1.5,
+        "mean": 1.7,
+        "max": 1.8
+      },
+      "vs_baseline_attenuation_db": {
+        "min": 1.430640395621836,
+        "mean": 1.8450097741178946,
+        "max": 2.0191039824066337
+      },
+      "selected_pre_crest_db": {
+        "min": 20.608044089303135,
+        "mean": 21.150383263607416,
+        "max": 21.787895254166763
+      },
+      "selected_band_fraction_mean": {
+        "0-120": 0.09031581974015325,
+        "120-300": 0.5033986740806337,
+        "300-1000": 0.39629392500888594,
+        "1000-3000": 0.004573421829888618,
+        "3000-12001": 0.005418159340574699
+      }
+    },
+    {
+      "role": 1,
+      "phrase": 1,
+      "count": 12,
+      "vs_baseline_rms_db": {
+        "min": 1.6646798797395876,
+        "mean": 1.747281966468142,
+        "max": 1.919391018183175
+      },
+      "vs_baseline_lu": {
+        "min": 1.7,
+        "mean": 1.8749999999999993,
+        "max": 2.0
+      },
+      "vs_baseline_attenuation_db": {
+        "min": 1.6173963961885405,
+        "mean": 1.7903867737093488,
+        "max": 1.87113465423697
+      },
+      "selected_pre_crest_db": {
+        "min": 16.23673896380066,
+        "mean": 16.70216510084003,
+        "max": 17.571160728828403
+      },
+      "selected_band_fraction_mean": {
+        "0-120": 0.00014517888561007758,
+        "120-300": 0.15552949852160083,
+        "300-1000": 0.762764649927166,
+        "1000-3000": 0.08155995739493506,
+        "3000-12001": 7.152706962804683e-07
+      }
+    },
+    {
+      "role": 1,
+      "phrase": 2,
+      "count": 12,
+      "vs_baseline_rms_db": {
+        "min": 1.5472072860262522,
+        "mean": 1.6748483036625668,
+        "max": 1.8327995119788174
+      },
+      "vs_baseline_lu": {
+        "min": 1.7,
+        "mean": 1.8333333333333333,
+        "max": 2.0
+      },
+      "vs_baseline_attenuation_db": {
+        "min": 1.703422437571069,
+        "mean": 1.8631219612858008,
+        "max": 1.9882241549711415
+      },
+      "selected_pre_crest_db": {
+        "min": 17.220968483704603,
+        "mean": 17.784709068940817,
+        "max": 18.758131610501472
+      },
+      "selected_band_fraction_mean": {
+        "0-120": 0.00022336744449432343,
+        "120-300": 0.16962418057294892,
+        "300-1000": 0.7461535620817757,
+        "1000-3000": 0.08399802570796443,
+        "3000-12001": 8.641928449910596e-07
+      }
+    },
+    {
+      "role": 1,
+      "phrase": 3,
+      "count": 12,
+      "vs_baseline_rms_db": {
+        "min": 1.8402063839493799,
+        "mean": 1.9648967366262162,
+        "max": 2.054990317975136
+      },
+      "vs_baseline_lu": {
+        "min": 1.9,
+        "mean": 2.066666666666667,
+        "max": 2.2
+      },
+      "vs_baseline_attenuation_db": {
+        "min": 1.5129627304347004,
+        "mean": 1.6001843089007055,
+        "max": 1.7122183288377606
+      },
+      "selected_pre_crest_db": {
+        "min": 15.27003413525209,
+        "mean": 16.325716541434044,
+        "max": 16.93205419495566
+      },
+      "selected_band_fraction_mean": {
+        "0-120": 0.0004017099306570968,
+        "120-300": 0.2888409832702444,
+        "300-1000": 0.6655914585617322,
+        "1000-3000": 0.04516542697815482,
+        "3000-12001": 4.212592240511284e-07
+      }
+    },
+    {
+      "role": 2,
+      "phrase": 1,
+      "count": 12,
+      "vs_baseline_rms_db": {
+        "min": 6.020526927639508,
+        "mean": 6.0205873884500996,
+        "max": 6.020657363160909
+      },
+      "vs_baseline_lu": {
+        "min": 6.0,
+        "mean": 6.0249999999999995,
+        "max": 6.1
+      },
+      "vs_baseline_attenuation_db": {
+        "min": 0.0,
+        "mean": 0.0,
+        "max": 0.0
+      },
+      "selected_pre_crest_db": {
+        "min": 21.037109030662457,
+        "mean": 22.262113402693075,
+        "max": 23.754958836586724
+      },
+      "selected_band_fraction_mean": {
+        "0-120": 2.077491312397473e-06,
+        "120-300": 8.308726848805003e-05,
+        "300-1000": 0.07291241096640132,
+        "1000-3000": 0.856016502648722,
+        "3000-12001": 0.07098592162525892
+      }
+    },
+    {
+      "role": 2,
+      "phrase": 2,
+      "count": 12,
+      "vs_baseline_rms_db": {
+        "min": 6.020546509474984,
+        "mean": 6.020603058897091,
+        "max": 6.020659145643425
+      },
+      "vs_baseline_lu": {
+        "min": 6.0,
+        "mean": 6.033333333333334,
+        "max": 6.1
+      },
+      "vs_baseline_attenuation_db": {
+        "min": 0.0,
+        "mean": 0.0,
+        "max": 0.0
+      },
+      "selected_pre_crest_db": {
+        "min": 20.963154219968754,
+        "mean": 22.241128929246944,
+        "max": 23.668647168667892
+      },
+      "selected_band_fraction_mean": {
+        "0-120": 1.0592882514748628e-06,
+        "120-300": 4.374857457146983e-05,
+        "300-1000": 0.002070968909420174,
+        "1000-3000": 0.8323734538800801,
+        "3000-12001": 0.16551076934785322
+      }
+    },
+    {
+      "role": 2,
+      "phrase": 3,
+      "count": 12,
+      "vs_baseline_rms_db": {
+        "min": 6.020545891653595,
+        "mean": 6.02058350871025,
+        "max": 6.020609794679369
+      },
+      "vs_baseline_lu": {
+        "min": 6.0,
+        "mean": 6.016666666666667,
+        "max": 6.1
+      },
+      "vs_baseline_attenuation_db": {
+        "min": 0.0,
+        "mean": 0.0,
+        "max": 0.0
+      },
+      "selected_pre_crest_db": {
+        "min": 18.495927260237266,
+        "mean": 19.34429086026384,
+        "max": 20.138223316558328
+      },
+      "selected_band_fraction_mean": {
+        "0-120": 2.0622597820622478e-06,
+        "120-300": 8.363468360208024e-05,
+        "300-1000": 0.08795122149907209,
+        "1000-3000": 0.8889511634228362,
+        "3000-12001": 0.023011918134781494
+      }
+    },
+    {
+      "role": 3,
+      "phrase": 1,
+      "count": 12,
+      "vs_baseline_rms_db": {
+        "min": -0.7749514623355037,
+        "mean": -0.6383828252150695,
+        "max": -0.5077925987703092
+      },
+      "vs_baseline_lu": {
+        "min": 0.1,
+        "mean": 0.18333333333333335,
+        "max": 0.3
+      },
+      "vs_baseline_attenuation_db": {
+        "min": 1.9051384997814846,
+        "mean": 2.0862404500734626,
+        "max": 2.250248294919545
+      },
+      "selected_pre_crest_db": {
+        "min": 14.971936863931038,
+        "mean": 15.590584553513699,
+        "max": 16.547743551720192
+      },
+      "selected_band_fraction_mean": {
+        "0-120": 6.638556132543214e-05,
+        "120-300": 0.018625881831476065,
+        "300-1000": 0.5654589604755021,
+        "1000-3000": 0.41584280049787714,
+        "3000-12001": 5.971633823765928e-06
+      }
+    },
+    {
+      "role": 3,
+      "phrase": 2,
+      "count": 12,
+      "vs_baseline_rms_db": {
+        "min": -0.9512619001751766,
+        "mean": -0.7847539012299137,
+        "max": -0.5540498642481954
+      },
+      "vs_baseline_lu": {
+        "min": 0.3,
+        "mean": 0.41666666666666674,
+        "max": 0.7
+      },
+      "vs_baseline_attenuation_db": {
+        "min": 0.2452355425152808,
+        "mean": 0.7886490108081222,
+        "max": 0.9754054557025853
+      },
+      "selected_pre_crest_db": {
+        "min": 11.53885901807049,
+        "mean": 11.889730568359846,
+        "max": 12.141027017943479
+      },
+      "selected_band_fraction_mean": {
+        "0-120": 1.0712771174340467e-05,
+        "120-300": 0.0030346132756226673,
+        "300-1000": 0.38293372368569645,
+        "1000-3000": 0.6140155726401892,
+        "3000-12001": 5.377627321544428e-06
+      }
+    },
+    {
+      "role": 3,
+      "phrase": 3,
+      "count": 12,
+      "vs_baseline_rms_db": {
+        "min": -1.2794230626480205,
+        "mean": -0.980722757885773,
+        "max": -0.6918666627213542
+      },
+      "vs_baseline_lu": {
+        "min": -0.1,
+        "mean": 0.08333333333333333,
+        "max": 0.3
+      },
+      "vs_baseline_attenuation_db": {
+        "min": 0.3657806905724943,
+        "mean": 0.7107119432640451,
+        "max": 1.1045431154795757
+      },
+      "selected_pre_crest_db": {
+        "min": 13.816271174340445,
+        "mean": 14.531211889715172,
+        "max": 15.488518693931809
+      },
+      "selected_band_fraction_mean": {
+        "0-120": 3.22991604436673e-05,
+        "120-300": 0.005162168237605942,
+        "300-1000": 0.44982208052612965,
+        "1000-3000": 0.5444572439909351,
+        "3000-12001": 0.0005262080848766586
+      }
+    }
+  ]
+}

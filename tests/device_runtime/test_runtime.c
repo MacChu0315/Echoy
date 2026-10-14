@@ -1007,10 +1007,117 @@ static void harmony_trial_cancel_stale(void)
     assert(!atomic_load(&fake_nonzero_since_flush));
     stop(&d);puts("PASS cancelled stale Harmony worker cannot publish or replay its bank");
 }
+static void office_start(echoy_device_handle_t *d,unsigned role)
+{
+    start(d);
+    assert(action(ECHOY_ACT_ROLE,role));
+    assert(action(ECHOY_ACT_EXAMPLE,0));
+    until(ECHOY_NORMAL,ECHOY_PREVIEW,5);
+    assert(view().plan.role==role);
+    assert(action(ECHOY_ACT_PAUSE,0));until(ECHOY_NORMAL,ECHOY_IDLE,5);
+}
+static void office_disabled(void)
+{
+    echoy_device_handle_t d;office_start(&d,ECHOY_VOICE);
+    assert(!atomic_load(&fake_office_job_calls) && !atomic_load(&fake_office_voice_calls));
+    stop(&d);puts("PASS ordinary build uses original role gains without office voicing");
+}
+static void office_all_roles(void)
+{
+    for(unsigned role=ECHOY_PULSE;role<=ECHOY_HARMONY;++role){
+        echoy_device_handle_t d;office_start(&d,role);
+        assert(atomic_load(&fake_office_roles)&(1u<<role));
+        assert(!atomic_load(&fake_harmony_job_calls));
+        assert(!view().state.continuous && view().state.phase==ECHOY_IDLE);
+        echoy_output_measurement_status_t status;
+        assert(echoy_device_measure_get(d,&status)==ESP_OK);
+        assert(status.phase==ECHOY_OUTPUT_MEASUREMENT_DISABLED);
+        assert(echoy_device_probe_request(d,true)==ESP_ERR_NOT_SUPPORTED);
+        assert(!atomic_load(&fake_measure_open_calls));
+        stop(&d);
+    }
+    assert(atomic_load(&fake_office_roles)==15);
+    puts("PASS every office role uses its worker voicing and office trims without duplicate Harmony or mic");
+}
+static void office_worker_and_publication(void)
+{
+    echoy_device_handle_t d;office_start(&d,ECHOY_VOICE);
+    echoy_control_view_t old=view();
+    atomic_store(&fake_office_voice_hold,true);
+    assert(action(ECHOY_ACT_PHRASE,2));
+    int64_t end=esp_timer_get_time()+2000000;
+    while(!atomic_load(&fake_office_voice_blocked)){assert(esp_timer_get_time()<end);fake_sleep_ms(1);}
+    int writes=atomic_load(&fake_write_calls);fake_sleep_ms(40);
+    echoy_control_view_t pending=view();
+    assert(atomic_load(&fake_write_calls)>writes);
+    assert(!memcmp(&pending.plan,&old.plan,sizeof(old.plan)));
+    assert(pending.state.phase==ECHOY_IDLE && !pending.state.continuous);
+    atomic_store(&fake_office_voice_hold,false);
+    do {if(view().plan.phrase==2)break;fake_sleep_ms(1);}while(esp_timer_get_time()<end);
+    assert(view().plan.phrase==2 && view().state.phase==ECHOY_IDLE && !view().state.continuous);
+    assert(!atomic_load(&fake_nonzero_since_flush));
+    assert(action(ECHOY_ACT_TRANSPORT,0));until(ECHOY_NORMAL,ECHOY_PLAYING,5);
+    fake_sleep_ms(80);
+    assert(action(ECHOY_ACT_PAUSE,0));until(ECHOY_NORMAL,ECHOY_IDLE,5);fake_sleep_ms(30);
+    assert(!atomic_load(&fake_nonzero_since_flush));
+    stop(&d);puts("PASS office worker leaves old publication unchanged, keeps audio running and respects Pause");
+}
+static void office_filter_failure(void)
+{
+    echoy_device_handle_t d;office_start(&d,ECHOY_DUST);
+    unsigned calibrations=atomic_load(&fake_calibration_calls);
+    atomic_store(&fake_office_voice_failure,1);
+    assert(action(ECHOY_ACT_PHRASE,2));
+    int64_t end=esp_timer_get_time()+2000000;
+    while(!view().preparation_failed){assert(esp_timer_get_time()<end);fake_sleep_ms(1);}
+    echoy_control_view_t v=view();
+    assert(v.condition==ECHOY_NORMAL && v.plan.phrase==1 && v.plan.role==ECHOY_DUST);
+    assert(!v.state.continuous && v.state.phase==ECHOY_IDLE);
+    assert(atomic_load(&fake_calibration_calls)==calibrations);
+    assert(!atomic_load(&fake_nonzero_since_flush));
+    assert(action(ECHOY_ACT_PHRASE,3));
+    do {if(view().plan.phrase==3)break;fake_sleep_ms(1);}while(esp_timer_get_time()<end);
+    assert(view().plan.phrase==3 && !view().preparation_failed && !view().state.continuous);
+    stop(&d);puts("PASS office DSP failure skips calibration and preserves the previous valid bank");
+}
+static void office_cancel_stale(void)
+{
+    echoy_device_handle_t d;office_start(&d,ECHOY_PULSE);
+    atomic_store(&fake_office_voice_hold,true);
+    assert(action(ECHOY_ACT_PHRASE,2));
+    int64_t end=esp_timer_get_time()+2000000;
+    while(!atomic_load(&fake_office_voice_blocked)){assert(esp_timer_get_time()<end);fake_sleep_ms(1);}
+    assert(action(ECHOY_ACT_PHRASE,3));assert(action(ECHOY_ACT_PAUSE,0));
+    fake_sleep_ms(20);atomic_store(&fake_office_voice_hold,false);
+    do {if(view().plan.phrase==3)break;fake_sleep_ms(1);}while(esp_timer_get_time()<end);
+    echoy_control_view_t v=view();
+    assert(v.state.phase==ECHOY_IDLE && !v.state.continuous && v.plan.phrase==3);
+    assert(atomic_load(&fake_office_voice_calls)>=3);
+    assert(!atomic_load(&fake_nonzero_since_flush));
+    stop(&d);puts("PASS stale office worker cannot publish the superseded phrase or resume playback");
+}
+static void office_shutdown_during_voicing(void)
+{
+    echoy_device_handle_t d;office_start(&d,ECHOY_HARMONY);
+    atomic_store(&fake_office_voice_hold,true);
+    assert(action(ECHOY_ACT_PHRASE,2));
+    int64_t end=esp_timer_get_time()+2000000;
+    while(!atomic_load(&fake_office_voice_blocked)){assert(esp_timer_get_time()<end);fake_sleep_ms(1);}
+    assert(echoy_device_stop(&d,5)==ESP_ERR_TIMEOUT && d);
+    assert(!action(ECHOY_ACT_TRANSPORT,0));
+    atomic_store(&fake_office_voice_hold,false);stop(&d);
+    puts("PASS shutdown retains office job ownership until the preparation worker returns");
+}
 int main(int argc, char **argv)
 {
     assert(argc == 2);
-    if (!strcmp(argv[1], "harmony_disabled")) harmony_trial_disabled();
+    if (!strcmp(argv[1], "office_disabled")) office_disabled();
+    else if (!strcmp(argv[1], "office_roles")) office_all_roles();
+    else if (!strcmp(argv[1], "office_worker")) office_worker_and_publication();
+    else if (!strcmp(argv[1], "office_failure")) office_filter_failure();
+    else if (!strcmp(argv[1], "office_stale")) office_cancel_stale();
+    else if (!strcmp(argv[1], "office_stop")) office_shutdown_during_voicing();
+    else if (!strcmp(argv[1], "harmony_disabled")) harmony_trial_disabled();
     else if (!strcmp(argv[1], "harmony_worker")) harmony_trial_worker_and_pause();
     else if (!strcmp(argv[1], "harmony_failure")) harmony_trial_failure();
     else if (!strcmp(argv[1], "harmony_stale")) harmony_trial_cancel_stale();

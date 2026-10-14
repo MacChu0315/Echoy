@@ -3,6 +3,7 @@
 #include "board_audio.h"
 #include "board_health.h"
 #include "echoy_band.h"
+#include "echoy_device_pcm.h"
 #include "echoy_output_measurement.h"
 #include "esp_heap_caps.h"
 #include "esp_timer.h"
@@ -25,6 +26,11 @@ atomic_int fake_watermark_after_exit, fake_nonzero_blocks, fake_nonzero_since_fl
 atomic_int fake_calibration_failure;
 atomic_int fake_calibration_calls, fake_harmony_cut_calls, fake_harmony_cut_failure;
 atomic_bool fake_harmony_cut_hold, fake_harmony_cut_blocked;
+atomic_int fake_harmony_job_calls, fake_office_job_calls, fake_office_voice_calls;
+atomic_int fake_office_voice_failure;
+atomic_uint fake_office_roles;
+atomic_bool fake_office_voice_hold, fake_office_voice_blocked;
+static _Thread_local echoy_band_job_t *office_prepared_job;
 atomic_int fake_probe_calls, fake_probe_failure;
 atomic_int fake_image_alloc_calls, fake_image_alloc_failure;
 atomic_uint fake_image_alloc_caps;
@@ -502,6 +508,7 @@ bool __wrap_echoy_output_measurement_analyze(const int16_t *pcm, size_t frames,
 bool __real_echoy_band_prepare_job(echoy_band_job_t *job);
 bool __wrap_echoy_band_prepare_job(echoy_band_job_t *job)
 {
+    office_prepared_job=NULL;
     while (atomic_load(&hold_prepare)) {
         atomic_store(&prepare_blocked, true);
         fake_sleep_ms(1);
@@ -513,6 +520,11 @@ bool __wrap_echoy_band_prepare_job(echoy_band_job_t *job)
 bool __real_echoy_band_calibrate_job(echoy_band_job_t *job, const float gains[4]);
 bool __wrap_echoy_band_calibrate_job(echoy_band_job_t *job, const float gains[4])
 {
+#if CONFIG_ECHOY_OFFICE_VOICING_TRIAL
+    assert(gains==echoy_office_role_gains && office_prepared_job==job);
+#else
+    assert(gains==echoy_device_role_gains && !office_prepared_job);
+#endif
     atomic_fetch_add(&fake_calibration_calls,1);
     if (atomic_exchange(&fake_calibration_failure,0)) return false;
     return __real_echoy_band_calibrate_job(job,gains);
@@ -529,4 +541,34 @@ bool __wrap_echoy_audio_cut_harmony_bass(float *samples, size_t frames)
     atomic_store(&fake_harmony_cut_blocked,false);
     if (atomic_exchange(&fake_harmony_cut_failure,0)) return false;
     return __real_echoy_audio_cut_harmony_bass(samples,frames);
+}
+bool __real_echoy_band_cut_harmony_bass_job(echoy_band_job_t *);
+bool __wrap_echoy_band_cut_harmony_bass_job(echoy_band_job_t *job)
+{
+    atomic_fetch_add(&fake_harmony_job_calls,1);
+    return __real_echoy_band_cut_harmony_bass_job(job);
+}
+bool __real_echoy_band_voice_for_speaker_job(echoy_band_job_t *);
+bool __wrap_echoy_band_voice_for_speaker_job(echoy_band_job_t *job)
+{
+    assert(self && !strcmp(self->name,"echoy_prepare") && self->priority==1);
+    atomic_fetch_add(&fake_office_job_calls,1);
+    bool ok=__real_echoy_band_voice_for_speaker_job(job);
+    if (ok) office_prepared_job=job;
+    return ok;
+}
+bool __real_echoy_audio_voice_for_speaker(const echoy_plan_t *,echoy_audio_loops_t *);
+bool __wrap_echoy_audio_voice_for_speaker(const echoy_plan_t *plan,echoy_audio_loops_t *loops)
+{
+    assert(self && !strcmp(self->name,"echoy_prepare") && self->priority==1);
+    assert(plan && plan->role<=ECHOY_HARMONY && loops && loops->frames==ECHOY_AUDIO_LOOP_FRAMES);
+    atomic_fetch_add(&fake_office_voice_calls,1);
+    atomic_fetch_or(&fake_office_roles,1u<<plan->role);
+    while (atomic_load(&fake_office_voice_hold)) {
+        atomic_store(&fake_office_voice_blocked,true);
+        fake_sleep_ms(1);
+    }
+    atomic_store(&fake_office_voice_blocked,false);
+    if (atomic_exchange(&fake_office_voice_failure,0)) return false;
+    return __real_echoy_audio_voice_for_speaker(plan,loops);
 }

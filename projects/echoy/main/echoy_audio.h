@@ -49,6 +49,14 @@ void echoy_audio_free_loops(echoy_audio_loops_t *loops);
  * leaves every input byte unchanged. Call off the realtime output thread. */
 bool echoy_audio_cut_harmony_bass(float *samples, size_t frames);
 
+/* Optional device speaker profile on an exclusively owned prepared bank.
+ * Rebuilds only FULL; Source, Foreground, target and plan stay unchanged.
+ * Includes the accepted Harmony bass cut. Dust is a no-op (level is separate).
+ * Allocates temporary preparation storage, never call from the PCM/UI owner.
+ * On false every bank byte remains unchanged. Job ownership/once-only checks
+ * belong to the caller; do not also apply the standalone Harmony bass cut. */
+bool echoy_audio_voice_for_speaker(const echoy_plan_t *plan, echoy_audio_loops_t *loops);
+
 /* Short tap and timing-cue buffers start at sample zero. Scheduling the .003s
  * tap lead and the two count-in/four recording beats belongs to the caller. */
 echoy_audio_result_t echoy_audio_render_cue(echoy_audio_cue_t cue, echoy_audio_buffer_t **out);

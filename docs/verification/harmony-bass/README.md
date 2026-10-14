@@ -1,5 +1,9 @@
 # Optional Harmony 500 Hz bass-cut trial
 
+Current device note: this left-only trial has been superseded by the approved
+office-speaker listening package `7307f8ed9a3e`. The observations below describe
+the earlier bass-only trial; see `../loudness-review/README.md` for current state.
+
 The user selected the stronger trial after reporting distortion both on the
 desk and while holding the left tile, especially in lower sounds. Approval and
 constraints are in `../../plans/2026-10-14-harmony-bass-trial.md`.
@@ -60,9 +64,30 @@ calibration are verified. Boot ID is `8257068652410574677`; see `package.json`
 and `physical-install.json`. Microphone and reference-tone diagnostics are off.
 The right remains on ordinary package `09275b935ad8` as a reference.
 
-Focused listening of the new left build is pending. The user was asked to
-select Harmony/Arpeggio, record a similar rhythm at default volume, and judge
-the recorded reply and two playback loops. Do not mark the acoustic problem
-fixed before that feedback. The preserved pre-trial source is included here;
+The user reports improvement and accepts the thinner timbre, but hears a small
+amount of distortion at approximately the same sound in each loop. The captured
+post-feedback state is paused at target volume 1.0, Harmony/Arpeggio, seed
+`8534`, 11 events and six source notes. It is a different recording from the
+pre-trial plan; this is user listening feedback, not a controlled same-phrase
+acoustic A/B measurement. The current boot has no crashes, partial writes,
+write errors or deadline misses; last preparation took 773708 us. See
+`residual-observation.json` and `residual-plan.echp`.
+
+The user also hears residual distortion at approximately 80%. Exact readback
+is .7611111111111111, on the same Boot ID, revision 3 and identical plan SHA.
+The actual C replay including the installed filter gives .275131 PCM RMS there,
+versus .291572 at full: raising the slider adds only .504 dB average output,
+although its pre-limiter gain rises 2.371 dB. Both reach the .599994 peak ceiling.
+The residual plan's PCM energy is 99.918% in 300–1000 Hz and only .01139% below
+300 Hz. This is a digital spectral observation, not a localization of the
+audible distortion or proof of acoustic loudness.
+
+The user now requests greater loudness for all roles/expressions in an ordinary
+office at 30–50 cm. Continue under that expanded goal; lowering the final volume
+alone is insufficient. See `../loudness-review/README.md`. No further microphone
+capture or installed sound-profile change was made for these checks. Do not
+mark the acoustic problem resolved or promote the trial to both devices yet.
+
+The preserved pre-trial source is included here;
 the later empty left snapshot was a different power-on boot with no crash
 report, not a post-listening capture of that same phrase.

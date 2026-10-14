@@ -8,6 +8,8 @@
 /* Musical-bank trims for the device speaker voicing trial; cues bypass these
  * per-role factors. Shared synthesis and PC playback retain their own output. */
 extern const float echoy_device_role_gains[4];
+/* Optional office-speaker trial; selected only by the device preparation worker. */
+extern const float echoy_office_role_gains[4];
 #define ECHOY_DEVICE_PCM_GAIN 18.0f
 /* Board listening trial: Harmony remained distorted below digital clipping.
  * Its clean selected peak was about .65; retain margin for the output chain.

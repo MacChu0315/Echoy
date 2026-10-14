@@ -19,6 +19,7 @@ typedef struct {
     float send[ECHOY_AUDIO_LOOP_FRAMES], delay[DELAY_FRAMES], feedback[128];
     float triangle[3][TRIANGLE_SIZE], sine[SINE_SIZE + 1];
     unsigned triangle_harmonics[3];
+    bool speaker_profile;
     echoy_note_t source[16], sparse[17];
 } workspace_t;
 
@@ -30,6 +31,7 @@ static float midi(int note) { return 440 * exp2f((note - 69) / 12.0f); }
  * table belongs to each preparation job, with no shared mutable audio state. */
 static void workspace_init(workspace_t *work)
 {
+    work->speaker_profile = false;
     for (unsigned i = 0; i <= SINE_SIZE; ++i)
         work->sine[i] = sinf(2 * PI * i / SINE_SIZE);
     memset(work->triangle_harmonics, 0, sizeof(work->triangle_harmonics));
@@ -250,12 +252,16 @@ static void render_note(float *dry, float *send, size_t frames, const echoy_note
         oscillators[p] = oscillator(note->kind == ECHOY_RIM ? rim_frequencies[p] :
                                     note->kind == ECHOY_CHORD ? frequencies[p] : note_frequency * (p + 1));
     }
+    if (work->speaker_profile && note->kind == ECHOY_TONE)
+        oscillators[1].phase = UINT32_C(0xc0000000);
     float sustain = peak * (broken ? .64f : short_chord ? .46f : answer ? .60f : .82f);
     ramp_t rise = {0}, fall = {0}, sweep = {0};
     if (note->kind != ECHOY_CHORD) {
         static const float releases[] = {.28f, .095f, .055f, .38f, .16f};
         attack = attacks[note->kind];
         peak = max(.0001f, velocity * levels[note->kind]);
+        if (work->speaker_profile && (note->kind == ECHOY_RIM || note->kind == ECHOY_HAT))
+            peak *= 1.3f;
         rise = ramp(.00001f, peak, 0, attack);
         fall = ramp(peak, .00001f, attack, releases[note->kind] + (note->kind >= ECHOY_TONE ? duration : 0));
         if (note->kind == ECHOY_KICK) sweep = ramp(128, 47, 0, .095f);
@@ -273,6 +279,12 @@ static void render_note(float *dry, float *send, size_t frames, const echoy_note
         float time = (i - start) / SR, value = 0, gain = 0;
         if (note->kind == ECHOY_KICK) {
             value = sine_sample(work->sine, phase[0]);
+            if (work->speaker_profile) {
+                /* Even the original 440 Hz block-entry phase is below Nyquist
+                 * with these third/fifth harmonics; the sweep is 128..47 Hz. */
+                value = .15f * value + .18f * sine_sample(work->sine, 3 * phase[0] + PI / 2) +
+                        .10f * sine_sample(work->sine, 5 * phase[0] + 3 * PI / 2);
+            }
             /* Chromium's a-rate oscillator reads the first render quantum's
              * automation from its block start, including the pre-onset default
              * 440 Hz entries. Preserve that phase behavior for delayed kicks. */
@@ -288,7 +300,9 @@ static void render_note(float *dry, float *send, size_t frames, const echoy_note
             float frequency = note_frequency;
             for (unsigned partial = 1; partial <= 3; ++partial) {
                 static const float levels[] = {1, .22f, .07f};
-                if (frequency * partial < SR / 2) value += oscillator_sample(&oscillators[partial - 1], work->sine) * levels[partial - 1];
+                static const float speaker_levels[] = {.65f, .40f, .20f};
+                if (frequency * partial < SR / 2) value += oscillator_sample(&oscillators[partial - 1], work->sine) *
+                    (work->speaker_profile ? speaker_levels[partial - 1] : levels[partial - 1]);
             }
             filter_set(&filter, 0, ramp_sample(&sweep, i - start), .45f, work->sine);
             value = filter_sample(&filter, (float)value);
@@ -300,7 +314,25 @@ static void render_note(float *dry, float *send, size_t frames, const echoy_note
             for (unsigned p = 0; p < pitches; ++p) {
                 if (frequencies[p] < SR / 2) {
                     float triangle = triangle_sample(work->triangle[p], oscillators[p].phase);
-                    value += oscillator_sample(&oscillators[p], work->sine) + triangle * (broken ? .15f : .22f);
+                    if (work->speaker_profile) {
+                        static const float upper[] = {.25f, .35f, .20f, .10f};
+                        /* Fixed per-note phase offsets reduce coincident peaks;
+                         * no phase search or shared oscillator state at runtime. */
+                        static const uint32_t offsets[] = {0, UINT32_C(0xc0000000),
+                                                          0, UINT32_C(0x80000000)};
+                        for (unsigned harmonic = 2; harmonic <= 5; ++harmonic) {
+                            if (frequencies[p] * harmonic < SR / 2) {
+                                oscillator_t overtone = oscillators[p];
+                                overtone.phase *= harmonic;
+                                overtone.phase += offsets[harmonic - 2];
+                                value += upper[harmonic - 2] * oscillator_sample(&overtone, work->sine);
+                            }
+                        }
+                        value += .35f * oscillator_sample(&oscillators[p], work->sine) +
+                                 triangle * (broken ? .15f : .22f);
+                    } else {
+                        value += oscillator_sample(&oscillators[p], work->sine) + triangle * (broken ? .15f : .22f);
+                    }
                 }
             }
             filter_set(&filter, 0, ramp_sample(&sweep, i - start), .48f, work->sine);
@@ -585,6 +617,53 @@ echoy_audio_result_t echoy_audio_prepare(const echoy_plan_t *plan, bool original
     return ECHOY_AUDIO_OK;
 }
 void echoy_audio_free_loops(echoy_audio_loops_t *loops) { free(loops); }
+
+bool echoy_audio_voice_for_speaker(const echoy_plan_t *plan, echoy_audio_loops_t *loops)
+{
+    if (!valid(plan) || !plan->count || !plan->source_count || !loops ||
+        loops->frames != ECHOY_AUDIO_LOOP_FRAMES || !isfinite(loops->target_rms) ||
+        loops->target_rms < 0 || loops->target_rms > .045) return false;
+    const size_t bytes = ECHOY_AUDIO_LOOP_FRAMES * sizeof(float);
+    for (unsigned k = 0; k < ECHOY_AUDIO_KIND_COUNT; ++k) {
+        uintptr_t begin = (uintptr_t)loops->samples[k];
+        if (!begin || begin > UINTPTR_MAX - bytes) return false;
+        for (unsigned j = 0; j < k; ++j) {
+            uintptr_t other = (uintptr_t)loops->samples[j];
+            if (begin < other + bytes && other < begin + bytes) return false;
+        }
+    }
+    for (unsigned k = 0; k < ECHOY_AUDIO_KIND_COUNT; ++k)
+        for (size_t i = 0; i < loops->frames; ++i)
+            if (!isfinite(loops->samples[k][i])) return false;
+    if (plan->role == ECHOY_DUST) return true;
+
+    /* One temporary allocation; nothing becomes visible until the complete
+     * replacement passes validation. Reference normalization can couple FULL
+     * to the other banks, so keep its original target and replace FULL alone. */
+    workspace_t *work = malloc(sizeof(*work) + bytes);
+    if (!work) return false;
+    float *full = (float *)(work + 1);
+    workspace_init(work);
+    work->speaker_profile = true;
+    render(full, loops->frames, plan->events, plan->count, false,
+           plan->role == ECHOY_PULSE, true, work);
+    double rms, peak;
+    statistics(full, loops->frames, &rms, &peak);
+    bool ok = isfinite(rms) && isfinite(peak);
+    if (ok) {
+        float gain = rms > 1e-10 && peak > 0 ?
+            (float)fmin(loops->target_rms / rms, .65 / peak) : 0;
+        for (size_t i = 0; i < loops->frames; ++i) {
+            full[i] *= gain;
+            if (!isfinite(full[i])) ok = false;
+        }
+    }
+    if (ok && plan->role == ECHOY_HARMONY)
+        ok = echoy_audio_cut_harmony_bass(full, loops->frames);
+    if (ok) memcpy(loops->samples[ECHOY_AUDIO_FULL], full, bytes);
+    free(work);
+    return ok;
+}
 
 bool echoy_audio_cut_harmony_bass(float *samples, size_t frames)
 {

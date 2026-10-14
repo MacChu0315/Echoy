@@ -1,0 +1,5 @@
+# Approved left-device office listening trial; use a separate build configuration.
+CONFIG_ECHOY_OFFICE_VOICING_TRIAL=y
+# CONFIG_ECHOY_HARMONY_BASS_TRIAL is not set
+# CONFIG_ECHOY_OUTPUT_MEASUREMENT is not set
+# CONFIG_ECHOY_AUDIO_DIAGNOSTICS is not set

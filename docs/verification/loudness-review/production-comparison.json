@@ -1,0 +1,20 @@
+{
+  "cases": 152,
+  "max_float_error": 0,
+  "max_pcm_lsb_error": 0,
+  "float_different_cases": 0,
+  "pcm_different_cases": 0,
+  "max_pcm_rms_lsb_error": 0,
+  "source_foreground_target_preserved": true,
+  "product_source_sha256": {
+    "projects/echoy/main/echoy_audio.c": "1d7570dc22bce878b2bcb8cfdbb8d7c0cff4eaf940b2708a46efc527dc82312a",
+    "projects/echoy/main/echoy_audio.h": "f05ed5860d6db3ccc2884704669e975d2a81450b244a2224710eff1ea3d23a14",
+    "projects/echoy/main/echoy_music.c": "b4dd6f3449dbb56c1122453c10c2461afc7872df2fd1c4ef7819f37925f96e33",
+    "projects/echoy/main/echoy_music.h": "369dd3803b89ccb9cce7f0f94d76313fdceaa5f8f7250b3152c1a88f48f77500",
+    "projects/echoy/main/echoy_device_pcm.c": "c2c812770cdfb7d3601d631d1ddfcb211156d98ebd4e6b4816b2484a2171d1fc",
+    "projects/echoy/main/echoy_device_pcm.h": "d58f25ee62e85ca2442910856b8f72e475ce0db58afecf62a262fe5c07febad9",
+    "projects/echoy/main/echoy_link_codec.c": "8fdf823a71f75467e72a83a1d771312f5038628a9c4d6c98ceb517c3bca0b66d",
+    "projects/echoy/main/echoy_link_codec.h": "434e7db076932f616288e9f7eb1d9d47b0952c2bf7aad550542170e23535322c"
+  },
+  "comparison": "Production echoy_audio_voice_for_speaker vs frozen phase winner; production helper includes Harmony500 once; selected gains checked byte-for-byte against echoy_office_role_gains."
+}

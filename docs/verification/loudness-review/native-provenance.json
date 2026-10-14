@@ -1,0 +1,9 @@
+{
+  "original_desk_sha256": "1286262e700f7207eda70d9a0816f8b743b9ced1c335a6187cfcaddecc8d0ec4",
+  "instrumented_desk_sha256": "bc111e91b4b0d2318697e8f0f36caa07760295c2debcd342e99eea6b915f5ede",
+  "changes": [
+    "prepare the real office FULL profile and calibrate with its actual gains",
+    "replace plain desktop int16 conversion with actual device PCM converter"
+  ],
+  "scope": "Native GSP/control/shared C audio regression; one aggregate desktop PCM converter, not three separately calibrated physical speaker models. --silent prevents physical computer playback."
+}
