@@ -101,8 +101,9 @@ not write that application slot, the bootloader or retained Recovery.
 
 Delivery evidence is recorded below after identity, HEALTHY, retained layout,
 current-boot calibration and real-home verification. Startup checks establish
-delivery; they do not establish the new physically joined Play/detach behavior,
-physical release latency, speaker phase offset or sustained RF/load performance.
+delivery; they do not independently establish physically joined Play/detach
+behavior, physical release latency, speaker phase offset or sustained RF/load
+performance. User-reported physical acceptance is recorded below.
 Only two same-orientation horizontal physical devices are supported. The fixed
 boundary review also injected a phase-changing CLOCK after ARM and confirmed
 both commits kept the negotiated timestamp.
@@ -123,3 +124,24 @@ metadata has no valid core. The official installer waited for stable Recovery
 and submitted one bundle per device. That retained Recovery defect remains
 unresolved; it is separate from these application changes. Existing low-level
 GPIO/I2S initialization messages are retained in the current-boot logs.
+
+## User physical acceptance and saved baseline
+
+The user subsequently reported that all seven numbered physical checklist
+categories passed and explicitly requested saving this version.
+[Physical acceptance](physical-acceptance.json) records that provenance; it is
+not a new automated run, timing measurement or sensor trace. This closes the
+new dual-device flow's physical acceptance within the checklist scope. Retained
+Recovery, measured acoustic timing and sustained RF/load limits remain open.
+
+[Accepted baseline](accepted-baseline.json) pins implementation commit
+`cca129dc245339d82fe55de0425b1f741ce8248a`, installed package/ELF, all C/header
+hashes and UI/configuration hashes. The local tag
+`echoy-dual-accepted-20261014` marks the saved accepted version. Its immutable
+`.irisfw` remains at the package path above; `0953c52` and the original accepted
+sound package remain intact. No firmware rebuild/write or sound change occurred
+when recording this acceptance.
+
+The next product target is at most three Mosaicos in the same scene. Current
+physical support remains two boards; this acceptance does not establish a
+three-board implementation or authorize an unidentified third-device write.

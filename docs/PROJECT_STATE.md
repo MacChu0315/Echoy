@@ -653,12 +653,13 @@ See `verification/second-device/README.md` for identities, verification and limi
 
 ## Remaining physical integration
 
-### Approved cooperation revision (2026-10-14, installed)
+### Approved cooperation revision (2026-10-14, physically accepted)
 
 The user explicitly approved the rules below, revising the old separation
 behavior. They are now implemented and verified in the shared C/native simulator;
-both authorized devices have been updated. New physically joined behavior still
-needs user acceptance, distinct from delivery/startup verification.
+both authorized devices have been updated. The user subsequently reported that
+all seven physical checklist categories passed and requested saving this version.
+This report is physical acceptance, distinct from earlier delivery/startup checks.
 
 - A right-side follower with a playable phrase should show only Play in the
   existing middle button area, not a disabled Record beside Play.
@@ -748,10 +749,40 @@ actual Record-only homes, silent startup, zero application crashes and zero
 partial/write/deadline errors pass. Old Recovery reproduced its known startup
 watchdog reset on each board; metadata was preserved (no valid core), stable
 Recovery readiness was verified and one upgrade bundle was submitted per board.
-That Recovery defect remains unresolved. These are delivery/startup checks;
-new physically joined Play/detach acceptance and sustained RF/phase precision
-remain pending. Evidence, commands and retained baseline checks:
+That Recovery defect remains unresolved. These installation observations are
+delivery/startup checks; the user-reported physical acceptance is recorded below.
+Sustained RF/load and measured phase precision remain unaccepted. Evidence,
+commands and retained baseline checks:
 `verification/cooperation-revision/README.md`.
+
+### Preserved accepted dual-device version and third-board target (2026-10-14)
+
+The user reported "全部通过" for the seven-item physical checklist: waiting/
+centered Play; left-first and right-first all-paused starts; playing and paused
+physical separation; recording/reply deferred joining and Cancel; and common
+updates retaining old sound and paused-peer permission. They explicitly asked
+to preserve the current version. This is user-report provenance, not newly
+collected agent measurements; individual timings and sensor traces were not
+provided. The current physical flow is now accepted within that checklist.
+
+`verification/cooperation-revision/accepted-baseline.json` preserves source
+implementation `cca129dc245339d82fe55de0425b1f741ce8248a`, installed package
+`2b984e511b98`, ELF/source/UI/configuration hashes and the immutable local bundle.
+Local release tag: `echoy-dual-accepted-20261014`. The earlier accepted sound
+baseline `0953c52`/package `5d4776c9ae6d` remains intact. Recording acceptance
+changes no code, sound, firmware or device state and performs no remote write.
+The retained Recovery watchdog, quantified acoustic timing and sustained RF/load
+limits remain as previously recorded.
+
+The user plans to connect a third Mosaico and sets a product capacity target of
+at most three devices in the same scene. The current desktop arrangement already
+has three logical tiles/two edges, but the physical adapter still owns one active
+peer per board; its middle device cannot yet act as both upstream receiver and
+downstream sender. Third-device identity/installed firmware and write authorization
+must be established after connection. Physical topology is awaiting clarification;
+a same-orientation horizontal chain is proposed, not yet a confirmed new scope.
+No three-device implementation or third-device write has occurred. Preserve the
+accepted two-device behavior and sound while designing/validating that extension.
 
 ### Dual-device basic physical flow accepted (2026-10-12)
 

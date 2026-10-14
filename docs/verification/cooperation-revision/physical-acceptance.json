@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-14",
+  "provenance": "User report in the current conversation; not new automated tests, sensor traces or measured acoustic/timing results.",
+  "user_report": "全部通过。保存当前版本。",
+  "checklist": "Seven numbered physical checklist categories presented immediately before the acceptance report.",
+  "reported_passed": [
+    "Waiting follower and centered Play without autoplay",
+    "Left-first playback of an all-paused pair; later entry and independent Pause",
+    "Right-first playback of an all-paused pair; later aligned entry without peer autoplay",
+    "Playing detach retains phrase/play permission and permits prompt solo replay",
+    "Paused detach restores independent controls and keeps both silent",
+    "Deferred joining through recording/reply with cancellation preserved",
+    "Common phrase changes preserve old sound and never unpause the paused peer"
+  ],
+  "individual_measurements_recorded": false,
+  "known_limits": [
+    "Retained Recovery startup watchdog remains unresolved",
+    "No measured acoustic phase/release-latency bound or sustained RF/load acceptance",
+    "Current physical implementation supports two same-orientation horizontal boards; third-board support is a future target"
+  ]
+}
