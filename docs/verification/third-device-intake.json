@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-14",
+  "observed_port": "/dev/ttyACM2",
+  "observed_endpoint": "usb:location=1-8.4.3:1.0",
+  "factory_mac": "30:ed:a0:f4:0c:d8",
+  "mode": "rom",
+  "formal_device_id": null,
+  "existing_application_and_recovery": "Not readable through ESP-Iris while in ROM; flash contents are not assumed empty.",
+  "user_confirmed_intent": "Intentionally entered ROM Download Mode, preparing installation.",
+  "official_preflight": {
+    "command": "IDF_PATH=/home/zhuzhengming/esp/ts/Mosaico/.toolchains/esp-idf-7b9cc1a python3 ../esp-mosaico-vibe/mosaico.py --workspace . --json recover --dry-run --source reviewed --hardware-mac 30:ed:a0:f4:0c:d8 --project projects/echoy",
+    "result": "Passed: factory MAC, unique endpoint and reviewed Recovery 0.1.4 bundle verified; no reset, build or flash write.",
+    "initial_environment_retry": "Initial invocation without IDF_PATH failed before the ROM probe; rerun used the already pinned SDK."
+  },
+  "reviewed_recovery_images": {
+    "bootloader": {
+      "file": "bootloader.bin",
+      "offset": "0x2000",
+      "sha256": "7277fdf2382e967e370f1830138d75b8ad086f74ad2a2a1da44a045f9636c675",
+      "size": 24432
+    },
+    "ota_data": {
+      "file": "ota_data_initial.bin",
+      "offset": "0x9000",
+      "sha256": "7d2c7ac4888bfd75cd5f56e8d61f69595121183afc81556c876732fd3782c62f",
+      "size": 8192
+    },
+    "partition_table": {
+      "file": "partition-table.bin",
+      "offset": "0x8000",
+      "sha256": "7f638212e0abfc152ff45cce4a3d9ff3c1312f96465a972b5be3b7eb79c8367c",
+      "size": 3072
+    },
+    "recovery": {
+      "file": "factory.bin",
+      "offset": "0x20000",
+      "sha256": "ce66912c5b161c81f9e147dbfc1788e05ae2335195e778a2950dd4b7391aa545",
+      "size": 1817040
+    }
+  },
+  "accepted_application_package": "2b984e511b9837c34a37d818fb15d0335e67c9a4f4e4b88b203c790eb6af1727",
+  "earlier_two_devices": {
+    "first": {
+      "device_id": "4553502d49524953010030eda0f452a0",
+      "firmware_mode": "normal",
+      "firmware_sha256": "5a721bd70413aabd5716c646b5fd1d29091cffe6464e44c7d994e2923b5d5e95",
+      "boot_id": 11368868697531345372,
+      "crash_count": 0
+    },
+    "second": {
+      "device_id": "4553502d49524953010030eda0f40c6c",
+      "firmware_mode": "normal",
+      "firmware_sha256": "5a721bd70413aabd5716c646b5fd1d29091cffe6464e44c7d994e2923b5d5e95",
+      "boot_id": 4144219012607374767,
+      "crash_count": 0
+    }
+  },
+  "writes_performed": false,
+  "pending": "Explicit two-step installation scope and fresh separated/nonmetal calibration placement confirmation; three-board physical topology remains unconfirmed."
+}

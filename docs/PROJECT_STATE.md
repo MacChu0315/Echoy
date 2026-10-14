@@ -784,6 +784,23 @@ a same-orientation horizontal chain is proposed, not yet a confirmed new scope.
 No three-device implementation or third-device write has occurred. Preserve the
 accepted two-device behavior and sound while designing/validating that extension.
 
+Third-device intake: the user connected `/dev/ttyACM2` and confirmed intentional
+ROM Download Mode for installation. Official discovery reports endpoint
+`usb:location=1-8.4.3:1.0`; official no-reset/no-stub ROM probing verifies factory
+MAC `30:ed:a0:f4:0c:d8`. Formal ESP-Iris Device ID and existing app/Recovery cannot
+yet be read; do not infer that flash is empty or claim a live ID from the MAC.
+`recover --dry-run --source reviewed` passes with the pinned SDK: unique target
+and verified Recovery 0.1.4's four images. The first invocation lacked IDF_PATH
+and failed before probing; the pinned rerun passed. Reviewed images and accepted
+application package `2b984e511b98` are archived/verified locally. The proposed
+Recovery 0.1.4 + accepted Echoy installation awaits explicit scope and fresh
+separated/nonmetal placement confirmation; no flash write/reset was performed.
+Both existing devices are freshly reachable in normal mode with accepted ELF
+`5a721bd70413aabd5716c646b5fd1d29091cffe6464e44c7d994e2923b5d5e95` and crash count
+zero (Boot IDs `11368868697531345372` / `4144219012607374767`). These are later
+boots than the saved installation observations; their cause is not inferred.
+Evidence: `verification/third-device-intake.json`.
+
 ### Dual-device basic physical flow accepted (2026-10-12)
 
 Physical linking is now implemented locally for two upright, horizontally joined
