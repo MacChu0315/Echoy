@@ -44,6 +44,13 @@
   musical dynamics. Preserve the frozen HTML and musical rules. Numerical
   synthesis optimizations must pass the existing HTML audio comparison budgets;
   physical listening acceptance is still required.
+- The user accepted the office speaker profile with softened Harmony on
+  2026-10-14. Subsequent device builds must retain
+  `CONFIG_ECHOY_OFFICE_VOICING_TRIAL=y` (the flag keeps its historical name;
+  defaults are in `projects/echoy/sdkconfig.office-voicing-trial.defaults`).
+  Preserve this sound unless the user requests more tuning. The frozen HTML
+  and ordinary reference renderer remain unchanged; device rollout is in the
+  project state file.
 - Keep `docs/PROJECT_STATE.md` current with verified progress and remaining work.
   User-supplied verification claims are provenance, not new test results.
 - Sound and linkage acceptance must run the shared C synthesis/arrangement and

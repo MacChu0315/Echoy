@@ -91,6 +91,16 @@ is HEALTHY/validated with retained bootloader/partition hashes; no second write
 occurred. `AGENTS.md` now records the physical-placement distinction.
 Right remains ordinary `09275b935ad8`. Evidence is in `physical-install.json`.
 
-The new softness, balance and continued absence of breakup require user
-listening; do not turn the preceding version's no-breakup report into acceptance
-of this changed Harmony. No microphone capture or computer playback occurred.
+The user subsequently confirmed this changed Harmony is suitable, has no
+obvious breakup and is explicitly accepted. Pulse/Voice/Dust had already been
+accepted and their output is unchanged. This closes the current sound-tuning
+round; preserve `CONFIG_ECHOY_OFFICE_VOICING_TRIAL=y` in future device builds.
+
+Read-only snapshot `harmony-soft-accepted-20261014` confirms the same current
+left ELF/Boot ID, zero crashes and zero partial/write/deadline errors after
+listening. Render maximum is 4048 us, write maximum 8591 us, owner/preparation
+stack minima 8724/7956 bytes, and latest preparation 591155 us. These are
+observed runtime values, not worst-case timing or acoustic measurements.
+Right remains `09275b935ad8`; its update and same-profile cooperation check
+remain pending. No firmware write, microphone capture, computer playback or
+additional tuning occurred when recording acceptance. See `acceptance.json`.

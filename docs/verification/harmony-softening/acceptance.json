@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-14",
+  "user_statement": "合适，且没有明显爆音。我认可你的改动",
+  "accepted_package": "5d4776c9ae6d",
+  "left_device_id": "4553502d49524953010030eda0f452a0",
+  "left_boot_id": 1456888021128116879,
+  "left_elf_sha256": "aacb24e1acc4e0a4f11a7cb10b08645f4d0a6e930e98ff19e9ae1675d79a01c7",
+  "scope": "User accepts softened Harmony timbre/balance and reports no obvious breakup after requested listening; Pulse/Voice/Dust had already been accepted and their PCM is unchanged. Not calibrated acoustic data or an exhaustive all-environment test.",
+  "retain_config": "CONFIG_ECHOY_OFFICE_VOICING_TRIAL=y",
+  "runtime_observations": {
+    "crash_count": 0,
+    "partial_writes": 0,
+    "write_errors": 0,
+    "deadline_misses": 0,
+    "owner_render_max_us": 4048,
+    "write_max_us": 8591,
+    "owner_stack_min_bytes": 8724,
+    "prepare_stack_min_bytes": 7956,
+    "latest_prepare_us": 591155,
+    "prepare_timing_scope": "Latest observation, not a maximum or controlled timing benchmark."
+  },
+  "right_package": "09275b935ad8",
+  "right_boot_id": 13916864028309266146,
+  "pending": "Right-device synchronization and same-profile cooperation check.",
+  "actions": "Read-only status/log/screenshots plus acceptance documentation; no firmware/parameter changes or microphone use."
+}

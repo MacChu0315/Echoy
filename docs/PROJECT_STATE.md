@@ -407,10 +407,20 @@ not an app crash; the cached paused/unconnected state had not proved a safe
 physical field. After the user separated the boards at least 15 cm and manually
 restarted left, the current boot reports baseline ready at 2114 ms, unchanged
 ELF, zero crashes and silent startup. No second firmware write was needed.
-`AGENTS.md` now makes that placement-check distinction explicit. New Harmony
-softness, balance and continued absence of breakup await listening; the user
-was asked to record and compare the three Harmony expressions at default volume
-against Voice. Right remains ordinary `09275b935ad8`.
+`AGENTS.md` now makes that placement-check distinction explicit. The user has
+confirmed the new Harmony is suitable, has no obvious breakup, and explicitly
+accepted the changes. Together with the earlier Pulse/Voice/Dust acceptance,
+this closes the current sound-tuning round. Preserve the accepted profile in
+future device builds with `CONFIG_ECHOY_OFFICE_VOICING_TRIAL=y`; do not silently
+return to the older output settings because of the flag's historical name.
+Fresh read-only logs retain the same left ELF/Boot ID with zero crashes,
+partial writes, write errors and deadline misses after listening. Owner render
+maximum is 4048 us, write maximum 8591 us and preparation stack minimum 7956
+bytes; latest preparation is 591155 us, not a worst-case bound. This is user
+listening acceptance and runtime evidence, not calibrated acoustic measurement.
+Right remains ordinary `09275b935ad8`; synchronizing the accepted image to that
+device and a same-profile cooperation check remain pending. No new firmware
+write or sound change was made when recording this acceptance.
 Evidence: `verification/harmony-softening/README.md`.
 The two-run microphone allowance remains exhausted.
 The pre-listening left phrase and exact C replay are preserved in

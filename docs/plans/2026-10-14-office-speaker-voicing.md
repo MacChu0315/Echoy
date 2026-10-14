@@ -6,7 +6,10 @@ implementation and local regressions are complete; the selected left-only trial
 `7307f8ed9a3e` was installed with healthy, calibrated, silent startup. The user
 accepts Pulse/Voice/Dust but found Harmony too loud and bright without obvious
 breakup. Its Harmony-only refinement `5d4776c9ae6d` is now installed and
-calibrated; that refinement's physical listening remains open. Existing firmware-update authorization remains
+calibrated. The user explicitly accepts that refinement's sound/balance and
+reports no obvious breakup, completing the current sound-tuning round.
+Retain the accepted device configuration; the right-device rollout remains
+pending. Existing firmware-update authorization remains
 valid; do not request the same sound-direction approval again.
 
 ## Goal and acceptance
