@@ -7,8 +7,8 @@ The user subsequently reported ongoing office speech and no focused listening;
 these are uncontrolled ambient observations, not clean acoustic acceptance.
 The two-attempt budget is exhausted. Ordinary firmware has been restored and
 no production sound profile has changed. See
-`../verification/output-measurement/README.md` for results and the remaining
-right-device startup magnetic calibration check.
+`../verification/output-measurement/README.md` for results, ordinary-firmware
+restoration and the confirmed right-device startup magnetic calibration.
 
 ## Why measure
 

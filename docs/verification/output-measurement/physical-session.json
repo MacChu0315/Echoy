@@ -13,7 +13,15 @@
     "boot_id": 9290375684351501747,
     "crash_count": 0,
     "microphone_diagnostic_compiled": false,
-    "baseline_ready": false,
-    "pending": "Right startup classifier rejected a stable bottom-edge field (0x04); user asked to separate farther and restart when convenient."
+    "baseline_ready": false
+  },
+  "recalibration": {
+    "boot_id": 13916864028309266146,
+    "firmware_sha256": "8c180bbaf1b34e6cf2e2dd1ca961c5a78347ffcbbd125b90a2ef647cc8cd4d5d",
+    "baseline_ready": true,
+    "crash_count": 0,
+    "free_internal": 29547,
+    "source": "output/cooperation-physical/measurement-calibration-confirm-20261014",
+    "scope": "User separated and restarted the right tile. Current-boot magnetic baseline is ready; no new coupled playback or acoustic test was run."
   }
 }

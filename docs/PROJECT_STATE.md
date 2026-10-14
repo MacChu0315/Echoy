@@ -328,11 +328,12 @@ The two-attempt consent is exhausted, including across reboots. No further
 microphone capture is authorized. Raw PCM was erased after analysis; only local
 metrics were exported. Right device is back on accepted ordinary package
 `09275b935ad8`, ELF `8c180bbaf1b34e6cf2e2dd1ca961c5a78347ffcbbd125b90a2ef647cc8cd4d5d`,
-Boot ID `9290375684351501747`, crash count zero; the left was not reflashed.
-The restored right boot rejected a stable bottom-edge magnetic field during
-calibration, so physical linking is not yet revalidated. The user has been
-asked to separate it farther from tiles/magnets and restart only the right
-when convenient. Do not describe this pending calibration as a healthy link.
+Current right Boot ID `13916864028309266146`, crash count zero; the left was not
+reflashed. The initial restore boot rejected a stable bottom-edge magnetic
+field. After the user separated and restarted the right tile, current-boot
+logs confirm `magnetometer baseline ready; horizontal contact enabled`.
+Restoration and startup calibration are now verified. This is not a new
+coupled-playback or acoustic acceptance test.
 The ordinary package contains no microphone diagnostic entry point.
 See `verification/output-measurement/README.md`; local attempt ledger is
 `output/harmony-measurement-20261014/consent-ledger.json` and must not be reset.

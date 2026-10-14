@@ -141,9 +141,11 @@ output. Its ELF identity matches the previously accepted firmware and has no
 ECA2 microphone diagnostic entry point. The left device was not reflashed.
 The right's restore boot initially rejected bottom-edge magnetic field 0x04
 (right_y 256–258, span 2–4) three times and disabled physical link sensing.
-The user has been asked to move it farther from magnets/other tiles and restart
-when convenient; that calibration confirmation is pending. See
-`physical-session.json` for identities and restore operation provenance.
+The user then separated and restarted the right tile. New Boot ID
+`13916864028309266146` reports the exact ordinary ELF, zero crashes, and
+`magnetometer baseline ready; horizontal contact enabled` at 2115 ms. Startup
+calibration is confirmed; no new linked playback or listening trial was run.
+See `physical-session.json` for identities and restore/recalibration provenance.
 
 The result measures the combined speaker, placement and microphone path.
 It is not calibrated SPL or proof of a defective analog component. ADC clipping,
