@@ -1,0 +1,1050 @@
+[
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_ALLOC object=ui status=allocated allocated_size=45056 internal=0 psram=1 internal_free=161007 internal_largest=96256"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_ALLOC object=art_workspace status=allocated allocated_size=155648 internal=0 psram=1 internal_free=160827 internal_largest=96256"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_ALLOC object=standalone_model status=skipped allocated_size=0 internal=0 psram=0 internal_free=160827 internal_largest=96256"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_ALLOC object=view_cache status=allocated allocated_size=14592 internal=0 psram=1 internal_free=160827 internal_largest=96256"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_HOME_RENDER mode=worker error=0"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_DISPLAY brightness=100 effective=100 ok=1"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_STRIP tile=A mode=record_only at_us=1833011 duration_ms=240 reduced_motion=0"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_STRIP_READY tile=A mode=record_only record=0 play=0 single=0 at_us=1835866"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ROUTE route=status_page locale=zh"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_LOCALE zh"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_STATE phase=0 seed=0000 generation=0 at_us=1833011"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_PLAN revision=0 role=pulse phrase=1 anchors=0 events=0"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": ""
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_STRIP_READY tile=A mode=record_only record=1 play=0 single=0 at_us=2029305"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ROUTE route=home locale=zh"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=5875 gap_max_us=82435 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=5791 gap_max_us=39685 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2697 gap_max_us=30281 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2673 gap_max_us=30286 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2649 gap_max_us=30267 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2692 gap_max_us=30273 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2919 gap_max_us=30266 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=992 gap_max_us=30292 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=994 gap_max_us=30308 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2705 gap_max_us=30297 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3336 gap_max_us=30311 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2701 gap_max_us=30324 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2888 gap_max_us=30303 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1002 gap_max_us=30286 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=996 gap_max_us=30283 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2693 gap_max_us=30316 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2695 gap_max_us=30336 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2647 gap_max_us=30286 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2658 gap_max_us=30317 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2658 gap_max_us=30288 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=996 gap_max_us=30309 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=997 gap_max_us=30291 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=995 gap_max_us=30287 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2714 gap_max_us=30327 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3384 gap_max_us=30300 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3314 gap_max_us=30290 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1007 gap_max_us=30303 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2690 gap_max_us=30283 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_STRIP tile=A mode=play_only at_us=174587261 duration_ms=240 reduced_motion=0"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_STRIP_READY tile=A mode=play_only record=0 play=0 single=0 at_us=174590682"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=8072 gap_max_us=57246 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=2 published=2 stale=0 coalesced=0 draw_max_us=23385 worker_stack_min=10684"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_STRIP_READY tile=A mode=play_only record=0 play=1 single=0 at_us=179260453"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_PLAN revision=4 role=pulse phrase=1 anchors=4 events=11"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=4176 gap_max_us=50229 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=4 published=4 stale=0 coalesced=0 draw_max_us=25775 worker_stack_min=10528"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ROUTE route=role_page locale=zh"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_GALLERY revision=4"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ROUTE route=home locale=zh"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=50825 gap_max_us=92208 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=25775 worker_stack_min=10528"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_GALLERY_COST slot=0 last_role=3 count=1 draw_max_us=36163 encode_max_us=4041 submit_max_us=241"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_GALLERY_COST slot=1 last_role=0 count=1 draw_max_us=14314 encode_max_us=821 submit_max_us=277"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_GALLERY_COST slot=2 last_role=1 count=1 draw_max_us=45496 encode_max_us=3916 submit_max_us=262"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ROUTE route=role_page locale=zh"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_STRIP_READY tile=A mode=play_only record=0 play=0 single=0 at_us=189977824"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_GALLERY revision=5"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ROUTE route=home locale=zh"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=56899 gap_max_us=99754 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=6 published=6 stale=0 coalesced=0 draw_max_us=25775 worker_stack_min=10528"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_GALLERY_COST slot=0 last_role=0 count=1 draw_max_us=6191 encode_max_us=3788 submit_max_us=254"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_GALLERY_COST slot=1 last_role=1 count=1 draw_max_us=54374 encode_max_us=1017 submit_max_us=357"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_GALLERY_COST slot=2 last_role=2 count=1 draw_max_us=5911 encode_max_us=3755 submit_max_us=241"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_STRIP_READY tile=A mode=play_only record=0 play=1 single=0 at_us=191790190"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_PLAN revision=5 role=voice phrase=1 anchors=4 events=9"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=4989 gap_max_us=69919 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=4347 gap_max_us=30302 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2901 gap_max_us=30328 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3016 gap_max_us=30385 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2922 gap_max_us=30334 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2900 gap_max_us=30327 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2932 gap_max_us=32424 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3484 gap_max_us=30456 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3037 gap_max_us=30360 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3285 gap_max_us=32790 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2969 gap_max_us=30343 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3658 gap_max_us=32978 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=4204 gap_max_us=30371 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3364 gap_max_us=30376 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3294 gap_max_us=30350 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2975 gap_max_us=30353 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3281 gap_max_us=32746 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3045 gap_max_us=30341 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3211 gap_max_us=30361 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2974 gap_max_us=30385 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3053 gap_max_us=30340 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3061 gap_max_us=30351 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3263 gap_max_us=30386 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3024 gap_max_us=30339 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3800 gap_max_us=30350 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3373 gap_max_us=30350 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2976 gap_max_us=30374 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3331 gap_max_us=30351 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=7 published=7 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2962 gap_max_us=32555 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2744 gap_max_us=30460 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3265 gap_max_us=30440 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3340 gap_max_us=30438 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3387 gap_max_us=40428 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3297 gap_max_us=30439 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3329 gap_max_us=30464 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3317 gap_max_us=30455 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3285 gap_max_us=30448 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2983 gap_max_us=30472 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2953 gap_max_us=30469 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (478447) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=4820 gap_max_us=40000 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (483217) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=11521920 nonzero=0 peak=0 pa=0 activations=0 write_max=12069us partial=0 write_errors=0 deadline_misses=0"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (483217) echoy_device: internal=24895 PSRAM=11515932 owner_stack=8724 prepare=19us render_max=2932us rejected=0 overflow=0 cache_busy=220 limited=0 mix=1675us pcm=1365us core=1 prep_stack=7920"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (483457) gsp_esp: perf: 0.2 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=4089 gap_max_us=30455 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (488467) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3253 gap_max_us=39258 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (493477) gsp_esp: perf: 0.2 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2793 gap_max_us=30525 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (498477) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2883 gap_max_us=30421 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (503477) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3344 gap_max_us=30438 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (508487) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2896 gap_max_us=30448 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (513227) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=12242160 nonzero=0 peak=0 pa=0 activations=0 write_max=12069us partial=0 write_errors=0 deadline_misses=0"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (513227) echoy_device: internal=24687 PSRAM=11494500 owner_stack=8724 prepare=18us render_max=2932us rejected=0 overflow=0 cache_busy=220 limited=0 mix=1675us pcm=1365us core=1 prep_stack=7920"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (513487) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "E (516997) mosaico_peer: send peer frame failed: type=8 target=30eda0f40c6c sequence=11084 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "W (516997) mosaico_network: application retry failed: destination=30eda0f40c6c error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "E (517097) mosaico_peer: send peer frame failed: type=6 target=30eda0f40c6c sequence=11088 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "W (517097) mosaico_network: topology unicast failed: peer=30eda0f40c6c error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "E (517097) mosaico_peer: send peer frame failed: type=8 target=30eda0f40c6c sequence=11089 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "W (517097) mosaico_network: application retry failed: destination=30eda0f40c6c error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "E (517147) mosaico_peer: send peer frame failed: type=8 target=30eda0f40c6c sequence=11090 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "W (517147) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3050 gap_max_us=30418 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "E (517747) mosaico_peer: send peer frame failed: type=8 target=30eda0f40c6c sequence=11105 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "W (517747) mosaico_network: application retry failed: destination=30eda0f40c6c error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "E (517847) mosaico_peer: send peer frame failed: type=8 target=30eda0f40c6c sequence=11107 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "W (517847) mosaico_network: application retry failed: destination=30eda0f40c6c error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (518487) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "E (518547) mosaico_peer: send peer frame failed: type=8 target=30eda0f40c6c sequence=11123 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "E (518697) mosaico_peer: send peer frame failed: type=8 target=30eda0f40c6c sequence=11127 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "W (518697) mosaico_network: application retry failed: destination=30eda0f40c6c error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3011 gap_max_us=39884 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (523497) gsp_esp: perf: 0.4 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3236 gap_max_us=30504 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (528497) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3254 gap_max_us=30441 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (533507) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2975 gap_max_us=30436 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (538507) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2846 gap_max_us=30435 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (543237) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=12962400 nonzero=0 peak=0 pa=0 activations=0 write_max=12069us partial=0 write_errors=0 deadline_misses=0"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (543237) echoy_device: internal=23043 PSRAM=11494424 owner_stack=8724 prepare=19us render_max=2932us rejected=0 overflow=0 cache_busy=221 limited=0 mix=1675us pcm=1365us core=1 prep_stack=7920"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (543507) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3321 gap_max_us=30457 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (548517) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3006 gap_max_us=39552 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (553517) gsp_esp: perf: 0.2 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3039 gap_max_us=30554 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (558527) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3343 gap_max_us=39531 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (563527) gsp_esp: perf: 0.2 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2851 gap_max_us=30462 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (568527) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3404 gap_max_us=30469 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (573237) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=13682400 nonzero=0 peak=0 pa=0 activations=0 write_max=12069us partial=0 write_errors=0 deadline_misses=0"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (573237) echoy_device: internal=24563 PSRAM=11494424 owner_stack=8724 prepare=18us render_max=2932us rejected=0 overflow=0 cache_busy=223 limited=0 mix=1675us pcm=1365us core=1 prep_stack=7920"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (573537) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3333 gap_max_us=30444 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "I (578547) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2979 gap_max_us=30463 stack_min=7660"
+  },
+  {
+    "boot_id": 16946015599629738310,
+    "text": "ECHOY_ART_COST rendered=9 published=9 stale=0 coalesced=0 draw_max_us=74824 worker_stack_min=9200"
+  }
+]

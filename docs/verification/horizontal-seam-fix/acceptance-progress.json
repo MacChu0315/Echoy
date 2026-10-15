@@ -27,6 +27,14 @@
       "agent_verified": true
     }
   ],
-  "pending_item": 5,
-  "pending_action": "User moves A from ABC left to BCA right, without restart; both C/A should follow B"
+  "pending_item": null,
+  "pending_action": "Investigate test 5; later tests paused",
+  "failed": [
+    {
+      "item": 5,
+      "user_report": "Fast move unrecognized; second attach after pause shows connected",
+      "agent_verified": "B connected root; C/A cooperation=5 recovery, phrases retained, paused; no crash",
+      "evidence": "../reorder-stage-diagnostic/failed-test05"
+    }
+  ]
 }

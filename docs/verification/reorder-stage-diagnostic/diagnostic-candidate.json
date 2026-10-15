@@ -1,0 +1,61 @@
+{
+  "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/three-device/echoy-reorder-stage-diagnostic-21bc020ef620.irisfw",
+  "package_sha256": "21bc020ef6204b5a9299fd699c15f1a9b1d692d18d93fb835ea25403c047ce70",
+  "firmware": {
+    "sha256": "da67956746761d182dfb127c5a9a5adbca9a6c8afde8816ad50b3062611a4627",
+    "size": 2126656,
+    "chip_id": 32,
+    "project_name": "echoy",
+    "version": "1.0.0",
+    "elf_sha256": "d3125facc47d7c40aac662490aea1b610667f2ade38bf3b736330ebdce08e155"
+  },
+  "bundle": {
+    "schema": "esp-iris-system-update/v1",
+    "manifest_sha256": "e074914896dace3b04d84f557ab9d89b4c4b030641b370822b44bde55d0f8b24",
+    "key_id": null,
+    "chip_id": 32,
+    "flash_size": 16777216,
+    "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+    "components": [
+      {
+        "id": 1,
+        "kind": "partition_table",
+        "flags": 0,
+        "target_offset": 32768,
+        "size": 4096,
+        "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+        "file": "partition-table.bin"
+      },
+      {
+        "id": 2,
+        "kind": "application",
+        "flags": 0,
+        "target_offset": 2162688,
+        "size": 2126656,
+        "sha256": "da67956746761d182dfb127c5a9a5adbca9a6c8afde8816ad50b3062611a4627",
+        "file": "ota_0.bin"
+      },
+      {
+        "id": 3,
+        "kind": "data",
+        "flags": 0,
+        "target_offset": 15728640,
+        "size": 377872,
+        "sha256": "e984f71018a6dd24baa4cd988f3815fc8edbb24c809b87fddc78d0f54edf31d7",
+        "file": "ui_apps.bin"
+      }
+    ],
+    "signature_verified": false,
+    "release": "1.0.0",
+    "minimum_recovery_version": "0.1"
+  },
+  "sdkconfig_sha256": "4a0fd044a46a3c5937c1a1bfade1a1d3ac52085449bae2f2e0206c489ca0ef77",
+  "build_result": ".codex-runs/idf-low-noise-build/20261015-170143-system-update-bundle-796578/result.json",
+  "common_thresholds": "Shared const echoy_horizontal_profile, .flash.rodata; left_reject_z=600, all other S31 profile fields and horizontal predicates retained; no startup baseline capture or per-device persisted calibration.",
+  "magnetic_diagnostics": true,
+  "standing_update_authorization": true,
+  "startup_separation_required": false,
+  "status": "Verified local candidate, not installed yet.",
+  "source_base_commit": "899bd998272cd8e09674f48998ef3890524ad439",
+  "source_identity": "Base commit plus exact source hashes in source-hashes.json; diagnostic log fields only."
+}

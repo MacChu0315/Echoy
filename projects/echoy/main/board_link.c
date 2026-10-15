@@ -134,14 +134,20 @@ static void diagnostic_sample(board_link_t *h,const struct bmm150_mag_data *left
     unsigned n=c->sample_count;
     ESP_LOGI(TAG,"ECHOY_MAG_LIVE n=%u raw_L=%ld,%ld,%ld filtered_L=%ld,%ld,%ld "
              "raw_R=%ld,%ld,%ld filtered_R=%ld,%ld,%ld edges=%02x stable=%02x reported=%02x "
-             "peers=%012" PRIx64 "/%012" PRIx64 " group=%u/%u/%u mapped=%u",
+             "peers=%012" PRIx64 "/%012" PRIx64 " group=%u/%u/%u mapped=%u "
+             "identity=%08" PRIx32 " attempt=%" PRIu32 " operations=%u "
+             "members=%012" PRIx64 "/%012" PRIx64 "/%012" PRIx64 " "
+             "offset=%" PRId64 " deadline=%" PRId64,
              ++h->diagnostic_records,(long)left->x,(long)left->y,(long)left->z,
              (long)diagnostic_average(c->left_x,n),(long)diagnostic_average(c->left_y,n),
              (long)diagnostic_average(c->left_z,n),(long)right->x,(long)right->y,(long)right->z,
              (long)diagnostic_average(c->right_x,n),(long)diagnostic_average(c->right_y,n),
              (long)diagnostic_average(c->right_z,n),(unsigned)result->edge_mask,
              (unsigned)h->contacts,(unsigned)h->reported_contacts,h->seams[0].peer,h->seams[1].peer,
-             group.count,group.rank,group.phase,group.clock_mapped ? 1u : 0u);
+             group.count,group.rank,group.phase,group.clock_mapped ? 1u : 0u,
+             group.identity,group.attempt,group.operations,
+             group.members[0],group.members[1],group.members[2],
+             group.root_offset_us,group.deadline_us);
 }
 #endif
 

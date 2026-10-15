@@ -1050,12 +1050,22 @@ Official planned software restarts and independent-start checks pass: boots
 all SOLO/empty/paused, no contact events, baseline capture, output errors or
 crashes. Physical power cycles were not performed. Independent A recording, A—B with C separate, and A—B—C silent following
 then pass user checks plus read-only owner verification on these same boots.
-Current pending test 5: leave B—C joined, detach left A for three seconds and
-reattach A at the right, yielding B—C—A; wait 35 seconds, verify C/A following
-and B root with phrases retained and no implicit playback. No result yet. Separation
-is a test condition here, not calibration. Evidence:
-`verification/horizontal-seam-fix/`; live scripts/results:
-`output/horizontal-seam-fix-20261015/`.
+Test 5 failed by user report: fast A movement from ABC left to BC right was
+not recognized; removing, pausing and rejoining A showed connected. Current
+same-boot readback: B cooperation=1, C/A cooperation=5/following=true (recovery),
+A requested revision14/committed12, all retain phrases and are paused with no
+app crash or preparation fault. Sustained official live logs show repeated
+ESPNOW NO_MEM sends, concentrated on C; this alone does not establish whether
+heap pressure or transmit backlog is responsible. Preserve current B—C—A.
+
+The default-off 1 Hz/90-record diagnostic has been extended only with existing
+group identity, attempt, operation count, members, mapped offset and deadline.
+Tests/sanitizers/SDK build and package inspection pass. Diagnostic candidate
+`21bc020ef620` (ELF d3125facc47d7c40aac662490aea1b610667f2ade38bf3b736330ebdce08e155)
+is prepared for all three under standing authorization, not yet installed.
+Current normal package f9b87dd4d4d7 remains the restore target. No new functional
+fix is claimed. Investigation evidence: `verification/reorder-stage-diagnostic/`;
+previous delivery/acceptance: `verification/horizontal-seam-fix/`.
 
 ### Dual-device basic physical flow accepted (2026-10-12)
 

@@ -1,0 +1,2826 @@
+[
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_ALLOC object=ui status=allocated allocated_size=45056 internal=0 psram=1 internal_free=160827 internal_largest=96256"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_ALLOC object=art_workspace status=allocated allocated_size=155648 internal=0 psram=1 internal_free=160647 internal_largest=96256"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_ALLOC object=standalone_model status=skipped allocated_size=0 internal=0 psram=0 internal_free=160647 internal_largest=96256"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_ALLOC object=view_cache status=allocated allocated_size=14592 internal=0 psram=1 internal_free=160647 internal_largest=96256"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_HOME_RENDER mode=worker error=0"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_DISPLAY brightness=100 effective=100 ok=1"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_STRIP tile=A mode=record_only at_us=1848281 duration_ms=240 reduced_motion=0"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_STRIP_READY tile=A mode=record_only record=0 play=0 single=0 at_us=1851003"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ROUTE route=status_page locale=zh"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_LOCALE zh"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_STATE phase=0 seed=0000 generation=0 at_us=1848281"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_PLAN revision=0 role=pulse phrase=1 anchors=0 events=0"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": ""
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_STRIP_READY tile=A mode=record_only record=1 play=0 single=0 at_us=2037809"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ROUTE route=home locale=zh"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3201 gap_max_us=79997 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=7909 gap_max_us=40003 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1039 gap_max_us=30003 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1038 gap_max_us=30002 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1038 gap_max_us=30002 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1039 gap_max_us=30002 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1069 gap_max_us=30002 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1037 gap_max_us=30003 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1052 gap_max_us=30002 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1054 gap_max_us=30002 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1295 gap_max_us=30016 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1038 gap_max_us=30003 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1076 gap_max_us=30002 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1038 gap_max_us=30002 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1039 gap_max_us=30007 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1040 gap_max_us=30004 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1040 gap_max_us=30008 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1041 gap_max_us=30004 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1045 gap_max_us=30009 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1049 gap_max_us=30009 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1460 gap_max_us=30002 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1450 gap_max_us=30043 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1059 gap_max_us=30008 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1041 gap_max_us=30007 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1038 gap_max_us=30002 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ROUTE route=settings_page locale=zh"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=2 tick_max_us=1148 gap_max_us=66049 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=2 tick_max_us=1039 gap_max_us=30003 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=2 tick_max_us=1036 gap_max_us=30003 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=2 tick_max_us=1038 gap_max_us=30004 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=2 tick_max_us=1037 gap_max_us=30003 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=2 tick_max_us=1041 gap_max_us=30003 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=2 tick_max_us=1044 gap_max_us=30002 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=2 tick_max_us=1469 gap_max_us=31485 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=2 tick_max_us=1038 gap_max_us=30002 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=2 tick_max_us=1053 gap_max_us=30003 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23298 worker_stack_min=10660"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_GALLERY_COST slot=0 last_role=3 count=1 draw_max_us=37334 encode_max_us=1913 submit_max_us=235"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_GALLERY_COST slot=1 last_role=0 count=1 draw_max_us=13263 encode_max_us=3127 submit_max_us=379"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_GALLERY_COST slot=2 last_role=1 count=1 draw_max_us=46250 encode_max_us=1930 submit_max_us=256"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_STRIP_READY tile=A mode=play_only record=0 play=1 single=0 at_us=221319844"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_PLAN revision=4 role=pulse phrase=1 anchors=4 events=11"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_STRIP_READY tile=A mode=play_only record=0 play=0 single=0 at_us=221434699"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_GALLERY revision=5"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ROUTE route=home locale=zh"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_STRIP_READY tile=A mode=play_only record=0 play=1 single=0 at_us=224798223"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=92051 gap_max_us=110488 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=4 published=4 stale=0 coalesced=0 draw_max_us=52743 worker_stack_min=10528"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_GALLERY_COST slot=0 last_role=2 count=1 draw_max_us=8914 encode_max_us=1908 submit_max_us=242"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_GALLERY_COST slot=1 last_role=3 count=2 draw_max_us=89763 encode_max_us=868 submit_max_us=277"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_GALLERY_COST slot=2 last_role=0 count=1 draw_max_us=8702 encode_max_us=1942 submit_max_us=251"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_PLAN revision=5 role=harmony phrase=1 anchors=4 events=9"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=7110 gap_max_us=60002 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1216 gap_max_us=30011 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1109 gap_max_us=30005 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2857 gap_max_us=30008 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1207 gap_max_us=30003 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1424 gap_max_us=30007 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1179 gap_max_us=30008 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1174 gap_max_us=30003 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1154 gap_max_us=30004 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1165 gap_max_us=30007 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1160 gap_max_us=30008 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1183 gap_max_us=30003 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1107 gap_max_us=30008 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1273 gap_max_us=30004 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1160 gap_max_us=30005 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1310 gap_max_us=30006 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1167 gap_max_us=30006 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1215 gap_max_us=30005 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1268 gap_max_us=30006 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1177 gap_max_us=30006 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1251 gap_max_us=30010 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1259 gap_max_us=30006 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (478358) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2587 gap_max_us=40002 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (483228) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=11522160 nonzero=0 peak=0 pa=0 activations=0 write_max=8589us partial=0 write_errors=0 deadline_misses=0"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (483228) echoy_device: internal=22123 PSRAM=11520684 owner_stack=8716 prepare=19us render_max=2864us rejected=0 overflow=0 cache_busy=6 limited=0 mix=1614us pcm=1368us core=1 prep_stack=7912"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (483368) gsp_esp: perf: 0.2 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (485748) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7152 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (485748) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (485768) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=7153 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (485768) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (486198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=7169 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (486198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (486198) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7170 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1344 gap_max_us=30011 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (488368) gsp_esp: perf: 0.2 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (490878) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7401 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (490878) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (490898) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7402 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (490898) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (490998) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=7407 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (490998) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (491048) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7410 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (491048) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (491048) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=7411 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (491048) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (491398) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7435 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (491398) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2670 gap_max_us=40000 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (492198) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=7473 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (492198) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (492198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=7474 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (492198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (492198) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7475 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (492198) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (492248) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=7476 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (492258) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=7477 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (492258) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (492358) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7481 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (492358) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (492378) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7482 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (492378) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (492828) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7498 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (492828) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (492838) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7499 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (492838) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (492848) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7500 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (492848) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493018) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=7506 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493018) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493048) mosaico_peer: send peer frame failed: type=4 target=30eda0f452a0 sequence=7508 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493048) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493058) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7509 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493058) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493088) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7510 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493088) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493088) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7511 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493088) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493148) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7513 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493148) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493198) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=7514 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493198) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=7515 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493198) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=7516 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493198) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=7517 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493198) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=7518 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493198) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493218) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=7519 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493218) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493238) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=7520 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493238) mosaico_network: application forward failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493248) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7521 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493248) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493248) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7522 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493248) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493248) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7523 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493248) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493348) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=7526 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493348) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493348) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7527 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493348) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (493378) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493458) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7534 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493458) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493548) mosaico_peer: send peer frame failed: type=4 target=30eda0f452a0 sequence=7540 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493548) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493548) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7541 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493558) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7542 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493558) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (493558) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=7543 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (493558) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (494298) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=7569 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (494298) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (494308) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7570 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (495838) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7638 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (495838) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (495848) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7639 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (495848) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (495858) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7640 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (495858) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (496198) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=7658 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (496198) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (496198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=7659 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (496198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (496258) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7662 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (496258) mosaico_network: application forward failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (496348) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=7666 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (496348) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (496358) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7667 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (496358) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (496448) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7669 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (496508) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7672 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (496508) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (496548) mosaico_peer: send peer frame failed: type=4 target=30eda0f452a0 sequence=7674 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (496548) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (496568) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7676 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (496568) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (496638) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7680 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (496638) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1272 gap_max_us=30057 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497178) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7699 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (497178) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497198) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=7700 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (497198) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=7701 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (497198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497198) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=7702 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (497198) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=7703 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (497198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497198) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7704 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497298) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=7706 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (497298) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497338) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=7707 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (497338) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497358) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=7708 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (497358) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497448) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=7709 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (497448) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497458) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7710 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (497458) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497498) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7711 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (497498) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497528) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7712 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (497528) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497548) mosaico_peer: send peer frame failed: type=4 target=30eda0f452a0 sequence=7714 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (497548) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497548) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7715 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497748) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7720 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (497748) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497768) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7721 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (497768) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (497808) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7722 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (497808) mosaico_network: application forward failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (498068) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=7734 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (498068) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (498198) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=7744 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (498198) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (498198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=7745 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (498198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (498388) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (515198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=8480 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (515198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (515198) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8481 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (515198) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (515208) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8483 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (515208) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (515498) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8485 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (515548) mosaico_peer: send peer frame failed: type=4 target=30eda0f452a0 sequence=8489 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (515548) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (515588) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=8491 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (515588) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (516018) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=8500 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (516018) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (516058) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=8505 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (516058) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (516088) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=8506 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (516088) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (516088) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=8507 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (516088) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (516198) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=8514 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (516198) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (516198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=8515 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (516198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (516198) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8516 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (516198) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (516228) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8517 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (516438) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8530 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (516438) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (516448) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8531 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (516448) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1356 gap_max_us=30239 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (518418) gsp_esp: perf: 0.2 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2584 gap_max_us=40004 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (522268) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=8819 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (522268) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (522278) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8820 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (522278) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (522298) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=8822 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (522298) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (522298) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=8823 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (522298) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (522518) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8827 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (522518) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (522548) mosaico_peer: send peer frame failed: type=4 target=30eda0f45936 sequence=8828 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (522548) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (522548) mosaico_peer: send peer frame failed: type=4 target=30eda0f452a0 sequence=8829 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (522548) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (522548) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8830 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (522648) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=8833 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (522648) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (523428) gsp_esp: perf: 0.2 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (523498) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=8862 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (523498) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (523598) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8868 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (523598) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (523648) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8869 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (523648) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (523798) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8873 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (523798) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (523798) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=8874 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (523798) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (525238) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8943 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (525238) mosaico_network: application forward failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (526198) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=8977 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (526198) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (526198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=8978 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (526198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (526248) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=8979 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (526248) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (526258) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8980 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (526258) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (526268) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=8981 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (526268) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (526398) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=8985 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (526398) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (526408) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8986 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (526408) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (526448) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8987 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (526448) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (526548) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8991 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (526568) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=8992 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (526568) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1261 gap_max_us=30460 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (528438) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1201 gap_max_us=30132 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (532318) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9272 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (532318) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (532338) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9273 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (532338) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (532348) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9274 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (532348) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (532378) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9275 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (532378) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (532418) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9276 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (532418) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (532428) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9277 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (532498) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9279 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (532498) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (532548) mosaico_peer: send peer frame failed: type=4 target=30eda0f452a0 sequence=9282 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (532548) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (532548) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9283 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (532668) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9285 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (532668) mosaico_network: application forward failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (533448) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (534198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=9342 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (534198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (536198) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=9416 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (536198) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (536198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=9417 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (536198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (536368) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9422 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (536368) mosaico_network: application forward failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (536398) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9424 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (536398) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (536398) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9425 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (536398) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (536448) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9426 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (536448) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (536558) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9430 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (536558) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (536598) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9431 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (536598) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (536698) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9433 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (536718) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9434 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (536718) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (536808) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9435 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (536808) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (536818) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9436 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (536818) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (536818) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9437 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (536818) mosaico_network: application forward failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (536848) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9438 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (536848) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1318 gap_max_us=30137 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (538248) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9493 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (538258) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9494 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (538258) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (538448) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (538798) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9512 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (538798) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (538848) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9514 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (538948) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9515 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (538948) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (538968) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9517 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (538968) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (539048) mosaico_peer: send peer frame failed: type=4 target=30eda0f452a0 sequence=9519 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (539048) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (539068) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9520 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (539068) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (539068) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9522 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (539068) mosaico_network: application forward failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (539108) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=9524 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (539108) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (540648) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9581 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (540648) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (540808) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9589 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (540808) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (540838) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9591 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (540838) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (541218) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9602 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (541218) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (541288) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9604 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (541288) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (541298) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9605 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (541298) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (541458) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9611 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (541458) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (541478) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9612 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (541478) mosaico_network: application forward failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (541508) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=9613 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (541508) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (541518) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9614 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1431 gap_max_us=30007 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (543198) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9685 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (543248) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=12962640 nonzero=0 peak=0 pa=0 activations=0 write_max=9052us partial=0 write_errors=0 deadline_misses=0"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (543248) echoy_device: internal=18267 PSRAM=11520684 owner_stack=8716 prepare=19us render_max=2864us rejected=0 overflow=0 cache_busy=6 limited=0 mix=1614us pcm=1368us core=1 prep_stack=7912"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (543348) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9691 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (543348) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (543448) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (543548) mosaico_peer: send peer frame failed: type=4 target=30eda0f452a0 sequence=9698 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (543548) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (543568) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9699 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (544098) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9713 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (544098) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (544148) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9716 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (544148) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (544158) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9717 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (544158) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (544348) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9732 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (544348) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (545798) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9787 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (545798) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (545848) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9788 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (545848) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (545848) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9789 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (545848) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (545858) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9790 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (545858) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (545968) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9792 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (545968) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (545998) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9793 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (545998) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (546048) mosaico_peer: send peer frame failed: type=4 target=30eda0f45936 sequence=9794 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (546048) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (546048) mosaico_peer: send peer frame failed: type=4 target=30eda0f452a0 sequence=9795 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (546048) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (546098) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9796 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (546098) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (546148) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9801 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (546148) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (546158) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9802 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (546158) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (546198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=9804 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (546198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (546198) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=9805 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (546198) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (546198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=9806 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (546198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (546198) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9807 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (546198) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (546228) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9808 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (546228) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=9809 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (546228) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1196 gap_max_us=30005 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (548408) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9902 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (548438) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9903 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (548438) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (548448) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9904 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (548448) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (548458) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9905 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (548458) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (548458) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (548718) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9913 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (548718) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (548848) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9915 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (548848) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (549048) mosaico_peer: send peer frame failed: type=4 target=30eda0f452a0 sequence=9919 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (549048) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (549048) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=9921 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (549048) mosaico_network: application forward failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (549068) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=9922 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (549068) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2584 gap_max_us=40002 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (552548) mosaico_peer: send peer frame failed: type=4 target=30eda0f45936 sequence=10110 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (552548) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (552548) mosaico_peer: send peer frame failed: type=4 target=30eda0f452a0 sequence=10111 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (552548) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (552548) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=10112 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (552548) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (552638) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10114 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (552638) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (552648) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=10115 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (552648) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (552648) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=10116 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (552648) mosaico_network: application forward failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (552678) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=10117 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (552678) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (552708) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10121 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (552708) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (552748) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10124 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (552748) mosaico_network: application forward failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (552898) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10127 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (552898) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (552948) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=10128 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (552948) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (552948) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10129 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (552948) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (553048) mosaico_peer: send peer frame failed: type=4 target=30eda0f45936 sequence=10131 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (553048) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (553048) mosaico_peer: send peer frame failed: type=4 target=30eda0f452a0 sequence=10132 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (553048) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (553048) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10133 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (553048) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (553098) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10135 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (553098) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (553198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=10139 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (553198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (553198) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=10140 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (553198) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (553198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=10141 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (553198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (553198) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10142 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (553198) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (553278) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=10146 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (553278) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (553458) gsp_esp: perf: 0.2 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (554498) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=10191 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (554498) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (554548) mosaico_peer: send peer frame failed: type=4 target=30eda0f45936 sequence=10192 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (554548) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (554548) mosaico_peer: send peer frame failed: type=4 target=30eda0f452a0 sequence=10193 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (554548) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (554548) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10194 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (554548) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (554548) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=10195 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (554648) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=10196 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (554648) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (554698) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=10198 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (554708) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=10199 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (554708) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (554838) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=10206 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (554838) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (554838) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10207 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (554838) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (554848) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10208 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (554848) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (555008) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10213 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (555008) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (555048) mosaico_peer: send peer frame failed: type=4 target=30eda0f45936 sequence=10214 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (555048) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (555048) mosaico_peer: send peer frame failed: type=4 target=30eda0f452a0 sequence=10215 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (555048) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (556198) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10261 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (556198) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (556198) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=10262 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (556198) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (556508) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10275 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (556508) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (556548) mosaico_peer: send peer frame failed: type=4 target=30eda0f45936 sequence=10276 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (556548) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (556548) mosaico_peer: send peer frame failed: type=4 target=30eda0f452a0 sequence=10277 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (556548) mosaico_network: session send failed: type=4 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (556548) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10278 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=2579 gap_max_us=39107 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (558458) gsp_esp: perf: 0.2 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1292 gap_max_us=30131 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (563468) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (566148) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=10787 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (566148) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (566198) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=10788 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (566198) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (566198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=10789 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (566198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (566198) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=10790 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (566198) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (566198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=10791 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (566198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (566198) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10792 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (566198) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (566228) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=10794 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (566228) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1253 gap_max_us=30824 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (568468) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1262 gap_max_us=30851 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (573258) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=13682880 nonzero=0 peak=0 pa=0 activations=0 write_max=9052us partial=0 write_errors=0 deadline_misses=0"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (573258) echoy_device: internal=22503 PSRAM=11520684 owner_stack=8716 prepare=19us render_max=2864us rejected=0 overflow=0 cache_busy=6 limited=0 mix=1614us pcm=1368us core=1 prep_stack=7912"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (573478) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (574668) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=11220 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (574668) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (574698) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=11221 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (574698) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (574698) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=11222 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (574698) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (574708) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=11224 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (574708) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (574758) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=11225 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (574758) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (576198) mosaico_peer: send peer frame failed: type=6 target=30eda0f45936 sequence=11283 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (576198) mosaico_network: topology unicast failed: peer=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (576198) mosaico_peer: send peer frame failed: type=6 target=30eda0f452a0 sequence=11284 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (576198) mosaico_network: topology unicast failed: peer=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (576198) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=11285 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (576198) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (576218) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=11287 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (576218) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (576248) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=11288 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (576248) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (576248) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=11289 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (576308) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=11290 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (576308) mosaico_network: application acknowledgement failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (576348) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=11291 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (576348) mosaico_network: application retry failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (576348) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=11292 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (576348) mosaico_network: application retry failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (576398) mosaico_peer: send peer frame failed: type=8 target=30eda0f45936 sequence=11294 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (576398) mosaico_network: application acknowledgement failed: destination=30eda0f45936 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "E (576398) mosaico_peer: send peer frame failed: type=8 target=30eda0f452a0 sequence=11295 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "W (576398) mosaico_network: application forward failed: destination=30eda0f452a0 error=ESP_ERR_ESPNOW_NO_MEM"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1324 gap_max_us=30006 stack_min=7652"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "ECHOY_ART_COST rendered=5 published=5 stale=0 coalesced=0 draw_max_us=145360 worker_stack_min=3664"
+  },
+  {
+    "boot_id": 14630519438785164093,
+    "text": "I (578488) gsp_esp: perf: 0.0 rendered fps"
+  }
+]
