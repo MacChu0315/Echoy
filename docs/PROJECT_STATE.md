@@ -963,6 +963,17 @@ agent evidence or acceptance of every checklist category. Join-order changes,
 independent first/later starts and Pause, fixed updates, detach permutations,
 deferred recording/Cancel and continuous-use checks remain individually pending.
 
+The next live ABC→BCA swap fails: the user confirms left-to-right Harmony
+(B=f452a0), Voice (C=f40c6c), Pulse (A=f45936). Read-only initial/later owner
+snapshots show B CONNECTED=1, C FOLLOWING=4 and A SOLO=0; all idle, no pending or
+failed preparation, expected unchanged ELF/Boot IDs and zero crashes. A should
+follow C in this layout. Record checklist item 3 as failed for this transition;
+do not generalize the initial basic-three success to live rearrangements.
+Evidence: `verification/three-device-reorder/README.md`. Root cause remains
+unresolved (contact/radio admission/old membership not yet separated). This
+observation made no production-code edit, restart or firmware write; retain
+the current failed BCA scene for diagnosis.
+
 ### Dual-device basic physical flow accepted (2026-10-12)
 
 Physical linking is now implemented locally for two upright, horizontally joined
