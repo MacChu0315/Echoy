@@ -1,0 +1,88 @@
+{
+  "source_commit": "a83a64ea4708a4ffcb3cfd70799f6effeef110bd",
+  "source_hashes": "source-hashes.json",
+  "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/three-device/echoy-clock-start-v3-ba951963754a.irisfw",
+  "package_sha256": "ba951963754aa1273cda87a38c4cb89612da6461d62b3a63c8db05e4d3e5b85b",
+  "package_bytes": 1463953,
+  "firmware": {
+    "sha256": "7afc049708b467d71a86fa36cba27cdf88ad98d61659095aa613acb673a7dc25",
+    "size": 2125136,
+    "chip_id": 32,
+    "project_name": "echoy",
+    "version": "1.0.0",
+    "elf_sha256": "cc151795ec3efd59c639ce09b613f480ca601660f14a60cb1acd2639a6e1b711"
+  },
+  "bundle": {
+    "schema": "esp-iris-system-update/v1",
+    "manifest_sha256": "f2812656d8f9b11fca8350ac9160e0307696edacae6a08cb2ce0743351da68a5",
+    "key_id": null,
+    "chip_id": 32,
+    "flash_size": 16777216,
+    "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+    "components": [
+      {
+        "id": 1,
+        "kind": "partition_table",
+        "flags": 0,
+        "target_offset": 32768,
+        "size": 4096,
+        "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+        "file": "partition-table.bin"
+      },
+      {
+        "id": 2,
+        "kind": "application",
+        "flags": 0,
+        "target_offset": 2162688,
+        "size": 2125136,
+        "sha256": "7afc049708b467d71a86fa36cba27cdf88ad98d61659095aa613acb673a7dc25",
+        "file": "ota_0.bin"
+      },
+      {
+        "id": 3,
+        "kind": "data",
+        "flags": 0,
+        "target_offset": 15728640,
+        "size": 377872,
+        "sha256": "e984f71018a6dd24baa4cd988f3815fc8edbb24c809b87fddc78d0f54edf31d7",
+        "file": "ui_apps.bin"
+      }
+    ],
+    "signature_verified": false,
+    "release": "1.0.0",
+    "minimum_recovery_version": "0.1"
+  },
+  "build_directory": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-three-chain-build",
+  "build_command": "python3 output/three-device-20261015/build_firmware.py",
+  "build_result": ".codex-runs/idf-low-noise-build/20261015-144050-system-update-bundle-2/result.json",
+  "sdkconfig_sha256": "70220c2212aa90ec8e4faa86a6db329ebab212fadf6a00db34fe914010c934e8",
+  "elf_file_sha256": "cc151795ec3efd59c639ce09b613f480ca601660f14a60cb1acd2639a6e1b711",
+  "accepted_baseline_package": "2b984e511b9837c34a37d818fb15d0335e67c9a4f4e4b88b203c790eb6af1727",
+  "preservation": {
+    "accepted_audio_ui_defaults_and_frozen_checksums": true,
+    "partition_table_and_ui_data_identical": true,
+    "office_voicing": true,
+    "microphone_reference_and_magnetic_diagnostics": false,
+    "recovery_or_bootloader_components": false
+  },
+  "fit": {
+    "ota_bytes": 13565952,
+    "app_bytes": 2125136,
+    "free_bytes": 11440816,
+    "factory_size_warning": "Expected: retained factory is not the application update destination."
+  },
+  "status": "Installed/HEALTHY/validated on all three devices; original failing right-attachment pair confirmed stable by user and current-boot owner/physical evidence. Full three-device acceptance pending.",
+  "rollout_authorization": {
+    "third_authorized": true,
+    "placement_confirmed": true,
+    "package_sha256": "ba951963754aa1273cda87a38c4cb89612da6461d62b3a63c8db05e4d3e5b85b",
+    "statement": "User explicitly approved exact ba951963754a on replacement f45936 and confirmed all three separated >=15 cm on nonmetal surface on 2026-10-15. Original two standing authorization applies."
+  },
+  "additional_pair_regression": {
+    "command": "sh tests/group/run_three.sh boot-offsets",
+    "normal": "boot-offsets-pairs-fixed.log",
+    "sanitizer": "boot-offsets-pairs-sanitized.log",
+    "before_fix": "boot-offsets-pairs-red.log",
+    "test_source_sha256": "2667ffa1cd588cbf957e0fa521f3c35514dfa55985083cef2466a2e74237db5f"
+  }
+}

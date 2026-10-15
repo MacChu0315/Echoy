@@ -1,0 +1,98 @@
+[
+  {
+    "name": "owner",
+    "command": [
+      "env",
+      "GROUP_TEST_CFLAGS=-fsanitize=address,undefined -fno-omit-frame-pointer",
+      "sh",
+      "tests/group/run_owner.sh"
+    ],
+    "returncode": 0,
+    "seconds": 3.71,
+    "log": "final-sanitizer-owner.log"
+  },
+  {
+    "name": "protocol",
+    "command": [
+      "env",
+      "GROUP_TEST_CFLAGS=-fsanitize=address,undefined -fno-omit-frame-pointer",
+      "sh",
+      "tests/group/run_protocol.sh"
+    ],
+    "returncode": 0,
+    "seconds": 0.39,
+    "log": "final-sanitizer-protocol.log"
+  },
+  {
+    "name": "adapter",
+    "command": [
+      "env",
+      "GROUP_TEST_CFLAGS=-fsanitize=address,undefined -fno-omit-frame-pointer",
+      "sh",
+      "tests/group/run_adapter.sh"
+    ],
+    "returncode": 0,
+    "seconds": 1.42,
+    "log": "final-sanitizer-adapter.log"
+  },
+  {
+    "name": "chain-host",
+    "command": [
+      "env",
+      "GROUP_TEST_CFLAGS=-fsanitize=address,undefined -fno-omit-frame-pointer",
+      "sh",
+      "tests/group/run_chain_host.sh"
+    ],
+    "returncode": 0,
+    "seconds": 4.9,
+    "log": "final-sanitizer-chain-host.log"
+  },
+  {
+    "name": "three",
+    "command": [
+      "env",
+      "GROUP_TEST_CFLAGS=-fsanitize=address,undefined -fno-omit-frame-pointer",
+      "sh",
+      "tests/group/run_three.sh"
+    ],
+    "returncode": 0,
+    "seconds": 16.46,
+    "log": "final-sanitizer-three.log"
+  },
+  {
+    "name": "transactions",
+    "command": [
+      "env",
+      "TRANSACTION_TEST_CFLAGS=-fsanitize=address,undefined -fno-omit-frame-pointer",
+      "sh",
+      "tests/cooperation/run_transactions.sh"
+    ],
+    "returncode": 0,
+    "seconds": 8.63,
+    "log": "final-sanitizer-transactions.log"
+  },
+  {
+    "name": "deferred",
+    "command": [
+      "env",
+      "DEFERRED_TEST_CFLAGS=-fsanitize=address,undefined -fno-omit-frame-pointer",
+      "sh",
+      "tests/cooperation/run_deferred.sh"
+    ],
+    "returncode": 0,
+    "seconds": 4.11,
+    "log": "final-sanitizer-deferred.log"
+  },
+  {
+    "name": "runtime",
+    "command": [
+      "env",
+      "ECHOY_RUNTIME_SANITIZE=1",
+      "python3",
+      "tests/device_runtime/test_runtime.py"
+    ],
+    "returncode": 0,
+    "seconds": 44.72,
+    "log": "final-sanitizer-runtime.log"
+  }
+]

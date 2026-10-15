@@ -1,0 +1,31 @@
+PASS 70/140-second boot clock differences in all six orders/both joins; A/B/C-first and bounded unmapped timeout despite edits/lost ABORT
+PASS cached owner publication across root replacement cannot bind old group readiness/revision
+PASS root/middle owner availability recovery after failed transaction without replug or implicit resume
+PASS initially empty three-node chain receives first recorded seed and full linked banks; one reply and no autoplay
+PASS incompatible/missing app HELLO cannot establish following; existing recovery feedback and fresh handshake work
+PASS deferred upstream while B records: B—C edit proceeds, then three-owner admission
+PASS recording result after ARM keeps frozen revision; retained seed/reply completes before upstream admission
+RUN order=0 reverse=0
+PASS order=0 join=AB-first; A/B/C-first, simultaneous, readiness edit, fixed overlap, release; real PCM samples=10631040
+RUN order=0 reverse=1
+PASS order=0 join=BC-first; A/B/C-first, simultaneous, readiness edit, fixed overlap, release; real PCM samples=1455600
+RUN order=1 reverse=0
+PASS order=1 join=AB-first; A/B/C-first, simultaneous, readiness edit, fixed overlap, release; real PCM samples=1455600
+RUN order=1 reverse=1
+PASS order=1 join=BC-first; A/B/C-first, simultaneous, readiness edit, fixed overlap, release; real PCM samples=1455600
+RUN order=2 reverse=0
+PASS order=2 join=AB-first; A/B/C-first, simultaneous, readiness edit, fixed overlap, release; real PCM samples=1455600
+RUN order=2 reverse=1
+PASS order=2 join=BC-first; A/B/C-first, simultaneous, readiness edit, fixed overlap, release; real PCM samples=1455600
+RUN order=3 reverse=0
+PASS order=3 join=AB-first; A/B/C-first, simultaneous, readiness edit, fixed overlap, release; real PCM samples=1455600
+RUN order=3 reverse=1
+PASS order=3 join=BC-first; A/B/C-first, simultaneous, readiness edit, fixed overlap, release; real PCM samples=1455600
+RUN order=4 reverse=0
+PASS order=4 join=AB-first; A/B/C-first, simultaneous, readiness edit, fixed overlap, release; real PCM samples=1455600
+RUN order=4 reverse=1
+PASS order=4 join=BC-first; A/B/C-first, simultaneous, readiness edit, fixed overlap, release; real PCM samples=1455600
+RUN order=5 reverse=0
+PASS order=5 join=AB-first; A/B/C-first, simultaneous, readiness edit, fixed overlap, release; real PCM samples=1455600
+RUN order=5 reverse=1
+PASS order=5 join=BC-first; A/B/C-first, simultaneous, readiness edit, fixed overlap, release; real PCM samples=1455600

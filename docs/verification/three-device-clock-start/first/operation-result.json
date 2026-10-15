@@ -1,0 +1,71 @@
+{
+  "application_validation": {
+    "actual": "cc151795ec3efd59c639ce09b613f480ca601660f14a60cb1acd2639a6e1b711",
+    "actual_field": "firmware_sha256",
+    "expected": "cc151795ec3efd59c639ce09b613f480ca601660f14a60cb1acd2639a6e1b711",
+    "expected_field": "elf_sha256",
+    "mode": "elf_sha256"
+  },
+  "boot_id": 9463761514545310676,
+  "boot_id_text": "9463761514545310676",
+  "bytes": 2507104,
+  "completion_evidence": "commit_response",
+  "components": [
+    {
+      "file": "partition-table.bin",
+      "flags": 0,
+      "id": 1,
+      "kind": "partition_table",
+      "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+      "size": 4096,
+      "target_offset": 32768
+    },
+    {
+      "file": "ota_0.bin",
+      "flags": 0,
+      "id": 2,
+      "kind": "application",
+      "sha256": "7afc049708b467d71a86fa36cba27cdf88ad98d61659095aa613acb673a7dc25",
+      "size": 2125136,
+      "target_offset": 2162688
+    },
+    {
+      "file": "ui_apps.bin",
+      "flags": 0,
+      "id": 3,
+      "kind": "data",
+      "sha256": "e984f71018a6dd24baa4cd988f3815fc8edbb24c809b87fddc78d0f54edf31d7",
+      "size": 377872,
+      "target_offset": 15728640
+    }
+  ],
+  "healthy": true,
+  "job_id": 1,
+  "manifest_sha256": "f2812656d8f9b11fca8350ac9160e0307696edacae6a08cb2ce0743351da68a5",
+  "operation_id": "a72d2a841fa04772b9309e8386e70273",
+  "preserved_coredump": null,
+  "previous_boot_id": 14572634983015117579,
+  "previous_boot_id_text": "14572634983015117579",
+  "recovery_validation": null,
+  "restart_required": true,
+  "source_inventory": {
+    "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+    "flags": 7,
+    "last_operation_id": "658970f1577f476f8bd7b6d6fcc6bb14",
+    "last_result": 0,
+    "layout_version": 4,
+    "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+  },
+  "target_inventory": {
+    "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+    "flags": 7,
+    "last_operation_id": "a72d2a841fa04772b9309e8386e70273",
+    "last_result": 0,
+    "layout_version": 4,
+    "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+  },
+  "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+  "validated": true,
+  "writer_boot_id": 14572634983015117579,
+  "writer_boot_id_text": "14572634983015117579"
+}

@@ -1,0 +1,11 @@
+audio behavior checks: 225028
+audio error/ownership checks: 60
+role=0 events=10 prepare_ms=3.986 double_libm=3 powers=5639 trig=1025
+role=1 events=11 prepare_ms=7.351 double_libm=3 powers=5652 trig=1025
+role=2 events=13 prepare_ms=3.680 double_libm=3 powers=5637 trig=1025
+role=3 events=14 prepare_ms=6.336 double_libm=3 powers=5655 trig=1025
+extreme kind=4 note=0 sampled_relative_error=2.3259512e-06 peak_ratio=-9.87269489e-07
+extreme kind=4 note=13 sampled_relative_error=2.23275954e-06 peak_ratio=6.504112e-07
+extreme kind=4 note=117 sampled_relative_error=0.000407720381 peak_ratio=5.96243873e-06
+extreme kind=4 note=127 sampled_relative_error=0.00109313955 peak_ratio=1.15536026e-05
+extreme kind=5 note=126 sampled_relative_error=0.00739875682 peak_ratio=0.0127793231

@@ -1,0 +1,42 @@
+{
+  "frames": 2640000,
+  "sample_rate": 24000,
+  "metrics": {
+    "all": {
+      "frames": 2640000,
+      "nonzero": 269747,
+      "peak": 11405,
+      "rms": 246.05380873921817,
+      "clipped": 0
+    },
+    "ordinary-pad": {
+      "frames": 15164,
+      "nonzero": 4575,
+      "peak": 370,
+      "rms": 60.51439842094616,
+      "clipped": 0
+    },
+    "example-once": {
+      "frames": 64046,
+      "nonzero": 24747,
+      "peak": 8086,
+      "rms": 579.9574054505224,
+      "clipped": 0
+    },
+    "middle-continues": {
+      "frames": 108692,
+      "nonzero": 75876,
+      "peak": 11403,
+      "rms": 704.5195488120258,
+      "clipped": 0
+    },
+    "paused-silence": {
+      "frames": 15197,
+      "nonzero": 0,
+      "peak": 0,
+      "rms": 0.0,
+      "clipped": 0
+    }
+  },
+  "scope": "actual independent C owner PCM; no speaker or RF acceptance"
+}

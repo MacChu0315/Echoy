@@ -54,6 +54,10 @@
   permission. Radio-only recovery keeps physical membership. A paused follower
   uses centered Play; all-paused first Play may come from either side promptly,
   and clock exchange never grants a paused peer playback permission.
+- Compare a remote absolute deadline only after mapping its clock. Before that,
+  retain a bounded local deadline; edits cannot extend the same attempt budget.
+  Link tests must cover boot-time differences larger than the transaction timeout
+  in both directions, not only nearly simultaneous simulated startup.
 - Approved audio trial: device-only loudness gain with peak limiting may change
   musical dynamics. Preserve the frozen HTML and musical rules. Numerical
   synthesis optimizations must pass the existing HTML audio comparison budgets;

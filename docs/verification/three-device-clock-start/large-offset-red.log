@@ -1,0 +1,308 @@
+GROUP self=11 ids=11,0,0 identity=3975129763
+GROUP self=22 ids=22,0,0 identity=3017173163
+GROUP self=33 ids=33,0,0 identity=2793090381
+GROUP self=33 ids=22,33,0 identity=3509001
+GROUP self=22 ids=22,33,0 identity=3509001
+BEGIN root=22 attempt=1 now=75020000
+BROKEN self=33 attempt=1 phase=1 at=0
+BEGIN root=22 attempt=2 now=75060000
+BROKEN self=33 attempt=2 phase=1 at=0
+BROKEN self=22 attempt=2 phase=1 at=0
+GROUP self=22 ids=11,22,33 identity=4023439390
+GROUP self=11 ids=11,22,33 identity=4023439390
+GROUP self=33 ids=11,22,33 identity=4023439390
+BEGIN root=11 attempt=1 now=10020000
+BROKEN self=33 attempt=1 phase=1 at=0
+BEGIN root=11 attempt=2 now=10040000
+BROKEN self=22 attempt=1 phase=1 at=0
+BROKEN self=22 attempt=2 phase=1 at=0
+BROKEN self=33 attempt=2 phase=1 at=0
+BEGIN root=11 attempt=3 now=10060000
+BROKEN self=22 attempt=3 phase=1 at=0
+BROKEN self=33 attempt=3 phase=1 at=0
+BROKEN self=11 attempt=3 phase=1 at=0
+START_REQ self=11 rank=1 serial=1 ack=0 origin=20550000 old=10180000 votes=0 playing=0 boundary=0
+GROUP self=22 ids=22,33,0 identity=3509001
+GROUP self=11 ids=11,0,0 identity=3975129763
+BEGIN root=22 attempt=3 now=95000000
+READY self=22 attempt=3 flags=32,0,0 output=0,0,0 in=0,0,0 cmd=0 rev=5
+GROUP self=33 ids=22,33,0 identity=3509001
+BEGIN root=22 attempt=4 now=95030000
+READY self=22 attempt=4 flags=32,32,0 output=0,0,0 in=0,0,0 cmd=1 rev=8
+ARM root=22 attempt=4 at=98050000
+GROUP self=11 ids=11,0,0 identity=3975129763
+GROUP self=22 ids=22,0,0 identity=3017173163
+GROUP self=33 ids=33,0,0 identity=2793090381
+GROUP self=22 ids=11,22,0 identity=3085711967
+GROUP self=33 ids=22,33,0 identity=3509001
+GROUP self=11 ids=11,22,0 identity=3085711967
+GROUP self=22 ids=11,22,33 identity=4023439390
+BEGIN root=11 attempt=1 now=5020000
+GROUP self=11 ids=11,22,33 identity=4023439390
+GROUP self=33 ids=11,22,33 identity=4023439390
+BEGIN root=11 attempt=2 now=5030000
+BROKEN self=33 attempt=2 phase=1 at=0
+BEGIN root=11 attempt=3 now=5050000
+BROKEN self=22 attempt=2 phase=1 at=0
+BROKEN self=22 attempt=3 phase=1 at=0
+BROKEN self=33 attempt=3 phase=1 at=0
+BEGIN root=11 attempt=4 now=5070000
+BROKEN self=22 attempt=4 phase=1 at=0
+BROKEN self=33 attempt=4 phase=1 at=0
+BROKEN self=11 attempt=4 phase=1 at=0
+START_REQ self=11 rank=0 serial=1 ack=0 origin=15550000 old=5180000 votes=0 playing=0 boundary=0
+BEGIN root=11 attempt=5 now=20100000
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+READY self=11 attempt=5 flags=0,32,32 output=0,0,0 in=0,0,0 cmd=0 rev=1
+BROKEN self=11 attempt=5 phase=1 at=0
+BROKEN self=22 attempt=5 phase=1 at=0
+BROKEN self=33 attempt=5 phase=1 at=0
+BEGIN root=11 attempt=6 now=55000000
+READY self=11 attempt=6 flags=0,0,0 output=0,0,0 in=0,0,0 cmd=1 rev=1
+ARM root=11 attempt=6 at=58050000
+GROUP self=11 ids=11,0,0 identity=3975129763
+GROUP self=22 ids=22,0,0 identity=3017173163
+GROUP self=33 ids=33,0,0 identity=2793090381
+GROUP self=22 ids=11,22,0 identity=3085711967
+GROUP self=33 ids=22,33,0 identity=3509001
+GROUP self=11 ids=11,22,0 identity=3085711967
+GROUP self=22 ids=11,22,33 identity=4023439390
+BEGIN root=11 attempt=1 now=5020000
+GROUP self=11 ids=11,22,33 identity=4023439390
+GROUP self=33 ids=11,22,33 identity=4023439390
+BEGIN root=11 attempt=2 now=5030000
+BROKEN self=33 attempt=2 phase=1 at=0
+BEGIN root=11 attempt=3 now=5050000
+BROKEN self=22 attempt=2 phase=1 at=0
+BROKEN self=22 attempt=3 phase=1 at=0
+BROKEN self=33 attempt=3 phase=1 at=0
+BEGIN root=11 attempt=4 now=5070000
+BROKEN self=22 attempt=4 phase=1 at=0
+BROKEN self=33 attempt=4 phase=1 at=0
+BROKEN self=11 attempt=4 phase=1 at=0
+START_REQ self=11 rank=0 serial=1 ack=0 origin=15550000 old=5180000 votes=0 playing=0 boundary=0
+BEGIN root=11 attempt=5 now=20000000
+READY self=11 attempt=5 flags=32,0,0 output=0,0,0 in=0,0,0 cmd=1 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+READY self=11 attempt=5 flags=33,0,32 output=17720654396049588227,0,0 in=0,17720654396049588227,0 cmd=0 rev=2
+BROKEN self=11 attempt=5 phase=1 at=0
+BROKEN self=22 attempt=5 phase=1 at=0
+BROKEN self=33 attempt=5 phase=1 at=0
+BEGIN root=11 attempt=6 now=55020000
+ARM root=11 attempt=6 at=58050000
+GROUP self=11 ids=11,0,0 identity=3975129763
+GROUP self=22 ids=22,0,0 identity=3017173163
+GROUP self=33 ids=33,0,0 identity=2793090381
+GROUP self=22 ids=11,22,0 identity=3085711967
+GROUP self=33 ids=22,33,0 identity=3509001
+GROUP self=11 ids=11,22,0 identity=3085711967
+GROUP self=22 ids=11,22,33 identity=4023439390
+BEGIN root=11 attempt=1 now=5020000
+GROUP self=11 ids=11,22,33 identity=4023439390
+GROUP self=33 ids=11,22,33 identity=4023439390
+BEGIN root=11 attempt=2 now=5030000
+BROKEN self=33 attempt=2 phase=1 at=0
+BEGIN root=11 attempt=3 now=5050000
+BROKEN self=22 attempt=2 phase=1 at=0
+BROKEN self=22 attempt=3 phase=1 at=0
+BROKEN self=33 attempt=3 phase=1 at=0
+BEGIN root=11 attempt=4 now=5070000
+BROKEN self=22 attempt=4 phase=1 at=0
+BROKEN self=33 attempt=4 phase=1 at=0
+BROKEN self=11 attempt=4 phase=1 at=0
+BEGIN root=11 attempt=5 now=18560000
+ARM root=11 attempt=5 at=20180000
+GROUP self=11 ids=11,0,0 identity=3975129763
+GROUP self=22 ids=22,0,0 identity=3017173163
+GROUP self=33 ids=33,0,0 identity=2793090381
+GROUP self=22 ids=11,22,0 identity=3085711967
+GROUP self=11 ids=11,22,0 identity=3085711967
+BEGIN root=11 attempt=1 now=9020000
+BEGIN root=11 attempt=2 now=9050000
+ARM root=11 attempt=2 at=10660000
+GROUP self=11 ids=11,0,0 identity=3975129763
+GROUP self=22 ids=22,0,0 identity=3017173163
+GROUP self=33 ids=33,0,0 identity=2793090381
+GROUP self=33 ids=22,33,0 identity=3509001
+GROUP self=22 ids=22,33,0 identity=3509001
+BEGIN root=22 attempt=1 now=75020000
+BROKEN self=33 attempt=1 phase=1 at=0
+BEGIN root=22 attempt=2 now=75060000
+BROKEN self=33 attempt=2 phase=1 at=0
+BROKEN self=22 attempt=2 phase=1 at=0
+BEGIN root=22 attempt=3 now=85590000
+ARM root=22 attempt=3 at=87680000
+GROUP self=22 ids=11,22,33 identity=4023439390
+GROUP self=11 ids=11,22,33 identity=4023439390
+GROUP self=33 ids=11,22,33 identity=4023439390
+BEGIN root=11 attempt=1 now=19530000
+BEGIN root=11 attempt=2 now=19550000
+BEGIN root=11 attempt=3 now=19570000
+ARM root=11 attempt=3 at=22190000
+GROUP self=11 ids=11,0,0 identity=3975129763
+GROUP self=22 ids=22,0,0 identity=3017173163
+GROUP self=33 ids=33,0,0 identity=2793090381
+GROUP self=33 ids=22,33,0 identity=3509001
+GROUP self=22 ids=22,33,0 identity=3509001
+BEGIN root=22 attempt=1 now=75020000
+BROKEN self=33 attempt=1 phase=1 at=0
+BEGIN root=22 attempt=2 now=75060000
+BROKEN self=33 attempt=2 phase=1 at=0
+BROKEN self=22 attempt=2 phase=1 at=0
+BEGIN root=22 attempt=3 now=89390000
+READY self=22 attempt=3 flags=65,0,0 output=11756804624349134851,0,0 in=0,0,0 cmd=0 rev=2
+ARM root=22 attempt=3 at=92680000
+BEGIN root=22 attempt=4 now=92720000
+ARM root=22 attempt=4 at=95180000
+GROUP self=22 ids=11,22,33 identity=4023439390
+GROUP self=11 ids=11,22,33 identity=4023439390
+GROUP self=33 ids=11,22,33 identity=4023439390
+BEGIN root=11 attempt=1 now=27740000
+BEGIN root=11 attempt=2 now=27760000
+BEGIN root=11 attempt=3 now=27780000
+READY self=11 attempt=3 flags=1,1,0 output=13176231314984009730,1330672896565051400,0 in=0,13176231314984009730,0 cmd=0 rev=1
+ARM root=11 attempt=3 at=30400000
+PASS cached owner publication across root replacement cannot bind old group readiness/revision
+PASS root/middle owner availability recovery after failed transaction without replug or implicit resume
+PASS initially empty three-node chain receives first recorded seed and full linked banks; one reply and no autoplay
+PASS incompatible/missing app HELLO cannot establish following; existing recovery feedback and fresh handshake work
+PASS deferred upstream while B records: B—C edit proceeds, then three-owner admission
+PASS recording result after ARM keeps frozen revision; retained seed/reply completes before upstream admission
+RUN order=0 reverse=0
+GROUP self=11 ids=11,0,0 identity=3975129763
+GROUP self=22 ids=22,0,0 identity=3017173163
+GROUP self=33 ids=33,0,0 identity=2793090381
+GROUP self=22 ids=11,22,0 identity=3085711967
+GROUP self=11 ids=11,22,0 identity=3085711967
+BEGIN root=11 attempt=1 now=5020000
+BROKEN self=22 attempt=1 phase=1 at=0
+BEGIN root=11 attempt=2 now=5060000
+BROKEN self=22 attempt=2 phase=1 at=0
+BROKEN self=11 attempt=2 phase=1 at=0
+GROUP self=33 ids=11,22,33 identity=4023439390
+GROUP self=22 ids=11,22,33 identity=4023439390
+GROUP self=11 ids=11,22,33 identity=4023439390
+BEGIN root=11 attempt=3 now=6030000
+BROKEN self=33 attempt=3 phase=1 at=0
+BEGIN root=11 attempt=4 now=6050000
+BROKEN self=33 attempt=4 phase=1 at=0
+BEGIN root=11 attempt=5 now=6070000
+BROKEN self=33 attempt=5 phase=1 at=0
+BROKEN self=11 attempt=5 phase=1 at=0
+BROKEN self=22 attempt=5 phase=1 at=0
+large_offset_red: output/recovery-link-20261015/large_offset_red.c:374: run: Assertion `nodes[i].view.committed_transaction' failed.

@@ -1,0 +1,32 @@
+ECHOY_PLAN revision=0 role=pulse phrase=1 anchors=0 events=0
+I (3141) mosaico_session: initialized: device=30eda0f452a0 retry=200ms stale=2500ms
+I (3141) mosaico_network: started: device=30eda0f452a0 max_nodes=16
+I (3181) echoy-link: calibrating magnetometers; keep tiles separated until baseline ready
+I (3291) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=0 nonzero=0 peak=0 pa=0 activations=0 write_max=0us partial=0 write_errors=0 deadline_misses=0
+I (3541) echoy-link: magnetometer baseline ready; horizontal contact enabled
+I (153311) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=3600720 nonzero=0 peak=0 pa=0 activations=0 write_max=8386us partial=0 write_errors=0 deadline_misses=0
+I (183311) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=4320720 nonzero=0 peak=0 pa=0 activations=0 write_max=8386us partial=0 write_errors=0 deadline_misses=0
+I (9155031) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=219642000 nonzero=66940 peak=19660 pa=1 activations=1 write_max=8790us partial=0 write_errors=0 deadline_misses=0
+I (9185041) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=220362240 nonzero=66940 peak=19660 pa=1 activations=1 write_max=8790us partial=0 write_errors=0 deadline_misses=0
+I (9215041) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=221082240 nonzero=66940 peak=19660 pa=1 activations=1 write_max=8790us partial=0 write_errors=0 deadline_misses=0
+I (9245051) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=221802480 nonzero=66940 peak=19660 pa=1 activations=1 write_max=8790us partial=0 write_errors=0 deadline_misses=0
+I (9275061) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=222522720 nonzero=66940 peak=19660 pa=1 activations=1 write_max=8790us partial=0 write_errors=0 deadline_misses=0
+I (9305071) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=223242960 nonzero=66940 peak=19660 pa=1 activations=1 write_max=8790us partial=0 write_errors=0 deadline_misses=0
+I (9324691) echoy-link: magnetic release edge=LEFT
+W (9325381) mosaico_network: rejected frame from non-neighbor: source=30eda0f40c6c
+I (9325401) mosaico_session: committed: session=b76c7291 local=RIGHT peer=30eda0f40c6c/LEFT
+I (9325441) echoy-link: horizontal peer=30eda0f40c6c edge=RIGHT session=3077337745
+I (9335071) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=223962960 nonzero=66940 peak=19660 pa=1 activations=1 write_max=8790us partial=0 write_errors=0 deadline_misses=0
+I (9336841) mosaico_session: detached: session=b76c7291 local=RIGHT peer=30eda0f40c6c reason=0
+I (9336841) echoy-link: magnetic release edge=RIGHT
+I (9339441) echoy-link: magnetic contact edge=RIGHT
+W (9339561) mosaico_network: rejected frame from non-neighbor: source=30eda0f40c6c
+I (9339571) mosaico_session: committed: session=15358304 local=RIGHT peer=30eda0f40c6c/LEFT
+I (9339591) echoy-link: horizontal peer=30eda0f40c6c edge=RIGHT session=355828484
+I (9340491) mosaico_session: detached: session=15358304 local=RIGHT peer=30eda0f40c6c reason=1
+W (9344631) mosaico_network: rejected frame from non-neighbor: source=30eda0f40c6c
+I (9344631) mosaico_session: committed: session=f3fd1131 local=RIGHT peer=30eda0f40c6c/LEFT
+I (9344641) echoy-link: horizontal peer=30eda0f40c6c edge=RIGHT session=4093448497
+I (9365071) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=224682960 nonzero=66940 peak=19660 pa=1 activations=1 write_max=8790us partial=0 write_errors=0 deadline_misses=0
+I (9371341) mosaico_session: detached: session=f3fd1131 local=RIGHT peer=30eda0f40c6c reason=1
+I (9371391) echoy-link: magnetic release edge=RIGHT

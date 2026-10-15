@@ -1,0 +1,10 @@
+{
+  "device_id": "4553502d49524953010030eda0f45936",
+  "endpoint": "usb:location=1-8.1:1.0",
+  "package_sha256": "ba951963754aa1273cda87a38c4cb89612da6461d62b3a63c8db05e4d3e5b85b",
+  "expected_elf_sha256": "cc151795ec3efd59c639ce09b613f480ca601660f14a60cb1acd2639a6e1b711",
+  "authorization": "Original two standing authorization; user explicitly approved exact ba951963754a on third f45936 and all-three separated nonmetal placement on 2026-10-15.",
+  "before_application_boot": 3417849056774182729,
+  "ready_recovery_boot": 6293094989256455802,
+  "expected_bootloader_region_sha256": "925d2541ed213aa29f552f15ee6881b899dd72c4dbc81343ae2b4c88caa72cc4"
+}

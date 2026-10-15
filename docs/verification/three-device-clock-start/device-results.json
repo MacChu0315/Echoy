@@ -1,0 +1,78 @@
+{
+  "package_sha256": "ba951963754aa1273cda87a38c4cb89612da6461d62b3a63c8db05e4d3e5b85b",
+  "elf_sha256": "cc151795ec3efd59c639ce09b613f480ca601660f14a60cb1acd2639a6e1b711",
+  "devices": {
+    "first": {
+      "device_id": "4553502d49524953010030eda0f452a0",
+      "endpoint": "usb:location=1-8.3:1.0",
+      "boot_id": 9463761514545310676,
+      "firmware_sha256": "cc151795ec3efd59c639ce09b613f480ca601660f14a60cb1acd2639a6e1b711",
+      "uptime_us": 340967482,
+      "crash_count": 0,
+      "free_internal": 23711,
+      "free_spiram": 11529136,
+      "package_sha256": "ba951963754aa1273cda87a38c4cb89612da6461d62b3a63c8db05e4d3e5b85b",
+      "operation_id": "a72d2a84-1fa0-4772-b930-9e8386e70273",
+      "healthy": true,
+      "validated": true,
+      "magnetic_baseline_ready": true,
+      "retained_bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "retained_partition_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+      "latest_audio": "I (333331) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=7921440 nonzero=20956 peak=19660 pa=0 activations=1 write_max=8407us partial=0 write_errors=0 deadline_misses=0",
+      "current_boot_sensor_log": [
+        "I (3141) echoy-link: calibrating magnetometers; keep tiles separated until baseline ready",
+        "I (3541) echoy-link: magnetometer baseline ready; horizontal contact enabled",
+        "I (294191) echoy-link: horizontal peer=30eda0f45936 edge=LEFT session=1053256965"
+      ],
+      "known_recovery_startup_crash": true
+    },
+    "second": {
+      "device_id": "4553502d49524953010030eda0f40c6c",
+      "endpoint": "usb:location=1-8.2:1.0",
+      "boot_id": 17925284075629591042,
+      "firmware_sha256": "cc151795ec3efd59c639ce09b613f480ca601660f14a60cb1acd2639a6e1b711",
+      "uptime_us": 243584459,
+      "crash_count": 0,
+      "free_internal": 24319,
+      "free_spiram": 12263872,
+      "package_sha256": "ba951963754aa1273cda87a38c4cb89612da6461d62b3a63c8db05e4d3e5b85b",
+      "operation_id": "664ac16a-b68d-490a-9fbd-a308ff5bf169",
+      "healthy": true,
+      "validated": true,
+      "magnetic_baseline_ready": true,
+      "retained_bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+      "retained_partition_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+      "latest_audio": "I (243303) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=5761680 nonzero=0 peak=0 pa=0 activations=0 write_max=8370us partial=0 write_errors=0 deadline_misses=0",
+      "current_boot_sensor_log": [
+        "I (3093) echoy-link: calibrating magnetometers; keep tiles separated until baseline ready",
+        "I (3493) echoy-link: magnetometer baseline ready; horizontal contact enabled"
+      ],
+      "known_recovery_startup_crash": true
+    },
+    "third": {
+      "device_id": "4553502d49524953010030eda0f45936",
+      "endpoint": "usb:location=1-8.1:1.0",
+      "boot_id": 12347754192822218685,
+      "firmware_sha256": "cc151795ec3efd59c639ce09b613f480ca601660f14a60cb1acd2639a6e1b711",
+      "uptime_us": 161020375,
+      "crash_count": 0,
+      "free_internal": 24331,
+      "free_spiram": 11517412,
+      "package_sha256": "ba951963754aa1273cda87a38c4cb89612da6461d62b3a63c8db05e4d3e5b85b",
+      "operation_id": "8647ba22-ac6e-4ece-975e-88812cc86036",
+      "healthy": true,
+      "validated": true,
+      "magnetic_baseline_ready": true,
+      "retained_bootloader_sha256": "925d2541ed213aa29f552f15ee6881b899dd72c4dbc81343ae2b4c88caa72cc4",
+      "retained_partition_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+      "latest_audio": "I (153245) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=3600480 nonzero=58967 peak=19660 pa=1 activations=1 write_max=8591us partial=0 write_errors=0 deadline_misses=0",
+      "current_boot_sensor_log": [
+        "I (3085) echoy-link: calibrating magnetometers; keep tiles separated until baseline ready",
+        "I (3485) echoy-link: magnetometer baseline ready; horizontal contact enabled"
+      ],
+      "known_recovery_startup_crash": false
+    }
+  },
+  "writes": "One official application system-update per device; existing Recovery and bootloader retained.",
+  "scope": "Original two-device right-attachment regression passes with user feedback plus actual current-boot status/screenshot/log evidence. Full three-device checklist, acoustic precision and sustained RF/load acceptance remain pending."
+}

@@ -1,0 +1,2 @@
+test_three: /home/zhuzhengming/esp/ts/Mosaico/Echoy/tests/group/test_three.c:559: boot_clock_offsets: Assertion `info.count==3 && info.phase==5 && info.clock_mapped' failed.
+Aborted (core dumped)

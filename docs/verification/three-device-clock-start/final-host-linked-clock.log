@@ -1,0 +1,12 @@
+staged boundary=7720000 synchronized origin=220000 boundary phase=0 us
+playing PCM energy after +300 ms clock correction: 0.529432913
+identical clock refresh changed imminent commit to 7700000 us
+whole-bar-equivalent clock refresh changed imminent commit to 7700000 us
+PASS periodic clock refresh preserves synthesizing and staged plan_pending
+PASS whole-bar clock-origin correction leaves actual PCM unchanged
+PASS independent replay ignores the former group and historical solo clock
+PASS pending detach retains exact committed phrase and import owns its data
+PASS staged replacement stays aligned after a clock correction
+PASS positive clock correction keeps already started PCM running
+PASS equivalent clock heartbeat preserves an imminent commit
+PASS equivalent clock heartbeat preserves an imminent commit

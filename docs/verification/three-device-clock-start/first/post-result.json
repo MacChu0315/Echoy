@@ -1,0 +1,22 @@
+{
+  "device_id": "4553502d49524953010030eda0f452a0",
+  "endpoint": "usb:location=1-8.3:1.0",
+  "boot_id": 9463761514545310676,
+  "firmware_sha256": "cc151795ec3efd59c639ce09b613f480ca601660f14a60cb1acd2639a6e1b711",
+  "uptime_us": 30897552,
+  "crash_count": 0,
+  "free_internal": 24299,
+  "free_spiram": 12263840,
+  "package_sha256": "ba951963754aa1273cda87a38c4cb89612da6461d62b3a63c8db05e4d3e5b85b",
+  "operation_id": "a72d2a84-1fa0-4772-b930-9e8386e70273",
+  "healthy": true,
+  "validated": true,
+  "magnetic_baseline_ready": true,
+  "retained_bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+  "retained_partition_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+  "latest_audio": "I (3271) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=0 nonzero=0 peak=0 pa=0 activations=0 write_max=0us partial=0 write_errors=0 deadline_misses=0",
+  "current_boot_sensor_log": [
+    "I (3141) echoy-link: calibrating magnetometers; keep tiles separated until baseline ready",
+    "I (3541) echoy-link: magnetometer baseline ready; horizontal contact enabled"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "archive": null,
+  "command": "crash",
+  "device_id": "4553502d49524953010030eda0f40c6c",
+  "gateway_started": false,
+  "log": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/.codex-runs/mosaico/20261015T065025Z-crash/raw.log",
+  "ok": true,
+  "report": {
+    "reports": [
+      {
+        "archive": null,
+        "boot_id": 7221344037858656185,
+        "candidate_artifact_id": null,
+        "candidate_elf_sha256": null,
+        "core_dump_chunk_max": 1024,
+        "core_dump_elf_sha256": "",
+        "core_dump_elf_sha256_complete": false,
+        "core_dump_present": false,
+        "core_dump_size": 0,
+        "core_dump_valid": false,
+        "crash_count": 1,
+        "crash_failed_app_address": 131072,
+        "crash_failed_boot_id": 1077229607917725630,
+        "crash_failed_firmware_sha256": "54f72372a819e6708e859e79cfe2540e51653e5d8ac1c143a357419e43039b22",
+        "crash_limit": 3,
+        "crash_loop_triggered": false,
+        "crash_origin_reset_reason": 5,
+        "crash_recovery_pending": false,
+        "crash_state_error": 0,
+        "decode_eligible": false,
+        "device_id": "4553502d49524953010030eda0f40c6c",
+        "firmware_sha256": "54f72372a819e6708e859e79cfe2540e51653e5d8ac1c143a357419e43039b22",
+        "firmware_sha_matches": false,
+        "panic_reason": "",
+        "previous_boot_crash": true,
+        "reset_reason": 5,
+        "session_id": 1393627201
+      }
+    ]
+  },
+  "saved_core": null,
+  "status": "succeeded"
+}

@@ -1,0 +1,25 @@
+PASS physical-count-in
+PASS physical-recording
+PASS physical-preparing
+PASS physical-reply
+PASS cancel-count-in
+PASS cancel-recording
+PASS pause-preparing
+PASS pause-reply
+PASS detach-deferred
+PASS rejoin-empty-deferred
+PASS rejoin-latest-deferred
+PASS empty-capture
+PASS both-empty
+PASS stale-disconnected-job
+PASS detach-keeps-cooperative
+PASS pc-chain
+PASS link-abort-deferred
+PASS link-abort-duplicate-deferred
+PASS link-abort-duplicate-local-job
+PASS link-completed-deferred-commit
+PASS link-cancelled-deferred-commit
+PASS link-rejoin-old-session
+PASS link-failed-ready-keeps-pcm
+PASS link-leader-abort-old-bank
+PASS 24 deferred boundary cases, 420054 assertions

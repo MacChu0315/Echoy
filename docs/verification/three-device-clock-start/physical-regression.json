@@ -1,0 +1,18 @@
+{
+  "package_sha256": "ba951963754aa1273cda87a38c4cb89612da6461d62b3a63c8db05e4d3e5b85b",
+  "user_report": "显示跟随左侧，保持稳定",
+  "requested_path": "Original failing pair/order, valid left phrase, right attachment, hold >=35 seconds.",
+  "left_device_id": "4553502d49524953010030eda0f45936",
+  "right_device_id": "4553502d49524953010030eda0f452a0",
+  "agent_current_boot_evidence": {
+    "right_boot_id": 9463761514545310676,
+    "left_boot_id": 12347754192822218685,
+    "right_contact_timestamp_ms": 294191,
+    "right_status_uptime_us": 340967482,
+    "seconds_between_contact_log_and_status": 46.776,
+    "owner_snapshot": "Right FOLLOWING=4, valid committed plan, no pending/failed preparation; left CONNECTED=1; both remain locally paused in snapshot.",
+    "boot_uptime_difference_note": "Right uptime is roughly180 seconds ahead of left, exceeding the30-second budget; same physical condition that exposed the old bug.",
+    "all_app_crash_output_error_counts_zero": true
+  },
+  "scope": "Original two-device right-attachment regression passes with user feedback plus actual current-boot status/screenshot/log evidence. Full three-device checklist, acoustic precision and sustained RF/load acceptance remain pending."
+}

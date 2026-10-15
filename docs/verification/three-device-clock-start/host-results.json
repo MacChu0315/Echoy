@@ -1,0 +1,238 @@
+[
+  {
+    "name": "group-owner",
+    "command": [
+      "sh",
+      "tests/group/run_owner.sh"
+    ],
+    "returncode": 0,
+    "seconds": 0.92,
+    "log": "final-host-group-owner.log"
+  },
+  {
+    "name": "group-protocol",
+    "command": [
+      "sh",
+      "tests/group/run_protocol.sh"
+    ],
+    "returncode": 0,
+    "seconds": 0.14,
+    "log": "final-host-group-protocol.log"
+  },
+  {
+    "name": "group-adapter",
+    "command": [
+      "sh",
+      "tests/group/run_adapter.sh"
+    ],
+    "returncode": 0,
+    "seconds": 0.35,
+    "log": "final-host-group-adapter.log"
+  },
+  {
+    "name": "group-chain-host",
+    "command": [
+      "sh",
+      "tests/group/run_chain_host.sh"
+    ],
+    "returncode": 0,
+    "seconds": 1.24,
+    "log": "final-host-group-chain-host.log"
+  },
+  {
+    "name": "group-three",
+    "command": [
+      "sh",
+      "tests/group/run_three.sh"
+    ],
+    "returncode": 0,
+    "seconds": 5.82,
+    "log": "final-host-group-three.log"
+  },
+  {
+    "name": "legacy-transactions",
+    "command": [
+      "sh",
+      "tests/cooperation/run_transactions.sh"
+    ],
+    "returncode": 0,
+    "seconds": 2.6,
+    "log": "final-host-legacy-transactions.log"
+  },
+  {
+    "name": "legacy-deferred",
+    "command": [
+      "sh",
+      "tests/cooperation/run_deferred.sh"
+    ],
+    "returncode": 0,
+    "seconds": 1.3,
+    "log": "final-host-legacy-deferred.log"
+  },
+  {
+    "name": "legacy-board",
+    "command": [
+      "sh",
+      "tests/board_link/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 1.04,
+    "log": "final-host-legacy-board.log"
+  },
+  {
+    "name": "magnetic-diagnostics",
+    "command": [
+      "sh",
+      "tests/magnet_diagnostics/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 1.1,
+    "log": "final-host-magnetic-diagnostics.log"
+  },
+  {
+    "name": "linked-device",
+    "command": [
+      "sh",
+      "tests/linked_device/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 0.98,
+    "log": "final-host-linked-device.log"
+  },
+  {
+    "name": "linked-clock",
+    "command": [
+      "sh",
+      "tests/linked_device/run_clock.sh"
+    ],
+    "returncode": 0,
+    "seconds": 1.13,
+    "log": "final-host-linked-clock.log"
+  },
+  {
+    "name": "band",
+    "command": [
+      "sh",
+      "tests/band/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 7.68,
+    "log": "final-host-band.log"
+  },
+  {
+    "name": "render-active",
+    "command": [
+      "sh",
+      "tests/render_active/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 2.11,
+    "log": "final-host-render-active.log"
+  },
+  {
+    "name": "audio",
+    "command": [
+      "sh",
+      "tests/audio/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 2.26,
+    "log": "final-host-audio.log"
+  },
+  {
+    "name": "speaker-voicing",
+    "command": [
+      "sh",
+      "tests/speaker_voicing/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 1.33,
+    "log": "final-host-speaker-voicing.log"
+  },
+  {
+    "name": "v4-strip",
+    "command": [
+      "sh",
+      "tests/v4_strip/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 0.71,
+    "log": "final-host-v4-strip.log"
+  },
+  {
+    "name": "arrange",
+    "command": [
+      "sh",
+      "tests/arrange/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 3.74,
+    "log": "final-host-arrange.log"
+  },
+  {
+    "name": "music",
+    "command": [
+      "node",
+      "tests/music/oracle.mjs"
+    ],
+    "returncode": 0,
+    "seconds": 3.15,
+    "log": "final-host-music.log"
+  },
+  {
+    "name": "runtime",
+    "command": [
+      "python3",
+      "tests/device_runtime/test_runtime.py"
+    ],
+    "returncode": 0,
+    "seconds": 30.73,
+    "log": "final-host-runtime.log"
+  },
+  {
+    "name": "desk-runtime",
+    "command": [
+      "sh",
+      "tests/desk_runtime/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 2.84,
+    "log": "final-host-desk-runtime.log"
+  },
+  {
+    "name": "host-configure",
+    "command": [
+      "cmake",
+      "-S",
+      "tests",
+      "-B",
+      "build-host"
+    ],
+    "returncode": 0,
+    "seconds": 0.02,
+    "log": "final-host-host-configure.log"
+  },
+  {
+    "name": "host-build",
+    "command": [
+      "cmake",
+      "--build",
+      "build-host"
+    ],
+    "returncode": 0,
+    "seconds": 0.05,
+    "log": "final-host-host-build.log"
+  },
+  {
+    "name": "host-ctest",
+    "command": [
+      "ctest",
+      "--test-dir",
+      "build-host",
+      "--output-on-failure"
+    ],
+    "returncode": 0,
+    "seconds": 0.02,
+    "log": "final-host-host-ctest.log"
+  }
+]

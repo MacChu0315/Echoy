@@ -1,0 +1,1 @@
+pair_red: tests/group/test_three.c:556: boot_clock_offsets: Assertion `info.count==2 && info.phase==5 && info.clock_mapped' failed.

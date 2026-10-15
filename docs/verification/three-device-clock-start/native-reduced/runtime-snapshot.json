@@ -1,0 +1,19 @@
+{
+  "binary": {
+    "source": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/build-sim-three-independent/echoy_chain_desk",
+    "sha256": "1cbad36217732e058a5fe5cacb5100cee1c4d34037a7d40205c84d2a85da4e87"
+  },
+  "bundle": {
+    "source": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/build-sim-three-independent/echoy_backend_assets/app.gspb",
+    "sha256": "245d1b7013be501fba5ee56978ab9c602a59bc2ff8c037c679820ee4a999c4b9"
+  },
+  "api": {
+    "source": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/build-sim-three-independent/echoy_backend_assets/bundle_gsp.api.json",
+    "sha256": "e922ebf1e4f4f035e9f43560dce26754db5f51bf209524c4cf4e6998634563b3"
+  },
+  "command": [
+    "tools/check_three_chain.py",
+    "--output",
+    "output/recovery-link-20261015/native-reduced"
+  ]
+}

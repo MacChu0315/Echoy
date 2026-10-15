@@ -922,6 +922,41 @@ in the verification directory. The saved accepted dual tag/package and sound
 remain intact. Completed replacement installation is not blanket future write
 permission. Old-target diagnostic `2cfd9f7c2bbd` remains archived and uninstalled.
 
+#### Right-attachment timeout fix (2026-10-15)
+
+The first v3 package's three-board physical acceptance remains open: the user
+reports stable recovery on attaching a right tile. Live identity/owner evidence
+confirms the expected apps with zero crashes. Root cause: START's absolute root
+deadline was compared with local uptime before clock mapping, using zero offset.
+Physical boot differences are roughly 70 seconds; a follower running ahead by
+more than the 30-second budget immediately aborts. The old 0/200/400 ms harness
+missed this. Both the two-device and three-device regressions fail on old code.
+
+Fix `a83a64e` keeps a bounded local deadline until mapping, then uses the original
+translated root deadline. Superseding edits cannot extend the same budget.
+No timeout/retry, wire, UI or accepted sound change. Tests cover all six
+0/70/140-second clock assignments, steady pairs, both triple joins and first
+starts, plus lost mapping/ABORT with edits. All 23 normal/eight sanitizer groups,
+51 runtime cases and both independent native GSP modes pass.
+
+After explicit exact third-package approval and fresh separated nonmetal
+placement, all three received one official `ba951963754a` update. Expected ELF
+`cc151795ec3efd59c639ce09b613f480ca601660f14a60cb1acd2639a6e1b711`;
+new boots f452a0/f40c6c/f45936: `9463761514545310676` /
+`17925284075629591042` / `12347754192822218685`. HEALTHY/validated, retained
+components, real homes, current-boot magnetic readiness and zero app-crash/output
+errors pass. The old Recovery startup watchdog remains separately recorded.
+Evidence: `verification/three-device-clock-start/README.md`. The user repeats the
+original failing pair/order and confirms "显示跟随左侧，保持稳定". Agent readback
+verifies f45936 left/f452a0 right, about 180 seconds of boot offset, a committed
+right phrase and real "跟随左侧" home 46.776 seconds after current-boot contact.
+Both remain locally paused; f40c6c is solo. At 341.0/243.6/161.0 seconds all three
+same new boots still have zero app crashes/output faults. The reported right
+attachment defect is confirmed resolved within this pair/order. Keep the accepted
+dual/sound baseline; full three-device checklist/listening, precise acoustic
+timing and sustained RF/load remain unaccepted. Physical evidence:
+`verification/three-device-clock-start/physical-regression.json`.
+
 ### Dual-device basic physical flow accepted (2026-10-12)
 
 Physical linking is now implemented locally for two upright, horizontally joined
