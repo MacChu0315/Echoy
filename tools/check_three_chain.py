@@ -36,7 +36,7 @@ class ChainCheck(DeskCheck):
         state=self.status()
         reduced=os.environ.get('ECHOY_REDUCED_MOTION')=='1'
         assert all(t['reduced_motion']==reduced for t in state['tiles'].values())
-        assert [o['offset_us'] for o in state['independent_owners']]==[0,200000,400000]
+        assert [o['offset_us'] for o in state['independent_owners']]==[0,70000000,140000000]
         assert all(t['events']==0 and not t['loop'] for t in state['tiles'].values())
         for tile in TILES: self.shot(tile,'initial')
         start=self.mark('ordinary-pad-begin')['sample_index']

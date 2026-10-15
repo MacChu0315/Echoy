@@ -15,6 +15,7 @@ clock offsets and network transport. It covers all six ID orders and both join
 orders, independent first starts, simultaneous starts, middle edits after READY,
 fixed-update overlap and physical release retention. Further regressions cover
 unmapped simultaneous starts, fresh clock windows, delayed owner publications,
+70/140-second boot offsets in both directions with bounded unmapped timeouts,
 superseded upstream candidates, radio loss/session renewal, failed preparation,
 loading-to-normal recovery, missing/v2 peers, empty first recording, and a middle
 node finishing capture/reply before admitting its upstream edge.

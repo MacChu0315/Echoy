@@ -30,6 +30,7 @@ static int64_t physical;
 static uint32_t drop_kinds;
 static uint64_t isolated;
 static bool start_empty;
+static bool wide_boot_offsets;
 static struct {
     bool used; uint64_t from,to; uint16_t service; size_t size;
     uint8_t bytes[64]; int64_t at;
@@ -141,7 +142,8 @@ static void initialize(unsigned order)
     memset(nodes,0,sizeof(nodes)); memset(packets,0,sizeof(packets));
     physical=1000000; drop_kinds=0; isolated=0;
     for (unsigned i=0;i<3;++i) {
-        node_t *n=&nodes[i]; n->id=11+orders[order][i]*11; n->offset=(int64_t)i*200000;
+        node_t *n=&nodes[i]; n->id=11+orders[order][i]*11;
+        n->offset=wide_boot_offsets ? (int64_t)orders[order][i]*70000000 : (int64_t)i*200000;
         n->prepare=true; n->band=echoy_band_create(); assert(n->band);
         if (!start_empty) assert(echoy_band_action(n->band,ECHOY_TILE_A,ECHOY_ACT_EXAMPLE,0,physical+n->offset));
         if (n->id!=11) assert(echoy_band_action(n->band,ECHOY_TILE_A,ECHOY_ACT_ROLE,n->id==22 ? ECHOY_VOICE : ECHOY_HARMONY,physical+n->offset));
@@ -544,8 +546,68 @@ static void cached_owner_across_root_replacement(void)
     }
     puts("PASS cached owner publication across root replacement cannot bind old group readiness/revision");
 }
+static void boot_clock_offsets(void)
+{
+    wide_boot_offsets=true;
+    for (unsigned order=0;order<6;++order) {
+        initialize(order); join(0,1,501); advance(physical+5000000);
+        for (unsigned i=0;i<2;++i) {
+            echoy_group_info_t info; assert(echoy_group_info(nodes[i].group,&info));
+            assert(info.count==2 && info.phase==5 && info.clock_mapped);
+            assert(!nodes[i].state.state.continuous);
+        }
+        advance(physical+35000000);
+        for (unsigned i=0;i<2;++i) {
+            echoy_group_info_t info; assert(echoy_group_info(nodes[i].group,&info) && info.phase==5);
+        }
+        int64_t pressed=physical;
+        assert(echoy_band_action(nodes[1].band,ECHOY_TILE_A,ECHOY_ACT_TRANSPORT,0,physical+nodes[1].offset));
+        advance(physical+4000000);
+        assert(nodes[1].state.state.continuous && !nodes[0].state.state.continuous);
+        assert(nodes[1].state.state.start_us==pressed+nodes[1].offset+50000);
+        assert(echoy_band_action(nodes[0].band,ECHOY_TILE_A,ECHOY_ACT_TRANSPORT,0,physical+nodes[0].offset));
+        advance(physical+4000000);
+        assert(nodes[0].state.state.continuous && nodes[1].state.state.continuous);
+        assert(llabs((nodes[0].view.clock_origin_us-nodes[0].offset)-
+                     (nodes[1].view.clock_origin_us-nodes[1].offset))<20000);
+        destroy_nodes();
+    }
+    for (unsigned order=0;order<6;++order) for (unsigned reverse=0;reverse<2;++reverse) {
+        initialize(order);
+        if (reverse) { join(1,2,502); advance(physical+1000000); join(0,1,501); }
+        else { join(0,1,501); advance(physical+1000000); join(1,2,502); }
+        advance(physical+10000000);
+        for (unsigned i=0;i<3;++i) {
+            echoy_group_info_t info; assert(echoy_group_info(nodes[i].group,&info));
+            assert(info.count==3 && info.phase==5 && info.clock_mapped);
+            assert(nodes[i].view.committed_transaction && !nodes[i].state.state.continuous);
+            assert(nodes[i].state.cooperation!=ECHOY_COOP_RECOVERING);
+        }
+        check_chain();
+        for (unsigned first=0;first<3;++first) first_start(first,false);
+        destroy_nodes();
+    }
+    /* If mapping never completes and even ABORT is lost, the local monotonic
+     * budget must still expire, for either sign of the unknown clock offset. */
+    for (unsigned order=0;order<6;order+=5) {
+        initialize(order); drop_kinds=(1u<<2)|(1u<<3)|(1u<<10); join(0,1,501);
+        advance(physical+4000000);
+        echoy_group_info_t info; assert(echoy_group_info(nodes[1].group,&info));
+        assert(!info.clock_mapped && info.phase==1);
+        for (unsigned edit=0;edit<3;++edit) {
+            assert(echoy_band_action(nodes[0].band,ECHOY_TILE_A,ECHOY_ACT_PHRASE,2+(edit%2),physical+nodes[0].offset));
+            advance(physical+10000000);
+        }
+        assert(echoy_group_info(nodes[1].group,&info) && !info.clock_mapped && info.phase==6);
+        assert(nodes[1].state.cooperation==ECHOY_COOP_RECOVERING && !nodes[1].state.state.continuous);
+        destroy_nodes();
+    }
+    wide_boot_offsets=false;
+    puts("PASS 70/140-second boot clock differences: six steady pairs, all six orders/both triple joins, first starts and bounded unmapped timeout despite edits/lost ABORT");
+}
 int main(int argc,char **argv)
 {
+    if (argc>1 && !strcmp(argv[1],"boot-offsets")) { boot_clock_offsets(); return 0; }
     if (argc>1 && !strcmp(argv[1],"cached")) { cached_owner_across_root_replacement(); return 0; }
     if (argc>1 && !strcmp(argv[1],"available")) { owner_availability_recovery(); return 0; }
     if (argc>1 && !strcmp(argv[1],"superseded")) { initialize(0); join(0,1,501); join(1,2,502); advance(15000000); upstream_supersedes_prepared_middle(); destroy_nodes(); return 0; }
@@ -555,7 +617,7 @@ int main(int argc,char **argv)
     if (argc>1 && !strcmp(argv[1],"capture")) { capture_result_after_arm(); return 0; }
     if (argc>1 && !strcmp(argv[1],"incompatible")) { incompatible_peer_stays_local(); return 0; }
     if (argc>1 && !strcmp(argv[1],"empty")) { empty_chain_gets_first_recording(); return 0; }
-    cached_owner_across_root_replacement(); owner_availability_recovery(); empty_chain_gets_first_recording(); incompatible_peer_stays_local(); deferred_upstream(); capture_result_after_arm();
+    boot_clock_offsets(); cached_owner_across_root_replacement(); owner_availability_recovery(); empty_chain_gets_first_recording(); incompatible_peer_stays_local(); deferred_upstream(); capture_result_after_arm();
     for (unsigned i=0;i<6;++i) for (unsigned j=0;j<2;++j) {
         if (argc>1 && (unsigned)atoi(argv[1])!=i) continue;
         run(i,j!=0);

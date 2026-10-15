@@ -42,7 +42,7 @@ struct echoy_group {
     unsigned count,rank,phase;
     bool mapped,music_valid,publish,offer_issued,have_view,output_valid,meta_acked;
     bool hello_dirty,recovery_requested;
-    int64_t root_offset,origin,last_boundary,at,deadline,began,next_read,last_tick;
+    int64_t root_offset,origin,last_boundary,at,deadline,unmapped_deadline,began,next_read,last_tick;
     int64_t next_state,next_clock,next_meta,next_send,retry_at,last_progress,next_want;
     int64_t ping_t1,next_ping,pong_t1,pong_t2;
     uint32_t ping_serial,ping_wait,pong_serial,transfer;
@@ -124,6 +124,10 @@ static void command(echoy_group_t *g,echoy_link_command_t cmd,uint64_t revision)
 }
 static void reset_attempt(echoy_group_t *g,uint32_t attempt,int64_t deadline,int64_t now)
 {
+    /* START carries the root's absolute deadline. Before clock mapping it
+     * cannot be compared with local uptime. Keep a separate local bound;
+     * superseding edits within the same root budget must not extend it. */
+    if (!g->attempt || deadline!=g->deadline) g->unmapped_deadline=now+LIMIT;
     g->attempt=attempt; g->phase=PREPARING; g->deadline=deadline;
     g->recovery_requested=false;
     g->offer_issued=g->output_valid=g->meta_acked=false;
@@ -359,7 +363,7 @@ static void advance(echoy_group_t *g,int64_t now)
         }
     }
     if (g->attempt && g->phase>=PREPARING && g->phase<DONE &&
-        (now-g->root_offset>=g->deadline ||
+        ((g->mapped ? now-g->root_offset>=g->deadline : now>=g->unmapped_deadline) ||
          (g->at && now-g->root_offset>=g->at-GUARD && !(own&AUTHORIZED)))) broken(g);
     if (g->phase==BROKEN) {
         if (!owner_current(g) || (g->view.failed_transaction!=g->attempt &&

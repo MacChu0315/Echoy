@@ -27,7 +27,7 @@ struct echoy_chain {
 };
 int64_t echoy_chain_offset(int id)
 {
-    static const int64_t offsets[]={0,200000,400000};
+    static const int64_t offsets[]={0,70000000,140000000};
     return id>=0 && id<3 ? offsets[id] : 0;
 }
 static unsigned hops(const echoy_chain_t *c,int from,int to)
