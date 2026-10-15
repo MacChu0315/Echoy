@@ -34,6 +34,10 @@ typedef struct {
     bool sensors_ready,sensors_initialized;
     mosaico_edge_mask_t contacts,reported_contacts;
     int64_t next_sensor;
+#ifdef CONFIG_ECHOY_MAGNET_DIAGNOSTICS
+    int64_t next_diagnostic;
+    unsigned diagnostic_records;
+#endif
     struct { uint64_t peer; uint32_t session; } seams[2];
 } board_link_t;
 static const char *TAG="echoy-link";
@@ -96,6 +100,33 @@ static unsigned sentinel_axes(const struct bmm150_mag_data *data)
            (data->y == INT16_MIN ? 2u : 0u) |
            (data->z == INT16_MIN ? 4u : 0u);
 }
+static int32_t diagnostic_average(const int16_t *values,unsigned count)
+{
+    int32_t sum=0;
+    for (unsigned i=0;i<count;++i) sum+=values[i];
+    return count ? sum/(int32_t)count : 0;
+}
+static void diagnostic_sample(board_link_t *h,const struct bmm150_mag_data *left,
+                              const struct bmm150_mag_data *right,
+                              const mosaico_mag_classification_t *result,int64_t now)
+{
+    if (!result->valid || !h->sensors_ready || h->diagnostic_records>=90 || now<h->next_diagnostic) return;
+    h->next_diagnostic=now+1000000;
+    echoy_group_info_t group={0};
+    echoy_group_info(h->group,&group);
+    const mosaico_mag_classifier_t *c=&h->classifier;
+    unsigned n=c->sample_count;
+    ESP_LOGI(TAG,"ECHOY_MAG_LIVE n=%u raw_L=%ld,%ld,%ld filtered_L=%ld,%ld,%ld "
+             "raw_R=%ld,%ld,%ld filtered_R=%ld,%ld,%ld edges=%02x stable=%02x reported=%02x "
+             "peers=%012" PRIx64 "/%012" PRIx64 " group=%u/%u/%u mapped=%u",
+             ++h->diagnostic_records,(long)left->x,(long)left->y,(long)left->z,
+             (long)diagnostic_average(c->left_x,n),(long)diagnostic_average(c->left_y,n),
+             (long)diagnostic_average(c->left_z,n),(long)right->x,(long)right->y,(long)right->z,
+             (long)diagnostic_average(c->right_x,n),(long)diagnostic_average(c->right_y,n),
+             (long)diagnostic_average(c->right_z,n),(unsigned)result->edge_mask,
+             (unsigned)h->contacts,(unsigned)h->reported_contacts,h->seams[0].peer,h->seams[1].peer,
+             group.count,group.rank,group.phase,group.clock_mapped ? 1u : 0u);
+}
 #endif
 
 static void sample_sensors(board_link_t *h, int64_t now)
@@ -145,6 +176,9 @@ static void sample_sensors(board_link_t *h, int64_t now)
     if (mosaico_mag_presence_tracker_process(&h->presence, &result) != ESP_OK) {
         disable_sensors(h, "magnetic presence tracking failed");
     }
+#ifdef CONFIG_ECHOY_MAGNET_DIAGNOSTICS
+    diagnostic_sample(h,&left,&right,&result,now);
+#endif
 }
 
 static void process_event(board_link_t *h,const link_event_t *e)

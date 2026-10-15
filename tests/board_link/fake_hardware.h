@@ -61,7 +61,8 @@ const char *esp_err_to_name(esp_err_t error) { (void)error; return "test"; }
 #ifdef LINK_TEST_MAG_LOG
 static struct bmm150_mag_data sensor_samples[BSP_MAGNETOMETER_NUM];
 static bool reject_baseline;
-static char sensor_log[4096];
+static bool valid_classification;
+static char sensor_log[65536];
 static size_t sensor_log_size;
 void fake_log(const char *tag, const char *format, ...)
 {
@@ -101,7 +102,11 @@ esp_err_t mosaico_mag_classifier_process(mosaico_mag_classifier_t *c,
     if (reject_baseline) {
         ++c->calibration_rejections;
         c->calibration_state=c->calibration_rejections>=3 ? MOSAICO_MAG_CALIBRATION_FAILED : MOSAICO_MAG_CALIBRATING;
-    } else c->calibration_state=MOSAICO_MAG_CALIBRATION_READY;
+    } else {
+        c->calibration_state=MOSAICO_MAG_CALIBRATION_READY;
+        o->valid=valid_classification;
+        o->edge_mask=MOSAICO_EDGE_MASK_LEFT;
+    }
 #else
     (void)c;
 #endif

@@ -1,10 +1,12 @@
 menu "Echoy diagnostic build"
 config ECHOY_MAGNET_DIAGNOSTICS
-    bool "Log magnetometer axes on rejected startup calibration windows"
+    bool "Log bounded startup and live magnetometer/link diagnostics"
     default n
     help
-        Link-worker-only readback of both successful BMM150 compensated outputs
-        and exact INT16_MIN sentinel bits. Logs at most three startup windows.
+        Link-worker-only readback of successful BMM150 compensated outputs,
+        filter/contact/group state and exact startup INT16_MIN sentinel bits.
+        Logs at most three rejected startup windows and ninety valid live
+        samples, at most one per second. Reuses normal sensor reads.
         Does not change sensor settings, classification, retries, UI, sound or
         playback permission. Keep disabled in accepted release builds.
 config ECHOY_AUDIO_DIAGNOSTICS
