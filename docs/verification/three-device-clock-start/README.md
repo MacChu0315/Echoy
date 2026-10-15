@@ -89,7 +89,9 @@ clipping, partial writes, write errors and deadline misses. Right uptime is
 roughly 180 seconds ahead of left, exercising the actual large-offset condition.
 
 This confirms the reported right-attachment regression within that pair/order;
-see `physical-regression.json` and the `*-validation-*` snapshots/screens. Full
-three-board interaction/listening, acoustic phase precision and sustained RF/load
+see `physical-regression.json` and the `*-validation-*` snapshots/screens. The
+user subsequently reports "三台也能正常工作", establishing basic three-device
+operation by user report. Individual checklist outcomes were not supplied;
+detailed interactions/listening, acoustic phase precision and sustained RF/load
 acceptance remain pending. Completed third-package permission is not blanket
 authorization for future writes.

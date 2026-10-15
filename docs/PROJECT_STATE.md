@@ -957,6 +957,12 @@ dual/sound baseline; full three-device checklist/listening, precise acoustic
 timing and sustained RF/load remain unaccepted. Physical evidence:
 `verification/three-device-clock-start/physical-regression.json`.
 
+The user subsequently reports "三台也能正常工作" on this installed fix package.
+Record this as user-confirmed basic three-device operation, not newly measured
+agent evidence or acceptance of every checklist category. Join-order changes,
+independent first/later starts and Pause, fixed updates, detach permutations,
+deferred recording/Cancel and continuous-use checks remain individually pending.
+
 ### Dual-device basic physical flow accepted (2026-10-12)
 
 Physical linking is now implemented locally for two upright, horizontally joined

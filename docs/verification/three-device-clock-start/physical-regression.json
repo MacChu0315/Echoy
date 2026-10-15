@@ -14,5 +14,7 @@
     "boot_uptime_difference_note": "Right uptime is roughly180 seconds ahead of left, exceeding the30-second budget; same physical condition that exposed the old bug.",
     "all_app_crash_output_error_counts_zero": true
   },
-  "scope": "Original two-device right-attachment regression passes with user feedback plus actual current-boot status/screenshot/log evidence. Full three-device checklist, acoustic precision and sustained RF/load acceptance remain pending."
+  "three_device_user_report": "三台也能正常工作",
+  "three_device_report_scope": "User-confirmed basic three-device operation on the installed fix. No per-item outcomes or new agent measurements were supplied.",
+  "scope": "Original two-device right-attachment regression passes with user feedback plus actual current-boot status/screenshot/log evidence. Basic three-device operation is also user-confirmed; detailed checklist categories, acoustic precision and sustained RF/load acceptance remain pending."
 }
