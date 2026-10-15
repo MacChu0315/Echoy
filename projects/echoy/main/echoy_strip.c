@@ -19,6 +19,8 @@ echoy_strip_state_t echoy_strip_compute(const echoy_snapshot_t *s, bool has_plan
         out.record_enabled = !s->following;
         out.play_enabled = has_plan;
     }
+    if (!out.single_enabled && s->current_playable && has_plan)
+        out.play_enabled = true;
     return out;
 }
 

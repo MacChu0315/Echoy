@@ -39,6 +39,14 @@ int main(void)
     s.plan_pending = true;
     v = echoy_strip_compute(&s, true, false);
     assert(v.mode == ECHOY_STRIP_IDLE && !v.record_enabled && !v.play_enabled && !v.single_enabled);
+    s.current_playable = true;
+    v = echoy_strip_compute(&s, true, false);
+    assert(v.play_enabled && !v.record_enabled);
+    s.following = true;
+    v = echoy_strip_compute(&s, true, false);
+    assert(v.mode == ECHOY_STRIP_PLAY_ONLY && v.play_enabled && !v.record_enabled);
+    assert(!echoy_strip_compute(&s, false, false).play_enabled);
+    s.current_playable = false; s.following = false;
     s.plan_pending = false;
     v = echoy_strip_compute(&s, true, true);
     assert(v.mode == ECHOY_STRIP_IDLE && !v.record_enabled && !v.play_enabled);

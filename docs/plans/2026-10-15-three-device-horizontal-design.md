@@ -1,7 +1,8 @@
 # Three-device horizontal cooperation design
 
-Status: proposed design; horizontal-only scope confirmed by the user.
-Implementation and rollout of the three-device protocol have not started.
+Status: approved by the user on 2026-10-15, including first Play during a
+locked update and common boundary alignment for unchanged instruments.
+Implementation is in progress; three-device firmware has not been installed.
 
 ## Scope and retained baseline
 
@@ -60,8 +61,7 @@ boundary, all participants adopt that boundary as their common bar origin,
 including a participant whose notes themselves did not change. Consequently,
 the first loop cycle can be shorter than a full bar in this overlapping case.
 Ordinary idle first Play starts a full cycle; ordinary later entrants wait for
-the shared bar. This explicit edge behavior requires product review with this
-design. It preserves prompt first playback, recorded initial silence, local
+the shared bar. The user approved this explicit edge behavior on 2026-10-15. It preserves prompt first playback, recorded initial silence, local
 permission and the immutable commit time without silently retiming a peer.
 
 ## Chosen approach and alternative

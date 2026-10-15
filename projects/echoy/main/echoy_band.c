@@ -55,8 +55,8 @@ struct cooperation {
     bool candidate_exists, candidate_ready, candidate_failed, candidate_affects;
     uint64_t candidate_revision, settled_revision;
     bool active, follower, recovering, hold, incoming;
-    bool peer_looping;
-    uint32_t local_start_serial;
+    bool peer_looping, align_boundary;
+    uint32_t local_start_serial, local_edit_serial;
     uint32_t generation, session, offered, armed, authorized, committed, failed, aborted, last_transaction;
     uint64_t bound_revision, armed_revision;
     int64_t armed_at;
@@ -202,7 +202,10 @@ static bool set_seed(echoy_band_t *b, int id, uint16_t bits)
             notes[n++] = (echoy_seed_note_t){.step = i, .velocity = .74, .kind = ECHOY_KICK};
         }
     }
-    return echoy_arrange_set_seed(b->arrange, id, notes, n);
+    bool ok=echoy_arrange_set_seed(b->arrange,id,notes,n);
+    if (ok && id==ECHOY_TILE_A && !++b->cooperation->local_edit_serial)
+        ++b->cooperation->local_edit_serial;
+    return ok;
 }
 static bool wanted_parent(echoy_band_t *b, int id)
 {
@@ -360,6 +363,14 @@ static bool joint_hold(const echoy_band_t *b)
     const struct cooperation *c=b->cooperation;
     return c->active && !b->deferred[ECHOY_TILE_A] && (c->hold || c->incoming);
 }
+static bool retained_start(const echoy_band_t *b,int id,int64_t now)
+{
+    const struct cooperation *c=b->cooperation;
+    const echoy_arrange_tile_t *t=echoy_arrange_get_tile(b->arrange,id);
+    return id==ECHOY_TILE_A && c->active && c->align_boundary && c->armed &&
+        c->committed!=c->armed && now<c->armed_at && b->voices[id].prepared &&
+        t->current.valid && t->current.music.count;
+}
 static void unarm(echoy_band_t *b)
 {
     struct cooperation *c=b->cooperation;
@@ -498,6 +509,8 @@ bool echoy_band_link_read(echoy_band_t *b, echoy_link_view_t *out)
     out->following=b->upstream_connected;
     out->clock_started=clock->started;
     out->local_start_serial=c->local_start_serial;
+    out->local_edit_serial=c->local_edit_serial;
+    out->busy=join_busy(b,ECHOY_TILE_A);
     out->clock_origin_us=clock->origin_us;
     out->looping=t->loop;
     out->current=t->current.valid ? t->current.music :
@@ -557,7 +570,7 @@ bool echoy_band_link_update(echoy_band_t *b, const echoy_link_update_t *u, int64
         c->offered=c->committed=c->failed=c->aborted=c->last_transaction=0;
         c->incoming=c->hold=false;
         c->active=false;
-        if (was_follower && !u->attached) {
+        if (was_follower && (!u->attached || !u->following)) {
             echoy_band_set_upstream(b,false,NULL,false,0,false,now);
             c->accepted_upstream_valid=false;
         }
@@ -674,6 +687,7 @@ bool echoy_band_link_update(echoy_band_t *b, const echoy_link_update_t *u, int64
             !echoy_arrange_stage_at(b->arrange,&b->ready->arrangement,u->commit_at_us))) return false;
         if (!no_change) b->ready->staged=true;
         c->armed=u->transaction; c->armed_revision=revision; c->armed_at=u->commit_at_us;
+        c->align_boundary=u->align_boundary;
         return true;
     }
     if (u->command==ECHOY_LINK_COMMIT) {
@@ -767,7 +781,10 @@ bool echoy_band_action(echoy_band_t *b, echoy_tile_id_t id, echoy_action_t actio
         return true;
     case ECHOY_ACT_TRANSPORT:
         v->automatic_preview = false;
+        if (s.phase==ECHOY_IDLE && s.plan_pending && retained_start(b,id,now))
+            echoy_model_set_external_pending(v->model,false,0);
         ok = echoy_model_transport(v->model, now);
+        if (s.plan_pending) echoy_model_set_external_pending(v->model,true,s.apply_at_us);
         if (ok) {
             echoy_model_get_snapshot(v->model, &s);
             if (s.phase == ECHOY_IDLE) {
@@ -871,7 +888,10 @@ bool echoy_band_action(echoy_band_t *b, echoy_tile_id_t id, echoy_action_t actio
         stop_voice(b, id, now);
     }
     cancel_auto(b, -1, now);
-    return echoy_arrange_configure(b->arrange, id, &patch);
+    ok=echoy_arrange_configure(b->arrange,id,&patch);
+    if (ok && id==ECHOY_TILE_A && !++cooperation->local_edit_serial)
+        ++cooperation->local_edit_serial;
+    return ok;
 }
 echoy_band_job_t *echoy_band_take_job(echoy_band_t *b)
 {
@@ -1041,6 +1061,29 @@ bool echoy_band_finish_job(echoy_band_t *b, echoy_band_job_t *j, int64_t now)
     echoy_band_tick(b, now);
     return true;
 }
+static void align_group_boundary(echoy_band_t *b, int64_t at, int64_t now,
+                                  unsigned replaced)
+{
+    struct cooperation *c=b->cooperation;
+    if (!c->align_boundary) return;
+    echoy_tile_id_t clock=echoy_arrange_get_tile(b->arrange,ECHOY_TILE_A)->clock_id;
+    const echoy_arrange_clock_t *old=echoy_arrange_get_clock(b->arrange,clock);
+    bool changed=(at-old->origin_us)%BAR!=0;
+    if (!echoy_arrange_clock_sync(b->arrange,clock,at,true,now)) return;
+    for (int i=0;i<N;++i) {
+        if (echoy_arrange_get_tile(b->arrange,i)->clock_id!=clock) continue;
+        struct voice *v=&b->voices[i];
+        echoy_snapshot_t s;
+        echoy_model_get_snapshot(v->model,&s);
+        /* A paused owner stays paused; recording/one-shot replies keep their
+         * own timeline. Only continuous playback adopts the common phase. */
+        if (changed && !(replaced & (1u<<i)) && s.continuous &&
+            s.phase==ECHOY_PLAYING && v->prepared &&
+            !play_voice(b,i,v->prepared,at,true,true)) v->failed=true;
+        echoy_model_sync_clock(v->model,at,true);
+    }
+}
+
 void echoy_band_tick(echoy_band_t *b, int64_t now)
 {
     if (!b || now < 0) {
@@ -1111,6 +1154,8 @@ void echoy_band_tick(echoy_band_t *b, int64_t now)
                 }
             }
         }
+        if (c->armed && c->authorized==c->armed && c->committed!=c->armed)
+            align_group_boundary(b,commit.at_us,now,commit.changed_mask | b->ready->inaudible_mask);
         sync_plans(b);
         echoy_band_discard_job(b->ready);
         b->ready = NULL;
@@ -1128,6 +1173,7 @@ void echoy_band_tick(echoy_band_t *b, int64_t now)
     }
     if (!b->ready && c->armed && !c->armed_revision && c->authorized==c->armed && now>=c->armed_at &&
         c->committed!=c->armed) {
+        align_group_boundary(b,c->armed_at,now,0);
         c->committed=c->armed;
         replay_actions(b,now);
     }
@@ -1139,7 +1185,8 @@ void echoy_band_tick(echoy_band_t *b, int64_t now)
         if (pending && (pending->job.changed_mask & (1u << i))) {
             echoy_model_set_external_pending(v->model, true, pending->at_us);
         }
-        if (s.phase != ECHOY_PREPARING || s.plan_pending || !v->prepared ||
+        bool retained=s.continuous && s.plan_pending && retained_start(b,i,now);
+        if (s.phase != ECHOY_PREPARING || (s.plan_pending && !retained) || !v->prepared ||
             v->condition != ECHOY_NORMAL) {
             continue;
         }
@@ -1175,6 +1222,7 @@ void echoy_band_tick(echoy_band_t *b, int64_t now)
             t->current.source != ECHOY_TILE_NONE || wanted_parent(b, i), c->origin_us, c->started);
         if (play_voice(b, i, v->prepared, at, s.continuous, false)) {
             echoy_model_start_external(v->model, s.generation, at);
+            if (retained) echoy_model_set_external_pending(v->model,true,s.apply_at_us);
             v->automatic_preview = false;
         } else {
             v->failed = true;
@@ -1190,6 +1238,7 @@ bool echoy_band_read(echoy_band_t *b, echoy_tile_id_t id, echoy_control_view_t *
     const echoy_arrange_tile_t *t = echoy_arrange_get_tile(b->arrange, id);
     memset(out, 0, sizeof(*out));
     echoy_model_get_snapshot(v->model, &out->state);
+    out->state.current_playable=retained_start(b,id,b->render_until);
     out->plan = *echoy_model_get_plan(v->model);
     memcpy(out->memories, t->memories, sizeof(out->memories));
     out->state.role = t->role;
@@ -1263,14 +1312,18 @@ void echoy_band_render(echoy_band_t *b, int64_t at, float *out, size_t frames)
     struct active_mix active;
     active_mix_refresh(b, &active);
     const echoy_arrange_pending_t *pending = echoy_arrange_get_pending(b->arrange);
+    const struct cooperation *group=b->cooperation;
+    int64_t group_at=group->align_boundary && group->armed &&
+        group->authorized==group->armed && group->committed!=group->armed ? group->armed_at : 0;
     for (size_t k = 0; k < frames; k++) {
         int64_t t = at + (int64_t)(k * 1000000 / ECHOY_AUDIO_SAMPLE_RATE);
         double sum = 0;
-        if (pending && t >= pending->at_us) {
+        if ((pending && t >= pending->at_us) || (group_at && t>=group_at)) {
             if (!b->profiled) ++b->profile.tick_calls;
             echoy_band_tick(b, t);
             active_mix_refresh(b, &active);
             pending = echoy_arrange_get_pending(b->arrange);
+            group_at=0;
         }
         PROFILE_PART(clock_cycles);
         for (int i = 0; i < N; i++) {

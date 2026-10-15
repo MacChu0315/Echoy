@@ -16,6 +16,9 @@ typedef struct {
     bool attached, following, recovering, hold_changes;
     bool valid, clock_started, looping, failed;
     bool clock_sync, peer_looping;
+    /* V3 groups adopt the frozen activation time as their next bar origin,
+     * including owners whose musical bank is unchanged. */
+    bool align_boundary;
     uint32_t clock_start_ack;
     uint32_t connection_generation, session, transaction;
     uint64_t revision;
@@ -26,7 +29,8 @@ typedef struct {
 
 typedef struct {
     bool available, deferred, following, clock_started, looping;
-    uint32_t local_start_serial;
+    uint32_t local_start_serial, local_edit_serial;
+    bool busy;
     int64_t clock_origin_us;
     echoy_plan_t current, proposal;
     uint64_t requested_revision, proposal_revision;

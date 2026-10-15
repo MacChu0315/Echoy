@@ -28,6 +28,8 @@ typedef struct {
     unsigned phrase;
     double density;
     bool plan_pending;
+    /* Copied owner capability: a frozen group update retains a playable bank. */
+    bool current_playable;
     int64_t apply_at_us;
     uint32_t revision, committed_revision;
 } echoy_snapshot_t;

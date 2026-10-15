@@ -879,10 +879,18 @@ orientation as proposed. The concrete design is
 `plans/2026-10-15-three-device-horizontal-design.md`: retain per-device musical
 owners, add bounded three-node/root coordination, use the pinned public routed
 network, and preserve explicit playback permission and detach semantics.
-The design awaits review before architecture/protocol implementation. It also
-proposes immediate first playback when a joint update is already locked, with
-that fixed boundary retained and a potentially shortened first loop cycle;
-this overlap behavior is proposed, not accepted yet. Current firmware is still
+The user approved this design and clarified overlap behavior on 2026-10-15:
+first playback remains prompt when an update is locked; its fixed boundary
+is retained, the first cycle may be shortened, and unchanged instruments also
+align at that boundary. Local owner support now has an explicit v3-only fixed-boundary flag, retained-current
+Play while a replacement is pending, exact in-block activation of unchanged banks,
+and release when a middle follower becomes the root of its remaining suffix.
+The new portable three-owner coordinator is under host verification; it is not
+yet wired into the physical adapter or native GSP harness. All six ID orders and
+both attachment orders pass the initial independent real band/PCM scenarios;
+loss/recovery and remaining release gates are still in progress. The existing
+26 transaction, 24 deferred, band, linked-clock, strip and 51 runtime regressions
+pass after the owner changes. Current firmware is still
 the accepted two-device implementation. The completed replacement baseline
 installation is not blanket permission for future replacement-device writes.
 The saved tag/package/sound baseline remain intact. Old-target diagnostic
