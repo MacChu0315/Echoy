@@ -1062,7 +1062,13 @@ The default-off 1 Hz/90-record diagnostic has been extended only with existing
 group identity, attempt, operation count, members, mapped offset and deadline.
 Tests/sanitizers/SDK build and package inspection pass. Diagnostic candidate
 `21bc020ef620` (ELF d3125facc47d7c40aac662490aea1b610667f2ade38bf3b736330ebdce08e155)
-is prepared for all three under standing authorization, not yet installed.
+installed/HEALTHY on B only; group fields split over Iris 240-byte records,
+causing the line-oriented postcheck to fail. The fields were not lost. Revised
+diagnostic `90f5098a2b4f` (ELF faa6a51d94e0fb2e293cbcb91186507e059d05f824ad9de4222a054a9a235244)
+uses a separate short group line; length/count/disabled regressions and official
+build pass. It is prepared for all three under standing authorization. B now
+reports RIGHT committed to C/RIGHT but no admitted application peer; the other
+two still run f9b87dd4d4d7.
 Current normal package f9b87dd4d4d7 remains the restore target. No new functional
 fix is claimed. Investigation evidence: `verification/reorder-stage-diagnostic/`;
 previous delivery/acceptance: `verification/horizontal-seam-fix/`.

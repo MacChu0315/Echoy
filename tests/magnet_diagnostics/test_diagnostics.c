@@ -36,8 +36,24 @@ static void live_readback_is_valid_rate_limited_and_bounded(void)
     assert(strstr(sensor_log,"raw_L=-32768,17,800"));
     assert(strstr(sensor_log,"filtered_L=-31000,17,800"));
     assert(strstr(sensor_log,"edges=08 stable=08 reported=08"));
+    /* One self-contained group record per sample must fit Iris's 240-byte
+     * record, including log prefix. Splitting a long axes/group line across
+     * records loses correlation for line-oriented hardware diagnostics. */
+    unsigned group_records=0;
+    const char *line=sensor_log;
+    while ((line=strstr(line,"ECHOY_GROUP_LIVE"))) {
+        const char *end=strchr(line,'\n');assert(end);
+        assert((size_t)(end-line)+32<240);
+        const char *members=strstr(line,"members=");
+        const char *deadline=strstr(line,"deadline=");
+        assert(members && members<end && deadline && deadline<end);
+        ++group_records;line=end;
+    }
+    assert(group_records==90);
+    assert(strstr(sensor_log,"ECHOY_GROUP_LIVE n=90"));
 #else
     assert(live_records()==0);
+    assert(!strstr(sensor_log,"ECHOY_GROUP_LIVE"));
 #endif
     unsigned count=live_records();
     sensor_error=ESP_FAIL;sample_sensors(h,101000000);

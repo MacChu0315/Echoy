@@ -21,7 +21,14 @@ Package/source/component identities are in diagnostic-candidate.json and
 source-hashes.json. Native/PCM sources match the previously verified normal
 and reduced-motion artifacts; no new simulator run is claimed.
 
-Candidate 21bc020ef620 is prepared, not yet installed. Existing normal
+Initial candidate 21bc020ef620 installed/HEALTHY on B only (operation
+fcf4d266-ae90-4ff2-afd3-11aa56a1b35e, boot15480745818673229062). The
+postcheck rejected its long diagnostic line: Iris chunks at 240 bytes, so
+fields were split across records, not lost. Complete new group records are
+now separate short lines, covered by a length/count/disabled regression.
+Revised candidate 90f5098a2b4f is built and inspected in `split/`, awaiting
+installation on all three. B currently shows its RIGHT committed to C/RIGHT
+and group1/no admitted peer, confirming the generic rotated-session gap. Existing normal
 f9b87dd4d4d7 is retained for diagnostic restoration; startup separation is not
 required. Installation on all three is covered by standing authorization.
 Preserve B—C—A during acquisition. Actual failure cause beyond the corrected
