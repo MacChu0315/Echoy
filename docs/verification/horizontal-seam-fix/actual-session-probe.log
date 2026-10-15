@@ -1,0 +1,6 @@
+rejected_frames=15
+node=0 local=2 state=3 peer=30eda0f40c6c edge=2 rotation=180
+node=1 local=2 state=3 peer=30eda0f452a0 edge=2 rotation=180
+node=1 local=4 state=3 peer=30eda0f45936 edge=4 rotation=180
+node=2 local=4 state=3 peer=30eda0f40c6c edge=4 rotation=180
+committed_complementary=0 committed_same_edge=4 (desired four reciprocal horizontal edges)

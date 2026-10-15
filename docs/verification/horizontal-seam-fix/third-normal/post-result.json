@@ -1,0 +1,23 @@
+{
+  "device_id": "4553502d49524953010030eda0f45936",
+  "endpoint": "usb:location=1-8.1:1.0",
+  "boot_id": 8981851320864465495,
+  "firmware_sha256": "aae48ef4dcabf0cb9a87c6a07017f935f7212d23d429a8ff13881f52d5fddb89",
+  "uptime_us": 21840062,
+  "crash_count": 0,
+  "free_internal": 24603,
+  "free_spiram": 12263644,
+  "package_sha256": "f9b87dd4d4d7e9675be6324d70463e459ba0961d1276210ae13570af271167e5",
+  "operation_id": "ea11a179-e0a9-4860-93c3-a1a4b58befaf",
+  "healthy": true,
+  "validated": true,
+  "horizontal_sampling_ready": true,
+  "retained_bootloader_sha256": "925d2541ed213aa29f552f15ee6881b899dd72c4dbc81343ae2b4c88caa72cc4",
+  "retained_partition_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+  "latest_audio": "I (3216) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=0 nonzero=0 peak=0 pa=0 activations=0 write_max=0us partial=0 write_errors=0 deadline_misses=0",
+  "current_boot_sensor_log": [
+    "I (3086) echoy-link: shared Flash thresholds: profile=echoy-horizontal-v1 saturation=30000 left_reject_z=600; horizontal-only, no startup baseline capture",
+    "I (3456) echoy-link: horizontal sensors ready; fixed Flash thresholds active",
+    "I (3536) echoy-link: magnetic contact edge=LEFT"
+  ]
+}

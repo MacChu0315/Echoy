@@ -39,6 +39,32 @@ filter/debounce change, timeout change, SDK/BSP edit or music change is made.
 
 ## Delivery status
 
-Candidate f9b87dd4d4d7 prepared for all three under standing update authorization.
-Physical installation and joined/rearrangement acceptance are pending. Keep the
-user-confirmed B—C—A scene; joined startup no longer captures a baseline.
+Package `f9b87dd4d4d7` is installed/HEALTHY on all three under standing
+authorization; A is back on the normal build, with diagnostics disabled.
+Per-device operation, startup, screenshots and retained component results are
+stored alongside this record. No startup baseline capture is performed.
+
+The user reports C and A both show following in B—C—A. The read-only
+`user-bca-following` snapshots confirm B cooperation=1, C/A following=true and
+cooperation=4, valid committed banks, no pending preparation, all paused and no
+application crashes. This captures the eventual current arrangement, not a
+clean joined-start acceptance: intervening physical release/contact events and
+an A boot change are visible. Earlier snapshots showed invalid same-edge
+sessions and C solo. B/C also logged transient ESP_ERR_ESPNOW_NO_MEM while
+sending; the later follow state converged, but sustained radio health is open.
+
+A probe linked against the unmodified actual BSP session/topology sources
+reproduces four committed same-edge (180-degree) slots in this BCA identity
+order, instead of four complementary slots (exit1). The generic BSP supports
+those rotations; Echoy accepts only same-orientation horizontal edges and
+rejects them after allocation. This is an additional startup/negotiation gap,
+not fixed by the magnetic profile. The probe is diagnostic only; no production
+session behavior has been changed. Source and output are preserved here.
+
+The user requests restarting acceptance from startup and confirms all three
+separated. Official planned restarts and independent-start checks pass on all three:
+no contact events, no baseline capture, empty Record-only screens, SOLO owners,
+zero output errors and crashes (startup-checks.json). These are software restarts,
+not physical power-cycle tests. Independent A recording is now requested;
+pair/chain and ABC→BCA transition checks follow. Do not declare
+all physical three-device behavior accepted from the current BCA report.

@@ -1,0 +1,38 @@
+{
+  "operation": {
+    "operation_id": "9fb1bafb-50db-4737-8fd8-bacc5625e8c2",
+    "device_id": "4553502d49524953010030eda0f40c6c",
+    "actor_type": "local",
+    "actor_name": "Unauthenticated local client",
+    "action": "device.restart",
+    "status": "succeeded",
+    "error": null,
+    "created_ns": 1792054270980984692,
+    "started_ns": 1792054270983025780,
+    "finished_ns": 1792054272998722558,
+    "queue_position": 0,
+    "request_fingerprint": "sha256:v1:b877e1279199a5bfba9fa6dbe829e6eb46af7d1248ef72739b110eb499e4a27d",
+    "params": {
+      "delay_ms": 250
+    },
+    "result": {
+      "accepted": true,
+      "delay_ms": 250,
+      "previous_boot_id": 10578891486908086220,
+      "boot_id": 14630519438785164093,
+      "reconnected": true,
+      "app_version": "1.0.0",
+      "previous_boot_id_text": "10578891486908086220",
+      "boot_id_text": "14630519438785164093"
+    },
+    "progress": null
+  },
+  "restart": {
+    "accepted": true,
+    "delay_ms": 250,
+    "previous_boot_id": 10578891486908086220,
+    "boot_id": 14630519438785164093,
+    "reconnected": true,
+    "app_version": "1.0.0"
+  }
+}

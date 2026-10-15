@@ -1,0 +1,6 @@
+{
+  "device_id": "4553502d49524953010030eda0f452a0",
+  "previous_boot_id": 13942597509779116829,
+  "firmware_sha256": "aae48ef4dcabf0cb9a87c6a07017f935f7212d23d429a8ff13881f52d5fddb89",
+  "reason": "User requested startup acceptance and confirmed all three separated; official planned software restart without firmware write."
+}

@@ -1030,11 +1030,30 @@ verified normal/reduced simulator results. Accepted sound/UI are unchanged.
 
 Normal package `f9b87dd4d4d7` (ELF
 `aae48ef4dcabf0cb9a87c6a07017f935f7212d23d429a8ff13881f52d5fddb89`)
-is built and inspected; profile storage is confirmed `.flash.rodata`. Installing
-it on all three and real BCA/ABC→BCA acceptance remain pending. A is still on
-the temporary diagnostic package until that rollout. Standing authorization
-covers all three; do not request startup separation or per-package permission.
-Evidence: `verification/horizontal-seam-fix/`.
+is now installed/HEALTHY on all three; A is no longer on diagnostics. Source
+correction is `013b778`. Exact image/UI/retained components and shared Flash
+startup logs pass. No per-package permission or startup separation is required.
+
+The user confirms both C and A follow in B—C—A. Read-only snapshots agree:
+B cooperation=1, C/A cooperation=4/following=true, committed playable banks,
+all paused, no pending/failed preparation or app crashes. This is eventual BCA
+success after intervening contact release/rejoin events, not clean startup
+acceptance. Initial joined rollout exposed same-edge 180-degree BSP sessions
+that Echoy rejects; a probe with actual unmodified BSP session/topology code
+reproduces the mismatch. That additional negotiation gap remains unresolved.
+B/C also log transient ESPNOW NO_MEM sends before convergence; sustained RF
+health is unverified. A has an intervening boot change with zero crashes.
+
+The user asks to restart testing from startup and confirms all three separated.
+Official planned software restarts and independent-start checks pass: boots
+16946015599629738310 / 14630519438785164093 / 14949665561685451233,
+all SOLO/empty/paused, no contact events, baseline capture, output errors or
+crashes. Physical power cycles were not performed. The next user step is
+recording on separated original A (previous BCA rightmost), with B/C staying
+empty; then pair/chain establishment and original ABC→BCA rearrangement. Separation
+is a test condition here, not calibration. Evidence:
+`verification/horizontal-seam-fix/`; live scripts/results:
+`output/horizontal-seam-fix-20261015/`.
 
 ### Dual-device basic physical flow accepted (2026-10-12)
 

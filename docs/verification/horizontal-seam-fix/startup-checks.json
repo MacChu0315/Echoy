@@ -1,0 +1,29 @@
+[
+  {
+    "device_id": "4553502d49524953010030eda0f452a0",
+    "boot_id": 16946015599629738310,
+    "crash_count": 0,
+    "cooperation": 0,
+    "following": false,
+    "events": 0,
+    "result": "PASS independent startup, empty Record-only home, no contact/no baseline/no output errors"
+  },
+  {
+    "device_id": "4553502d49524953010030eda0f40c6c",
+    "boot_id": 14630519438785164093,
+    "crash_count": 0,
+    "cooperation": 0,
+    "following": false,
+    "events": 0,
+    "result": "PASS independent startup, empty Record-only home, no contact/no baseline/no output errors"
+  },
+  {
+    "device_id": "4553502d49524953010030eda0f45936",
+    "boot_id": 14949665561685451233,
+    "crash_count": 0,
+    "cooperation": 0,
+    "following": false,
+    "events": 0,
+    "result": "PASS independent startup, empty Record-only home, no contact/no baseline/no output errors"
+  }
+]

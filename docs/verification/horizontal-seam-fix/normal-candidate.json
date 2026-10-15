@@ -55,7 +55,8 @@
   "magnetic_diagnostics": false,
   "standing_update_authorization": true,
   "startup_separation_required": false,
-  "status": "Verified local candidate, not installed yet.",
+  "status": "Installed and startup verified on all three; user reports BCA following, fresh separated-startup and rearrangement acceptance in progress.",
   "source_base_commit": "1ce8fcd1f2286895e012cd5540a6a43723d76438",
-  "source_identity": "Base commit plus exact application source hashes in source-hashes.json; board_link.c and echoy_horizontal_profile.h contain the candidate correction."
+  "source_identity": "Base commit plus exact application source hashes in source-hashes.json; board_link.c and echoy_horizontal_profile.h contain the candidate correction.",
+  "source_commit": "013b778"
 }
