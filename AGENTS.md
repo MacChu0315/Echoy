@@ -47,8 +47,10 @@
 - Physical linking uses the pinned BSP's magnetic classifier and ESP-NOW network.
   Start radio/RF initialization before audio activation; network and sensor I/O
   stay off the audio owner. Per the user's 2026-10-15 decision, all boards use
-  the same read-only `MOSAICO_MAG_CALIBRATION_S31_V1` table stored in firmware
-  Flash. Horizontal startup does not capture or persist per-device baselines;
+  the same read-only `echoy_horizontal_profile` table in
+  `projects/echoy/main/echoy_horizontal_profile.h`, stored in firmware Flash.
+  It retains the pinned S31 fields except the evidence-backed left Z rejection
+  threshold (600); keep recorded positive/negative capture regressions. Horizontal startup does not capture or persist per-device baselines;
   suppress vertical results, retain the original horizontal predicates,
   eight-sample filter, contact/release confirmation and failed-read disconnect.
   Wait for valid horizontal sampling readiness, including on already-joined

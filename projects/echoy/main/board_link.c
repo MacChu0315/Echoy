@@ -1,5 +1,6 @@
 #include "board_link.h"
 #include "echoy_group.h"
+#include "echoy_horizontal_profile.h"
 #include <inttypes.h>
 #include <stdatomic.h>
 #include <stdlib.h>
@@ -45,12 +46,12 @@ static atomic_bool owned;
 static board_link_t *instance;
 static esp_err_t init_horizontal_classifier(mosaico_mag_classifier_t *classifier)
 {
-    /* The pinned read-only profile is the common Flash-backed threshold source.
+    /* The shared read-only profile is the common Flash-backed threshold source.
      * Its LEFT/RIGHT predicates use absolute axes, independently of the Y/Z
      * reference used for vertical edges. Supply a fixed zero vertical reference
      * to disable startup baseline capture, then discard every vertical result.
      * This is horizontal-only operation, not a measured per-device calibration. */
-    esp_err_t error=mosaico_mag_classifier_init(classifier,&MOSAICO_MAG_CALIBRATION_S31_V1);
+    esp_err_t error=mosaico_mag_classifier_init(classifier,&echoy_horizontal_profile);
     if (error!=ESP_OK) return error;
     classifier->baseline_right_y=0;
     classifier->baseline_right_z=0;
@@ -242,8 +243,9 @@ static void process_event(board_link_t *h,const link_event_t *e)
 static void worker(void *arg)
 {
     board_link_t *h=arg;
-    ESP_LOGI(TAG,"shared Flash thresholds: profile=%s saturation=%d; horizontal-only, no startup baseline capture",
-             MOSAICO_MAG_CALIBRATION_S31_V1.name,(int)MOSAICO_MAG_CALIBRATION_S31_V1.saturation_limit);
+    ESP_LOGI(TAG,"shared Flash thresholds: profile=%s saturation=%d left_reject_z=%d; horizontal-only, no startup baseline capture",
+             echoy_horizontal_profile.name,(int)echoy_horizontal_profile.saturation_limit,
+             (int)echoy_horizontal_profile.left_reject_z);
     h->sensors_initialized=true;
     h->sensors_ready=bsp_magnetometer_init_all()==ESP_OK;
     if (!h->sensors_ready) disable_sensors(h,"magnetometer initialization failed");

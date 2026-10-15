@@ -1,0 +1,22 @@
+[1/7] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/board_link.c.obj
+[2/7] Linking C static library esp-idf/main/libmain.a
+[3/7] Generating esp-idf/esp_system/ld/sections.ld
+Skipping linker fragment parsing, fragment files unchanged
+[4/7] Linking CXX executable echoy.elf
+[5/7] Generating binary image from built executable
+esptool v5.4.0
+Creating ESP32-S31 image...
+Merged 3 ELF sections.
+Successfully created ESP32-S31 image.
+Generated /home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-three-chain-build/echoy.bin
+[6/7] cd /home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-three-chain-build && /home/zhuzhengming/.espressif/python_env/idf6.2_py3.10_env/bin/python /home/zhuzhengming/esp/ts/Mosaico/.toolchains/esp-idf-7b9cc1a/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-three-chain-build/partition_table/partition-table.bin /home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-three-chain-build/echoy.bin
+WARNING: 1/2 app partitions are too small for binary echoy.bin size 0x206df0:
+  - Part 'factory' 0/0 @ 0x20000 size 0x1c0000 (overflow 0x46df0)
+[7/7] Building application + data + system update bundle
+{
+  "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-three-chain-build/echoy-system-update.irisfw",
+  "bytes": 1464017
+}
+Executing action: system-update-bundle
+Running ninja in directory /home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-three-chain-build
+Executing "ninja system-update-bundle"...

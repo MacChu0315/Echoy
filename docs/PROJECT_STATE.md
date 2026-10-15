@@ -1017,16 +1017,24 @@ no baseline capture/rejection and zero startup app/output faults. Retained
 components, UI and accepted office sound pass identity checks. Old diagnostic
 `1eb36e7d795a` was never installed and is superseded.
 
-The first bounded A readback window reports edges/stable/reported=0 and no peer;
-its physical BCA pose has not yet been confirmed. A new user action asks to
-restore/hold B—C—A for 20 seconds without recording/playback. When confirmed,
-capture the joined pose; if the 90-record window is exhausted, one official
-planned A restart can open a new window while still joined (no baseline capture).
-Prepared helper: `output/fixed-horizontal-20261015/restart_joined_diagnostic.py`;
-check fresh identity and preserve operation results. Original rearrangement cause
-is still unresolved. Restore A to the matching fixed-threshold normal package
-after diagnosis, under existing standing authorization, rather than reverting
-to the old baseline-capturing build. Evidence: `verification/fixed-horizontal/`.
+The user has now confirmed B—C—A. An official joined restart of diagnostic A
+(boot 2940862482323986586) yields 55 valid samples: left X/Y=-32768 and
+filtered Z=620..623, but no reported left contact. The pinned Z<650 rejection
+causes the missing physical edge. A shared application-owned Flash profile now
+sets only left_reject_z=600; the pinned false-left capture Z=560 stays rejected.
+No per-device settings or startup baseline are used. Recorded-seam regression
+fails before and passes after, together with 25 pinned capture projections,
+boundary/filter/release checks, related sanitizers and full three-owner/actual
+PCM permutations. Native application sources remain identical to previously
+verified normal/reduced simulator results. Accepted sound/UI are unchanged.
+
+Normal package `f9b87dd4d4d7` (ELF
+`aae48ef4dcabf0cb9a87c6a07017f935f7212d23d429a8ff13881f52d5fddb89`)
+is built and inspected; profile storage is confirmed `.flash.rodata`. Installing
+it on all three and real BCA/ABC→BCA acceptance remain pending. A is still on
+the temporary diagnostic package until that rollout. Standing authorization
+covers all three; do not request startup separation or per-package permission.
+Evidence: `verification/horizontal-seam-fix/`.
 
 ### Dual-device basic physical flow accepted (2026-10-12)
 
