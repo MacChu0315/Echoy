@@ -1,0 +1,262 @@
+{
+  "bundle": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/three-device/echoy-reorder-stage-split-diagnostic-90f5098a2b4f.irisfw",
+  "command": "system-update",
+  "device_id": "4553502d49524953010030eda0f452a0",
+  "firmware_mode": "recovery",
+  "gateway_started": false,
+  "log": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/.codex-runs/mosaico/20261015T090654Z-system-update/raw.log",
+  "ok": true,
+  "operation": {
+    "accepted": true,
+    "bundle": {
+      "chip_id": 32,
+      "components": [
+        {
+          "file": "partition-table.bin",
+          "flags": 0,
+          "id": 1,
+          "kind": "partition_table",
+          "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+          "size": 4096,
+          "target_offset": 32768
+        },
+        {
+          "file": "ota_0.bin",
+          "flags": 0,
+          "id": 2,
+          "kind": "application",
+          "sha256": "19bf1656250de7d037a3b3aafc69fe458e5ff582444a41736475c13d8ac62e13",
+          "size": 2126688,
+          "target_offset": 2162688
+        },
+        {
+          "file": "ui_apps.bin",
+          "flags": 0,
+          "id": 3,
+          "kind": "data",
+          "sha256": "e984f71018a6dd24baa4cd988f3815fc8edbb24c809b87fddc78d0f54edf31d7",
+          "size": 377872,
+          "target_offset": 15728640
+        }
+      ],
+      "flash_size": 16777216,
+      "key_id": null,
+      "manifest_sha256": "73f91d52565c4f31ef40e1eb0bcf2a0b27c7017e7f2facd2e7f9f654fb18cc11",
+      "minimum_recovery_version": "0.1",
+      "release": "1.0.0",
+      "schema": "esp-iris-system-update/v1",
+      "signature_verified": false,
+      "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+    },
+    "operation": {
+      "action": "firmware.system_update",
+      "actor_name": "Unauthenticated local client",
+      "actor_type": "local",
+      "created_ns": 1792055216150563471,
+      "device_id": "4553502d49524953010030eda0f452a0",
+      "error": null,
+      "finished_ns": 1792055243873223080,
+      "operation_id": "be791898-9d63-4c88-95fa-1b8eb2c67833",
+      "params": {
+        "archive_sha256": "90f5098a2b4f08a94e84c4c3dbdc974f29aadff377a883074c130c018bb2e721",
+        "bundle": {
+          "chip_id": 32,
+          "components": [
+            {
+              "file": "partition-table.bin",
+              "flags": 0,
+              "id": 1,
+              "kind": "partition_table",
+              "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+              "size": 4096,
+              "target_offset": 32768
+            },
+            {
+              "file": "ota_0.bin",
+              "flags": 0,
+              "id": 2,
+              "kind": "application",
+              "sha256": "19bf1656250de7d037a3b3aafc69fe458e5ff582444a41736475c13d8ac62e13",
+              "size": 2126688,
+              "target_offset": 2162688
+            },
+            {
+              "file": "ui_apps.bin",
+              "flags": 0,
+              "id": 3,
+              "kind": "data",
+              "sha256": "e984f71018a6dd24baa4cd988f3815fc8edbb24c809b87fddc78d0f54edf31d7",
+              "size": 377872,
+              "target_offset": 15728640
+            }
+          ],
+          "flash_size": 16777216,
+          "key_id": null,
+          "manifest_sha256": "73f91d52565c4f31ef40e1eb0bcf2a0b27c7017e7f2facd2e7f9f654fb18cc11",
+          "minimum_recovery_version": "0.1",
+          "release": "1.0.0",
+          "schema": "esp-iris-system-update/v1",
+          "signature_verified": false,
+          "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+        },
+        "compatibility": {
+          "board_id": "esp-mosaico",
+          "chip_target": "esp32s31",
+          "layout_id": "mosaico-retained-recovery-2m-v1",
+          "product_contract": "esp-mosaico/v1",
+          "recovery_abi": 1
+        }
+      },
+      "progress": {
+        "bytes_received": 2508656,
+        "bytes_total": 2508656,
+        "component_id": null,
+        "component_kind": null,
+        "device_progress_permille": 950,
+        "job_id": 1,
+        "progress_permille": 1000,
+        "source_inventory": {
+          "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+          "flags": 7,
+          "last_operation_id": "fcf4d266ae904ff2afd311aa56a1b35e",
+          "last_result": 0,
+          "layout_version": 4,
+          "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+        },
+        "stage": "succeeded",
+        "target_application": {
+          "chip_id": 32,
+          "elf_sha256": "faa6a51d94e0fb2e293cbcb91186507e059d05f824ad9de4222a054a9a235244",
+          "project_name": "echoy",
+          "sha256": "19bf1656250de7d037a3b3aafc69fe458e5ff582444a41736475c13d8ac62e13",
+          "size": 2126688,
+          "version": "1.0.0"
+        },
+        "target_recovery": null,
+        "updated_ns": 1792055243873180286,
+        "writer_boot_id": 5676018131959566427,
+        "writer_boot_id_text": "5676018131959566427"
+      },
+      "queue_position": 0,
+      "request_fingerprint": "sha256:v1:5869e082729d416a68990a513d1cccff032c409f8f1cd1e99229facbf8ef101d",
+      "result": {
+        "application_validation": {
+          "actual": "faa6a51d94e0fb2e293cbcb91186507e059d05f824ad9de4222a054a9a235244",
+          "actual_field": "firmware_sha256",
+          "expected": "faa6a51d94e0fb2e293cbcb91186507e059d05f824ad9de4222a054a9a235244",
+          "expected_field": "elf_sha256",
+          "mode": "elf_sha256"
+        },
+        "boot_id": 1897294828789155138,
+        "boot_id_text": "1897294828789155138",
+        "bytes": 2508656,
+        "completion_evidence": "commit_response",
+        "components": [
+          {
+            "file": "partition-table.bin",
+            "flags": 0,
+            "id": 1,
+            "kind": "partition_table",
+            "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+            "size": 4096,
+            "target_offset": 32768
+          },
+          {
+            "file": "ota_0.bin",
+            "flags": 0,
+            "id": 2,
+            "kind": "application",
+            "sha256": "19bf1656250de7d037a3b3aafc69fe458e5ff582444a41736475c13d8ac62e13",
+            "size": 2126688,
+            "target_offset": 2162688
+          },
+          {
+            "file": "ui_apps.bin",
+            "flags": 0,
+            "id": 3,
+            "kind": "data",
+            "sha256": "e984f71018a6dd24baa4cd988f3815fc8edbb24c809b87fddc78d0f54edf31d7",
+            "size": 377872,
+            "target_offset": 15728640
+          }
+        ],
+        "healthy": true,
+        "job_id": 1,
+        "manifest_sha256": "73f91d52565c4f31ef40e1eb0bcf2a0b27c7017e7f2facd2e7f9f654fb18cc11",
+        "operation_id": "be7918989d634c8895fa1b8eb2c67833",
+        "preserved_coredump": null,
+        "previous_boot_id": 5676018131959566427,
+        "previous_boot_id_text": "5676018131959566427",
+        "recovery_validation": null,
+        "restart_required": true,
+        "source_inventory": {
+          "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+          "flags": 7,
+          "last_operation_id": "fcf4d266ae904ff2afd311aa56a1b35e",
+          "last_result": 0,
+          "layout_version": 4,
+          "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+        },
+        "target_inventory": {
+          "bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+          "flags": 7,
+          "last_operation_id": "be7918989d634c8895fa1b8eb2c67833",
+          "last_result": 0,
+          "layout_version": 4,
+          "partition_table_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+        },
+        "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+        "validated": true,
+        "writer_boot_id": 5676018131959566427,
+        "writer_boot_id_text": "5676018131959566427"
+      },
+      "started_ns": 1792055216151463927,
+      "status": "succeeded"
+    },
+    "status_url": "/v1/operations/be791898-9d63-4c88-95fa-1b8eb2c67833"
+  },
+  "project": null,
+  "reused_build": true,
+  "source": "bundle",
+  "status": "succeeded",
+  "write_plan": {
+    "chip_id": 32,
+    "components": [
+      {
+        "file": "partition-table.bin",
+        "flags": 0,
+        "id": 1,
+        "kind": "partition_table",
+        "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+        "size": 4096,
+        "target_offset": 32768
+      },
+      {
+        "file": "ota_0.bin",
+        "flags": 0,
+        "id": 2,
+        "kind": "application",
+        "sha256": "19bf1656250de7d037a3b3aafc69fe458e5ff582444a41736475c13d8ac62e13",
+        "size": 2126688,
+        "target_offset": 2162688
+      },
+      {
+        "file": "ui_apps.bin",
+        "flags": 0,
+        "id": 3,
+        "kind": "data",
+        "sha256": "e984f71018a6dd24baa4cd988f3815fc8edbb24c809b87fddc78d0f54edf31d7",
+        "size": 377872,
+        "target_offset": 15728640
+      }
+    ],
+    "flash_size": 16777216,
+    "key_id": null,
+    "manifest_sha256": "73f91d52565c4f31ef40e1eb0bcf2a0b27c7017e7f2facd2e7f9f654fb18cc11",
+    "minimum_recovery_version": "0.1",
+    "release": "1.0.0",
+    "schema": "esp-iris-system-update/v1",
+    "signature_verified": false,
+    "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231"
+  }
+}

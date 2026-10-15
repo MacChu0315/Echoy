@@ -1,0 +1,29 @@
+[
+  {
+    "device_id": "4553502d49524953010030eda0f452a0",
+    "boot_id": 13772919324190082093,
+    "firmware_sha256": "aae48ef4dcabf0cb9a87c6a07017f935f7212d23d429a8ff13881f52d5fddb89",
+    "crash_count": 0,
+    "cooperation": 0,
+    "following": false,
+    "events": 0
+  },
+  {
+    "device_id": "4553502d49524953010030eda0f40c6c",
+    "boot_id": 14630519438785164093,
+    "firmware_sha256": "aae48ef4dcabf0cb9a87c6a07017f935f7212d23d429a8ff13881f52d5fddb89",
+    "crash_count": 0,
+    "cooperation": 5,
+    "following": true,
+    "events": 9
+  },
+  {
+    "device_id": "4553502d49524953010030eda0f45936",
+    "boot_id": 14949665561685451233,
+    "firmware_sha256": "aae48ef4dcabf0cb9a87c6a07017f935f7212d23d429a8ff13881f52d5fddb89",
+    "crash_count": 0,
+    "cooperation": 5,
+    "following": true,
+    "events": 11
+  }
+]

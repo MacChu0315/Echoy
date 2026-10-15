@@ -1,0 +1,47 @@
+ORDER 0 exit=0
+rejected_frames=0
+node=0 local=2 state=3 peer=30eda0f40c6c edge=4 rotation=0
+node=1 local=2 state=3 peer=30eda0f45936 edge=4 rotation=0
+node=1 local=4 state=3 peer=30eda0f452a0 edge=2 rotation=0
+node=2 local=4 state=3 peer=30eda0f40c6c edge=2 rotation=0
+committed_complementary=4 committed_same_edge=0 (desired four reciprocal horizontal edges)
+
+ORDER 1 exit=1
+rejected_frames=0
+node=0 local=2 state=3 peer=30eda0f40c6c edge=4 rotation=0
+node=1 local=2 state=1 peer=000000000000 edge=0 rotation=0
+node=1 local=4 state=1 peer=000000000000 edge=0 rotation=0
+node=2 local=4 state=3 peer=30eda0f452a0 edge=2 rotation=0
+committed_complementary=0 committed_same_edge=2 (desired four reciprocal horizontal edges)
+
+ORDER 2 exit=0
+rejected_frames=0
+node=0 local=2 state=3 peer=30eda0f452a0 edge=4 rotation=0
+node=1 local=2 state=3 peer=30eda0f45936 edge=4 rotation=0
+node=1 local=4 state=3 peer=30eda0f40c6c edge=2 rotation=0
+node=2 local=4 state=3 peer=30eda0f452a0 edge=2 rotation=0
+committed_complementary=4 committed_same_edge=0 (desired four reciprocal horizontal edges)
+
+ORDER 3 exit=0
+rejected_frames=0
+node=0 local=2 state=3 peer=30eda0f45936 edge=4 rotation=0
+node=1 local=2 state=3 peer=30eda0f452a0 edge=4 rotation=0
+node=1 local=4 state=3 peer=30eda0f40c6c edge=2 rotation=0
+node=2 local=4 state=3 peer=30eda0f45936 edge=2 rotation=0
+committed_complementary=4 committed_same_edge=0 (desired four reciprocal horizontal edges)
+
+ORDER 4 exit=0
+rejected_frames=0
+node=0 local=2 state=3 peer=30eda0f452a0 edge=4 rotation=0
+node=1 local=2 state=3 peer=30eda0f40c6c edge=4 rotation=0
+node=1 local=4 state=3 peer=30eda0f45936 edge=2 rotation=0
+node=2 local=4 state=3 peer=30eda0f452a0 edge=2 rotation=0
+committed_complementary=4 committed_same_edge=0 (desired four reciprocal horizontal edges)
+
+ORDER 5 exit=0
+rejected_frames=0
+node=0 local=2 state=3 peer=30eda0f40c6c edge=4 rotation=0
+node=1 local=2 state=3 peer=30eda0f452a0 edge=4 rotation=0
+node=1 local=4 state=3 peer=30eda0f45936 edge=2 rotation=0
+node=2 local=4 state=3 peer=30eda0f40c6c edge=2 rotation=0
+committed_complementary=4 committed_same_edge=0 (desired four reciprocal horizontal edges)

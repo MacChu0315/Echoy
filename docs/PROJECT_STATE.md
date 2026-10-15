@@ -1058,20 +1058,33 @@ app crash or preparation fault. Sustained official live logs show repeated
 ESPNOW NO_MEM sends, concentrated on C; this alone does not establish whether
 heap pressure or transmit backlog is responsible. Preserve current B—C—A.
 
-The default-off 1 Hz/90-record diagnostic has been extended only with existing
-group identity, attempt, operation count, members, mapped offset and deadline.
-Tests/sanitizers/SDK build and package inspection pass. Diagnostic candidate
-`21bc020ef620` (ELF d3125facc47d7c40aac662490aea1b610667f2ade38bf3b736330ebdce08e155)
-installed/HEALTHY on B only; group fields split over Iris 240-byte records,
-causing the line-oriented postcheck to fail. The fields were not lost. Revised
-diagnostic `90f5098a2b4f` (ELF faa6a51d94e0fb2e293cbcb91186507e059d05f824ad9de4222a054a9a235244)
-uses a separate short group line; length/count/disabled regressions and official
-build pass. It is prepared for all three under standing authorization. B now
-reports RIGHT committed to C/RIGHT but no admitted application peer; the other
-two still run f9b87dd4d4d7.
-Current normal package f9b87dd4d4d7 remains the restore target. No new functional
-fix is claimed. Investigation evidence: `verification/reorder-stage-diagnostic/`;
-previous delivery/acceptance: `verification/horizontal-seam-fix/`.
+The default-off 1 Hz/90-sample diagnostic was extended with existing group
+identity/attempt/members/offset/deadline. Initial21bc020ef620 installed only on B;
+Iris split its long lines, so revised90f5098a2b4f uses a separate short group
+record and passes completeness checks. It too installed only on B. B's complete
+readback confirms group1/rank0/attempt0/no admitted peer after a same-edge SDK
+session. C/A were never flashed with these diagnostic candidates.
+
+A throwaway complementary-edge-only restriction in the actual SDK session probe
+passes five static orderings but leaves one pairing the two endpoints across
+the middle. Direction filtering alone is insufficient. Further diagnostic rollout
+was stopped. B is restored to normal f9b87dd4d4d7, HEALTHY boot
+13772919324190082093, operation a4912e78-a132-4dce-b1e5-d73e39205936;
+image/sampling/no-output-error/retained-component checks pass. C/A retain normal
+f9b87dd4d4d7 and software-restart boots14630519438785164093 /
+14949665561685451233. No temporary diagnostic remains. Test5 remains failed;
+no functional session/transport fix has been applied.
+
+Proposed architecture/compatibility repair is documented in
+`plans/2026-10-15-horizontal-admission-repair.md`, not approved or implemented.
+It moves complete contact-mask/boot/generation discovery, reciprocal unique-chain
+admission and bounded direct/one-hop transport into the application using public
+radio APIs; it preserves musical owners, sound/UI, Flash thresholds and Recovery.
+Unknown/late peers and scene freshness must not be hidden by timeout guesses.
+This is a material adapter/handshake change requiring the user's design review
+under their standing project rules; it is not a renewed firmware permission
+request. Keep physical test progression paused at failed item5 pending that
+repair. Detailed evidence: `verification/reorder-stage-diagnostic/`.
 
 ### Dual-device basic physical flow accepted (2026-10-12)
 

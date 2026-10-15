@@ -1,0 +1,10 @@
+{
+  "device_id": "4553502d49524953010030eda0f452a0",
+  "endpoint": "usb:location=1-8.3:1.0",
+  "package_sha256": "90f5098a2b4f08a94e84c4c3dbdc974f29aadff377a883074c130c018bb2e721",
+  "expected_elf_sha256": "faa6a51d94e0fb2e293cbcb91186507e059d05f824ad9de4222a054a9a235244",
+  "authorization": "User standing authorization covers subsequent Echoy updates on all three current devices. User-approved fixed Flash horizontal startup does not capture a baseline and supports joined startup.",
+  "before_application_boot": 15480745818673229062,
+  "ready_recovery_boot": 5676018131959566427,
+  "expected_bootloader_region_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc"
+}

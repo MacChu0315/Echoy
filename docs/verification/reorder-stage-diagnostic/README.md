@@ -33,3 +33,30 @@ f9b87dd4d4d7 is retained for diagnostic restoration; startup separation is not
 required. Installation on all three is covered by standing authorization.
 Preserve B—C—A during acquisition. Actual failure cause beyond the corrected
 magnetic threshold remains open; do not mark the full three-device test passed.
+
+## Current handoff
+
+Revised diagnostic90f5098a2b4f installed/HEALTHY on B only, operation
+be791898-9d63-4c88-95fa-1b8eb2c67833, boot1897294828789155138. Its separate
+group lines are complete. B remains group1/rank0/attempt0 with no admitted peer
+after the invalid same-edge session. C/A were never installed with either
+diagnostic candidate in this investigation.
+
+The complementary-only temporary probe passes5/6 static permutations; order1
+pairs endpoints across the middle. Its printed `committed_same_edge` counter
+also includes wrong-neighbor complementary pairs: inspect the node/peer IDs,
+not that label, for the shortcut case. This is not production code.
+
+Further diagnostic rollout was stopped after this evidence. B is restored to
+normal f9b87dd4d4d7, operation a4912e78-a132-4dce-b1e5-d73e39205936,
+HEALTHY boot13772919324190082093. Current-boot sampling, zero app/output errors,
+no live diagnostics, and retained components are verified. C/A remain on the
+same normal image; their existing phrases were not deliberately reset here.
+No functional pairing/transport repair has been applied. Test5 remains failed.
+
+A proposed larger application-owned neighbor admission/transport repair is in
+`../../plans/2026-10-15-horizontal-admission-repair.md`. It distinguishes known
+local evidence from unseen-peer ambiguity and leaves the latter as a required
+correctness condition. It changes the handshake compatibility boundary, so the
+user's instruction to review material architecture/compatibility changes applies.
+Standing firmware installation authorization is unchanged.
