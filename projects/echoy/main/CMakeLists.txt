@@ -7,7 +7,7 @@ idf_component_register(
         "echoy_art_producer.c"
         "echoy_device_pcm.c"
         "echoy_display.c"
-        "board_link.c" "echoy_link_codec.c"
+        "board_link.c" "echoy_link_codec.c" "echoy_link_protocol.c" "echoy_group.c"
     INCLUDE_DIRS "."
     REQUIRES esp_iris esp-mosaico-bsp esp_mosaico_app_recovery
         esp_mosaico_gsp_bundle esp_mosaico_gsp_iris freertos nvs_flash

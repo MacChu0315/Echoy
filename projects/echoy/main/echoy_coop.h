@@ -20,6 +20,9 @@ typedef struct {
      * including owners whose musical bank is unchanged. */
     bool align_boundary;
     uint32_t clock_start_ack;
+    /* Root's last activated attempt; fences clocks queued before a commit,
+     * including when the worker's cached owner snapshot still lags PCM. */
+    uint32_t clock_committed_transaction;
     uint32_t connection_generation, session, transaction;
     uint64_t revision;
     echoy_link_command_t command;
@@ -29,6 +32,9 @@ typedef struct {
 
 typedef struct {
     bool available, deferred, following, clock_started, looping;
+    /* A worker must not acknowledge a new group's commands using an older
+     * published owner snapshot whose numeric transaction happens to match. */
+    uint32_t connection_generation, session;
     uint32_t local_start_serial, local_edit_serial;
     bool busy;
     int64_t clock_origin_us;

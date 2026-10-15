@@ -71,6 +71,13 @@ static void boundary(bool playing,bool changed)
     assert(echoy_band_read(b,ECHOY_TILE_A,&after));
     assert(after.state.continuous==playing);
     if (!changed) assert(before.plan.count==after.plan.count);
+    /* A delayed pre-commit clock/Play ACK can outlive the link worker's
+     * cached publication. The PCM owner fences it using the committed attempt. */
+    u.command=ECHOY_LINK_NONE; u.clock_sync=true; u.clock_started=true;
+    u.clock_start_ack=v.local_start_serial; u.clock_origin_us=5050000;
+    u.clock_committed_transaction=0;
+    assert(echoy_band_link_update(b,&u,6400000));
+    assert(echoy_band_link_read(b,&v) && v.clock_origin_us==boundary_at);
     echoy_audio_free_loops(expected); echoy_audio_free_loops(next); echoy_band_delete(b);
 }
 int main(void)

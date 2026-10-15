@@ -226,7 +226,7 @@ class DeskCheck:
 
     def setup(self, stack):
         build = self.args.build_dir.resolve()
-        source = {'binary': build / 'echoy_desk', 'bundle': build / 'echoy_backend_assets/app.gspb',
+        source = {'binary': getattr(self.args, 'desk_binary', None) or build / 'echoy_desk', 'bundle': build / 'echoy_backend_assets/app.gspb',
                   'api': build / 'echoy_backend_assets/bundle_gsp.api.json'}
         copied, metadata = {}, {}
         for kind, path in source.items():

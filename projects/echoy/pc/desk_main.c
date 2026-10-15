@@ -2,6 +2,9 @@
 #include "gsp_sim_bridge.h"
 #include "echoy_ui.h"
 #include "echoy_band.h"
+#ifdef ECHOY_INDEPENDENT_CHAIN
+#include "chain_owner.h"
+#endif
 #include <errno.h>
 #include <fcntl.h>
 #include <math.h>
@@ -30,6 +33,9 @@ struct tile_ctx {
 struct desk {
     pthread_mutex_t lock, io_lock;
     echoy_band_t *band;
+#ifdef ECHOY_INDEPENDENT_CHAIN
+    echoy_chain_t *chain;
+#endif
     struct tile_ctx tiles[3];
     atomic_bool stopping, failed, audio_connected, audio_failed;
     atomic_int ready;
@@ -53,6 +59,40 @@ static int64_t now_us(void *unused)
     clock_gettime(CLOCK_MONOTONIC, &t);
     return (int64_t)t.tv_sec * 1000000 + t.tv_nsec / 1000;
 }
+static echoy_band_t *desk_owner(struct desk *d,int id)
+{
+#ifdef ECHOY_INDEPENDENT_CHAIN
+    return echoy_chain_band(d->chain,id);
+#else
+    (void)id; return d->band;
+#endif
+}
+static bool desk_read(struct desk *d,int id,echoy_control_view_t *out)
+{
+#ifdef ECHOY_INDEPENDENT_CHAIN
+    return echoy_chain_read(d->chain,id,out);
+#else
+    return echoy_band_read(d->band,id,out);
+#endif
+}
+static bool desk_action(struct desk *d,int id,echoy_action_t act,double value,int64_t now)
+{
+#ifdef ECHOY_INDEPENDENT_CHAIN
+    return echoy_chain_action(d->chain,id,act,value,now);
+#else
+    return echoy_band_action(d->band,id,act,value,now);
+#endif
+}
+static int64_t owner_offset(int id)
+{
+#ifdef ECHOY_INDEPENDENT_CHAIN
+    return echoy_chain_offset(id);
+#else
+    (void)id; return 0;
+#endif
+}
+static int64_t tile_now_us(void *ctx)
+{ return now_us(NULL)+owner_offset(((struct tile_ctx *)ctx)->id); }
 static void stop_signal(int sig)
 {
     (void)sig;
@@ -62,7 +102,7 @@ static bool read_control(void *ctx, echoy_control_view_t *out)
 {
     struct tile_ctx *t = ctx;
     pthread_mutex_lock(&t->desk->lock);
-    bool ok = echoy_band_read(t->desk->band, t->id, out);
+    bool ok = desk_read(t->desk,t->id,out);
     pthread_mutex_unlock(&t->desk->lock);
     return ok;
 }
@@ -70,13 +110,13 @@ static bool action(void *ctx, echoy_action_t act, double value, int64_t now)
 {
     struct tile_ctx *t = ctx;
     pthread_mutex_lock(&t->desk->lock);
-    bool ok = echoy_band_action(t->desk->band, t->id, act, value, now);
+    bool ok = desk_action(t->desk,t->id,act,value,now-owner_offset(t->id));
     pthread_mutex_unlock(&t->desk->lock);
     return ok;
 }
 static void removed(void *ctx, bool value)
 {
-    action(ctx, ECHOY_ACT_PRESENT, !value, now_us(NULL));
+    action(ctx,ECHOY_ACT_PRESENT,!value,tile_now_us(ctx));
 }
 static bool export_snapshot(struct desk *d);
 static bool export_from_ui(void *ctx, const echoy_snapshot_t *s, const echoy_plan_t *p,
@@ -97,7 +137,7 @@ static void *ui_thread(void *ctx)
     esp_gsp_err_t e = gsp_sim_bridge_open(t->endpoint, &gsp);
     if (e == ESP_GSP_OK) {
         const echoy_platform_t p = {.ctx = t,
-                                    .now_us = now_us,
+                                    .now_us = tile_now_us,
                                     .is_simulator = true,
                                     .battery_percent = 72,
                                     .read_control = read_control,
@@ -146,9 +186,16 @@ static void *ui_thread(void *ctx)
 static void *prepare_thread(void *ctx)
 {
     struct desk *d = ctx;
+    unsigned next=0;
     while (!atomic_load(&d->stopping)) {
+#ifdef ECHOY_INDEPENDENT_CHAIN
+        int id=(int)(next++ % 3);
+#else
+        int id=0; (void)next;
+#endif
         pthread_mutex_lock(&d->lock);
-        echoy_band_job_t *j = echoy_band_take_job(d->band);
+        echoy_band_t *band=desk_owner(d,id);
+        echoy_band_job_t *j = echoy_band_take_job(band);
         pthread_mutex_unlock(&d->lock);
         if (!j) {
             usleep(2000);
@@ -156,7 +203,7 @@ static void *prepare_thread(void *ctx)
         }
         bool ok = echoy_band_prepare_job(j);
         pthread_mutex_lock(&d->lock);
-        bool accepted = echoy_band_finish_job(d->band, j, now_us(NULL));
+        bool accepted = echoy_band_finish_job(band,j,now_us(NULL)+owner_offset(id));
         pthread_mutex_unlock(&d->lock);
         if (!ok) {
             fprintf(stderr, "ECHOY_AUDIO_PREPARE_FAILED\n");
@@ -317,8 +364,12 @@ static void *audio_thread(void *ctx)
     uint32_t captured = 0;
     while (!atomic_load(&d->stopping)) {
         pthread_mutex_lock(&d->lock);
+#ifdef ECHOY_INDEPENDENT_CHAIN
+        echoy_chain_render(d->chain,at,buffer,240);
+#else
         echoy_band_tick(d->band, at);
         echoy_band_render(d->band, at, buffer, 240);
+#endif
         pthread_mutex_unlock(&d->lock);
         for (unsigned i = 0; i < 240; i++) {
             pcm[i] = (int16_t)lrint(fmax(-1, fmin(1, buffer[i])) * 32767);
@@ -433,6 +484,10 @@ struct desk_snapshot {
     size_t edge_count;
     uint64_t revision;
     bool pending;
+#ifdef ECHOY_INDEPENDENT_CHAIN
+    echoy_group_info_t groups[3];
+    double energy[3];
+#endif
 };
 static struct desk_snapshot *snapshot(struct desk *d)
 {
@@ -441,6 +496,26 @@ static struct desk_snapshot *snapshot(struct desk *d)
         return NULL;
     }
     pthread_mutex_lock(&d->lock);
+#ifdef ECHOY_INDEPENDENT_CHAIN
+    for (int i=0;i<3;++i) {
+        echoy_band_t *band=desk_owner(d,i);
+        const echoy_arrange_t *m=echoy_band_arrangement(band);
+        desk_read(d,i,&s->views[i]);
+        echoy_control_view_t *v=&s->views[i]; int64_t offset=owner_offset(i);
+        if (v->state.start_us) v->state.start_us-=offset;
+        if (v->state.capture_at_us) v->state.capture_at_us-=offset;
+        if (v->state.apply_at_us) v->state.apply_at_us-=offset;
+        if (v->state.clock_started) v->state.clock_origin_us-=offset;
+        s->tiles[i]=*echoy_arrange_get_tile(m,ECHOY_TILE_A);
+        s->tiles[i].id=i; s->tiles[i].clock_id=v->clock; s->tiles[i].current.source=v->source;
+        s->revision+=echoy_arrange_revision(m);
+        echoy_chain_info(d->chain,i,&s->groups[i]);
+        s->energy[i]=echoy_chain_energy(d->chain,i);
+        s->pending|=echoy_arrange_get_pending(m)!=NULL ||
+            (s->groups[i].phase>0 && s->groups[i].phase<5);
+    }
+    s->edge_count=echoy_chain_get_edges(d->chain,s->edges);
+#else
     const echoy_arrange_t *m = echoy_band_arrangement(d->band);
     for (int i = 0; i < 3; i++) {
         echoy_band_read(d->band, i, &s->views[i]);
@@ -452,6 +527,7 @@ static struct desk_snapshot *snapshot(struct desk *d)
     }
     s->revision = echoy_arrange_revision(m);
     s->pending = echoy_arrange_get_pending(m) != NULL;
+#endif
     pthread_mutex_unlock(&d->lock);
     return s;
 }
@@ -510,6 +586,17 @@ static bool status_locked(struct desk *d, const struct desk_snapshot *s)
             atomic_load(&d->frames_rendered), atomic_load(&d->audio_origin_us),
             (long long)now_us(NULL));
     edges_json(f, s);
+#ifdef ECHOY_INDEPENDENT_CHAIN
+    fputs(",\"independent_owners\":[",f);
+    for (int i=0;i<3;++i) {
+        const echoy_group_info_t *g=&s->groups[i];
+        fprintf(f,"%s{\"offset_us\":%lld,\"group\":%u,\"attempt\":%u,\"count\":%u,\"rank\":%u,"
+            "\"phase\":%u,\"operations\":%u,\"mapped\":%s,\"root_offset_us\":%lld,\"energy\":%.17g}",
+            i ? "," : "",(long long)owner_offset(i),g->identity,g->attempt,g->count,g->rank,
+            g->phase,g->operations,g->clock_mapped ? "true" : "false",(long long)g->root_offset_us,s->energy[i]);
+    }
+    fputc(']',f);
+#endif
     fputs("}\n", f);
     return end_json(d, f, temp, "status.json");
 }
@@ -673,8 +760,9 @@ static bool command_locked(struct desk *d, char *message)
         (!strcmp(words[1], "0") || !strcmp(words[1], "1"))) {
         bool forced =
             getenv("ECHOY_REDUCED_MOTION") && !strcmp(getenv("ECHOY_REDUCED_MOTION"), "1");
-        return echoy_band_action(d->band, ECHOY_TILE_A, ECHOY_ACT_REDUCED_MOTION,
-                                 forced || !strcmp(words[1], "1"), now);
+        bool ok=true;
+        for (int i=0;i<3;++i) ok=desk_action(d,i,ECHOY_ACT_REDUCED_MOTION,forced || !strcmp(words[1],"1"),now) && ok;
+        return ok;
     }
     if (!strcmp(words[0], "edges")) {
         if (n != 1 && n != 3 && n != 5) {
@@ -688,11 +776,15 @@ static bool command_locked(struct desk *d, char *message)
             }
             edges[(i - 1) / 2] = (echoy_arrange_edge_t){a, b};
         }
+#ifdef ECHOY_INDEPENDENT_CHAIN
+        return echoy_chain_edges(d->chain,edges,(n-1)/2,now);
+#else
         return echoy_band_set_edges(d->band, edges, (n - 1) / 2, now);
+#endif
     }
     if (!strcmp(words[0], "pause_all") && n == 1) {
         for (int i = 0; i < 3; i++) {
-            echoy_band_action(d->band, i, ECHOY_ACT_PAUSE, 0, now);
+            desk_action(d,i,ECHOY_ACT_PAUSE,0,now);
         }
         return true;
     }
@@ -702,12 +794,12 @@ static bool command_locked(struct desk *d, char *message)
     }
     int id = tile_id(words[1]);
     if (!strcmp(words[0], "example") && n == 2) {
-        return echoy_band_action(d->band, id, ECHOY_ACT_EXAMPLE, 0, now);
+        return desk_action(d,id,ECHOY_ACT_EXAMPLE,0,now);
     }
     if (!strcmp(words[0], "condition") && n == 3) {
         for (int i = 0; i < 4; i++) {
             if (!strcmp(words[2], conditions[i])) {
-                return echoy_band_action(d->band, id, ECHOY_ACT_CONDITION, i, now);
+                return desk_action(d,id,ECHOY_ACT_CONDITION,i,now);
             }
         }
         return false;
@@ -719,8 +811,8 @@ static bool command_locked(struct desk *d, char *message)
         if (errno || *end || !isfinite(value) || value < 0 || value > 1) {
             return false;
         }
-        return echoy_band_action(
-            d->band, id, !strcmp(words[0], "present") ? ECHOY_ACT_PRESENT : ECHOY_ACT_VOLUME, value,
+        return desk_action(
+            d, id, !strcmp(words[0], "present") ? ECHOY_ACT_PRESENT : ECHOY_ACT_VOLUME, value,
             now);
     }
     return false;
@@ -781,14 +873,19 @@ int main(int argc, char **argv)
         atomic_store(&d.failed, true);
         goto cleanup;
     }
+#ifdef ECHOY_INDEPENDENT_CHAIN
+    d.chain=echoy_chain_create();
+    if (!d.chain) {
+#else
     d.band = echoy_band_create();
     if (!d.band) {
+#endif
         fprintf(stderr, "Cannot initialize C instruments\n");
         atomic_store(&d.failed, true);
         goto cleanup;
     }
     if (getenv("ECHOY_REDUCED_MOTION") && !strcmp(getenv("ECHOY_REDUCED_MOTION"), "1")) {
-        echoy_band_action(d.band, ECHOY_TILE_A, ECHOY_ACT_REDUCED_MOTION, 1, now_us(NULL));
+        for (int i=0;i<3;++i) desk_action(&d,i,ECHOY_ACT_REDUCED_MOTION,1,now_us(NULL));
     }
     pthread_t ui[3], prepare, audio;
     unsigned created = 0;
@@ -817,7 +914,11 @@ int main(int argc, char **argv)
            (!duration || now_us(NULL) - start < (int64_t)duration * 1000)) {
         int64_t now = now_us(NULL);
         pthread_mutex_lock(&d.lock);
+#ifdef ECHOY_INDEPENDENT_CHAIN
+        echoy_chain_tick(d.chain,now);
+#else
         echoy_band_tick(d.band, now);
+#endif
         pthread_mutex_unlock(&d.lock);
         char msg[256];
         for (unsigned i = 0; i < 32; i++) {
@@ -844,7 +945,7 @@ int main(int argc, char **argv)
         pthread_mutex_lock(&d.lock);
         if (atomic_load(&d.audio_failed) && !faulted) {
             for (int i = 0; i < 3; i++) {
-                echoy_band_action(d.band, i, ECHOY_ACT_CONDITION, ECHOY_AUDIO_FAULT, now);
+                desk_action(&d,i,ECHOY_ACT_CONDITION,ECHOY_AUDIO_FAULT,now);
             }
             faulted = true;
         }
@@ -871,7 +972,11 @@ threads_done:
         pthread_join(ui[i], NULL);
     }
 cleanup:
+#ifdef ECHOY_INDEPENDENT_CHAIN
+    echoy_chain_delete(d.chain);
+#else
     echoy_band_delete(d.band);
+#endif
     if (d.socket >= 0) {
         close(d.socket);
     }

@@ -4,7 +4,11 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef ECHOY_GROUP_ADAPTER_TEST
 #include "../../../projects/echoy/main/board_link.c"
+#else
+#include "v2_baseline.inc"
+#endif
 
 /* Test the real adapter's private wire/queue logic against the pinned public
  * BSP headers. Only the radio, OS, sensor hardware and timer are replaced. */
@@ -127,7 +131,11 @@ esp_err_t mosaico_network_send(mosaico_network_handle_t handle, uint64_t destina
     assert(!have_packet && length <= sizeof(packet.payload));
     board_link_t *h = (void *)handle;
     packet_sender = h;
+#ifdef ECHOY_GROUP_ADAPTER_TEST
+    packet.source_id = h->self;
+#else
     packet.source_id = h->following ? 2 : 1;
+#endif
     packet.destination_id = destination;
     packet.service_id = service;
     packet.payload_len = (uint8_t)length;
@@ -135,3 +143,8 @@ esp_err_t mosaico_network_send(mosaico_network_handle_t handle, uint64_t destina
     have_packet = true;
     return ESP_OK;
 }
+#ifdef ECHOY_GROUP_ADAPTER_TEST
+uint32_t esp_random(void) { return 1234567; }
+esp_err_t mosaico_network_get_snapshot(mosaico_network_handle_t handle,mosaico_network_snapshot_t *out)
+{ (void)handle; *out=(mosaico_network_snapshot_t){.device_id=11}; return ESP_OK; }
+#endif

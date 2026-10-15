@@ -62,6 +62,8 @@ struct cooperation {
     int64_t armed_at;
     struct queued_action queued[32];
     unsigned queued_count;
+    bool seed_queued;
+    uint16_t queued_seed;
 };
 struct echoy_band {
     echoy_arrange_t *arrange;
@@ -195,6 +197,14 @@ static void cancel_auto(echoy_band_t *b, int except, int64_t now)
 }
 static bool set_seed(echoy_band_t *b, int id, uint16_t bits)
 {
+    struct cooperation *c=b->cooperation;
+    if (id==ECHOY_TILE_A && c->active && c->align_boundary && c->armed &&
+        c->committed!=c->armed) {
+        /* Recording may finish while a downstream-only edit has frozen this
+         * owner's unchanged bank. Publish that result after the boundary. */
+        c->queued_seed=bits; c->seed_queued=true;
+        return true;
+    }
     echoy_seed_note_t notes[16];
     size_t n = 0;
     for (unsigned i = 0; i < 16; i++) {
@@ -412,6 +422,12 @@ static void replay_actions(echoy_band_t *b, int64_t now)
     c->queued_count=0;
     for (unsigned i=0;i<n;++i)
         echoy_band_action(b,ECHOY_TILE_A,c->queued[i].action,c->queued[i].value,now);
+    if (c->seed_queued) {
+        uint16_t seed=c->queued_seed; c->seed_queued=false;
+        if (set_seed(b,ECHOY_TILE_A,seed))
+            echoy_model_set_external_pending(b->voices[ECHOY_TILE_A].model,true,0);
+        else b->voices[ECHOY_TILE_A].failed=true;
+    }
 }
 static bool apply_requested_edges(echoy_band_t *b, int64_t now)
 {
@@ -505,6 +521,8 @@ bool echoy_band_link_read(echoy_band_t *b, echoy_link_view_t *out)
     uint64_t rev=echoy_arrange_revision(b->arrange);
     memset(out,0,sizeof(*out));
     out->available=t->present && b->voices[0].condition==ECHOY_NORMAL;
+    out->connection_generation=c->generation;
+    out->session=c->session;
     out->deferred=b->deferred[0];
     out->following=b->upstream_connected;
     out->clock_started=clock->started;
@@ -584,7 +602,13 @@ bool echoy_band_link_update(echoy_band_t *b, const echoy_link_update_t *u, int64
     c->hold=u->hold_changes;
     c->peer_looping=u->attached && u->peer_looping;
     if (!u->attached) return true;
-    bool acknowledged=u->clock_start_ack==c->local_start_serial;
+    bool clock_current=!u->align_boundary || !c->committed ||
+        u->clock_committed_transaction==c->committed ||
+        (int32_t)(u->clock_committed_transaction-c->committed)>0;
+    if (u->align_boundary && c->armed && c->committed!=c->armed &&
+        u->clock_committed_transaction==c->armed && now<c->armed_at)
+        clock_current=false;
+    bool acknowledged=u->clock_start_ack==c->local_start_serial && clock_current;
     if (!u->following) {
         if (!echoy_band_establish_clock(b,now)) return false;
     } else {
@@ -628,7 +652,8 @@ bool echoy_band_link_update(echoy_band_t *b, const echoy_link_update_t *u, int64
         if (u->command==ECHOY_LINK_OFFER) {
             c->incoming=true;
             if (!b->deferred[0]) discard_candidate(b,false);
-            if (!echoy_band_set_upstream(b,true,&u->plan,u->clock_started,u->clock_origin_us,
+            if (!echoy_band_set_upstream(b,true,&u->plan,
+                                         u->clock_started && (!u->clock_sync || acknowledged),u->clock_origin_us,
                                          u->looping,now)) return false;
             if (!b->deferred[0]) b->issued=UINT64_MAX;
         }

@@ -1,4 +1,5 @@
 #define LINK_TEST_MAG_LOG
+#define ECHOY_GROUP_ADAPTER_TEST
 #include "../board_link/fake_hardware.h"
 
 static unsigned records(void)

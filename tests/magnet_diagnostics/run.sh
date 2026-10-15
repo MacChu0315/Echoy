@@ -13,6 +13,7 @@ for profile in enabled disabled; do
       -I"$bsp/mosaico_interaction/include" -I"$bsp/mosaico_peer_link/include" \
       -I"$bsp/esp-mosaico-bsp/include" -include "$root/tests/board_link/include/prelude.h" \
       "$root/tests/magnet_diagnostics/test_diagnostics.c" "$root/projects/echoy/main/echoy_link_codec.c" \
+      "$root/projects/echoy/main/echoy_link_protocol.c" "$root/projects/echoy/main/echoy_group.c" \
       "$root/projects/echoy/main/echoy_music.c" -lm -o "$mag_build/$profile"
     "$mag_build/$profile"
 done
