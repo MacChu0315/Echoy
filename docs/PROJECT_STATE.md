@@ -1162,10 +1162,15 @@ failures remain0 and audio error/miss/clipping counters0. However all retain
 RADIO fault2 for the same graph's previous attempt1 after rollout; this is not
 solely an old-boot graph fault. B has13 cumulative queue drops and10 MAC failures;
 no zero-loss/stable physical pass is claimed. Attempt2 has completed. Evidence:
-installed-abc-observation.json and output live logs. The user is now asked to
-set middle B Harmony/right C Voice before recording on left A, then hold35s
-after the one-shot; official180s log capture is active.
-Next answer must be checked against current snapshots/logs before rapid ABC→BCA.
+installed-abc-observation.json and output live logs.
+
+Work stopped at the user's explicit request on 2026-10-15: they no longer want
+optimization and report that current behavior feels worse than before. This
+version is not physically accepted. The outstanding recording/reorder test is
+cancelled, and its live capture was interrupted. Do not resume diagnostics,
+changes or installations without a new user request. All three retain548906cbbae4;
+no rollback was performed or selected. Preserve the saved code, evidence and
+previous accepted baselines for a possible explicitly requested rollback.
 
 ### Dual-device basic physical flow accepted (2026-10-12)
 
