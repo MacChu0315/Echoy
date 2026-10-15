@@ -957,6 +957,11 @@ dual/sound baseline; full three-device checklist/listening, precise acoustic
 timing and sustained RF/load remain unaccepted. Physical evidence:
 `verification/three-device-clock-start/physical-regression.json`.
 
+Local annotated tag `echoy-three-basic-ba951963754a` preserves source
+`a83a64e` and package `ba951963754a` at the user's later explicit request.
+The retained bundle SHA-256 and tag target were rechecked. This is basic-operation
+recognition only, with the ABC→BCA defect below retained; no rollback was performed.
+
 The user subsequently reports "三台也能正常工作" on this installed fix package.
 Record this as user-confirmed basic three-device operation, not newly measured
 agent evidence or acceptance of every checklist category. Join-order changes,
