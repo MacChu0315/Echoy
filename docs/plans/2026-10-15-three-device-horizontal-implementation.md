@@ -29,24 +29,24 @@ readiness invalidation, deferred recording and bounded recovery after loss.
   including an unchanged root; align all continuously playing voices and group
   origin at the fixed boundary. Keep PCM before the boundary unchanged. Run
   `sh tests/cooperation/run_transactions.sh`, deferred, linked-device and band.
-- [ ] 2. Extract portable wire/coverage/clock/slot primitives into
+- [x] 2. Extract portable wire/coverage/clock/slot primitives into
   `projects/echoy/main/echoy_link_protocol.c/.h`. Test malformed, fragmented,
   duplicated/reordered and stale payloads, per-edge clock mapping and reserved
   control capacity; preserve existing transport regression coverage.
-- [ ] 3. Implement `echoy_group.c/.h`: maximum three physical members, root and
+- [x] 3. Implement `echoy_group.c/.h`: maximum three physical members, root and
   generation fences, A→B→C complete candidates, individual readiness/ARM/COMMIT/
   activation, fixed timestamp and start acknowledgements. Run a host network of
   independent actual band/PCM owners with all six orders, pair/single, joins,
   releases, recording/reply, edits, restart, stale packets, loss and backpressure.
-- [ ] 4. Integrate the group with `board_link.c/.h` and existing owner callbacks.
+- [x] 4. Integrate the group with `board_link.c/.h` and existing owner callbacks.
   Both horizontal contacts remain separately observed; network/sensor I/O stays
   on the worker. Validate physical/radio separation, allocation and stop cleanup.
-- [ ] 5. Add an independent-owner native GSP harness under `projects/echoy/pc/`
+- [x] 5. Add an independent-owner native GSP harness under `projects/echoy/pc/`
   using the same group/band/PCM code. Verify actual C pointer callbacks and
   audible/silent PCM, including normal/reduced motion. Run existing regression
   suites, sanitizers, frozen hashes and pinned SDK build. Inspect exact package,
   configuration, UI, retained layout, memory and sound-source preservation.
-- [ ] 6. Perform final independent review, fix substantive findings with failing
+- [x] 6. Perform final independent review, fix substantive findings with failing
   regressions, save verified local commits/evidence and update current state.
   Prepare concrete device rollout only within applicable authorization; the
   replacement third device needs new authorization for the new package.
@@ -54,3 +54,12 @@ readiness invalidation, deferred recording and bounded recovery after loss.
 Each task records commands and observed results in the local execution ledger.
 A failing check is investigated before proceeding to a release gate. Tasks are
 not complete until their stated verification has actually run and passed.
+
+Local implementation/review/release gates completed on 2026-10-15. Evidence:
+`../verification/three-device-horizontal/README.md`; exact immutable candidate:
+`../verification/three-device-horizontal/candidate.json`. Task 6 prepares rollout;
+it does not establish physical acceptance. The user subsequently approved exact
+`7c6e37e7be4d` for replacement f45936 and confirmed separated nonmetal placement.
+All three received one successful official update and passed new-boot health,
+identity, retained layout, home and magnetic calibration checks. Manual joined
+three-board acceptance remains pending.

@@ -1,0 +1,497 @@
+{
+  "study": "Echoy native linked desk",
+  "simulated": true,
+  "audio": "shared portable C at 24000 Hz",
+  "edges": [
+    {
+      "left": "B",
+      "right": "C"
+    }
+  ],
+  "tiles": {
+    "A": {
+      "present": true,
+      "loop": true,
+      "volume": 0.65,
+      "clock": "A",
+      "current": {
+        "role": "pulse",
+        "phrase": 1,
+        "density": 0.5,
+        "duration": 2.5,
+        "source": null,
+        "detached": false,
+        "rootSeed": [
+          {
+            "step": 0,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "origin": "you"
+          },
+          {
+            "step": 2,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "origin": "you"
+          }
+        ],
+        "foreground": [
+          {
+            "step": 0,
+            "kind": "kick",
+            "layer": "anchor",
+            "origin": "you",
+            "vel": 0.74,
+            "dur": 0.22,
+            "expression": 0,
+            "sourceStep": 0
+          },
+          {
+            "step": 2,
+            "kind": "kick",
+            "layer": "anchor",
+            "origin": "you",
+            "vel": 0.74,
+            "dur": 0.22,
+            "expression": 0,
+            "sourceStep": 2
+          }
+        ],
+        "full": [
+          {
+            "step": 0,
+            "kind": "kick",
+            "layer": "anchor",
+            "origin": "you",
+            "vel": 0.74,
+            "dur": 0.22,
+            "expression": 0,
+            "sourceStep": 0
+          },
+          {
+            "step": 2,
+            "kind": "kick",
+            "layer": "anchor",
+            "origin": "you",
+            "vel": 0.74,
+            "dur": 0.22,
+            "expression": 0,
+            "sourceStep": 2
+          },
+          {
+            "step": 4,
+            "kind": "rim",
+            "layer": "support",
+            "origin": "partner",
+            "vel": 0.42,
+            "dur": 0.09,
+            "expression": 0,
+            "sourceStep": null
+          },
+          {
+            "step": 4,
+            "kind": "hat",
+            "layer": "support",
+            "origin": "partner",
+            "vel": 0.32,
+            "dur": 0.045,
+            "expression": 0,
+            "sourceStep": null
+          },
+          {
+            "step": 6,
+            "kind": "hat",
+            "layer": "support",
+            "origin": "partner",
+            "vel": 0.4,
+            "dur": 0.045,
+            "expression": 0,
+            "sourceStep": null
+          },
+          {
+            "step": 8,
+            "kind": "rim",
+            "layer": "echo",
+            "origin": "partner",
+            "vel": 0.53,
+            "dur": 0.09,
+            "expression": 0,
+            "sourceStep": 0
+          },
+          {
+            "step": 8,
+            "kind": "kick",
+            "layer": "support",
+            "origin": "partner",
+            "vel": 0.46,
+            "dur": 0.22,
+            "expression": 0,
+            "sourceStep": 0
+          },
+          {
+            "step": 10,
+            "kind": "rim",
+            "layer": "echo",
+            "origin": "partner",
+            "vel": 0.47,
+            "dur": 0.09,
+            "expression": 0,
+            "sourceStep": 2
+          },
+          {
+            "step": 12,
+            "kind": "rim",
+            "layer": "ending",
+            "origin": "partner",
+            "vel": 0.49,
+            "dur": 0.09,
+            "expression": 0,
+            "sourceStep": 2
+          }
+        ]
+      },
+      "ownSeed": [
+        {
+          "step": 0,
+          "kind": "kick",
+          "vel": 0.74,
+          "dur": 0.22,
+          "origin": "you"
+        },
+        {
+          "step": 2,
+          "kind": "kick",
+          "vel": 0.74,
+          "dur": 0.22,
+          "origin": "you"
+        }
+      ],
+      "clockOriginUs": 1993036117091,
+      "role": "pulse",
+      "phrase": 1,
+      "density": 0.5
+    },
+    "B": {
+      "present": true,
+      "loop": true,
+      "volume": 0.65,
+      "clock": "B",
+      "current": {
+        "role": "voice",
+        "phrase": 3,
+        "density": 0.5,
+        "duration": 2.5,
+        "source": null,
+        "detached": true,
+        "rootSeed": [
+          {
+            "step": 0,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "origin": "you"
+          },
+          {
+            "step": 2,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "origin": "you"
+          }
+        ],
+        "foreground": [
+          {
+            "step": 0,
+            "kind": "tone",
+            "layer": "anchor",
+            "origin": "you",
+            "vel": 0.74,
+            "dur": 0.2875,
+            "expression": 0,
+            "sourceStep": 0,
+            "note": 62
+          },
+          {
+            "step": 2,
+            "kind": "tone",
+            "layer": "anchor",
+            "origin": "you",
+            "vel": 0.74,
+            "dur": 0.62,
+            "expression": 0,
+            "sourceStep": 2,
+            "note": 69
+          }
+        ],
+        "full": [
+          {
+            "step": 0,
+            "kind": "tone",
+            "layer": "anchor",
+            "origin": "you",
+            "vel": 0.74,
+            "dur": 0.2875,
+            "expression": 0,
+            "sourceStep": 0,
+            "note": 62
+          },
+          {
+            "step": 2,
+            "kind": "tone",
+            "layer": "anchor",
+            "origin": "you",
+            "vel": 0.74,
+            "dur": 0.62,
+            "expression": 0,
+            "sourceStep": 2,
+            "note": 69
+          },
+          {
+            "step": 7,
+            "kind": "tone",
+            "layer": "support",
+            "origin": "partner",
+            "vel": 0.288,
+            "dur": 0.32,
+            "expression": 0,
+            "sourceStep": 2,
+            "note": 60
+          },
+          {
+            "step": 9,
+            "kind": "tone",
+            "layer": "echo",
+            "origin": "partner",
+            "vel": 0.384,
+            "dur": 0.32,
+            "expression": 0,
+            "sourceStep": 0,
+            "note": 50
+          },
+          {
+            "step": 11,
+            "kind": "tone",
+            "layer": "echo",
+            "origin": "partner",
+            "vel": 0.384,
+            "dur": 0.32,
+            "expression": 0,
+            "sourceStep": 2,
+            "note": 57
+          },
+          {
+            "step": 13,
+            "kind": "tone",
+            "layer": "support",
+            "origin": "partner",
+            "vel": 0.288,
+            "dur": 0.32,
+            "expression": 0,
+            "sourceStep": 2,
+            "note": 58
+          },
+          {
+            "step": 14,
+            "kind": "tone",
+            "layer": "ending",
+            "origin": "partner",
+            "vel": 0.35200000000000004,
+            "dur": 0.2945,
+            "expression": 0,
+            "sourceStep": 2,
+            "note": 62
+          }
+        ]
+      },
+      "ownSeed": [
+        {
+          "step": 0,
+          "kind": "kick",
+          "vel": 0.74,
+          "dur": 0.22,
+          "origin": "you"
+        },
+        {
+          "step": 2,
+          "kind": "kick",
+          "vel": 0.74,
+          "dur": 0.22,
+          "origin": "you"
+        }
+      ],
+      "clockOriginUs": 1993041117090,
+      "role": "voice",
+      "phrase": 3,
+      "density": 0.5
+    },
+    "C": {
+      "present": true,
+      "loop": true,
+      "volume": 0.65,
+      "clock": "B",
+      "current": {
+        "role": "pulse",
+        "phrase": 1,
+        "density": 0.5,
+        "duration": 2.5,
+        "source": "B",
+        "detached": false,
+        "rootSeed": [
+          {
+            "step": 0,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "origin": "you"
+          },
+          {
+            "step": 2,
+            "kind": "kick",
+            "vel": 0.74,
+            "dur": 0.22,
+            "origin": "you"
+          }
+        ],
+        "foreground": [
+          {
+            "step": 0,
+            "kind": "kick",
+            "layer": "anchor",
+            "origin": "you",
+            "vel": 0.74,
+            "dur": 0.22,
+            "expression": 0,
+            "sourceStep": 0
+          },
+          {
+            "step": 2,
+            "kind": "kick",
+            "layer": "anchor",
+            "origin": "you",
+            "vel": 0.74,
+            "dur": 0.22,
+            "expression": 0,
+            "sourceStep": 2
+          }
+        ],
+        "full": [
+          {
+            "step": 0,
+            "kind": "kick",
+            "layer": "anchor",
+            "origin": "you",
+            "vel": 0.74,
+            "dur": 0.22,
+            "expression": 0,
+            "sourceStep": 0
+          },
+          {
+            "step": 2,
+            "kind": "kick",
+            "layer": "anchor",
+            "origin": "you",
+            "vel": 0.74,
+            "dur": 0.22,
+            "expression": 0,
+            "sourceStep": 2
+          },
+          {
+            "step": 4,
+            "kind": "rim",
+            "layer": "support",
+            "origin": "partner",
+            "vel": 0.42,
+            "dur": 0.09,
+            "expression": 0,
+            "sourceStep": null
+          },
+          {
+            "step": 5,
+            "kind": "hat",
+            "layer": "support",
+            "origin": "partner",
+            "vel": 0.32,
+            "dur": 0.045,
+            "expression": 0,
+            "sourceStep": null
+          },
+          {
+            "step": 6,
+            "kind": "hat",
+            "layer": "support",
+            "origin": "partner",
+            "vel": 0.4,
+            "dur": 0.045,
+            "expression": 0,
+            "sourceStep": null
+          },
+          {
+            "step": 8,
+            "kind": "rim",
+            "layer": "echo",
+            "origin": "partner",
+            "vel": 0.53,
+            "dur": 0.09,
+            "expression": 0,
+            "sourceStep": 0
+          },
+          {
+            "step": 8,
+            "kind": "kick",
+            "layer": "support",
+            "origin": "partner",
+            "vel": 0.46,
+            "dur": 0.22,
+            "expression": 0,
+            "sourceStep": 0
+          },
+          {
+            "step": 10,
+            "kind": "rim",
+            "layer": "echo",
+            "origin": "partner",
+            "vel": 0.47,
+            "dur": 0.09,
+            "expression": 0,
+            "sourceStep": 2
+          },
+          {
+            "step": 12,
+            "kind": "rim",
+            "layer": "ending",
+            "origin": "partner",
+            "vel": 0.49,
+            "dur": 0.09,
+            "expression": 0,
+            "sourceStep": 2
+          }
+        ]
+      },
+      "ownSeed": [
+        {
+          "step": 0,
+          "kind": "kick",
+          "vel": 0.74,
+          "dur": 0.22,
+          "origin": "you"
+        },
+        {
+          "step": 2,
+          "kind": "kick",
+          "vel": 0.74,
+          "dur": 0.22,
+          "origin": "you"
+        }
+      ],
+      "clockOriginUs": 1993041117089,
+      "role": "pulse",
+      "phrase": 1,
+      "density": 0.5
+    }
+  },
+  "limitations": [
+    "PC shared clock, not wireless/acoustic hardware verification"
+  ]
+}

@@ -1,0 +1,190 @@
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_HOME_RENDER mode=worker error=0
+ECHOY_DISPLAY brightness=100 effective=100 ok=1
+ECHOY_HOME_RENDER mode=worker error=0
+ECHOY_DISPLAY brightness=100 effective=100 ok=1
+ECHOY_HOME_RENDER mode=worker error=0
+ECHOY_DISPLAY brightness=100 effective=100 ok=1
+ECHOY_STRIP tile=A mode=record_only at_us=1992898201773 duration_ms=240 reduced_motion=0
+ECHOY_STRIP tile=C mode=record_only at_us=1992898603050 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=A mode=record_only record=1 play=0 single=0 at_us=1992898217259
+ECHOY_STRIP tile=B mode=record_only at_us=1992898406820 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=C mode=record_only record=1 play=0 single=0 at_us=1992898618468
+ECHOY_STRIP_READY tile=B mode=record_only record=1 play=0 single=0 at_us=1992898422309
+ECHOY_ROUTE route=home locale=zh
+ECHOY_LOCALE zh
+ECHOY_STATE phase=0 seed=0000 generation=0 at_us=1992898201773
+ECHOY_PLAN revision=0 role=pulse phrase=1 anchors=0 events=0
+ECHOY_DESK_UI tile=A ready=1
+ECHOY_ROUTE route=home locale=zh
+ECHOY_LOCALE zh
+ECHOY_STATE phase=0 seed=0000 generation=0 at_us=1992898603050
+ECHOY_PLAN revision=0 role=pulse phrase=1 anchors=0 events=0
+ECHOY_DESK_UI tile=C ready=1
+ECHOY_ROUTE route=home locale=zh
+ECHOY_LOCALE zh
+ECHOY_STATE phase=0 seed=0000 generation=0 at_us=1992898406820
+ECHOY_PLAN revision=0 role=pulse phrase=1 anchors=0 events=0
+ECHOY_DESK_UI tile=B ready=1
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_STRIP tile=C mode=pause at_us=1992899591236 duration_ms=240 reduced_motion=0
+ECHOY_STRIP tile=A mode=pause at_us=1992899191243 duration_ms=240 reduced_motion=0
+ECHOY_STRIP tile=B mode=pause at_us=1992899394313 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=C mode=pause record=0 play=0 single=1 at_us=1992899601312
+ECHOY_STATE phase=3 seed=0005 generation=1 at_us=1992899591236
+ECHOY_STRIP_READY tile=A mode=pause record=0 play=0 single=1 at_us=1992899201495
+ECHOY_STATE phase=3 seed=0005 generation=1 at_us=1992899191243
+ECHOY_STRIP_READY tile=B mode=pause record=0 play=0 single=1 at_us=1992899404588
+ECHOY_STATE phase=3 seed=0005 generation=1 at_us=1992899394313
+ECHOY_STATE phase=4 seed=0005 generation=1 at_us=1992899434057
+ECHOY_PLAN revision=1 role=pulse phrase=1 anchors=2 events=9
+ECHOY_STATE phase=4 seed=0005 generation=1 at_us=1992899631924
+ECHOY_PLAN revision=1 role=pulse phrase=1 anchors=2 events=9
+ECHOY_STATE phase=4 seed=0005 generation=1 at_us=1992899231976
+ECHOY_PLAN revision=1 role=pulse phrase=1 anchors=2 events=9
+ECHOY_STRIP tile=A mode=idle at_us=1992901780603 duration_ms=240 reduced_motion=0
+ECHOY_STRIP tile=B mode=idle at_us=1992901980633 duration_ms=240 reduced_motion=0
+ECHOY_STRIP tile=C mode=idle at_us=1992902182437 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=B mode=idle record=1 play=1 single=0 at_us=1992901994929
+ECHOY_STRIP_READY tile=A mode=idle record=1 play=1 single=0 at_us=1992901794942
+ECHOY_STATE phase=0 seed=0005 generation=2 at_us=1992901980633
+ECHOY_STATE phase=0 seed=0005 generation=2 at_us=1992901780603
+ECHOY_STRIP_READY tile=C mode=idle record=1 play=1 single=0 at_us=1992902196588
+ECHOY_STATE phase=0 seed=0005 generation=2 at_us=1992902182437
+ECHOY_ROUTE route=role_page locale=zh
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_STRIP_READY tile=B mode=idle record=0 play=0 single=0 at_us=1992902186619
+ECHOY_STRIP_READY tile=B mode=idle record=1 play=1 single=0 at_us=1992902223572
+ECHOY_PLAN revision=2 role=voice phrase=1 anchors=2 events=9
+ECHOY_GALLERY revision=2
+ECHOY_ROUTE route=home locale=zh
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_STRIP tile=C mode=play_only at_us=1992902605005 duration_ms=240 reduced_motion=0
+ECHOY_STRIP tile=B mode=play_only at_us=1992902406971 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=C mode=play_only record=0 play=1 single=0 at_us=1992902613230
+ECHOY_STRIP_READY tile=B mode=play_only record=0 play=1 single=0 at_us=1992902414520
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_STRIP_READY tile=B mode=play_only record=0 play=0 single=0 at_us=1992902733038
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_STRIP_READY tile=B mode=play_only record=0 play=1 single=0 at_us=1992902932336
+ECHOY_PLAN revision=6 role=voice phrase=1 anchors=2 events=9
+ECHOY_PLAN revision=5 role=pulse phrase=1 anchors=2 events=9
+ECHOY_STRIP tile=A mode=pause at_us=1992905609652 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=A mode=pause record=0 play=0 single=1 at_us=1992905621098
+ECHOY_STATE phase=3 seed=0005 generation=4 at_us=1992905609652
+ECHOY_STATE phase=5 seed=0005 generation=4 at_us=1992905624218
+ECHOY_STRIP tile=B mode=pause at_us=1992905897300 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=B mode=pause record=0 play=0 single=1 at_us=1992905905595
+ECHOY_STATE phase=3 seed=0005 generation=4 at_us=1992905897300
+ECHOY_STATE phase=5 seed=0005 generation=4 at_us=1992905913814
+ECHOY_STRIP tile=C mode=pause at_us=1992906144725 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=C mode=pause record=0 play=0 single=1 at_us=1992906153044
+ECHOY_STATE phase=3 seed=0005 generation=4 at_us=1992906144725
+ECHOY_STATE phase=5 seed=0005 generation=4 at_us=1992906155164
+ECHOY_STRIP tile=B mode=play_only at_us=1992906597709 duration_ms=240 reduced_motion=0
+ECHOY_STRIP tile=C mode=play_only at_us=1992906798113 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=B mode=play_only record=0 play=1 single=0 at_us=1992906606446
+ECHOY_STRIP_READY tile=C mode=play_only record=0 play=1 single=0 at_us=1992906807511
+ECHOY_STATE phase=0 seed=0005 generation=5 at_us=1992906597709
+ECHOY_STATE phase=0 seed=0005 generation=5 at_us=1992906798113
+ECHOY_STRIP tile=A mode=idle at_us=1992906406289 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=A mode=idle record=1 play=1 single=0 at_us=1992906417257
+ECHOY_STATE phase=0 seed=0005 generation=5 at_us=1992906406289
+ECHOY_STRIP tile=B mode=pause at_us=1992907215273 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=B mode=pause record=0 play=0 single=1 at_us=1992907223630
+ECHOY_STATE phase=3 seed=0005 generation=6 at_us=1992907215273
+ECHOY_STATE phase=5 seed=0005 generation=6 at_us=1992907223670
+ECHOY_STRIP tile=A mode=pause at_us=1992907122940 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=A mode=pause record=0 play=0 single=1 at_us=1992907134359
+ECHOY_STATE phase=3 seed=0005 generation=6 at_us=1992907122940
+ECHOY_STATE phase=5 seed=0005 generation=6 at_us=1992907134379
+ECHOY_STRIP tile=C mode=pause at_us=1992907569296 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=C mode=pause record=0 play=0 single=1 at_us=1992907577536
+ECHOY_STATE phase=3 seed=0005 generation=6 at_us=1992907569296
+ECHOY_STATE phase=5 seed=0005 generation=6 at_us=1992907581718
+ECHOY_STRIP tile=B mode=play_only at_us=1992908025169 duration_ms=240 reduced_motion=0
+ECHOY_STRIP tile=C mode=play_only at_us=1992908223951 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=B mode=play_only record=0 play=1 single=0 at_us=1992908033084
+ECHOY_STRIP_READY tile=C mode=play_only record=0 play=1 single=0 at_us=1992908233189
+ECHOY_STATE phase=0 seed=0005 generation=7 at_us=1992908025169
+ECHOY_STATE phase=0 seed=0005 generation=7 at_us=1992908223951
+ECHOY_STRIP tile=A mode=idle at_us=1992907836695 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=A mode=idle record=1 play=1 single=0 at_us=1992907848596
+ECHOY_STATE phase=0 seed=0005 generation=7 at_us=1992907836695
+ECHOY_STRIP tile=C mode=pause at_us=1992908921055 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=C mode=pause record=0 play=0 single=1 at_us=1992908929191
+ECHOY_STATE phase=3 seed=0005 generation=8 at_us=1992908921055
+ECHOY_STATE phase=5 seed=0005 generation=8 at_us=1992908929214
+ECHOY_STRIP tile=A mode=pause at_us=1992908628074 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=A mode=pause record=0 play=0 single=1 at_us=1992908639433
+ECHOY_STATE phase=3 seed=0005 generation=8 at_us=1992908628074
+ECHOY_STATE phase=5 seed=0005 generation=8 at_us=1992908639451
+ECHOY_STRIP tile=B mode=pause at_us=1992908874623 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=B mode=pause record=0 play=0 single=1 at_us=1992908882831
+ECHOY_STATE phase=3 seed=0005 generation=8 at_us=1992908874623
+ECHOY_STATE phase=5 seed=0005 generation=8 at_us=1992908888018
+ECHOY_ROUTE route=role_page locale=zh
+ECHOY_GALLERY revision=6
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_GALLERY revision=7
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_PLAN revision=6 role=pulse phrase=1 anchors=2 events=9
+ECHOY_PLAN revision=7 role=voice phrase=3 anchors=2 events=7
+ECHOY_ROUTE route=home locale=zh
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_PLAN revision=10 role=voice phrase=3 anchors=2 events=7
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_PLAN revision=9 role=pulse phrase=1 anchors=2 events=9
+ECHOY_STRIP tile=A mode=idle at_us=1992916338168 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=A mode=idle record=1 play=1 single=0 at_us=1992916349179
+ECHOY_STATE phase=0 seed=0005 generation=9 at_us=1992916338168
+ECHOY_STRIP tile=C mode=idle at_us=1992916747821 duration_ms=240 reduced_motion=0
+ECHOY_STRIP tile=B mode=idle at_us=1992916548216 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=C mode=idle record=1 play=1 single=0 at_us=1992916758742
+ECHOY_STRIP_READY tile=B mode=idle record=1 play=1 single=0 at_us=1992916559238
+ECHOY_STATE phase=0 seed=0005 generation=9 at_us=1992916747821
+ECHOY_STATE phase=0 seed=0005 generation=9 at_us=1992916548216
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_STRIP tile=C mode=play_only at_us=1992917430672 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=C mode=play_only record=0 play=1 single=0 at_us=1992917439128
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_STRIP_READY tile=C mode=play_only record=0 play=0 single=0 at_us=1992917754435
+ECHOY_STRIP_READY tile=C mode=play_only record=0 play=1 single=0 at_us=1992917854679
+ECHOY_PLAN revision=13 role=pulse phrase=1 anchors=2 events=9
+ECHOY_STRIP tile=B mode=cancel at_us=1992918960040 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=B mode=cancel record=0 play=0 single=1 at_us=1992918976761
+ECHOY_STATE phase=1 seed=0005 generation=10 at_us=1992918960040
+ECHOY_STATE phase=2 seed=0005 generation=10 at_us=1992922024324
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_STRIP tile=B mode=pause at_us=1992924534340 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=B mode=pause record=0 play=0 single=1 at_us=1992924545414
+ECHOY_STATE phase=3 seed=0001 generation=10 at_us=1992924534340
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_STRIP_READY tile=C mode=play_only record=0 play=0 single=0 at_us=1992924769938
+ECHOY_STRIP_READY tile=C mode=play_only record=0 play=1 single=0 at_us=1992924849019
+ECHOY_PLAN revision=14 role=pulse phrase=1 anchors=1 events=8
+ECHOY_STATE phase=4 seed=0001 generation=10 at_us=1992926278448
+ECHOY_PLAN revision=11 role=voice phrase=3 anchors=1 events=6
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_STRIP tile=B mode=play_only at_us=1992928824645 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=B mode=play_only record=0 play=1 single=0 at_us=1992928834404
+ECHOY_STATE phase=0 seed=0001 generation=11 at_us=1992928824645
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_STRIP_READY tile=B mode=play_only record=0 play=0 single=0 at_us=1992928888120
+ECHOY_AUDIO_PREPARED accepted=1
+ECHOY_STRIP_READY tile=C mode=play_only record=0 play=0 single=0 at_us=1992929143994
+ECHOY_STRIP_READY tile=B mode=play_only record=0 play=1 single=0 at_us=1992928947251
+ECHOY_STRIP_READY tile=C mode=play_only record=0 play=1 single=0 at_us=1992929163010
+ECHOY_PLAN revision=15 role=voice phrase=3 anchors=2 events=7
+ECHOY_PLAN revision=15 role=pulse phrase=1 anchors=2 events=9
+ECHOY_DESK_UI tile=B closed=1
+ECHOY_DESK_UI tile=A closed=1
+ECHOY_DESK_UI tile=C closed=1
+ECHOY_DESK_CLOSED error=0 samples=0 late_blocks=0

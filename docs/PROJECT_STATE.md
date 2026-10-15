@@ -797,9 +797,9 @@ peer per board; its middle device cannot yet act as both upstream receiver and
 downstream sender. Replacement third-device identity and baseline installation are verified below.
 The user confirmed horizontal-only, same-orientation A—B—C support, including
 independent devices and arbitrary pairs. No vertical, L-shaped or rotated scope.
-No three-device implementation has occurred. The original third-device baseline
-installation is recorded below; preserve the accepted two-device behavior and
-sound while designing/validating the three-device extension.
+At this preservation point the physical adapter was still dual-only. The
+original third-device baseline installation is recorded below; the subsequent
+three-device implementation/status is in the replacement section.
 
 Third-device baseline installation: the user explicitly approved reviewed
 Recovery 0.1.4 plus accepted Echoy `2b984e511b98` and freshly confirmed separated
@@ -885,16 +885,42 @@ is retained, the first cycle may be shortened, and unchanged instruments also
 align at that boundary. Local owner support now has an explicit v3-only fixed-boundary flag, retained-current
 Play while a replacement is pending, exact in-block activation of unchanged banks,
 and release when a middle follower becomes the root of its remaining suffix.
-The new portable three-owner coordinator is under host verification; it is not
-yet wired into the physical adapter or native GSP harness. All six ID orders and
-both attachment orders pass the initial independent real band/PCM scenarios;
-loss/recovery and remaining release gates are still in progress. The existing
-26 transaction, 24 deferred, band, linked-clock, strip and 51 runtime regressions
-pass after the owner changes. Current firmware is still
-the accepted two-device implementation. The completed replacement baseline
-installation is not blanket permission for future replacement-device writes.
-The saved tag/package/sound baseline remain intact. Old-target diagnostic
-`2cfd9f7c2bbd` remains archived and uninstalled.
+The portable v3 coordinator is now integrated with the physical adapter's two
+independent seams and a separate official native GSP harness. All 23 normal
+command groups and eight ASan/UBSan/LeakSanitizer groups pass, including all six
+physical ID orders/both joins, actual independent PCM, original dual regressions
+and 51 runtime cases. Review-driven failing regressions cover superseded upstream
+exports, cached owner epochs, stale clock ACKs, capture after ARM and bounded
+recovery. Official independent native GSP passes in normal/reduced motion (seven groups
+each, zero late blocks/clipping and exact paused silence); the ordinary native
+reference desk also passes all 13 checks. The pinned SDK build and package layout
+inspection pass. Immutable candidate `7c6e37e7be4d`, ELF
+`33acbd2b0cbde1b6948af3ce6136f7aa546fd8a1a6938dc4c87d051467ee9016`,
+is saved from source `f324cd9` (owner foundation `6ff0f00`). Its 2,125,136-byte
+application fits retained `ota_0`; partition table/UI data match accepted bytes,
+and no Recovery/bootloader component is packaged. See
+`verification/three-device-horizontal/README.md` for exact commands and limits.
+
+After all local gates, the user explicitly approved exact `7c6e37e7be4d` on
+replacement f45936 and freshly confirmed all three separated >=15 cm on a
+nonmetal surface. One official application update per device succeeded with
+HEALTHY/validated and commit-response evidence. New boots, in identity order
+f452a0/f40c6c/f45936: `341890509691260521` / `11306869005132987366` /
+`3417849056774182729`. All run the candidate ELF, retain their bootloaders,
+Recovery and partition/UI components, show real Record-only homes, and pass
+current-boot magnetic calibration. At 189.5/119.1/48.3 seconds all app crash,
+clipping, partial-write, write-error and deadline-miss counters are zero; startup
+PCM remains silent. Detailed operations/traces/screens:
+`verification/three-device-horizontal/device-results.json`.
+
+Original Recovery 0.1.2 startup watchdog resets recurred before the two stable
+ready boots; metadata is preserved, no valid Core Dump. New Echoy boots have zero
+crashes; replacement Recovery 0.1.4 had zero crashes. This retained issue is not
+fixed by the app. Three-board joined interaction/listening, measured acoustic
+phase/drift and sustained RF/load remain unaccepted; use the physical checklist
+in the verification directory. The saved accepted dual tag/package and sound
+remain intact. Completed replacement installation is not blanket future write
+permission. Old-target diagnostic `2cfd9f7c2bbd` remains archived and uninstalled.
 
 ### Dual-device basic physical flow accepted (2026-10-12)
 

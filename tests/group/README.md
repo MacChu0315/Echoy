@@ -1,7 +1,6 @@
 # Horizontal group verification
 
-The v3 group and both-seam firmware adapter are implemented locally; the new
-firmware is not installed on hardware. Use the delivery record in
+The v3 group and both-seam firmware adapter are implemented. Use the delivery record in
 `docs/verification/three-device-horizontal/` for the verified candidate/status.
 `run_owner.sh` tests the actual band and PCM at an immutable, in-block boundary:
 old current phrase starts promptly after ARM, both changed and unchanged banks

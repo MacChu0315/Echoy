@@ -2,7 +2,9 @@
 
 Status: approved by the user on 2026-10-15, including first Play during a
 locked update and common boundary alignment for unchanged instruments.
-Implementation is in progress; three-device firmware has not been installed.
+Local release gates pass and the exact candidate is installed/HEALTHY on all
+three active devices. Physical three-board acceptance remains pending.
+Exact candidate/status: `../verification/three-device-horizontal/`.
 
 ## Scope and retained baseline
 

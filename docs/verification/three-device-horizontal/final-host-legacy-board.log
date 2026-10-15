@@ -1,0 +1,7 @@
+board_link: v2 proposed-plan/common-bar commit; deferred and paused peers; owner acknowledgements; stale/CRC/retry; revision supersession; partitions/timeouts; physical contact and checked stop pass
+transport-window: serial=1 reorder=0 lost=0 legacy=0 bytes=693 elapsed_us=2000000 in_flight=1 chunks=1
+transport-window: serial=0 reorder=1 lost=0 legacy=0 bytes=693 elapsed_us=900000 in_flight=3 chunks=2
+transport-window: serial=0 reorder=1 lost=1 legacy=0 bytes=693 elapsed_us=5550000 in_flight=3 chunks=2
+transport-window: serial=0 reorder=1 lost=1 legacy=1 bytes=693 elapsed_us=4850000 in_flight=3 chunks=2
+PASS control priority, bounded slots, stale ACKs across retries/rejoin/timeouts and offset coverage
+PASS two-chunk window improves delayed-dispatch throughput with reordering, duplicate and missing-fragment repair

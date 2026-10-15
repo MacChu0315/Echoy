@@ -1,0 +1,10 @@
+{
+  "environment": {},
+  "exit_code": 0,
+  "duration_ms": 110000,
+  "checks": 7,
+  "pcm_frames": 2640240,
+  "late_blocks": 0,
+  "clipped": 0,
+  "paused_nonzero": 0
+}

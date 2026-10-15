@@ -1,0 +1,6 @@
+I (gsp_deployable): Opened deployable GSPB: scenes=1 content=0xafe97d42
+2026-10-15T03:51:39.755171Z  INFO application backend TCP endpoint listening endpoint=127.0.0.1:40569
+2026-10-15T03:51:39.755226Z  INFO application backend endpoint listening endpoint="tcp://127.0.0.1:40569"
+2026-10-15T03:51:39.755255Z  INFO API control TCP endpoint listening endpoint=127.0.0.1:8267
+2026-10-15T03:51:39.755280Z  INFO API control channel active (Content-Length framed JSON-RPC 2.0) endpoint="tcp://127.0.0.1:0"
+2026-10-15T03:53:30.131443Z  INFO session complete frames=104188 elapsed_ms=110376 fps=943.9362779917534

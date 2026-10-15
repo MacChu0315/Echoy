@@ -34,8 +34,12 @@
   identity/artifact, retain Recovery and use the official workflow; USB port
   names may change. This is not authorization for remote repository writes.
 - Product capacity target: at most three Mosaicos in the same scene, restricted
-  to same-orientation horizontal chains. Physical three-board support is not yet
-  implemented; preserve the accepted dual-device baseline during the extension.
+  to same-orientation horizontal chains. The v3 physical adapter and independent
+  group owners are implemented locally; device delivery/physical acceptance is
+  tracked in the project state. Preserve the accepted dual-device rollback.
+  V2/v3 mixtures must not establish cooperative following; use one verified v3
+  package for all members. First Play remains prompt during a locked update;
+  keep its boundary fixed and align unchanged banks there as well.
 - Physical linking uses the pinned BSP's magnetic classifier and ESP-NOW network.
   Start radio/RF initialization before audio activation; network and sensor I/O
   stay off the audio owner. Keep boards separated on a nonmetal surface during

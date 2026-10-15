@@ -1,0 +1,4 @@
+PASS: 864 linked plans and 1552 state transitions match unchanged ArrangeLinked/ArrangeModel JavaScript.
+PASS: chain validation, cleaned seeds, role memories, staged revisions, stale/cancelled jobs, edge-only commits, pitches/support relocation, exact detach, independent loop permission, clock preservation and randomized reordering.
+PASS (ASan/UBSan): 864 linked plans and 1552 state transitions match unchanged ArrangeLinked/ArrangeModel JavaScript.
+PASS: chain validation, cleaned seeds, role memories, staged revisions, stale/cancelled jobs, edge-only commits, pitches/support relocation, exact detach, independent loop permission, clock preservation and randomized reordering.

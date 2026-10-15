@@ -1,0 +1,8 @@
+{
+  "device_id": "4553502d49524953010030eda0f40c6c",
+  "boot_id": 3247415318268410286,
+  "app_version": "0.1.2",
+  "firmware_sha256": "54f72372a819e6708e859e79cfe2540e51653e5d8ac1c143a357419e43039b22",
+  "crash_count": 1,
+  "endpoint": "usb:location=1-8.2:1.0"
+}

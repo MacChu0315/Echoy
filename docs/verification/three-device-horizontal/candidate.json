@@ -1,0 +1,85 @@
+{
+  "source_commit": "f324cd941d31c56849ba627eea58bda6493bb562",
+  "source_hashes": "source-hashes.json",
+  "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/three-device/echoy-horizontal-v3-7c6e37e7be4d.irisfw",
+  "package_sha256": "7c6e37e7be4dea0d46e18f574b3e817ffe8e3d20d56606def5f49e435605d8b0",
+  "package_bytes": 1463880,
+  "firmware": {
+    "sha256": "e183da20ec8b9a340cfadaa8170d5bee9a74f173bbac4e5683a9c9196ba937c7",
+    "size": 2125136,
+    "chip_id": 32,
+    "project_name": "echoy",
+    "version": "1.0.0",
+    "elf_sha256": "33acbd2b0cbde1b6948af3ce6136f7aa546fd8a1a6938dc4c87d051467ee9016"
+  },
+  "bundle": {
+    "schema": "esp-iris-system-update/v1",
+    "manifest_sha256": "299128bcc1d37b0245adf3f8ced4935246305c91f78e47e4e5affc8419a33eab",
+    "key_id": null,
+    "chip_id": 32,
+    "flash_size": 16777216,
+    "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+    "components": [
+      {
+        "id": 1,
+        "kind": "partition_table",
+        "flags": 0,
+        "target_offset": 32768,
+        "size": 4096,
+        "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+        "file": "partition-table.bin"
+      },
+      {
+        "id": 2,
+        "kind": "application",
+        "flags": 0,
+        "target_offset": 2162688,
+        "size": 2125136,
+        "sha256": "e183da20ec8b9a340cfadaa8170d5bee9a74f173bbac4e5683a9c9196ba937c7",
+        "file": "ota_0.bin"
+      },
+      {
+        "id": 3,
+        "kind": "data",
+        "flags": 0,
+        "target_offset": 15728640,
+        "size": 377872,
+        "sha256": "e984f71018a6dd24baa4cd988f3815fc8edbb24c809b87fddc78d0f54edf31d7",
+        "file": "ui_apps.bin"
+      }
+    ],
+    "signature_verified": false,
+    "release": "1.0.0",
+    "minimum_recovery_version": "0.1"
+  },
+  "build_directory": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-three-chain-build",
+  "build_command": "python3 output/three-device-20261015/build_firmware.py",
+  "build_result": ".codex-runs/idf-low-noise-build/20261015-115655-system-update-bundle-2/result.json",
+  "sdkconfig_sha256": "70220c2212aa90ec8e4faa86a6db329ebab212fadf6a00db34fe914010c934e8",
+  "elf_file_sha256": "33acbd2b0cbde1b6948af3ce6136f7aa546fd8a1a6938dc4c87d051467ee9016",
+  "accepted_baseline_package": "2b984e511b9837c34a37d818fb15d0335e67c9a4f4e4b88b203c790eb6af1727",
+  "preservation": {
+    "accepted_audio_ui_defaults_and_frozen_checksums": true,
+    "partition_table_and_ui_data_identical": true,
+    "office_voicing": true,
+    "microphone_reference_and_magnetic_diagnostics": false,
+    "recovery_or_bootloader_components": false
+  },
+  "fit": {
+    "ota_bytes": 13565952,
+    "app_bytes": 2125136,
+    "free_bytes": 11440816,
+    "factory_size_warning": "Expected: retained factory is not the application update destination."
+  },
+  "status": "Installed/HEALTHY/validated with current-boot magnetic calibration and normal home on all three active devices; physical three-board functional/listening acceptance pending.",
+  "idf_arguments": [
+    "-DSDKCONFIG_DEFAULTS=sdkconfig.defaults;sdkconfig.application.defaults;sdkconfig.office-voicing-trial.defaults",
+    "-DSDKCONFIG=/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-three-chain-build/sdkconfig",
+    "-DESP_IRIS_PYTHON=/home/zhuzhengming/.local/state/esp-mosaico/runtimes/esp-iris/07c754d5785b861b/py3.10/bin/python",
+    "-DGSPC_EXECUTABLE=/home/zhuzhengming/esp/ts/Mosaico/.toolchains/gspc-0.6.1/gspc",
+    "-B",
+    "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-three-chain-build",
+    "system-update-bundle"
+  ],
+  "authorization": "On 2026-10-15 the user explicitly approved installing exact 7c6e37e7be4d on replacement f45936 and confirmed all three separated >=15 cm on a nonmetal surface. Original two standing authorization remains valid."
+}
