@@ -65,6 +65,9 @@ The user requests restarting acceptance from startup and confirms all three
 separated. Official planned restarts and independent-start checks pass on all three:
 no contact events, no baseline capture, empty Record-only screens, SOLO owners,
 zero output errors and crashes (startup-checks.json). These are software restarts,
-not physical power-cycle tests. Independent A recording is now requested;
-pair/chain and ABC→BCA transition checks follow. Do not declare
+not physical power-cycle tests. Independent A recording, A—B silent following with C separate, and A—B—C
+silent following all pass user checks and read-only owner verification. All
+three keep the same software-restart Boots. The original ABC→BCA transition
+is requested next; no result yet. The early test05 capture was taken before
+physical movement and still shows ABC; it must not count as a BCA result. Do not declare
 all physical three-device behavior accepted from the current BCA report.

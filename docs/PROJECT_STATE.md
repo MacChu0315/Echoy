@@ -1048,9 +1048,11 @@ The user asks to restart testing from startup and confirms all three separated.
 Official planned software restarts and independent-start checks pass: boots
 16946015599629738310 / 14630519438785164093 / 14949665561685451233,
 all SOLO/empty/paused, no contact events, baseline capture, output errors or
-crashes. Physical power cycles were not performed. The next user step is
-recording on separated original A (previous BCA rightmost), with B/C staying
-empty; then pair/chain establishment and original ABC→BCA rearrangement. Separation
+crashes. Physical power cycles were not performed. Independent A recording, A—B with C separate, and A—B—C silent following
+then pass user checks plus read-only owner verification on these same boots.
+Current pending test 5: leave B—C joined, detach left A for three seconds and
+reattach A at the right, yielding B—C—A; wait 35 seconds, verify C/A following
+and B root with phrases retained and no implicit playback. No result yet. Separation
 is a test condition here, not calibration. Evidence:
 `verification/horizontal-seam-fix/`; live scripts/results:
 `output/horizontal-seam-fix-20261015/`.

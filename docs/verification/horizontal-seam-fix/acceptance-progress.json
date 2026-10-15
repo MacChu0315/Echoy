@@ -1,0 +1,32 @@
+{
+  "package": "f9b87dd4d4d7",
+  "passed": [
+    {
+      "item": 1,
+      "name": "Independent separated startup",
+      "evidence": "startup-separated, separated-after-restart",
+      "agent_verified": true
+    },
+    {
+      "item": 2,
+      "name": "Independent A recording and one-shot reply",
+      "evidence": "test02-solo-record",
+      "user_report": "\u901a\u8fc7",
+      "agent_verified": "A committed 11 events from four taps; B/C empty; all solo and paused, no output errors"
+    },
+    {
+      "item": 3,
+      "evidence": "test03-pair-ab",
+      "user_report": "\u901a\u8fc7",
+      "agent_verified": true
+    },
+    {
+      "item": 4,
+      "evidence": "test04-chain-abc",
+      "user_report": "\u901a\u8fc7",
+      "agent_verified": true
+    }
+  ],
+  "pending_item": 5,
+  "pending_action": "User moves A from ABC left to BCA right, without restart; both C/A should follow B"
+}
