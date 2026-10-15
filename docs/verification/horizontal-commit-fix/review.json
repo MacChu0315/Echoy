@@ -1,0 +1,9 @@
+{
+  "scope": "Read-only independent review of ACK/relay rotation, hop-aware pre-ARM lead and captured-source pressure test",
+  "open_important_or_critical": [],
+  "independent_commands": [
+    "sh tests/horizontal_radio/run.sh",
+    "sh tests/group/run_commit_pressure.sh"
+  ],
+  "result": "Both pass; hardware RF and physical acceptance remain separate"
+}

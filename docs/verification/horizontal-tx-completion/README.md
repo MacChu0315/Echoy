@@ -51,12 +51,9 @@ submit-failure counters remain0; app retries and relay/ACK drops still occur.
 C has7 cumulative MAC failures across rolling updates. No application crashes,
 but zero-loss/sustained-RF or acoustic timing acceptance is not claimed.
 
-Current user step awaiting result: keep B—C joined, move current rightmost
-original A to the far left to form A—B—C, record on A, wait until the one-shot
-reply finishes and hold35s. B/C must follow silently. Then perform the original
-fast A-to-right move to B—C—A. The latest user message asked for status; it did
-not answer this test. Do not mark test5 passed. Subsequent physical permutations,
-detach retention and joined-start checks remain open. No further installation
-permission or startup calibration question is required.
-Evidence: verification/horizontal-tx-completion/; helpers/live results:
-output/horizontal-tx-completion-20261015/.
+The user subsequently saw B/C following quietly, but later same-boot official
+snapshots showed both recovering and C preparation_failed. This step is not a
+stable pass. Correct ABC neighbors and zero raw submit errors isolate the next
+investigation to phrase commit under transport pressure. The role-selection
+order is unknown; both orders are covered by the follow-up.
+See ../horizontal-commit-fix/ for current work and acceptance boundaries.

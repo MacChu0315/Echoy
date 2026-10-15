@@ -29,6 +29,21 @@ void echoy_group_delivery(echoy_group_t *group,uint64_t destination,uint16_t ser
 void echoy_group_stamp_send(echoy_group_t *group,uint8_t *bytes,size_t size,int64_t now);
 void echoy_group_tick(echoy_group_t *group,int64_t now);
 
+typedef enum {
+    ECHOY_GROUP_FAULT_NONE=0,ECHOY_GROUP_FAULT_TOPOLOGY,
+    ECHOY_GROUP_FAULT_RADIO,ECHOY_GROUP_FAULT_ENCODE,ECHOY_GROUP_FAULT_SILENCE,
+    ECHOY_GROUP_FAULT_DEADLINE,ECHOY_GROUP_FAULT_GUARD,ECHOY_GROUP_FAULT_OWNER,
+    ECHOY_GROUP_FAULT_PEER,ECHOY_GROUP_FAULT_ABORT
+} echoy_group_fault_reason_t;
+typedef struct {
+    unsigned reason,phase,rank,clock_samples;
+    uint32_t identity,attempt,offered,armed,authorized,committed,failed;
+    uint64_t members[3],requested_revision,bound_revision;
+    uint8_t flags[3];
+    bool mapped,owner_current,offer_ready,offer_failed;
+    int64_t when_us,activation_us,deadline_us,local_deadline_us,root_offset_us,clock_rtt_us;
+} echoy_group_fault_t;
+
 /* Copied worker diagnostics for the external native desk / device evidence;
  * these never grant musical permission or appear on the 480x480 interface. */
 typedef struct {
@@ -37,5 +52,8 @@ typedef struct {
     unsigned count,rank,phase,operations;
     bool clock_mapped;
     int64_t root_offset_us,origin_us,boundary_us,deadline_us;
+    int64_t activation_us,clock_rtt_us;
+    unsigned clock_samples;
+    echoy_group_fault_t fault;
 } echoy_group_info_t;
 bool echoy_group_info(const echoy_group_t *group,echoy_group_info_t *out);

@@ -30,7 +30,7 @@ struct echoy_radio {
     uint32_t sequence,challenge,data_sequence;
     uint64_t candidate,graph,members[3],edges[2];
     uint32_t sessions[2];
-    unsigned count,rank,own_cursor,relay_cursor;
+    unsigned count,rank,own_cursor,relay_cursor,ack_cursor,kind_cursor;
     bool ready,admitted,scene_fresh,overflow,lost;
     int64_t next_advertise,next_wire;
     pending_t own[OWN],relay[RELAY],acks[ACKS];
@@ -247,11 +247,22 @@ void echoy_radio_tick(echoy_radio_t *r,int64_t now){
  for(unsigned i=1;i<r->known;i++)if(r->peers[i].reply_challenge){peer_t *p=&r->peers[i];uint8_t frame[88];header(frame,PROOF);w32(frame+8,r->peers[0].value.boot);w32(frame+12,p->reply_boot);w32(frame+16,p->reply_challenge);if(transmit(r,p->value.id,frame,20,now))p->reply_challenge=0;return;}
  if(now>=r->next_advertise){uint8_t frame[88];advertisement(r,frame);if(transmit(r,0,frame,24+20*r->known,now))r->next_advertise=now+INTERVAL;return;}
  for(unsigned i=1;i<r->known;i++){peer_t *p=&r->peers[i];if(p->pending_boot && now>=p->next_probe){uint8_t frame[88];header(frame,PROBE);w32(frame+8,r->peers[0].value.boot);w32(frame+12,p->pending_boot);w32(frame+16,p->challenge);transmit(r,p->value.id,frame,20,now);p->next_probe=now+RETRY;return;}}
- for(unsigned i=0;i<ACKS;i++)if(r->acks[i].used){pending_t *p=&r->acks[i];if(now-p->created>=EXPIRE){p->used=false;continue;}if(transmit(r,p->next_hop,p->frame,p->size,now))p->used=false;return;}
- /* Alternate forwarded and local work so the middle cannot starve its owner. */
+ for(unsigned j=0;j<ACKS;j++){
+  unsigned i=(r->ack_cursor+j)%ACKS;pending_t *p=&r->acks[i];if(!p->used)continue;
+  if(now-p->created>=EXPIRE){p->used=false;continue;}
+  if(transmit(r,p->next_hop,p->frame,p->size,now))p->used=false;
+  r->ack_cursor=(i+1)%ACKS;return;
+ }
+ /* Rotate within each queue as well as between forwarded/local work. A
+  * newly reused low slot must not repeatedly overtake an older higher slot. */
  for(unsigned pass=0;pass<2;pass++){
-  bool forwarding=(r->relay_cursor++&1u)==0;
-  if(forwarding){for(unsigned i=0;i<RELAY;i++)if(r->relay[i].used){pending_t *p=&r->relay[i];if(now-p->created>=EXPIRE){p->used=false;continue;}if(transmit(r,p->next_hop,p->frame,p->size,now))p->used=false;return;}}
+  bool forwarding=(r->kind_cursor++&1u)==0;
+  if(forwarding){for(unsigned j=0;j<RELAY;j++){
+   unsigned i=(r->relay_cursor+j)%RELAY;pending_t *p=&r->relay[i];if(!p->used)continue;
+   if(now-p->created>=EXPIRE){p->used=false;continue;}
+   if(transmit(r,p->next_hop,p->frame,p->size,now))p->used=false;
+   r->relay_cursor=(i+1)%RELAY;return;
+  }}
   else for(unsigned j=0;j<OWN;j++){unsigned i=(r->own_cursor+j)%OWN;pending_t *p=&r->own[i];if(p->used&&now>=p->due){if(p->attempts)r->stats.retries++;p->attempts++;p->due=now+RETRY;
    if(!p->stamped && r->cb.stamp)r->cb.stamp(r->cb.ctx,p->frame+24,p->size-24,now);
    if(transmit(r,p->next_hop,p->frame,p->size,now))p->stamped=true;

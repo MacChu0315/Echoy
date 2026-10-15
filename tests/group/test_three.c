@@ -599,6 +599,9 @@ static void boot_clock_offsets(void)
             advance(physical+10000000);
         }
         assert(echoy_group_info(nodes[1].group,&info) && !info.clock_mapped && info.phase==6);
+        assert(info.fault.reason==ECHOY_GROUP_FAULT_DEADLINE && !info.fault.mapped);
+        assert(info.fault.attempt==info.attempt && info.fault.identity==info.identity);
+        assert(info.fault.phase==1 && info.fault.rank==1 && info.fault.when_us>0);
         assert(nodes[1].state.cooperation==ECHOY_COOP_RECOVERING && !nodes[1].state.state.continuous);
         destroy_nodes();
     }

@@ -281,6 +281,23 @@ static void radio_stats(board_link_t *h,int64_t now)
         atomic_load_explicit(&radio_completed,memory_order_relaxed),
         atomic_load_explicit(&radio_mac_failed,memory_order_relaxed),
         atomic_load_explicit(&radio_inflight,memory_order_acquire)?1u:0u,info.peers[0],info.peers[1],info.graph);
+    echoy_group_info_t group={0};echoy_group_info(h->group,&group);
+    ESP_LOGI(TAG,"ECHOY_GROUP id=%08" PRIx32 " tx=%" PRIu32 " phase=%u count=%u rank=%u map=%u rtt=%" PRId64 " samples=%u at=%" PRId64 " dl=%" PRId64 " offset=%" PRId64,
+        group.identity,group.attempt,group.phase,group.count,group.rank,group.clock_mapped?1u:0u,
+        group.clock_rtt_us,group.clock_samples,group.activation_us,group.deadline_us,group.root_offset_us);
+    const echoy_group_fault_t *f=&group.fault;
+    if(f->reason) {
+        ESP_LOGI(TAG,"ECHOY_FAULT reason=%u id=%08" PRIx32 " tx=%" PRIu32 " phase=%u rank=%u map=%u samples=%u rtt=%" PRId64 " flags=%02x/%02x/%02x",
+            f->reason,f->identity,f->attempt,f->phase,f->rank,f->mapped?1u:0u,f->clock_samples,f->clock_rtt_us,
+            (unsigned)f->flags[0],(unsigned)f->flags[1],(unsigned)f->flags[2]);
+        ESP_LOGI(TAG,"ECHOY_FAULT_TIME tx=%" PRIu32 " when=%" PRId64 " at=%" PRId64 " deadline=%" PRId64 " local=%" PRId64 " offset=%" PRId64,
+            f->attempt,f->when_us,f->activation_us,f->deadline_us,f->local_deadline_us,f->root_offset_us);
+        ESP_LOGI(TAG,"ECHOY_FAULT_OWNER tx=%" PRIu32 " cur=%u rev=%" PRIu64 " bind=%" PRIu64 " offer=%" PRIu32 "/%u/%u arm=%" PRIu32 " auth=%" PRIu32 " commit=%" PRIu32 " failed=%" PRIu32,
+            f->attempt,f->owner_current?1u:0u,f->requested_revision,f->bound_revision,f->offered,
+            f->offer_ready?1u:0u,f->offer_failed?1u:0u,f->armed,f->authorized,f->committed,f->failed);
+        ESP_LOGI(TAG,"ECHOY_FAULT_MEM tx=%" PRIu32 " ids=%012" PRIx64 "/%012" PRIx64 "/%012" PRIx64,
+            f->attempt,f->members[0],f->members[1],f->members[2]);
+    }
 }
 static void worker(void *arg)
 {

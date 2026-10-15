@@ -60,7 +60,9 @@ struct echoy_group {
     echoy_link_view_t view;
     echoy_link_update_t update;
     echoy_plan_t incoming;
+    echoy_group_fault_t fault;
 };
+static uint8_t flags(const echoy_group_t *g);
 static uint16_t r16(const uint8_t *p) { return (uint16_t)p[0] | (uint16_t)p[1]<<8; }
 static uint32_t r32(const uint8_t *p) { return (uint32_t)r16(p) | (uint32_t)r16(p+2)<<16; }
 static uint64_t r64(const uint8_t *p) { return (uint64_t)r32(p) | (uint64_t)r32(p+4)<<32; }
@@ -142,9 +144,25 @@ static void reset_attempt(echoy_group_t *g,uint32_t attempt,int64_t deadline,int
     }
     g->update.valid=false; command(g,ECHOY_LINK_NONE,0);
 }
-static void broken(echoy_group_t *g)
+static void broken(echoy_group_t *g,echoy_group_fault_reason_t reason,int64_t now)
 {
     if (g->phase==BROKEN) return;
+    /* Preserve the first failure of an attempt before ABORT changes owner state.
+     * Diagnostics do not alter any deadline, retry, permission or transaction. */
+    g->fault=(echoy_group_fault_t){.reason=reason,.phase=g->phase,.rank=g->rank,
+        .identity=g->identity,.attempt=g->attempt,.mapped=g->mapped,
+        .when_us=now,.activation_us=g->at,.deadline_us=g->deadline,
+        .local_deadline_us=g->unmapped_deadline,.root_offset_us=g->root_offset,
+        .clock_rtt_us=g->neighbor_clock.best_rtt,.clock_samples=g->neighbor_clock.samples,
+        .owner_current=owner_current(g),.requested_revision=g->view.requested_revision,
+        .bound_revision=g->local_revision,.offered=g->view.offered_transaction,
+        .offer_ready=g->view.offer_ready,.offer_failed=g->view.offer_failed,
+        .armed=g->view.armed_transaction,.authorized=g->view.authorized_transaction,
+        .committed=g->view.committed_transaction,.failed=g->view.failed_transaction};
+    for(unsigned i=0;i<g->count;i++){
+        g->fault.members[i]=g->members[i].id;g->fault.flags[i]=g->members[i].flags;
+    }
+    g->fault.flags[g->rank]=flags(g);
     TRACE("BROKEN self=%llu attempt=%u phase=%u at=%lld\n",(unsigned long long)g->self,g->attempt,g->phase,(long long)g->at);
     g->phase=BROKEN; g->next_state=0;
     if (g->rank) { g->neighbor_clock.valid=false; g->neighbor_clock.samples=0; g->next_ping=0; }
@@ -161,7 +179,7 @@ static void topology(echoy_group_t *g,int64_t now)
         root=le->root; boot=le->root_boot;
         if (!root || !boot) return;
         if (le->flags&2u) {
-            if (r || !le->left || le->left==g->self) { broken(g); return; }
+            if (r || !le->left || le->left==g->self) { broken(g,ECHOY_GROUP_FAULT_TOPOLOGY,now); return; }
             ids[0]=le->left; ids[1]=le->peer; ids[2]=g->self;
             sessions[0]=le->left_session; sessions[1]=le->session; count=3; rank=2;
         } else {
@@ -173,11 +191,11 @@ static void topology(echoy_group_t *g,int64_t now)
     } else if (r) {
         ids[1]=re->peer; sessions[0]=re->session; count=2;
         if (re->flags&4u) {
-            if (!re->right || re->right==g->self) { broken(g); return; }
+            if (!re->right || re->right==g->self) { broken(g,ECHOY_GROUP_FAULT_TOPOLOGY,now); return; }
             ids[2]=re->right; sessions[1]=re->right_session; count=3;
         }
     }
-    if (count==3 && (ids[0]==ids[1] || ids[0]==ids[2] || ids[1]==ids[2])) { broken(g); return; }
+    if (count==3 && (ids[0]==ids[1] || ids[0]==ids[2] || ids[1]==ids[2])) { broken(g,ECHOY_GROUP_FAULT_TOPOLOGY,now); return; }
     uint8_t key[40]={0};
     for (unsigned i=0;i<3;++i) w64(key+8*i,ids[i]);
     w32(key+24,boot); w32(key+28,sessions[0]); w32(key+32,sessions[1]); w32(key+36,count);
@@ -243,7 +261,7 @@ void echoy_group_edge(echoy_group_t *g,bool left,uint64_t peer,uint32_t session,
 void echoy_group_radio_lost(echoy_group_t *g,bool left,int64_t now)
 {
     if (!g || now<0 || !admitted(g,left ? 0 : 1) || g->count<2) return;
-    g->radio_lost|=(uint8_t)(left ? 1u : 2u); broken(g);
+    g->radio_lost|=(uint8_t)(left ? 1u : 2u); broken(g,ECHOY_GROUP_FAULT_RADIO,now);
 }
 static bool emit(echoy_group_t *g,uint64_t to,uint8_t *p,size_t size,bool control,int64_t now)
 {
@@ -320,7 +338,7 @@ static void encode_output(echoy_group_t *g)
         plan=&g->view.proposal;
     } else plan=&g->view.current;
     size_t size=echoy_link_plan_encode(plan,g->output_bytes,sizeof(g->output_bytes));
-    if (!size) { broken(g); return; }
+    if (!size) { broken(g,ECHOY_GROUP_FAULT_ENCODE,g->last_tick); return; }
     g->output_size=(uint16_t)size;
     g->output_crc=echoy_link_crc32(g->output_bytes,size);
     g->output=((uint64_t)g->output_crc<<32) | ((uint32_t)g->view.requested_revision+1u);
@@ -341,8 +359,8 @@ static void advance(echoy_group_t *g,int64_t now)
     if (g->phase==DONE) {
         if (!g->rank) {
             for (unsigned i=1;i<g->count;++i)
-                if (g->members[i].last_packet && now-g->members[i].last_packet>=LIMIT) broken(g);
-        } else if (g->members[0].seen && now-g->members[0].seen>=LIMIT) broken(g);
+                if (g->members[i].last_packet && now-g->members[i].last_packet>=LIMIT) broken(g,ECHOY_GROUP_FAULT_SILENCE,now);
+        } else if (g->members[0].seen && now-g->members[0].seen>=LIMIT) broken(g,ECHOY_GROUP_FAULT_SILENCE,now);
     }
     uint8_t own=flags(g);
     participant_t *self=&g->members[g->rank];
@@ -362,9 +380,11 @@ static void advance(echoy_group_t *g,int64_t now)
                 g->members[i].revision=i ? g->members[i].edits : g->view.local_edit_serial;
         }
     }
-    if (g->attempt && g->phase>=PREPARING && g->phase<DONE &&
-        ((g->mapped ? now-g->root_offset>=g->deadline : now>=g->unmapped_deadline) ||
-         (g->at && now-g->root_offset>=g->at-GUARD && !(own&AUTHORIZED)))) broken(g);
+    if (g->attempt && g->phase>=PREPARING && g->phase<DONE) {
+        bool expired=g->mapped ? now-g->root_offset>=g->deadline : now>=g->unmapped_deadline;
+        bool guard=g->at && now-g->root_offset>=g->at-GUARD && !(own&AUTHORIZED);
+        if(expired || guard)broken(g,expired?ECHOY_GROUP_FAULT_DEADLINE:ECHOY_GROUP_FAULT_GUARD,now);
+    }
     if (g->phase==BROKEN) {
         if (!owner_current(g) || (g->view.failed_transaction!=g->attempt &&
             g->view.committed_transaction!=g->attempt))
@@ -390,7 +410,7 @@ static void advance(echoy_group_t *g,int64_t now)
     }
     encode_output(g);
     self->flags=flags(g); self->input=g->input; self->output=g->output;
-    if (self->flags&FAILED) { broken(g); return; }
+    if (self->flags&FAILED) { broken(g,ECHOY_GROUP_FAULT_OWNER,now); return; }
     if ((self->flags&COMMITTED) && g->at>g->last_boundary) {
         g->last_boundary=g->at; g->origin=g->at; g->music_valid=true; g->clock_commit=g->attempt;
         if (!g->rank) { ++g->clock_epoch; clock_due(g); }
@@ -400,12 +420,16 @@ static void advance(echoy_group_t *g,int64_t now)
         if (g->phase==PREPARING && now%500000==0) TRACE("READY self=%llu attempt=%u flags=%u,%u,%u output=%llu,%llu,%llu in=%llu,%llu,%llu cmd=%u rev=%llu\n",(unsigned long long)g->self,g->attempt,g->members[0].flags,g->members[1].flags,g->members[2].flags,(unsigned long long)g->members[0].output,(unsigned long long)g->members[1].output,(unsigned long long)g->members[2].output,(unsigned long long)g->members[0].input,(unsigned long long)g->members[1].input,(unsigned long long)g->members[2].input,g->update.command,(unsigned long long)g->view.requested_revision);
         bool all=true;
         for (unsigned i=0;i<g->count;++i) {
-            if (g->members[i].flags&FAILED) { broken(g); return; }
+            if (g->members[i].flags&FAILED) { broken(g,ECHOY_GROUP_FAULT_PEER,now); return; }
             if (!(g->members[i].flags&READY) || !g->members[i].output ||
                 (i && g->members[i].input!=g->members[i-1].output)) all=false;
         }
         if (g->phase==PREPARING && all && g->music_valid && g->mapped) {
-            int64_t earliest=now+LEAD;
+            /* ARM/STATE and AUTHORIZE/STATE travel to the farthest member.
+             * Keep the accepted one-second one-hop budget for pairs; a triple
+             * has two hops. Choose this before ARM, never retime a locked bar
+             * or extend the existing transaction deadline. */
+            int64_t earliest=now+LEAD*(int64_t)(g->count-1);
             g->at=g->origin;
             if (g->at<earliest) g->at+=((earliest-g->at+PERIOD-1)/PERIOD)*PERIOD;
             TRACE("ARM root=%llu attempt=%u at=%lld\n",(unsigned long long)g->self,g->attempt,(long long)g->at);
@@ -546,7 +570,7 @@ void echoy_group_receive(echoy_group_t *g,uint64_t source,const uint8_t *p,size_
     }
     if (p[1]==ABORT) {
         if (size!=16 || rank!=0 || !g->rank) return;
-        broken(g); return;
+        broken(g,ECHOY_GROUP_FAULT_ABORT,now); return;
     }
     if (p[1]==ARM || p[1]==AUTHORIZE) {
         if (size!=32 || rank!=0 || !g->rank || !g->mapped || !g->offer_issued ||
@@ -719,7 +743,9 @@ bool echoy_group_info(const echoy_group_t *g,echoy_group_info_t *out)
     *out=(echoy_group_info_t){.identity=g->identity,.generation=g->generation,
         .attempt=g->attempt,.count=g->count,.rank=g->rank,.phase=g->phase,
         .clock_mapped=g->mapped,.root_offset_us=g->root_offset,
-        .origin_us=g->origin,.boundary_us=g->last_boundary,.deadline_us=g->deadline};
+        .origin_us=g->origin,.boundary_us=g->last_boundary,.deadline_us=g->deadline,
+        .activation_us=g->at,.clock_rtt_us=g->neighbor_clock.best_rtt,
+        .clock_samples=g->neighbor_clock.samples,.fault=g->fault};
     for (unsigned i=0;i<g->count;++i) out->members[i]=g->members[i].id;
     for (unsigned i=0;i<6;++i) if (g->pool.slots[i].active) ++out->operations;
     return true;

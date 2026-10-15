@@ -1,0 +1,2 @@
+PASS captured six-note source, earlier role changes, 20ms driver/1.8s worker, no missed common boundary
+PASS captured six-note source, later role changes, 20ms driver/1.8s worker, no missed common boundary

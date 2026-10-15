@@ -1121,15 +1121,35 @@ submit-failure counters remain0; app retries and relay/ACK drops still occur.
 C has7 cumulative MAC failures across rolling updates. No application crashes,
 but zero-loss/sustained-RF or acoustic timing acceptance is not claimed.
 
-Current user step awaiting result: keep B—C joined, move current rightmost
-original A to the far left to form A—B—C, record on A, wait until the one-shot
-reply finishes and hold35s. B/C must follow silently. Then perform the original
-fast A-to-right move to B—C—A. The latest user message asked for status; it did
-not answer this test. Do not mark test5 passed. Subsequent physical permutations,
-detach retention and joined-start checks remain open. No further installation
-permission or startup calibration question is required.
-Evidence: verification/horizontal-tx-completion/; helpers/live results:
-output/horizontal-tx-completion-20261015/.
+The user reported B/C following silently after recording in A—B—C, but later
+same-boot official readback found both recovering (cooperation5), and C had
+preparation_failed. This is not a stable pass. All three retained correct graph
+4ab35f2f5fa87420 with zero raw submit failures. A's captured source is seed6768,
+six touches; B Harmony and C Voice selection order is unknown to the user.
+Both selection orders must work. Read-only plans and failure evidence are in
+output/group-commit-diagnostic-20261015/ and
+output/horizontal-tx-completion-20261015/abc-user-confirmed/.
+
+A follow-up fixes two reproducible commit-pressure failures: ACK/relay queues
+now rotate their individual slots so reused low slots cannot starve older work;
+three-node ARM preparation reserves the existing one-second budget per route
+hop (two seconds), while pairs retain one second. This selects a future bar
+before ARM; locked bars, first Play,200ms guard,30s transaction limit, retries
+and sound remain unchanged. Passive first-failure snapshots retain the original
+reason/attempt/clock/owner state before ABORT for later readback.
+
+Radio starvation regressions and real radio/group/band/PCM tests using seed6768,
+both role-selection orders,20ms simulated MAC completion and1.8s preparation
+fail before these changes and pass afterward. These are stress profiles, not
+measured live RF latency. Full26 host groups, radio/pressure/adapter sanitizers, SDK build and matching
+native normal/reduced7/7 each pass, including unchanged10ms clock checks and
+zero PCM late blocks/clipping/exact paused silence. Verified candidate548906cbbae4
+retains accepted sound/UI/Recovery; delivery is pending and0606 remains installed.
+Keep physical A—B—C for the next recording check, then original fast ABC→BCA.
+Test5, further permutations, detach retention and joined-start remain open.
+No further installation permission or startup calibration question is required.
+Evidence: verification/horizontal-commit-fix/ and
+output/horizontal-commit-fix-20261015/.
 
 ### Dual-device basic physical flow accepted (2026-10-12)
 

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 typedef struct { echoy_radio_t *r; uint64_t id; uint32_t boot; uint64_t edge[2];
- unsigned delivered,failed,received,lost; uint8_t payload[64]; int64_t last_send; } node_t;
+ unsigned delivered,failed,received,lost,received_tags,delivered_tags; uint8_t payload[64]; int64_t last_send; } node_t;
 static node_t nodes[3];static int64_t now;
 static bool isolated[3],drop_ack,wire_busy[3];
 static uint8_t saved_advert[3][100];static size_t saved_size[3];static unsigned send_fail_every,sends;
@@ -24,10 +24,10 @@ static void edge(void *ctx,bool left,uint64_t peer,uint32_t session,int64_t t){
 }
 static void lost(void *ctx,bool left,int64_t t){(void)left;(void)t;((node_t*)ctx)->lost++;}
 static void receive(void *ctx,uint64_t source,const uint8_t *p,size_t n,int64_t t){
- (void)source;(void)t;node_t *a=ctx;assert(n<=64);a->received++;memcpy(a->payload,p,n);
+ (void)source;(void)t;node_t *a=ctx;assert(n<=64);a->received++;if(n && p[0]<32)a->received_tags|=1u<<p[0];memcpy(a->payload,p,n);
 }
 static void delivery(void *ctx,uint64_t to,uint16_t service,bool success,int64_t t){
- (void)to;(void)service;(void)t;node_t *a=ctx;if(success)a->delivered++;else a->failed++;
+ (void)to;(void)service;(void)t;node_t *a=ctx;if(success){a->delivered++;a->delivered_tags|=1u<<(service&31u);}else a->failed++;
 }
 static void pump(void){
  while(head<tail){unsigned q=head++,a=frames[q].from;
@@ -139,6 +139,36 @@ static void driver_completion_controls_wire_submission(void){
  wire_busy[0]=false;advance(1000000);assert(nodes[0].delivered==1 && nodes[2].received==1);cleanup();
  puts("PASS previous driver completion gates submission without consuming retries");
 }
+static void busy_middle_drains_every_relay_slot(void){
+ const unsigned order[3]={0,1,2};setup();chain(order);advance(3000000);check_chain(order);
+ wire_busy[1]=true;
+ for(unsigned tag=1;tag<=4;tag++){uint8_t data[64]={(uint8_t)tag};assert(echoy_radio_send(nodes[0].r,nodes[2].id,(uint16_t)(0xe010+tag),data,sizeof(data),now));}
+ advance(100000);assert(!nodes[2].received);
+ int64_t until=now+1000000;
+ for(;now<until;){
+  /* A busy middle completes at20ms while endpoints can submit at10ms.
+   * New packets must not continually reuse low slots ahead of older work. */
+  wire_busy[1]=(now/10000)%2!=0;
+  uint8_t data[64]={5};(void)echoy_radio_send(nodes[0].r,nodes[2].id,0xe020,data,sizeof(data),now);
+  advance(5000);
+ }
+ assert((nodes[2].received_tags&0x1eu)==0x1eu);cleanup();
+ puts("PASS a slower busy middle drains all relay slots despite continuous new arrivals");
+}
+static void busy_receiver_acknowledges_every_queued_packet(void){
+ const unsigned order[3]={0,1,2};setup();chain(order);advance(3000000);check_chain(order);
+ wire_busy[1]=true;
+ for(unsigned tag=1;tag<=4;tag++){uint8_t data[64]={(uint8_t)tag};assert(echoy_radio_send(nodes[0].r,nodes[1].id,(uint16_t)(0xe010+tag),data,sizeof(data),now));}
+ advance(100000);assert(nodes[1].received==4 && !nodes[0].delivered);
+ int64_t until=now+1000000;
+ for(;now<until;){
+  wire_busy[1]=(now/10000)%2!=0;
+  uint8_t data[64]={5};(void)echoy_radio_send(nodes[0].r,nodes[1].id,0xe020,data,sizeof(data),now);
+  advance(5000);
+ }
+ assert((nodes[0].delivered_tags&0x1e0000u)==0x1e0000u);cleanup();
+ puts("PASS older acknowledgements drain despite continuous new arrivals");
+}
 int main(void){
  const unsigned orders[6][3]={{0,1,2},{0,2,1},{1,0,2},{1,2,0},{2,0,1},{2,1,0}};
  for(unsigned p=0;p<6;p++){
@@ -155,6 +185,6 @@ int main(void){
  chain(orders[3]);advance(3000000);check_chain(orders[3]);cleanup();
  puts("PASS immediate physical release and fast ABC to BCA");
  pair_and_invalid_graphs();missing_middle_and_legacy_are_not_absent();
- transport_failure_and_backpressure();reboot_and_stale_boot();overflow_and_transport_loss_preserve_contacts();stale_advertisement_after_recover();wire_timestamp_is_stable_across_ack_retries();driver_completion_controls_wire_submission();
+ transport_failure_and_backpressure();reboot_and_stale_boot();overflow_and_transport_loss_preserve_contacts();stale_advertisement_after_recover();wire_timestamp_is_stable_across_ack_retries();driver_completion_controls_wire_submission();busy_receiver_acknowledges_every_queued_packet();busy_middle_drains_every_relay_slot();
  return 0;
 }
