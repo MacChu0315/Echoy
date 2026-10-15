@@ -1,0 +1,3 @@
+node=0 rank=2 count=3 phase=5 following=1 cooperation=4
+node=1 rank=0 count=3 phase=5 following=0 cooperation=1
+node=2 rank=1 count=3 phase=5 following=1 cooperation=4

@@ -1,0 +1,12 @@
+{
+  "native-normal": {
+    "reference": "docs/verification/three-device-clock-start/native-normal/runtime-snapshot.json",
+    "same_binary_bundle_api_sha256": true,
+    "scope": "Previously verified actual independent native GSP/controller/PCM, unchanged by board-only diagnostic flag. No new native run claimed."
+  },
+  "native-reduced": {
+    "reference": "docs/verification/three-device-clock-start/native-reduced/runtime-snapshot.json",
+    "same_binary_bundle_api_sha256": true,
+    "scope": "Previously verified actual independent native GSP/controller/PCM, unchanged by board-only diagnostic flag. No new native run claimed."
+  }
+}

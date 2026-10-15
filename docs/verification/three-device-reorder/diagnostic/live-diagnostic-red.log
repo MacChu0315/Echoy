@@ -1,0 +1,2 @@
+enabled: /home/zhuzhengming/esp/ts/Mosaico/Echoy/tests/magnet_diagnostics/test_diagnostics.c:35: live_readback_is_valid_rate_limited_and_bounded: Assertion `live_records()==90' failed.
+Aborted (core dumped)

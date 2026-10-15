@@ -1,0 +1,91 @@
+{
+  "source_commit": "bec0ffb3aba36917acac75f35f3ff2af9a1443c7",
+  "source_hashes": "source-hashes.json",
+  "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/three-device/echoy-reorder-diagnostics-1eb36e7d795a.irisfw",
+  "package_sha256": "1eb36e7d795ac51e33170bb761453dabda11b2b5db5c191ca4cbe6b20ed06d1c",
+  "package_bytes": 1464943,
+  "firmware": {
+    "sha256": "4c87c6d5e2f55d5defd6e01007a49eecdacda25574d5177a570c97eaec1f5303",
+    "size": 2126400,
+    "chip_id": 32,
+    "project_name": "echoy",
+    "version": "1.0.0",
+    "elf_sha256": "2610277d00266e8b07b4163a3ff224af52f8e66aba78e51eedf7b07ebdb4137d"
+  },
+  "bundle": {
+    "schema": "esp-iris-system-update/v1",
+    "manifest_sha256": "1e36fb543aabd2b6593074f59137204fc1d2981b07c17027013e2c02c772dc67",
+    "key_id": null,
+    "chip_id": 32,
+    "flash_size": 16777216,
+    "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+    "components": [
+      {
+        "id": 1,
+        "kind": "partition_table",
+        "flags": 0,
+        "target_offset": 32768,
+        "size": 4096,
+        "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+        "file": "partition-table.bin"
+      },
+      {
+        "id": 2,
+        "kind": "application",
+        "flags": 0,
+        "target_offset": 2162688,
+        "size": 2126400,
+        "sha256": "4c87c6d5e2f55d5defd6e01007a49eecdacda25574d5177a570c97eaec1f5303",
+        "file": "ota_0.bin"
+      },
+      {
+        "id": 3,
+        "kind": "data",
+        "flags": 0,
+        "target_offset": 15728640,
+        "size": 377872,
+        "sha256": "e984f71018a6dd24baa4cd988f3815fc8edbb24c809b87fddc78d0f54edf31d7",
+        "file": "ui_apps.bin"
+      }
+    ],
+    "signature_verified": false,
+    "release": "1.0.0",
+    "minimum_recovery_version": "0.1"
+  },
+  "build_directory": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-reorder-diagnostics-build",
+  "build_command": "python3 output/reorder-fix-20261015/build_diagnostics.py",
+  "build_result": ".codex-runs/idf-low-noise-build/20261015-151543-system-update-bundle-2/result.json",
+  "sdkconfig_sha256": "4a0fd044a46a3c5937c1a1bfade1a1d3ac52085449bae2f2e0206c489ca0ef77",
+  "elf_file_sha256": "2610277d00266e8b07b4163a3ff224af52f8e66aba78e51eedf7b07ebdb4137d",
+  "accepted_baseline_package": "2b984e511b9837c34a37d818fb15d0335e67c9a4f4e4b88b203c790eb6af1727",
+  "preservation": {
+    "accepted_audio_ui_defaults_and_frozen_checksums": true,
+    "partition_table_and_ui_data_identical": true,
+    "office_voicing": true,
+    "microphone_reference_diagnostics": false,
+    "bounded_magnetic_readback": true,
+    "recovery_or_bootloader_components": false
+  },
+  "fit": {
+    "ota_bytes": 13565952,
+    "app_bytes": 2126400,
+    "free_bytes": 11439552,
+    "factory_size_warning": "Expected: retained factory is not the application update destination."
+  },
+  "status": "Temporary observation only; not a claimed fix. Intended only for A=f45936. Exact installation and fresh separated placement authorization pending. Restore already verified ba951963754a after collecting evidence if no further verified fix is ready.",
+  "restore_package": {
+    "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/three-device/echoy-clock-start-v3-ba951963754a.irisfw",
+    "package_sha256": "ba951963754aa1273cda87a38c4cb89612da6461d62b3a63c8db05e4d3e5b85b",
+    "firmware": {
+      "sha256": "7afc049708b467d71a86fa36cba27cdf88ad98d61659095aa613acb673a7dc25",
+      "size": 2125136,
+      "chip_id": 32,
+      "project_name": "echoy",
+      "version": "1.0.0",
+      "elf_sha256": "cc151795ec3efd59c639ce09b613f480ca601660f14a60cb1acd2639a6e1b711"
+    }
+  },
+  "effective_config_difference": [
+    "ECHOY_MAGNET_DIAGNOSTICS"
+  ]
+}

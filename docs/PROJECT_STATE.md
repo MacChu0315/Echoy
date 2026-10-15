@@ -974,6 +974,21 @@ unresolved (contact/radio admission/old membership not yet separated). This
 observation made no production-code edit, restart or firmware write; retain
 the current failed BCA scene for diagnosis.
 
+Repair investigation: reattaching only the right A with B—C unchanged still
+fails by user report. Logs capture C's RIGHT release/contact observations, while
+A's current firmware has no live sensor/filter/contact readback. The real-owner
+portable ABC→BCA transition succeeds with substituted physical/radio adapters;
+it does not resolve the hardware-path cause. A default-off, link-worker-only
+bounded diagnostic is saved in `bec0ffb`: existing compensated samples plus
+filter/contact/peer/group state, at most one valid record/second, ninety total.
+No threshold, retry, wire, music or UI changes. Unit/sanitizer, adapter, full
+three-owner and 51 runtime checks pass; native GSP artifacts are byte-identical
+to prior verified normal/reduced evidence. Exact diagnostic `1eb36e7d795a` for
+f45936 only is built/inspected and not yet installed; requested permission also
+names the known `ba951963754a` restore package. Fresh separated placement is
+required before restart. Cause/fix remain unresolved; see
+`verification/three-device-reorder/diagnostic/README.md`.
+
 ### Dual-device basic physical flow accepted (2026-10-12)
 
 Physical linking is now implemented locally for two upright, horizontally joined
