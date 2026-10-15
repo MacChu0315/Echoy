@@ -4,8 +4,24 @@ The approved source is now `reference/v4/echoy-arrange-B-v4.html`; hashes are in
 `reference/v4/SHA256SUMS`. The delivered ZIP and v3 historical baseline remain
 unchanged. The v4 musical/audio/arrangement code matches v3. Preserve the design, musical rules
 and explicit per-device playback permission. Dependency pins remain in
-`dependencies.json`. No remote write has occurred. The first authorized physical
+`dependencies.json`. Firmware history remains local. The first authorized physical
 installation and its follow-up UI fix are recorded below.
+
+## Reusable development skills (2026-10-15)
+
+Five portable guides are indexed in `../.agents/skills/README.md`: GSP parity,
+runtime performance, peer cooperation, audio validation and release evidence.
+Their validation record distinguishes document/application-scenario checks
+from hardware tests. The GitHub distribution is scoped to skills and usage
+documentation; application history, firmware, device records and existing local
+work are excluded. These guides do not change accepted device behavior or
+transfer Echoy-specific permissions to other projects.
+
+Published to the private `MacChu0315/Echoy` repository on branch
+`skills/mosaico-development`, independent root commit
+`3e1face2f393d0fa261f5c028c0213809b140dd8`. Remote SHA and its nine Markdown files
+were verified after the single push. This application repository has no remote;
+the export checkout is `/tmp/echoy-skills-publish-20261015`.
 
 ## v4 presentation
 

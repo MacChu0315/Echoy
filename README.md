@@ -8,7 +8,7 @@ merged Record/Play strip that becomes full-width Cancel or Pause, with an
 interruptible 240ms transition and the browser system reduced-motion preference. The immutable HTML remains
 the design and behavioral reference; it does not generate the native desk's sound.
 
-[Current state](docs/PROJECT_STATE.md) · [Verification](docs/verification/README.md)
+[Current state](docs/PROJECT_STATE.md) · [Verification](docs/verification/README.md) · [Reusable skills](.agents/skills/README.md)
 
 ## Audible three-tile desk
 
