@@ -27,12 +27,15 @@
 - Preserve the retained Vibe Mode/Recovery partition and integration contract.
   Device writes use the official `mosaico.py` workflow and current user authorization.
   Never infer physical audio, wireless or timing acceptance from PC results.
-- The user authorizes subsequent Echoy upgrade-package installations on the
+- The user authorizes subsequent Echoy diagnostic, fix, upgrade and restore-package installations on the
   verified Mosaicos `4553502d49524953010030eda0f452a0` (initially `/dev/ttyACM0`)
-  and `4553502d49524953010030eda0f40c6c` (initially `/dev/ttyACM1`), including
-  dual-device test versions, without per-package confirmation. Verify each
+  and `4553502d49524953010030eda0f40c6c` (initially `/dev/ttyACM1`), plus replacement
+  `4553502d49524953010030eda0f45936` (initially `/dev/ttyACM2`), without per-package
+  permission requests (explicit standing authorization renewed on 2026-10-15). Verify each
   identity/artifact, retain Recovery and use the official workflow; USB port
-  names may change. This is not authorization for remote repository writes.
+  names may change. Still establish actual calibration-safe placement before
+  restarting handled devices; permission is not evidence of physical placement.
+  This is not authorization for remote repository writes.
 - Product capacity target: at most three Mosaicos in the same scene, restricted
   to same-orientation horizontal chains. The v3 physical adapter and independent
   group owners are implemented locally; device delivery/physical acceptance is

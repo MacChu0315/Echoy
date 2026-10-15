@@ -35,9 +35,10 @@ and exact verified `ba951963754a` restore package. Generated configuration diffe
 only in the magnetic diagnostic flag; office voicing is enabled and microphone/
 reference diagnostics remain disabled. No Recovery/bootloader component exists.
 
-Intended target is only A/Pulse `4553502d49524953010030eda0f45936`. Its previous
-package authorization does not cover this new diagnostic. Exact installation
-plus restore authorization and fresh separated nonmetal placement are requested;
-no device write has occurred at candidate preparation. The other two retain
-their running verified firmware. Restore authorization, if granted, does not
-replace fresh placement confirmation after the devices have been handled.
+Intended diagnostic target is only A/Pulse `4553502d49524953010030eda0f45936`.
+The user subsequently approved this diagnostic/restore and granted standing
+authorization for later Echoy firmware updates on all three active devices;
+per-package approval is no longer needed. No diagnostic write has occurred at
+candidate preparation. The other two retain their running verified firmware.
+Actual separated nonmetal placement must still be established before restart
+after the devices have been handled.

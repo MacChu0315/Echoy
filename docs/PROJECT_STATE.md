@@ -984,9 +984,13 @@ filter/contact/peer/group state, at most one valid record/second, ninety total.
 No threshold, retry, wire, music or UI changes. Unit/sanitizer, adapter, full
 three-owner and 51 runtime checks pass; native GSP artifacts are byte-identical
 to prior verified normal/reduced evidence. Exact diagnostic `1eb36e7d795a` for
-f45936 only is built/inspected and not yet installed; requested permission also
-names the known `ba951963754a` restore package. Fresh separated placement is
-required before restart. Cause/fix remain unresolved; see
+f45936 only is built/inspected and not yet installed, with known `ba951963754a`
+restore package retained. The user explicitly approves the diagnostic/restore
+and subsequent Echoy firmware updates on all three active devices without
+per-package permission requests. This standing authorization is now in AGENTS.md;
+older per-package-only third-device permission notes are superseded. Actual
+separated nonmetal placement still needs confirmation before restarting handled
+devices. Cause/fix remain unresolved; see
 `verification/three-device-reorder/diagnostic/README.md`.
 
 ### Dual-device basic physical flow accepted (2026-10-12)

@@ -87,5 +87,12 @@
   },
   "effective_config_difference": [
     "ECHOY_MAGNET_DIAGNOSTICS"
-  ]
+  ],
+  "rollout_authorization": {
+    "third_authorized": true,
+    "standing_three_device_updates": true,
+    "placement_confirmed": false,
+    "package_sha256": "1eb36e7d795ac51e33170bb761453dabda11b2b5db5c191ca4cbe6b20ed06d1c",
+    "statement": "User approved this diagnostic/restore and all subsequent Echoy firmware updates on the three current devices without per-package permission requests. Physical placement not inferred from authorization."
+  }
 }
