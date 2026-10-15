@@ -1,0 +1,2 @@
+test_contact: /home/zhuzhengming/esp/ts/Mosaico/Echoy/tests/horizontal_contact/test_contact.c:31: main: Assertion `h->sensors_ready && h->contacts==masks[mode] && h->reported_contacts==masks[mode]' failed.
+Aborted (core dumped)

@@ -1,0 +1,4 @@
+Consolidate compiler generated dependencies of target test_model
+[ 57%] Built target test_model
+Consolidate compiler generated dependencies of target test_display
+[100%] Built target test_display

@@ -1,0 +1,22 @@
+{
+  "device_id": "4553502d49524953010030eda0f40c6c",
+  "endpoint": "usb:location=1-8.2:1.0",
+  "boot_id": 14085768804998349107,
+  "firmware_sha256": "f8978cc68243fc845299281b69bee1903cfe9e3f2ca08ed3698080dece9056bd",
+  "uptime_us": 46752401,
+  "crash_count": 0,
+  "free_internal": 24315,
+  "free_spiram": 12263732,
+  "package_sha256": "0baaaabeba0d22d4b7ca44ba50110da8cb9fa0129014da626a06db935d43d423",
+  "operation_id": "a46cdab9-1eb1-4445-a811-25a254c4b31e",
+  "healthy": true,
+  "validated": true,
+  "horizontal_sampling_ready": true,
+  "retained_bootloader_sha256": "d3cc31fc9e8f3df9c8ca3beece23fbcb97019f59cb87933266f8ddc47efadbcc",
+  "retained_partition_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+  "latest_audio": "I (33242) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=720240 nonzero=0 peak=0 pa=0 activations=0 write_max=8358us partial=0 write_errors=0 deadline_misses=0",
+  "current_boot_sensor_log": [
+    "I (3092) echoy-link: shared Flash thresholds: profile=esp-mosaico-v1 saturation=30000; horizontal-only, no startup baseline capture",
+    "I (3472) echoy-link: horizontal sensors ready; fixed Flash thresholds active"
+  ]
+}

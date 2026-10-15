@@ -1,0 +1,26 @@
+[1/11] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/echoy_audio_diagnostics.c.obj
+[2/11] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/echoy_measurement_diagnostics.c.obj
+[3/11] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/board_link.c.obj
+[4/11] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/main.c.obj
+[5/11] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/platform_device.c.obj
+[6/11] Linking C static library esp-idf/main/libmain.a
+[7/11] Generating esp-idf/esp_system/ld/sections.ld
+Skipping linker script generation, section names unchanged
+[8/11] Linking CXX executable echoy.elf
+[9/11] Generating binary image from built executable
+esptool v5.4.0
+Creating ESP32-S31 image...
+Merged 3 ELF sections.
+Successfully created ESP32-S31 image.
+Generated /home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-reorder-diagnostics-build/echoy.bin
+[10/11] cd /home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-reorder-diagnostics-build && /home/zhuzhengming/.espressif/python_env/idf6.2_py3.10_env/bin/python /home/zhuzhengming/esp/ts/Mosaico/.toolchains/esp-idf-7b9cc1a/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-reorder-diagnostics-build/partition_table/partition-table.bin /home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-reorder-diagnostics-build/echoy.bin
+WARNING: 1/2 app partitions are too small for binary echoy.bin size 0x2072d0:
+  - Part 'factory' 0/0 @ 0x20000 size 0x1c0000 (overflow 0x472d0)
+[11/11] Building application + data + system update bundle
+{
+  "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-reorder-diagnostics-build/echoy-system-update.irisfw",
+  "bytes": 1465057
+}
+Executing action: system-update-bundle
+Running ninja in directory /home/zhuzhengming/esp/ts/Mosaico/Echoy/output/device-reorder-diagnostics-build
+Executing "ninja system-update-bundle"...

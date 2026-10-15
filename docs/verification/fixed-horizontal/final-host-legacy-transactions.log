@@ -1,0 +1,27 @@
+PASS common-bar-playing
+PASS common-bar-paused
+PASS prepare-failed
+PASS commit-lost
+PASS superseded-job-concurrent-edits
+PASS armed-edits-and-pause
+PASS authorization-ack-lost
+PASS wireless-deferred-recorder
+PASS wireless-empty-example
+PASS wireless-empty-record
+PASS wireless-empty-cold-start
+PASS incomplete-offer-abort
+PASS fresh-transport-recovery
+PASS source-owner-recovery
+PASS receiver-owner-recovery
+PASS unoffered-abort-authorized
+PASS unoffered-abort-deferred-job
+PASS abort-supersedes-source-begin
+PASS prompt-left-first
+PASS prompt-right-first
+PASS prompt-simultaneous
+PASS immediate-physical-release
+PASS radio-retains-membership
+PASS repeated-start-stale-clock
+PASS radio-supersedes-abort
+PASS early-recovery-first-start
+PASS 26 real transport/band/PCM cases, 36969333 assertions

@@ -1,0 +1,1006 @@
+[
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (1432) app_recovery: boot state: running=ota_0@0x00210000 configured=ota_0@0x00210000"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (1472) gsp_deployable: Opened deployable GSPB: scenes=1 content=0x01652307"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (1472) ui_bundle: Mapped ui_apps GSPB: 377808 bytes, scenes=1, content_id=0x01652307"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (1472) S31-Mosaico: Hardware version: v1.2 (variant=v1.2)"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (1472) S31-Mosaico: Power controls initialized: VCC_PW GPIO60=0(adopted) CODEC_PW=always-on PWR_SW GPIO57=released(open-drain)"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (1472) S31-Mosaico: Mainboard I2C initialized: port=0 SDA=56 SCL=3"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (1472) co5300: version: 2.2.0"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (1472) co5300_spi: LCD panel create success, version: 2.2.0"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (2232) co5300_spi: The 3Ah command has been used and will be overwritten by external initialization sequence"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2832) S31-Mosaico-LCD: CO5300 initialized: 480x480 CS=50 SCL=42 RST=44 D0=36 D1=51 D2=35 D3=9 drive=0 TE=enabled(GPIO43) gap=(0,0) rotation=0"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2832) gsp_board: GSP present target 480x480 RGB565 TE=on GPIO=43"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2842) cst9220: Controller identified: chip=0x9220 project=0x6854 resolution=480x480 version=4 checkcode=0x0145d234"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2842) cst9220: CST9220 touch controller initialized with HYN212 protocol"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2842) S31-Mosaico-LCD: touch initialized: INT=6 reset=NC shared_I2C=0 rotation=0"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2842) iris_screen: Registered 480x480 RGB565 GSP screen backend (PSRAM shadow retained, capture on demand)"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2902) gsp_dma2d: DMA2D M2M copy engine ready"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2912) gsp_accel_ppa: PPA blend ready (+/-1 LSB from scalar reference)"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2912) gsp_accel_ppa: PPA backend ready: fill>=32768 px, async blit on (>=8192 px)"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2912) esp_gsp_esp_lcd: Acceleration: esp-idf-ppa"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2912) present_target: target: mode=TE_SYNC panel=IO/GRAM gram=1 rotation=0 te=1 fb=0 drawbuf=34x1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2912) present_target: pipeline: commit=te_push slot=34x1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2912) present_te: TE blanking start auto-detected: gpio=43 idle=0 edge=rising"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2912) present_te: TE sync ready: gpio=43 blanking=rise..fall sync=rise irq=both"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2912) present_te: te_compose: logical=480x480 physical=480x480 rotate=0 ppa=0 buffers=1 pipeline=0 async_copy=0"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2912) presenter: presenter: contract=PARTITION endpoint=te_compose mode=te_compose areas=0 retain=0 previous=0 drawbuf=32640"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2912) gsp_lcd_display: Partition canvas: region_capacity=32640 bytes"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2912) gsp_lcd_display: Display bound: 480x480 contract=partition owner=gsp region-cost=3/24/512"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "E (2912) gpio: gpio_install_isr_service(568): GPIO isr service already installed"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2912) gsp_decode_task: Started decode task: stack=4096 memory=internal priority=3 poll=100 ms"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2912) gsp_esp_runtime: Background decode started"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2912) gsp_esp: Vector assets raise render stack: 12288 -> 32768 bytes"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2912) gsp_esp: Started render task: stack=32768 memory=internal priority=4"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2912) display_present:hw: Initializing hardware resources"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2922) display_present:hw: Hardware resources initialized successfully"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2952) present_te: TE schedule=slow/end edge=fall Tf/Tb/Ta/Ttx=16605/535/16070/23040 phase=[0,9635] blank_reuse=0 required=139%"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2982) esp_gsp_esp_lcd: UI live: 1 scene(s), 480x480"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_ALLOC object=ui status=allocated allocated_size=45056 internal=0 psram=1 internal_free=161175 internal_largest=96256"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2982) i2c_bus: I2C Bus V2 uses the externally initialized bus handle"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_ALLOC object=art_workspace status=allocated allocated_size=155648 internal=0 psram=1 internal_free=161015 internal_largest=96256"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_ALLOC object=standalone_model status=skipped allocated_size=0 internal=0 psram=0 internal_free=161015 internal_largest=96256"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_ALLOC object=view_cache status=allocated allocated_size=14592 internal=0 psram=1 internal_free=160995 internal_largest=96256"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_HOME_RENDER mode=worker error=0"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2992) co5300_spi: set brightness to 100% (hardware value: 255)"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2992) S31-Mosaico-LCD: CO5300 brightness set to 100%"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_DISPLAY brightness=100 effective=100 ok=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_STRIP tile=A mode=record_only at_us=1852920 duration_ms=240 reduced_motion=0"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_STRIP_READY tile=A mode=record_only record=0 play=0 single=0 at_us=1855683"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_ROUTE route=status_page locale=zh"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_LOCALE zh"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_STATE phase=0 seed=0000 generation=0 at_us=1852920"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_PLAN revision=0 role=pulse phrase=1 anchors=0 events=0"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2992) mosaico_mag: classifier initialized: profile=esp-mosaico-v1 filter_samples=8"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2992) mosaico_mag: presence tracker initialized: contact=3 release=3"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2992) pp: pp rom version: 395df10"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (2992) net80211: net80211 rom version: 395df10"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi:wifi driver task: 2f06d878, prio:23, stack:6656, core=0"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi:wifi firmware version: fa44743"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi:wifi certification version: v7.0"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi:config NVS flash: enabled"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi:config nano formatting: disabled"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi:mac_version:HAL_MAC_ESP32AX_764,ut_version:N, band mode:0x1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi:Init data frame dynamic rx buffer num: 32"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi:Init static rx mgmt buffer num: 5"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi:Init management short buffer num: 32"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi:Init dynamic tx buffer num: 32"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi:Init static tx FG buffer num: 2"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi:Init static rx buffer size: 1700 (rxctrl:64, csi:512)"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi:Init static rx buffer num: 10"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi:Init dynamic rx buffer num: 32"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi_init: rx ba win: 6"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi_init: accept mbox: 6"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi_init: tcpip mbox: 32"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi_init: udp mbox: 6"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi_init: tcp mbox: 6"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi_init: tcp tx win: 5760"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi_init: tcp rx win: 5760"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi_init: tcp mss: 1440"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi_init: WiFi IRAM OP enabled"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi_init: WiFi RX IRAM OP enabled"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) wifi_init: WiFi SLP IRAM OP enabled"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3002) phy_init: phy_version 100,dd4c590,Jul 14 2026,10:33:03"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3012) bq27220: Firmware Version 2002"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3032) bq27220: Hardware Version 0004"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x0(  LP-1Mbps), pwr:20, txing:20"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x1(  LP-2Mbps), pwr:20, txing:20"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x2(LP-5.5Mbps), pwr:20, txing:20"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x3( LP-11Mbps), pwr:20, txing:20"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x5(  SP-2Mbps), pwr:20, txing:20"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x6(SP-5.5Mbps), pwr:20, txing:20"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x7( SP-11Mbps), pwr:20, txing:20"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x8(    48Mbps), pwr:18, txing:18"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x9(    24Mbps), pwr:19, txing:19"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0xa(    12Mbps), pwr:20, txing:20"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0xb(     6Mbps), pwr:20, txing:20"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0xc(    54Mbps), pwr:18, txing:18"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0xd(    36Mbps), pwr:19, txing:19"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0xe(    18Mbps), pwr:20, txing:20"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0xf(     9Mbps), pwr:20, txing:20"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x10, mcs:0x0, pwr(bw20:20, bw40:19), txing:20"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x11, mcs:0x1, pwr(bw20:20, bw40:19), txing:20"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x12, mcs:0x2, pwr(bw20:20, bw40:19), txing:20"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x13, mcs:0x3, pwr(bw20:20, bw40:19), txing:20"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x14, mcs:0x4, pwr(bw20:19, bw40:18), txing:19"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x15, mcs:0x5, pwr(bw20:19, bw40:18), txing:19"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x16, mcs:0x6, pwr(bw20:18, bw40:17), txing:18"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x17, mcs:0x7, pwr(bw20:18, bw40:17), txing:18"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x18, mcs:0x8, pwr(bw20:16, bw40:16), txing:16"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3082) wifi:(phy)rate:0x19, mcs:0x9, pwr(bw20:15, bw40:15), txing:15"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3082) wifi:11ax coex: WDEVAX_PTI0(0x55777555), WDEVAX_PTI1(0x00003377)."
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": ""
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3082) wifi:mode : sta (30:ed:a0:f4:59:36)"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3082) wifi:enable tsf"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3082) ESPNOW: espnow [version: 2.0] init"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3082) mosaico_peer: started: device=30eda0f45936 boot=0e8a78e9 network=45434859 channel=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3082) mosaico_session: initialized: device=30eda0f45936 retry=200ms stale=2500ms"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3082) mosaico_network: started: device=30eda0f45936 max_nodes=16"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3082) echoy-link: shared Flash thresholds: profile=esp-mosaico-v1 saturation=30000; horizontal-only, no startup baseline capture"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3122) bq27220: Battery profile readback verified (25 fields, learned_capacity=excluded)"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3122) bq27220: Skip battery profile update: verification=full"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3132) echoy: Echoy physical link controller ready at 480x480 RGB565; speaker initializes silently"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3132) echoy_band: scheduler bytes=10392 internal=1 default_internal_largest=31744"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3132) echoy: Read-only plan snapshots ready: RPC 0xECA1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3132) main_task: Returned from app_main()"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3132) echoy_band: ECHOY_MODEL_STORAGE tile=A bytes=14336 internal=1 external=0 internal_free=67431 internal_largest=31744"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3132) echoy_band: ECHOY_MODEL_STORAGE tile=B bytes=14336 internal=1 external=0 internal_free=53091 internal_largest=31744"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3132) S31-Mosaico-Sensor: BMM150[0] initialized: address=0x11 shared_INT=2"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3132) echoy_band: ECHOY_MODEL_STORAGE tile=C bytes=14336 internal=1 external=0 internal_free=38751 internal_largest=17408"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3132) S31-Mosaico-Sensor: BMM150[1] initialized: address=0x12 shared_INT=2"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "W (3142) present_te: TE schedule=overrun/end edge=fall Tf/Tb/Ta/Ttx=16638/535/16103/57615 required=347%; no safe full-frame window"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3182) echoy_device: musical role gain milli: pulse=1600 voice=780 dust=63 harmony=800"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3192) present_te: TE schedule=slow/end edge=fall Tf/Tb/Ta/Ttx=16637/535/16102/23482 phase=[0,9257] blank_reuse=0 required=142%"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3202) ES8311: Work in Slave mode"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "E (3202) i2s_common: i2s_channel_disable(1597): the channel has not been enabled yet"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3202) I2S_IF: No paired data, current mode: playback"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3202) I2S_IF: STD: TX, data_bit: 16, slot_bit: 16, ws_width: 16, slot_mode: MONO, slot_mask: 0x1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3202) I2S_IF: STD: TX, sample_rate_hz: 24000, mclk_multiple: 256, clk_src: 18"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3212) Adev_Codec: Open codec device OK"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_STRIP_READY tile=A mode=record_only record=1 play=0 single=0 at_us=2096031"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_ROUTE route=home locale=zh"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3232) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=0 nonzero=0 peak=0 pa=0 activations=0 write_max=0us partial=0 write_errors=0 deadline_misses=0"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3252) echoy_device: internal=25567 PSRAM=12236616 owner_stack=8716 prepare=0us render_max=0us rejected=0 overflow=0 cache_busy=0 limited=0 mix=0us pcm=0us core=0 prep_stack=7948"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3482) echoy-link: horizontal sensors ready; fixed Flash thresholds active"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (3482) echoy-link: ECHOY_MAG_LIVE n=1 raw_L=-866,1289,197 filtered_L=-864,1289,196 raw_R=-295,66,180 filtered_R=-294,65,182 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (4482) echoy-link: ECHOY_MAG_LIVE n=2 raw_L=-865,1288,198 filtered_L=-865,1289,197 raw_R=-294,66,179 filtered_R=-295,66,179 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (5482) echoy-link: ECHOY_MAG_LIVE n=3 raw_L=-864,1290,197 filtered_L=-864,1290,197 raw_R=-296,67,182 filtered_R=-295,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3271 gap_max_us=83494 stack_min=7652"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_ART_COST rendered=1 published=1 stale=0 coalesced=0 draw_max_us=23279 worker_stack_min=10816"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (6532) echoy-link: ECHOY_MAG_LIVE n=4 raw_L=-865,1290,196 filtered_L=-865,1290,196 raw_R=-296,67,181 filtered_R=-295,65,181 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (7132) S31-Mosaico-Battery: BQ27220 online: address=0x55 SDA=56 SCL=3 4193 mV"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (7132) S31-Mosaico-Battery: BQ27220 default profile active: 80 mAh EDV=3000/3410/3530 mV"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (7532) echoy-link: ECHOY_MAG_LIVE n=5 raw_L=-864,1290,195 filtered_L=-864,1289,196 raw_R=-296,65,180 filtered_R=-294,65,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (7992) gsp_esp: perf: 1.2 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (8582) echoy-link: ECHOY_MAG_LIVE n=6 raw_L=-865,1290,196 filtered_L=-865,1290,197 raw_R=-297,66,180 filtered_R=-296,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (9632) echoy-link: ECHOY_MAG_LIVE n=7 raw_L=-864,1289,198 filtered_L=-865,1290,197 raw_R=-295,67,181 filtered_R=-295,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (10682) echoy-link: ECHOY_MAG_LIVE n=8 raw_L=-864,1291,198 filtered_L=-864,1289,196 raw_R=-294,67,180 filtered_R=-295,65,179 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=5805 gap_max_us=50043 stack_min=7652"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (11682) echoy-link: ECHOY_MAG_LIVE n=9 raw_L=-865,1290,196 filtered_L=-864,1290,196 raw_R=-295,65,181 filtered_R=-295,66,179 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (12732) echoy-link: ECHOY_MAG_LIVE n=10 raw_L=-864,1292,196 filtered_L=-865,1290,197 raw_R=-296,66,179 filtered_R=-296,66,179 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (12992) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (36232) echoy-link: ECHOY_MAG_LIVE n=33 raw_L=-866,1291,197 filtered_L=-865,1290,196 raw_R=-296,65,182 filtered_R=-295,65,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (37232) echoy-link: ECHOY_MAG_LIVE n=34 raw_L=-865,1290,197 filtered_L=-864,1290,196 raw_R=-297,67,180 filtered_R=-295,66,179 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (38022) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (38232) echoy-link: ECHOY_MAG_LIVE n=35 raw_L=-865,1291,197 filtered_L=-865,1291,197 raw_R=-295,66,181 filtered_R=-295,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (39232) echoy-link: ECHOY_MAG_LIVE n=36 raw_L=-866,1290,198 filtered_L=-865,1290,196 raw_R=-297,66,182 filtered_R=-295,65,181 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (40232) echoy-link: ECHOY_MAG_LIVE n=37 raw_L=-864,1290,197 filtered_L=-865,1290,198 raw_R=-294,64,180 filtered_R=-295,66,179 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1031 gap_max_us=30324 stack_min=7652"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (41282) echoy-link: ECHOY_MAG_LIVE n=38 raw_L=-866,1290,196 filtered_L=-865,1291,196 raw_R=-297,66,179 filtered_R=-296,65,179 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (42332) echoy-link: ECHOY_MAG_LIVE n=39 raw_L=-867,1290,196 filtered_L=-865,1290,197 raw_R=-296,65,181 filtered_R=-295,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (43032) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (43332) echoy-link: ECHOY_MAG_LIVE n=40 raw_L=-865,1291,197 filtered_L=-864,1290,196 raw_R=-295,65,182 filtered_R=-295,65,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (44382) echoy-link: ECHOY_MAG_LIVE n=41 raw_L=-865,1290,197 filtered_L=-864,1290,197 raw_R=-295,67,180 filtered_R=-294,67,179 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (45432) echoy-link: ECHOY_MAG_LIVE n=42 raw_L=-866,1291,197 filtered_L=-865,1291,196 raw_R=-295,67,179 filtered_R=-295,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1033 gap_max_us=30283 stack_min=7652"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (46482) echoy-link: ECHOY_MAG_LIVE n=43 raw_L=-865,1292,196 filtered_L=-865,1291,196 raw_R=-296,67,179 filtered_R=-295,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (47482) echoy-link: ECHOY_MAG_LIVE n=44 raw_L=-865,1291,197 filtered_L=-865,1290,196 raw_R=-297,67,180 filtered_R=-295,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (48042) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (48532) echoy-link: ECHOY_MAG_LIVE n=45 raw_L=-866,1292,198 filtered_L=-865,1291,196 raw_R=-296,66,180 filtered_R=-295,66,179 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (49532) echoy-link: ECHOY_MAG_LIVE n=46 raw_L=-866,1291,196 filtered_L=-865,1290,196 raw_R=-294,66,179 filtered_R=-294,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (50532) echoy-link: ECHOY_MAG_LIVE n=47 raw_L=-865,1291,197 filtered_L=-865,1290,196 raw_R=-297,68,181 filtered_R=-295,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1042 gap_max_us=30296 stack_min=7652"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (51582) echoy-link: ECHOY_MAG_LIVE n=48 raw_L=-865,1292,197 filtered_L=-865,1291,196 raw_R=-296,67,182 filtered_R=-295,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (52632) echoy-link: ECHOY_MAG_LIVE n=49 raw_L=-865,1290,197 filtered_L=-865,1290,197 raw_R=-294,65,182 filtered_R=-295,65,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (53052) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (53632) echoy-link: ECHOY_MAG_LIVE n=50 raw_L=-865,1292,198 filtered_L=-865,1290,197 raw_R=-296,67,182 filtered_R=-296,67,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (54682) echoy-link: ECHOY_MAG_LIVE n=51 raw_L=-866,1289,195 filtered_L=-865,1290,195 raw_R=-297,66,181 filtered_R=-296,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (55682) echoy-link: ECHOY_MAG_LIVE n=52 raw_L=-866,1291,197 filtered_L=-865,1291,197 raw_R=-296,66,182 filtered_R=-295,65,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=3318 gap_max_us=30916 stack_min=7652"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (56682) echoy-link: ECHOY_MAG_LIVE n=53 raw_L=-865,1291,196 filtered_L=-865,1290,195 raw_R=-296,66,181 filtered_R=-296,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (57682) echoy-link: ECHOY_MAG_LIVE n=54 raw_L=-865,1291,198 filtered_L=-865,1290,197 raw_R=-295,65,178 filtered_R=-296,66,179 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (58062) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (58732) echoy-link: ECHOY_MAG_LIVE n=55 raw_L=-866,1291,198 filtered_L=-865,1290,196 raw_R=-296,66,182 filtered_R=-295,66,181 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (59732) echoy-link: ECHOY_MAG_LIVE n=56 raw_L=-866,1290,197 filtered_L=-865,1290,196 raw_R=-295,66,181 filtered_R=-295,66,181 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (60782) echoy-link: ECHOY_MAG_LIVE n=57 raw_L=-864,1291,197 filtered_L=-864,1290,196 raw_R=-294,66,182 filtered_R=-294,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1051 gap_max_us=30299 stack_min=7652"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (61832) echoy-link: ECHOY_MAG_LIVE n=58 raw_L=-866,1291,197 filtered_L=-865,1289,197 raw_R=-297,67,180 filtered_R=-295,67,179 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (62832) echoy-link: ECHOY_MAG_LIVE n=59 raw_L=-867,1291,195 filtered_L=-865,1290,197 raw_R=-297,66,180 filtered_R=-296,66,181 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (63072) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (63232) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=1440240 nonzero=0 peak=0 pa=0 activations=0 write_max=8380us partial=0 write_errors=0 deadline_misses=0"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (63232) echoy_device: internal=24503 PSRAM=12262420 owner_stack=8716 prepare=11us render_max=2613us rejected=0 overflow=0 cache_busy=420 limited=0 mix=1277us pcm=1356us core=1 prep_stack=7948"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (63832) echoy-link: ECHOY_MAG_LIVE n=60 raw_L=-866,1291,197 filtered_L=-865,1290,196 raw_R=-294,67,181 filtered_R=-295,65,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (64882) echoy-link: ECHOY_MAG_LIVE n=61 raw_L=-865,1290,198 filtered_L=-865,1291,196 raw_R=-295,66,180 filtered_R=-295,65,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (65882) echoy-link: ECHOY_MAG_LIVE n=62 raw_L=-865,1291,197 filtered_L=-865,1291,197 raw_R=-296,67,181 filtered_R=-295,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1054 gap_max_us=30309 stack_min=7652"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (66932) echoy-link: ECHOY_MAG_LIVE n=63 raw_L=-865,1291,196 filtered_L=-865,1290,195 raw_R=-294,67,179 filtered_R=-294,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (67932) echoy-link: ECHOY_MAG_LIVE n=64 raw_L=-865,1292,197 filtered_L=-866,1291,196 raw_R=-294,66,183 filtered_R=-295,65,181 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (68082) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (68982) echoy-link: ECHOY_MAG_LIVE n=65 raw_L=-866,1291,196 filtered_L=-865,1290,196 raw_R=-294,65,180 filtered_R=-295,66,179 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (69982) echoy-link: ECHOY_MAG_LIVE n=66 raw_L=-866,1293,197 filtered_L=-865,1292,196 raw_R=-297,66,181 filtered_R=-296,65,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (71032) echoy-link: ECHOY_MAG_LIVE n=67 raw_L=-866,1292,198 filtered_L=-865,1291,196 raw_R=-294,67,181 filtered_R=-295,66,181 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1058 gap_max_us=30306 stack_min=7652"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (72032) echoy-link: ECHOY_MAG_LIVE n=68 raw_L=-865,1290,197 filtered_L=-865,1290,196 raw_R=-296,65,182 filtered_R=-295,65,181 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (73082) echoy-link: ECHOY_MAG_LIVE n=69 raw_L=-865,1291,198 filtered_L=-865,1290,196 raw_R=-296,64,178 filtered_R=-296,65,178 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (73082) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (74082) echoy-link: ECHOY_MAG_LIVE n=70 raw_L=-865,1291,198 filtered_L=-864,1290,196 raw_R=-295,66,180 filtered_R=-295,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (75082) echoy-link: ECHOY_MAG_LIVE n=71 raw_L=-866,1292,196 filtered_L=-865,1290,196 raw_R=-297,66,180 filtered_R=-295,66,181 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (76132) echoy-link: ECHOY_MAG_LIVE n=72 raw_L=-865,1289,198 filtered_L=-865,1290,196 raw_R=-295,67,182 filtered_R=-295,65,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1051 gap_max_us=30302 stack_min=7652"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (77132) echoy-link: ECHOY_MAG_LIVE n=73 raw_L=-865,1292,196 filtered_L=-865,1291,195 raw_R=-294,64,180 filtered_R=-295,65,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (78092) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (78182) echoy-link: ECHOY_MAG_LIVE n=74 raw_L=-865,1289,195 filtered_L=-865,1290,196 raw_R=-296,66,179 filtered_R=-296,66,178 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (79232) echoy-link: ECHOY_MAG_LIVE n=75 raw_L=-865,1290,198 filtered_L=-865,1290,196 raw_R=-296,67,181 filtered_R=-295,66,181 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (80232) echoy-link: ECHOY_MAG_LIVE n=76 raw_L=-866,1292,196 filtered_L=-865,1290,196 raw_R=-297,67,182 filtered_R=-295,65,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (81282) echoy-link: ECHOY_MAG_LIVE n=77 raw_L=-865,1291,197 filtered_L=-865,1290,195 raw_R=-296,66,179 filtered_R=-295,66,179 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1036 gap_max_us=30309 stack_min=7652"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (82332) echoy-link: ECHOY_MAG_LIVE n=78 raw_L=-865,1289,196 filtered_L=-865,1290,195 raw_R=-295,66,180 filtered_R=-294,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (83092) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (83382) echoy-link: ECHOY_MAG_LIVE n=79 raw_L=-865,1291,197 filtered_L=-865,1290,196 raw_R=-295,66,179 filtered_R=-295,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (84382) echoy-link: ECHOY_MAG_LIVE n=80 raw_L=-866,1292,196 filtered_L=-865,1290,196 raw_R=-297,67,183 filtered_R=-296,65,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (85432) echoy-link: ECHOY_MAG_LIVE n=81 raw_L=-865,1290,197 filtered_L=-865,1291,197 raw_R=-297,66,180 filtered_R=-295,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1048 gap_max_us=30297 stack_min=7652"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (86432) echoy-link: ECHOY_MAG_LIVE n=82 raw_L=-866,1289,194 filtered_L=-865,1290,195 raw_R=-297,66,182 filtered_R=-295,66,179 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (87432) echoy-link: ECHOY_MAG_LIVE n=83 raw_L=-865,1290,197 filtered_L=-865,1290,196 raw_R=-297,67,181 filtered_R=-296,67,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (88092) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (88432) echoy-link: ECHOY_MAG_LIVE n=84 raw_L=-865,1291,196 filtered_L=-864,1291,196 raw_R=-298,65,181 filtered_R=-296,65,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (89482) echoy-link: ECHOY_MAG_LIVE n=85 raw_L=-866,1290,196 filtered_L=-864,1291,196 raw_R=-294,66,179 filtered_R=-295,66,179 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (90482) echoy-link: ECHOY_MAG_LIVE n=86 raw_L=-865,1291,195 filtered_L=-865,1290,196 raw_R=-296,67,179 filtered_R=-295,66,179 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1038 gap_max_us=30304 stack_min=7652"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (91532) echoy-link: ECHOY_MAG_LIVE n=87 raw_L=-866,1291,196 filtered_L=-865,1291,196 raw_R=-295,66,181 filtered_R=-295,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (92532) echoy-link: ECHOY_MAG_LIVE n=88 raw_L=-865,1291,198 filtered_L=-865,1290,196 raw_R=-296,66,182 filtered_R=-296,65,181 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (93092) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (93232) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=2160240 nonzero=0 peak=0 pa=0 activations=0 write_max=8380us partial=0 write_errors=0 deadline_misses=0"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (93232) echoy_device: internal=24503 PSRAM=12262420 owner_stack=8716 prepare=11us render_max=2613us rejected=0 overflow=0 cache_busy=621 limited=0 mix=1277us pcm=1356us core=1 prep_stack=7948"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (93532) echoy-link: ECHOY_MAG_LIVE n=89 raw_L=-865,1290,197 filtered_L=-865,1290,196 raw_R=-296,66,180 filtered_R=-295,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (94582) echoy-link: ECHOY_MAG_LIVE n=90 raw_L=-865,1290,196 filtered_L=-865,1290,197 raw_R=-297,67,180 filtered_R=-296,66,180 edges=00 stable=00 reported=00 peers=000000000000/000000000000 group=1/0/0 mapped=1"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1035 gap_max_us=30518 stack_min=7652"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (98102) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1041 gap_max_us=30309 stack_min=7652"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (103112) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1037 gap_max_us=30291 stack_min=7652"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "I (108112) gsp_esp: perf: 0.0 rendered fps"
+  },
+  {
+    "boot_id": 18031833374556782289,
+    "text": "ECHOY_UI_COST route=0 tick_max_us=1038 gap_max_us=30310 stack_min=7652"
+  }
+]

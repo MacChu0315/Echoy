@@ -1,0 +1,32 @@
+PASS shared clock, audible buffers, link/detach, independent pause and recovery
+PASS musical bank calibration and unchanged tap cues across all roles
+MEASURE physical-replica: prepare_calls=1 loop_bytes=720040 calibration_frames=60000
+PASS physical-replica
+MEASURE pc-three-banks: prepare_calls=3 loop_bytes=2160120 calibration_frames=180000
+PASS pc-three-banks
+MEASURE physical-job-after-detach: prepare_calls=1 loop_bytes=720040 calibration_frames=60000
+MEASURE physical-job-after-detach: prepare_calls=1 loop_bytes=720040 calibration_frames=60000
+PASS physical-job-after-detach
+MEASURE pc-job-after-physical-join: prepare_calls=1 loop_bytes=720040 calibration_frames=60000
+MEASURE pc-job-after-physical-join: prepare_calls=1 loop_bytes=720040 calibration_frames=60000
+PASS pc-job-after-physical-join
+MEASURE reconnect-releases-banks: prepare_calls=1 loop_bytes=720040 calibration_frames=60000
+MEASURE reconnect-releases-banks: prepare_calls=1 loop_bytes=720040 calibration_frames=60000
+MEASURE reconnect-releases-banks: prepare_calls=1 loop_bytes=720040 calibration_frames=60000
+MEASURE reconnect-releases-banks: prepare_calls=0 loop_bytes=0 calibration_frames=0
+PASS reconnect-releases-banks
+MEASURE old-b-bank-no-plan-change: prepare_calls=1 loop_bytes=720040 calibration_frames=60000
+MEASURE old-b-bank-no-plan-change: prepare_calls=1 loop_bytes=720040 calibration_frames=60000
+PASS old-b-bank-no-plan-change
+PASS 6 upstream synthesis cases, 60199 assertions
+PASS only Harmony FULL changes, without plan or normalization changes, before role trim
+PASS prepared-job phase guards reject calibrated and published banks
+PASS old bank stays immutable until the common bar and Pause clears sound
+PASS cancelled/stale and failed filtered jobs preserve the paused valid bank
+PASS later-bank filter failure cannot publish an earlier processed bank
+PASS all 12 prepared expressions forward their original plans; Source/Foreground/target stay unchanged and calibration follows voicing
+PASS mutual exclusion and calibrated/staged/handed-off guards prevent modifying published banks
+PASS nonexclusive bank preflight rejects the entire job before any buffer mutation
+PASS live bank stays immutable until common-bar replacement and Pause still stops PCM
+PASS failed speaker preparation leaves the old continuous loop audible with its original clock
+PASS stale/cancelled jobs and a later-bank DSP failure cannot replace the paused valid sound

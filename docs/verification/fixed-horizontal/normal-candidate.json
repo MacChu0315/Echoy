@@ -1,0 +1,60 @@
+{
+  "source_commit": "6542bd72bfd3854f08dd3d9bf1060f458121d312",
+  "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/three-device/echoy-fixed-horizontal-normal-0baaaabeba0d.irisfw",
+  "package_sha256": "0baaaabeba0d22d4b7ca44ba50110da8cb9fa0129014da626a06db935d43d423",
+  "firmware": {
+    "sha256": "3b12d05b66da0e17a349ec51c42d5e6b4ef163e4f067cfc7192816fb482a4d2a",
+    "size": 2125280,
+    "chip_id": 32,
+    "project_name": "echoy",
+    "version": "1.0.0",
+    "elf_sha256": "f8978cc68243fc845299281b69bee1903cfe9e3f2ca08ed3698080dece9056bd"
+  },
+  "bundle": {
+    "schema": "esp-iris-system-update/v1",
+    "manifest_sha256": "437d50818badfb7a1af7b8076b4397a8b53b5a7473813ff25b42125613f4a6ef",
+    "key_id": null,
+    "chip_id": 32,
+    "flash_size": 16777216,
+    "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+    "components": [
+      {
+        "id": 1,
+        "kind": "partition_table",
+        "flags": 0,
+        "target_offset": 32768,
+        "size": 4096,
+        "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+        "file": "partition-table.bin"
+      },
+      {
+        "id": 2,
+        "kind": "application",
+        "flags": 0,
+        "target_offset": 2162688,
+        "size": 2125280,
+        "sha256": "3b12d05b66da0e17a349ec51c42d5e6b4ef163e4f067cfc7192816fb482a4d2a",
+        "file": "ota_0.bin"
+      },
+      {
+        "id": 3,
+        "kind": "data",
+        "flags": 0,
+        "target_offset": 15728640,
+        "size": 377872,
+        "sha256": "e984f71018a6dd24baa4cd988f3815fc8edbb24c809b87fddc78d0f54edf31d7",
+        "file": "ui_apps.bin"
+      }
+    ],
+    "signature_verified": false,
+    "release": "1.0.0",
+    "minimum_recovery_version": "0.1"
+  },
+  "sdkconfig_sha256": "70220c2212aa90ec8e4faa86a6db329ebab212fadf6a00db34fe914010c934e8",
+  "build_result": ".codex-runs/idf-low-noise-build/20261015-153502-system-update-bundle-3/result.json",
+  "common_thresholds": "Pinned const MOSAICO_MAG_CALIBRATION_S31_V1, .flash.rodata; unchanged horizontal predicates; no startup baseline capture or per-device persisted calibration.",
+  "magnetic_diagnostics": false,
+  "standing_update_authorization": true,
+  "startup_separation_required": false,
+  "status": "Installed and startup-verified on first/second; third normal restore pending after diagnosis."
+}

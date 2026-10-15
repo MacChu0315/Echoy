@@ -1,0 +1,12 @@
+{
+  "passed": [
+    "Three native UI hosts read three separately allocated actual musical owners and different clocks",
+    "Actual A\u2192B\u2192C candidate/READY/ARM/authorization/activation completes while every tile stays paused",
+    "A/B/C-first real native Play, later entry, repeated Pause and clock agreement never grant peer permission",
+    "Native middle phrase edit flows to C through the real protocol while existing PCM continues",
+    "Releasing A retains exact current phrases/playback and makes B the root of B\u2014C; full release keeps local playback",
+    "Actual native 3/2/1 recording and one-shot reply finish before upstream admission; no autoplay",
+    "Official native hosts and three actual C owners exit cleanly; PCM has no late blocks/clipping and paused output is exactly silent"
+  ],
+  "scope": "official GSP 1.5.1, native pointer input, three actual v3/group/band/PCM owners, simulated physical/radio/clock adapters"
+}

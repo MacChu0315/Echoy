@@ -1,0 +1,75 @@
+
+output/device-three-chain-build/echoy.elf:     file format elf32-littleriscv
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .rtc.text     00000000  2e000000  2e000000  00209ef4  2**0
+                  CONTENTS
+  1 .rtc.force_fast 00000000  2e000000  2e000000  00209ef4  2**0
+                  CONTENTS
+  2 .rtc_noinit   00000000  2e000000  2e000000  00209ef4  2**0
+                  CONTENTS
+  3 .rtc.force_slow 00000024  2e000000  2e000000  00001000  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  4 .rtc_reserved 00000018  2e007fe8  2e007fe8  00001fe8  2**3
+                  ALLOC
+  5 .iram0.text   0001ac56  2f000000  2f000000  00002000  2**6
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  6 .iram0.text_end 0000002a  2f01ac56  2f01ac56  0001cc56  2**0
+                  ALLOC
+  7 .iram0.data   00000000  2f01ac80  2f01ac80  00209ef4  2**0
+                  CONTENTS
+  8 .iram0.bss    00000000  2f01ac80  2f01ac80  00209ef4  2**0
+                  CONTENTS
+  9 .iram0.end    00000000  2f01ac80  2f01ac80  00209ef4  2**0
+                  CONTENTS
+ 10 .dram0.dummy  00000000  2f01ac80  2f01ac80  00209ef4  2**0
+                  CONTENTS
+ 11 .dram0.data   00008838  2f01ac80  2f01ac80  0001cc80  2**4
+                  CONTENTS, ALLOC, LOAD, DATA
+ 12 .noinit       00000000  2f0234b8  2f0234b8  00000000  2**0
+                  ALLOC
+ 13 .dram0.bss    00005370  2f0234c0  2f0234c0  000254b8  2**6
+                  ALLOC
+ 14 .flash.text   0018d9e0  50000020  50000020  00026020  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 15 .flash_rodata_dummy 00190000  50000020  50000020  001b4020  2**0
+                  ALLOC
+ 16 .flash.appdesc 00000100  50190020  50190020  001b4020  2**4
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+ 17 .flash.rodata 00055d7c  50190120  50190120  001b4120  2**4
+                  CONTENTS, ALLOC, LOAD, DATA
+ 18 .flash.init_array 00000048  501e5e9c  501e5e9c  00209e9c  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+ 19 .flash.tdata  00000010  501e5ee4  501e5ee4  00209ee4  2**2
+                  CONTENTS, ALLOC, LOAD, DATA, THREAD_LOCAL
+ 20 .flash.rodata_noload 00004188  501e5ef4  501e5ef4  00209ef4  2**2
+                  ALLOC, READONLY
+ 21 .ext_ram.dummy 001effe0  50000020  50000020  001b4020  2**0
+                  ALLOC
+ 22 .ext_ram.bss  00005c28  501f0000  501f0000  0020a000  2**3
+                  ALLOC
+ 23 .dram0.heap_start 00000000  2f028830  2f028830  00209ef4  2**0
+                  CONTENTS
+ 24 .noload       00000004  00000000  00000000  00209ef4  2**0
+                  CONTENTS
+ 25 .debug_aranges 00012758  00000000  00000000  00209ef8  2**3
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 26 .debug_info   00686481  00000000  00000000  0021c650  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 27 .debug_abbrev 0009613a  00000000  00000000  008a2ad1  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 28 .debug_line   003f975f  00000000  00000000  00938c0b  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 29 .debug_frame  00051730  00000000  00000000  00d3236c  2**2
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 30 .debug_str    000e8873  00000000  00000000  00d83a9c  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 31 .debug_loc    0038e74a  00000000  00000000  00e6c30f  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 32 .debug_ranges 0006e0f8  00000000  00000000  011faa60  2**3
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 33 .comment      000000b5  00000000  00000000  01268b58  2**0
+                  CONTENTS, READONLY
+ 34 .riscv.attributes 000000bb  00000000  00000000  01268c0d  2**0
+                  CONTENTS, READONLY

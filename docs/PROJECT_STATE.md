@@ -993,6 +993,41 @@ separated nonmetal placement still needs confirmation before restarting handled
 devices. Cause/fix remain unresolved; see
 `verification/three-device-reorder/diagnostic/README.md`.
 
+#### Shared Flash thresholds (user-approved startup change)
+
+The user explicitly rejects per-device volatile baseline capture and requests a
+common threshold set stored in Flash. `6542bd7` uses the pinned readonly
+`MOSAICO_MAG_CALIBRATION_S31_V1` table; ELF confirms its 44-byte `.flash.rodata`
+object. Horizontal predicates do not use the vertical Y/Z reference, so the app
+initializes a fixed zero reference and masks vertical results instead of capturing
+a startup baseline. The thresholds, eight-sample filter, three-frame confirmation
+and failed-read release are unchanged. No NVS calibration dataset or per-device
+threshold override is created. This supersedes the separated-startup requirement
+for new horizontal-only builds; legacy rollback artifacts retain their old rules.
+
+The real-BSP classifier/active-adapter regression fails on old already-joined
+startup and passes all four contact masks after the change. All 24 host groups,
+related sanitizers, 51 runtime cases and a fresh official native GSP run pass.
+Normal `0baaaabeba0d` (ELF `f8978cc68243fc845299281b69bee1903cfe9e3f2ca08ed3698080dece9056bd`)
+is installed/HEALTHY on f452a0 and f40c6c; boots `1589398709091682315` and
+`14085768804998349107`. A/f45936 temporarily runs matching diagnostic
+`e793bf639647` (ELF `f008d365f4411297c84209b8534fd6a7a6d230280f3bb94af9ec4440fd76725c`),
+HEALTHY boot `18031833374556782289`. All three show fixed-Flash sampling readiness,
+no baseline capture/rejection and zero startup app/output faults. Retained
+components, UI and accepted office sound pass identity checks. Old diagnostic
+`1eb36e7d795a` was never installed and is superseded.
+
+The first bounded A readback window reports edges/stable/reported=0 and no peer;
+its physical BCA pose has not yet been confirmed. A new user action asks to
+restore/hold B—C—A for 20 seconds without recording/playback. When confirmed,
+capture the joined pose; if the 90-record window is exhausted, one official
+planned A restart can open a new window while still joined (no baseline capture).
+Prepared helper: `output/fixed-horizontal-20261015/restart_joined_diagnostic.py`;
+check fresh identity and preserve operation results. Original rearrangement cause
+is still unresolved. Restore A to the matching fixed-threshold normal package
+after diagnosis, under existing standing authorization, rather than reverting
+to the old baseline-capturing build. Evidence: `verification/fixed-horizontal/`.
+
 ### Dual-device basic physical flow accepted (2026-10-12)
 
 Physical linking is now implemented locally for two upright, horizontally joined
