@@ -1,5 +1,5 @@
 {
-  "source_commit": "c10d95744203852255b4dbddd196cb7f7f7c93d5",
+  "source_commit": "d73eac9707e6977c5716063f593f44a5d0a9d235",
   "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/three-device/echoy-horizontal-commit-fix-normal-548906cbbae4.irisfw",
   "package_sha256": "548906cbbae4e63bd728eb4ae6d8ffa490a62ad5f4f1ddf9439e52d8bfb80e31",
   "firmware": {
@@ -56,5 +56,6 @@
   "magnetic_diagnostics": false,
   "standing_update_authorization": true,
   "startup_separation_required": false,
-  "status": "Verified local candidate, not installed yet."
+  "status": "Installed on all three verified devices; startup/identity/retained components pass. Physical recording and original fast reorder acceptance pending.",
+  "source_base_commit": "c10d95744203852255b4dbddd196cb7f7f7c93d5"
 }

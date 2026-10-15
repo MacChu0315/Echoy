@@ -1144,12 +1144,28 @@ fail before these changes and pass afterward. These are stress profiles, not
 measured live RF latency. Full26 host groups, radio/pressure/adapter sanitizers, SDK build and matching
 native normal/reduced7/7 each pass, including unchanged10ms clock checks and
 zero PCM late blocks/clipping/exact paused silence. Verified candidate548906cbbae4
-retains accepted sound/UI/Recovery; delivery is pending and0606 remains installed.
+retains accepted sound/UI/Recovery and is installed/HEALTHY on all three.
+Current boots B3705190959680047732, C10474193707046465341, A1371895758714733862.
+Official commit/identity/retained layout/fixed sampling/startup audio checks pass.
+B/C old Recovery each reset before stable readiness and the single write;
+no valid core dump, application crash counts remain0. Physical acceptance is
+still pending; see verification/horizontal-commit-fix/delivery.json.
 Keep physical A—B—C for the next recording check, then original fast ABC→BCA.
 Test5, further permutations, detach retention and joined-start remain open.
 No further installation permission or startup calibration question is required.
 Evidence: verification/horizontal-commit-fix/ and
 output/horizontal-commit-fix-20261015/.
+
+Latest live observation: all three agree on ABC graph7ecbaf627c317712,
+group7e214f02/attempt2/phase5, correct ranks0/1/2 and neighbors. Raw submit
+failures remain0 and audio error/miss/clipping counters0. However all retain
+RADIO fault2 for the same graph's previous attempt1 after rollout; this is not
+solely an old-boot graph fault. B has13 cumulative queue drops and10 MAC failures;
+no zero-loss/stable physical pass is claimed. Attempt2 has completed. Evidence:
+installed-abc-observation.json and output live logs. The user is now asked to
+set middle B Harmony/right C Voice before recording on left A, then hold35s
+after the one-shot; official180s log capture is active.
+Next answer must be checked against current snapshots/logs before rapid ABC→BCA.
 
 ### Dual-device basic physical flow accepted (2026-10-12)
 
