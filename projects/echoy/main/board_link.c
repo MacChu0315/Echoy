@@ -31,7 +31,7 @@ typedef struct {
     atomic_bool overflow,stopping,worker_exited;
     mosaico_mag_classifier_t classifier;
     mosaico_mag_presence_tracker_t presence;
-    bool sensors_ready,sensors_initialized;
+    bool sensors_ready,sensors_initialized,samples_ready;
     mosaico_edge_mask_t contacts,reported_contacts;
     int64_t next_sensor;
 #ifdef CONFIG_ECHOY_MAGNET_DIAGNOSTICS
@@ -43,6 +43,21 @@ typedef struct {
 static const char *TAG="echoy-link";
 static atomic_bool owned;
 static board_link_t *instance;
+static esp_err_t init_horizontal_classifier(mosaico_mag_classifier_t *classifier)
+{
+    /* The pinned read-only profile is the common Flash-backed threshold source.
+     * Its LEFT/RIGHT predicates use absolute axes, independently of the Y/Z
+     * reference used for vertical edges. Supply a fixed zero vertical reference
+     * to disable startup baseline capture, then discard every vertical result.
+     * This is horizontal-only operation, not a measured per-device calibration. */
+    esp_err_t error=mosaico_mag_classifier_init(classifier,&MOSAICO_MAG_CALIBRATION_S31_V1);
+    if (error!=ESP_OK) return error;
+    classifier->baseline_right_y=0;
+    classifier->baseline_right_z=0;
+    classifier->baseline_ready=true;
+    classifier->calibration_state=MOSAICO_MAG_CALIBRATION_READY;
+    return ESP_OK;
+}
 static bool owner_read(void *ctx,echoy_link_view_t *out)
 { board_link_t *h=ctx; return h->read(h->ctx,out); }
 static bool owner_receive(void *ctx,const echoy_link_update_t *u)
@@ -89,7 +104,7 @@ static void disable_sensors(board_link_t *h,const char *reason)
 {
     h->sensors_ready=false; h->contacts=0;
     release_all(h,esp_timer_get_time());
-    ESP_LOGW(TAG,"link unavailable: %s; restart with tiles separated",reason);
+    ESP_LOGW(TAG,"link unavailable: %s; sensor restart required",reason);
 }
 #ifdef CONFIG_ECHOY_MAGNET_DIAGNOSTICS
 static unsigned sentinel_axes(const struct bmm150_mag_data *data)
@@ -147,7 +162,6 @@ static void sample_sensors(board_link_t *h, int64_t now)
         .timestamp_ms = (uint32_t)(now / 1000),
     };
     mosaico_mag_classification_t result = {0};
-    mosaico_mag_calibration_state_t previous = h->classifier.calibration_state;
 #ifdef CONFIG_ECHOY_MAGNET_DIAGNOSTICS
     unsigned rejections = h->classifier.calibration_rejections;
 #endif
@@ -166,12 +180,13 @@ static void sample_sensors(board_link_t *h, int64_t now)
 #endif
     if (classified != ESP_OK ||
         h->classifier.calibration_state == MOSAICO_MAG_CALIBRATION_FAILED) {
-        disable_sensors(h, "magnetometer baseline/classification failed");
+        disable_sensors(h, "magnetometer classification failed");
         return;
     }
-    if (previous != MOSAICO_MAG_CALIBRATION_READY &&
-        h->classifier.calibration_state == MOSAICO_MAG_CALIBRATION_READY) {
-        ESP_LOGI(TAG, "magnetometer baseline ready; horizontal contact enabled");
+    result.edge_mask &= MOSAICO_EDGE_MASK_LEFT | MOSAICO_EDGE_MASK_RIGHT;
+    if (result.valid && !h->samples_ready) {
+        h->samples_ready=true;
+        ESP_LOGI(TAG, "horizontal sensors ready; fixed Flash thresholds active");
     }
     if (mosaico_mag_presence_tracker_process(&h->presence, &result) != ESP_OK) {
         disable_sensors(h, "magnetic presence tracking failed");
@@ -227,7 +242,8 @@ static void process_event(board_link_t *h,const link_event_t *e)
 static void worker(void *arg)
 {
     board_link_t *h=arg;
-    ESP_LOGI(TAG,"calibrating magnetometers; keep tiles separated until baseline ready");
+    ESP_LOGI(TAG,"shared Flash thresholds: profile=%s saturation=%d; horizontal-only, no startup baseline capture",
+             MOSAICO_MAG_CALIBRATION_S31_V1.name,(int)MOSAICO_MAG_CALIBRATION_S31_V1.saturation_limit);
     h->sensors_initialized=true;
     h->sensors_ready=bsp_magnetometer_init_all()==ESP_OK;
     if (!h->sensors_ready) disable_sensors(h,"magnetometer initialization failed");
@@ -272,7 +288,7 @@ esp_err_t board_link_start(board_link_read_fn read,board_link_receive_fn receive
     atomic_init(&h->overflow,false); atomic_init(&h->stopping,false); atomic_init(&h->worker_exited,false);
     h->events=xQueueCreate(32,sizeof(link_event_t));
     esp_err_t error=h->events && h->group ? ESP_OK : ESP_ERR_NO_MEM;
-    if (error==ESP_OK) error=mosaico_mag_classifier_init(&h->classifier,&MOSAICO_MAG_CALIBRATION_S31_V1);
+    if (error==ESP_OK) error=init_horizontal_classifier(&h->classifier);
     if (error==ESP_OK) error=mosaico_mag_presence_tracker_init(&h->presence,NULL,presence_event,h);
     if (error==ESP_OK) {
         mosaico_network_config_t c=MOSAICO_NETWORK_CONFIG_DEFAULT();

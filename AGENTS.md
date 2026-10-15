@@ -33,8 +33,9 @@
   `4553502d49524953010030eda0f45936` (initially `/dev/ttyACM2`), without per-package
   permission requests (explicit standing authorization renewed on 2026-10-15). Verify each
   identity/artifact, retain Recovery and use the official workflow; USB port
-  names may change. Still establish actual calibration-safe placement before
-  restarting handled devices; permission is not evidence of physical placement.
+  names may change. New horizontal-only builds use shared fixed Flash thresholds
+  and support startup while joined. Only a deliberate legacy rollback that still
+  captures a startup baseline requires separated placement first.
   This is not authorization for remote repository writes.
 - Product capacity target: at most three Mosaicos in the same scene, restricted
   to same-orientation horizontal chains. The v3 physical adapter and independent
@@ -45,13 +46,14 @@
   keep its boundary fixed and align unchanged banks there as well.
 - Physical linking uses the pinned BSP's magnetic classifier and ESP-NOW network.
   Start radio/RF initialization before audio activation; network and sensor I/O
-  stay off the audio owner. Keep boards separated on a nonmetal surface during
-  startup magnetic calibration, then wait for the baseline-ready logs before
-  testing a horizontal seam. Never substitute radio proximity for physical contact.
-  A paused/non-following or "not connected" cached state does not prove a
-  calibration-safe magnetic field; a stable field can reject startup even with
-  zero classified edges. Reconfirm physical placement before a later restart
-  if the user has handled the devices since the last placement check.
+  stay off the audio owner. Per the user's 2026-10-15 decision, all boards use
+  the same read-only `MOSAICO_MAG_CALIBRATION_S31_V1` table stored in firmware
+  Flash. Horizontal startup does not capture or persist per-device baselines;
+  suppress vertical results, retain the original horizontal predicates,
+  eight-sample filter, contact/release confirmation and failed-read disconnect.
+  Wait for valid horizontal sampling readiness, including on already-joined
+  startup. Never substitute radio proximity for physical contact. RAM holds
+  transient sampling/protocol state; it is not the authoritative threshold store.
 - Approved cooperation: physical release ends membership/following and the old
   clock group immediately while retaining the current phrase and playing/paused
   permission. Radio-only recovery keeps physical membership. A paused follower

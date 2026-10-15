@@ -80,7 +80,9 @@ void fake_log(const char *tag, const char *format, ...)
 void fake_log(const char *tag, const char *format, ...) { (void)tag; (void)format; }
 #endif
 
+#ifndef LINK_TEST_REAL_MAG
 const mosaico_mag_calibration_t MOSAICO_MAG_CALIBRATION_S31_V1 = {0};
+#endif
 esp_err_t bsp_magnetometer_init_all(void) { return sensor_error; }
 esp_err_t bsp_magnetometer_deinit(bsp_magnetometer_t id) { (void)id; return ESP_OK; }
 esp_err_t bsp_magnetometer_read(bsp_magnetometer_t id, struct bmm150_mag_data *data)
@@ -92,6 +94,7 @@ esp_err_t bsp_magnetometer_read(bsp_magnetometer_t id, struct bmm150_mag_data *d
 #endif
     return sensor_error;
 }
+#ifndef LINK_TEST_REAL_MAG
 esp_err_t mosaico_mag_classifier_init(mosaico_mag_classifier_t *c, const mosaico_mag_calibration_t *p)
 { (void)c; (void)p; return ESP_OK; }
 esp_err_t mosaico_mag_classifier_process(mosaico_mag_classifier_t *c,
@@ -120,6 +123,7 @@ esp_err_t mosaico_mag_presence_tracker_process(mosaico_mag_presence_tracker_t *t
     const mosaico_mag_classification_t *c) { (void)t; (void)c; return ESP_OK; }
 mosaico_edge_mask_t mosaico_edge_to_mask(mosaico_edge_t edge)
 { return edge >= MOSAICO_EDGE_TOP && edge <= MOSAICO_EDGE_LEFT ? 1u << (edge - 1) : 0; }
+#endif
 const char *mosaico_edge_to_string(mosaico_edge_t edge) { (void)edge; return "edge"; }
 esp_err_t mosaico_network_start(const mosaico_network_config_t *c, mosaico_network_handle_t *out)
 { assert(c->network_id == LINK_NETWORK_ID && c->manage_wifi); *out = (void *)1; return ESP_OK; }
