@@ -669,6 +669,18 @@ static void send_phrase(echoy_group_t *g,int64_t now)
     memcpy(p+26,g->output_bytes+g->queued,size);
     if (emit(g,to,p,26+size,false,now)) g->queued+=(uint16_t)size;
 }
+void echoy_group_stamp_send(echoy_group_t *g,uint8_t *p,size_t size,int64_t now)
+{
+    if(!g || !p || size<4 || p[0]!=VERSION || now<0)return;
+    if(p[1]==PING && size==20 && g->edges[0].peer &&
+       r32(p+4)==g->edges[0].session && g->ping_wait &&
+       r32(p+8)==g->ping_wait && rt(p+12)==g->ping_t1) {
+        g->ping_t1=now;w64(p+12,(uint64_t)now);
+    } else if(p[1]==PONG && size==36 && g->edges[1].peer &&
+              r32(p+4)==g->edges[1].session && rt(p+20)>=0 && now>=rt(p+20)) {
+        w64(p+28,(uint64_t)now);
+    }
+}
 void echoy_group_tick(echoy_group_t *g,int64_t now)
 {
     if (!g || now<0) return;

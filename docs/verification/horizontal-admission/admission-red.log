@@ -1,0 +1,2 @@
+test_radio: /home/zhuzhengming/esp/ts/Mosaico/Echoy/tests/horizontal_radio/test_radio.c:51: check_chain: Assertion `v.admitted && v.count==3 && v.rank==i' failed.
+Aborted (core dumped)

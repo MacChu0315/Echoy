@@ -1,0 +1,66 @@
+{
+  "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/three-device/echoy-horizontal-admission-normal-9d00b69f4fce.irisfw",
+  "package_sha256": "9d00b69f4fce515b3fd176e8d847124bdb8e412d4e6880986c19984f37496a3f",
+  "firmware": {
+    "sha256": "9e060609ed0740345a89e8d744e4288803f8e00c997fe414a73c841873a1b94b",
+    "size": 2114000,
+    "chip_id": 32,
+    "project_name": "echoy",
+    "version": "1.0.0",
+    "elf_sha256": "cd0487be492dee5fa62087360b2df488c59581004d4e6f3debd659405806fe6c"
+  },
+  "bundle": {
+    "schema": "esp-iris-system-update/v1",
+    "manifest_sha256": "9c21b4836a8a82d484ece171a47e011b080a9cc7c4ccca61df9a3438c0f5619b",
+    "key_id": null,
+    "chip_id": 32,
+    "flash_size": 16777216,
+    "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+    "components": [
+      {
+        "id": 1,
+        "kind": "partition_table",
+        "flags": 0,
+        "target_offset": 32768,
+        "size": 4096,
+        "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+        "file": "partition-table.bin"
+      },
+      {
+        "id": 2,
+        "kind": "application",
+        "flags": 0,
+        "target_offset": 2162688,
+        "size": 2114000,
+        "sha256": "9e060609ed0740345a89e8d744e4288803f8e00c997fe414a73c841873a1b94b",
+        "file": "ota_0.bin"
+      },
+      {
+        "id": 3,
+        "kind": "data",
+        "flags": 0,
+        "target_offset": 15728640,
+        "size": 377872,
+        "sha256": "e984f71018a6dd24baa4cd988f3815fc8edbb24c809b87fddc78d0f54edf31d7",
+        "file": "ui_apps.bin"
+      }
+    ],
+    "signature_verified": false,
+    "release": "1.0.0",
+    "minimum_recovery_version": "0.1"
+  },
+  "sdkconfig_sha256": "70220c2212aa90ec8e4faa86a6db329ebab212fadf6a00db34fe914010c934e8",
+  "build_result": ".codex-runs/idf-low-noise-build/20261015-174245-system-update-bundle-846077/result.json",
+  "common_thresholds": "Shared const echoy_horizontal_profile in .flash.rodata; left_reject_z=600, other S31 profile fields preserved; no startup baseline capture or per-device persisted calibration.",
+  "magnetic_diagnostics": false,
+  "standing_update_authorization": true,
+  "startup_separation_required": false,
+  "status": "Verified local candidate, not installed yet.",
+  "source_base_commit": "10fd8bbc3c02f9a0e80323c96906e94dc192dc27",
+  "source_identity": "Base commit plus exact source-hashes.json and build configuration hashes; implementation committed after verification.",
+  "build_configuration_sha256": {
+    "projects/echoy/main/CMakeLists.txt": "61b02ca4d98d272b65d2050bbf3cf1d49c3f21f0f7b7d02db8dba020b0a7e28b",
+    "projects/echoy/pc/CMakeLists.txt": "fcbda3237171037c3d348ce2924d1cbc54dbec41d1ce63327a549a5fcdefffda",
+    "docs/dependencies.json": "be8a4e20e0aa0225500a61281f2f511142111addb26dd7daa61601d3824147e4"
+  }
+}

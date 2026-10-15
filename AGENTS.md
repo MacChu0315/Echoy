@@ -44,7 +44,16 @@
   V2/v3 mixtures must not establish cooperative following; use one verified v3
   package for all members. First Play remains prompt during a locked update;
   keep its boundary fixed and align unchanged banks there as well.
-- Physical linking uses the pinned BSP's magnetic classifier and ESP-NOW network.
+- Physical linking uses the pinned BSP magnetic classifier and public
+  `mosaico_peer_link` radio API with application-owned `echoy_radio` admission
+  and bounded transport. Do not restore generic auto-pairing: it accepts rotated
+  same-edge pairs and may connect endpoints across a middle device.
+  New ECHN-capable packages must be used together; legacy network packages do
+  not complete this handshake. Radio tests must reach all same-scene nodes,
+  not assume perfect neighbor routes. Cover all six orders and fast reorder.
+  Stamp clock sends at first accepted wire submission; retries/forwarding must
+  retain identical bytes. Preserve known sequence/generation watermarks during
+  recovery and never infer physical release from stale radio evidence.
   Start radio/RF initialization before audio activation; network and sensor I/O
   stay off the audio owner. Per the user's 2026-10-15 decision, all boards use
   the same read-only `echoy_horizontal_profile` table in

@@ -1075,16 +1075,32 @@ f9b87dd4d4d7 and software-restart boots14630519438785164093 /
 14949665561685451233. No temporary diagnostic remains. Test5 remains failed;
 no functional session/transport fix has been applied.
 
-Proposed architecture/compatibility repair is documented in
-`plans/2026-10-15-horizontal-admission-repair.md`, not approved or implemented.
-It moves complete contact-mask/boot/generation discovery, reciprocal unique-chain
-admission and bounded direct/one-hop transport into the application using public
-radio APIs; it preserves musical owners, sound/UI, Flash thresholds and Recovery.
-Unknown/late peers and scene freshness must not be hidden by timeout guesses.
-This is a material adapter/handshake change requiring the user's design review
-under their standing project rules; it is not a renewed firmware permission
-request. Keep physical test progression paused at failed item5 pending that
-repair. Detailed evidence: `verification/reorder-stage-diagnostic/`.
+The user approved the architecture/compatibility repair (“同意推进”). The
+application-owned `echoy_radio` adapter is implemented over public peer-link
+APIs: full contact/boot/generation scene advertisements, challenged boots,
+reciprocal unique-chain admission, bounded addressed/one-hop transport and
+first-wire clock timestamps. Generic SDK auto-pairing is no longer used. The
+same radio network ID observes legacy claims, but only ECHN/version1 participants
+can admit a graph. Known stale participants are not silently dropped. Sound,
+UI, Flash600 thresholds, group musical semantics and Recovery remain unchanged.
+
+Local25 host groups (including51 runtime cases) and related sanitizers pass.
+Actual group/band/PCM owners run the new transport for all six orders, immediate
+root-to-tail reorder and detach. Independent review closed a reproduced old
+advertisement replay after RX recovery by separating freshness from persistent
+sequence/generation watermarks. Native testing exposed a queued-send clock bias;
+first accepted raw submission now stamps matching PING/PONG fields, with immutable
+retry/forward bytes. Known-offset tests pass without relaxing the10ms limit.
+
+Final SDK candidate `9d00b69f4fce` (ELF
+`cd0487be492dee5fa62087360b2df488c59581004d4e6f3debd659405806fe6c`)
+is built/inspected, not yet installed. Final official native normal/reduced-motion
+runs each pass all seven checks, with zero late blocks/clipping, exactly silent
+paused windows and the original10ms clock comparison intact. The three currently
+normal f9b87dd4d4d7 devices are ready for update under standing authorization. Physical acceptance
+remains at failed test5 until the new artifact is installed and exercised.
+Evidence: `verification/horizontal-admission/`; live helpers:
+`output/horizontal-admission-20261015/`.
 
 ### Dual-device basic physical flow accepted (2026-10-12)
 

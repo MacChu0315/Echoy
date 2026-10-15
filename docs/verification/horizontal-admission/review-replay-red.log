@@ -1,0 +1,2 @@
+test_radio: /home/zhuzhengming/esp/ts/Mosaico/Echoy/tests/horizontal_radio/test_radio.c:115: stale_advertisement_after_recover: Assertion `!v.admitted && nodes[1].edge[0]==nodes[2].id && nodes[1].edge[1]==nodes[0].id' failed.
+Aborted (core dumped)

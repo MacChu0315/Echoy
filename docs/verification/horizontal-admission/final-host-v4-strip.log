@@ -1,0 +1,3 @@
+PASS merged strip permissions and stale cancel never re-arms capture
+PASS glyph boundary cases
+PASS 40 RGBA glyphs match original masks and exact requested opacity

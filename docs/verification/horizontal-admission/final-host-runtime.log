@@ -1,0 +1,56 @@
+test_audio_waits_for_explicit_activation (__main__.DeviceRuntime) ... ok
+test_cache_unknown_battery_and_blocked_io (__main__.DeviceRuntime) ... ok
+test_close_error_is_not_success (__main__.DeviceRuntime) ... ok
+test_deadline_trace_records_delayed_write_and_exact_lateness (__main__.DeviceRuntime) ... ok
+test_empty_battery_survives_unknown_read (__main__.DeviceRuntime) ... ok
+test_failed_calibration_cannot_play_uncalibrated_bank (__main__.DeviceRuntime) ... ok
+test_flush_failure_stops_output (__main__.DeviceRuntime) ... ok
+test_harmony_trial_disabled_in_ordinary_build (__main__.DeviceRuntime) ... ok
+test_harmony_trial_failure_keeps_old_valid_bank (__main__.DeviceRuntime) ... ok
+test_harmony_trial_stale_job_cannot_play (__main__.DeviceRuntime) ... ok
+test_harmony_trial_stays_on_worker_and_paused (__main__.DeviceRuntime) ... ok
+test_health_stop_retry (__main__.DeviceRuntime) ... ok
+test_initial_audio_open_failure_needs_recovery (__main__.DeviceRuntime) ... ok
+test_late_output_faults_without_catchup (__main__.DeviceRuntime) ... ok
+test_link_reader_cannot_block_audio_or_pause (__main__.DeviceRuntime) ... ok
+test_link_snapshots_preserve_audio_owner_and_silence (__main__.DeviceRuntime) ... ok
+test_loading_cache_satisfies_gallery_contract (__main__.DeviceRuntime) ... ok
+test_measurement_cancel_at_result_publication (__main__.DeviceRuntime) ... ok
+test_measurement_cancel_fifo_and_any_ui_action (__main__.DeviceRuntime) ... ok
+test_measurement_cancel_overflow_stops (__main__.DeviceRuntime) ... ok
+test_measurement_cancelled_analysis_cannot_publish_stale_result (__main__.DeviceRuntime) ... ok
+test_measurement_explicit_bounded_and_budget (__main__.DeviceRuntime) ... ok
+test_measurement_failed_stop_erases_raw_capture (__main__.DeviceRuntime) ... ok
+test_measurement_failures (__main__.DeviceRuntime) ... ok
+test_measurement_reader_cannot_block_capture_or_cancel (__main__.DeviceRuntime) ... ok
+test_measurement_requires_psram (__main__.DeviceRuntime) ... ok
+test_measurement_shutdown_during_capture (__main__.DeviceRuntime) ... ok
+test_measurement_worker_shutdown_race (__main__.DeviceRuntime) ... ok
+test_normal_build_cannot_open_microphone (__main__.DeviceRuntime) ... ok
+test_office_all_roles_use_one_voicing_and_office_trims (__main__.DeviceRuntime) ... ok
+test_office_failure_keeps_old_valid_bank (__main__.DeviceRuntime) ... ok
+test_office_shutdown_retains_worker_owned_job (__main__.DeviceRuntime) ... ok
+test_office_stale_job_cannot_play (__main__.DeviceRuntime) ... ok
+test_office_voicing_disabled_in_ordinary_build (__main__.DeviceRuntime) ... ok
+test_office_worker_keeps_old_publication_and_pause (__main__.DeviceRuntime) ... ok
+test_overflow_fail_silent_and_recovery (__main__.DeviceRuntime) ... ok
+test_partial_task_creation (__main__.DeviceRuntime) ... ok
+test_partial_write_and_recovery (__main__.DeviceRuntime) ... ok
+test_pause_discards_delayed_pcm (__main__.DeviceRuntime) ... ok
+test_record_cancel_fifo (__main__.DeviceRuntime) ... ok
+test_reference_tone_is_explicit_bounded_and_keeps_seed (__main__.DeviceRuntime) ... ok
+test_reference_tone_partial_write (__main__.DeviceRuntime) ... ok
+test_reference_tone_readback_failure (__main__.DeviceRuntime) ... ok
+test_reference_tone_ui_cancel (__main__.DeviceRuntime) ... ok
+test_retained_image_storage_is_psram_without_fallback (__main__.DeviceRuntime) ... ok
+test_shutdown_before_activation (__main__.DeviceRuntime) ... ok
+test_stop_during_startup_then_retry (__main__.DeviceRuntime) ... ok
+test_stop_with_immutable_job_in_flight (__main__.DeviceRuntime) ... ok
+test_ui_reader_cannot_block_audio_or_pause (__main__.DeviceRuntime) ... ok
+test_office_defaults_disable_other_trials_and_microphone (__main__.OfficeConfiguration) ... ok
+test_two_voicing_trials_cannot_be_compiled_together (__main__.OfficeConfiguration) ... ok
+
+----------------------------------------------------------------------
+Ran 51 tests in 30.538s
+
+OK

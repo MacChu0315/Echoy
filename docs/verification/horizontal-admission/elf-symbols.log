@@ -1,0 +1,4 @@
+501d0210 l     O .flash.rodata	0000002c echoy_horizontal_profile
+500e9ef8 g     F .flash.text	00000644 mosaico_peer_link_init
+5002f154 g     F .flash.text	000000ce echoy_group_stamp_send
+5002bafc g     F .flash.text	0000071e echoy_radio_tick

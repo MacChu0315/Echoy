@@ -1,0 +1,61 @@
+{
+  "path": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/three-device/echoy-horizontal-admission-normal-6a85b7b9ce13.irisfw",
+  "package_sha256": "6a85b7b9ce13ae8c2539e45100812ba6ef9b83875e8a4906d5a9a9d4b314d6d9",
+  "firmware": {
+    "sha256": "e1b260ba342a8126b96ac408c218c117647d9c85e14544d64ff7e015d4bc363f",
+    "size": 2113616,
+    "chip_id": 32,
+    "project_name": "echoy",
+    "version": "1.0.0",
+    "elf_sha256": "2b0679a81bf58c0801b99a23d224d3003e6575487d820aa89de6d62aa3d57a8a"
+  },
+  "bundle": {
+    "schema": "esp-iris-system-update/v1",
+    "manifest_sha256": "fbd9409faea4f5a8f5de34886518637794e80bb156f431581bb58dfcfdf11ca9",
+    "key_id": null,
+    "chip_id": 32,
+    "flash_size": 16777216,
+    "target_layout_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+    "components": [
+      {
+        "id": 1,
+        "kind": "partition_table",
+        "flags": 0,
+        "target_offset": 32768,
+        "size": 4096,
+        "sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+        "file": "partition-table.bin"
+      },
+      {
+        "id": 2,
+        "kind": "application",
+        "flags": 0,
+        "target_offset": 2162688,
+        "size": 2113616,
+        "sha256": "e1b260ba342a8126b96ac408c218c117647d9c85e14544d64ff7e015d4bc363f",
+        "file": "ota_0.bin"
+      },
+      {
+        "id": 3,
+        "kind": "data",
+        "flags": 0,
+        "target_offset": 15728640,
+        "size": 377872,
+        "sha256": "e984f71018a6dd24baa4cd988f3815fc8edbb24c809b87fddc78d0f54edf31d7",
+        "file": "ui_apps.bin"
+      }
+    ],
+    "signature_verified": false,
+    "release": "1.0.0",
+    "minimum_recovery_version": "0.1"
+  },
+  "sdkconfig_sha256": "70220c2212aa90ec8e4faa86a6db329ebab212fadf6a00db34fe914010c934e8",
+  "build_result": ".codex-runs/idf-low-noise-build/20261015-173516-system-update-bundle-840619/result.json",
+  "common_thresholds": "Shared const echoy_horizontal_profile in .flash.rodata; left_reject_z=600, other S31 profile fields preserved; no startup baseline capture or per-device persisted calibration.",
+  "magnetic_diagnostics": false,
+  "standing_update_authorization": true,
+  "startup_separation_required": false,
+  "status": "Superseded before installation by timestamp-corrected9d00b69f4fce. Native clock check exposed queue timestamp error; no device used this candidate.",
+  "source_base_commit": "10fd8bbc3c02f9a0e80323c96906e94dc192dc27",
+  "source_identity": "Base commit plus exact source-hashes.json and build configuration hashes; implementation committed after verification."
+}

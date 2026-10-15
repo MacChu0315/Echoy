@@ -1,0 +1,2 @@
+test_chain_host: /home/zhuzhengming/esp/ts/Mosaico/Echoy/tests/group/test_chain_host.c:28: check: Assertion `llabs(info.root_offset_us-expected)<10000' failed.
+Aborted (core dumped)

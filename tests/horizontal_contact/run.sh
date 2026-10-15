@@ -11,7 +11,7 @@ trap 'rm -rf "$contact_build"' EXIT HUP INT TERM
  -I"$bsp/mosaico_peer_link/include" -I"$bsp/esp-mosaico-bsp/include" \
  -include "$root/tests/board_link/include/prelude.h" \
  "$root/tests/horizontal_contact/test_contact.c" "$bsp/mosaico_interaction/mosaico_mag_classifier.c" \
- "$root/projects/echoy/main/echoy_group.c" "$root/projects/echoy/main/echoy_link_protocol.c" \
+ "$root/projects/echoy/main/echoy_radio.c" "$root/projects/echoy/main/echoy_group.c" "$root/projects/echoy/main/echoy_link_protocol.c" \
  "$root/projects/echoy/main/echoy_link_codec.c" "$root/projects/echoy/main/echoy_music.c" \
  -lm -o "$contact_build/test_contact"
 "$contact_build/test_contact"

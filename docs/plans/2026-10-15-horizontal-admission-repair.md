@@ -1,4 +1,4 @@
-# Horizontal neighbor admission repair — proposed, not approved
+# Horizontal neighbor admission repair — approved 2026-10-15
 
 ## Goal and retained behavior
 
@@ -86,9 +86,9 @@ musical phrase format remains unchanged. Update all three to one verified new
 version for acceptance; retain f9b87dd4d4d7 normal and the accepted dual baseline
 for deliberate rollback. No persistent-data migration is proposed.
 
-This is a larger adapter/transport change than a threshold adjustment and is
-not implemented yet. The user's standing installation authorization remains
-valid; the requested approval is for this architecture/compatibility change.
+The user approved this architecture/compatibility change with “同意推进” on
+2026-10-15. Implementation and verification are now in progress. Standing
+installation authorization remains valid; no repeated package approval is needed.
 
 ## Implementation and acceptance sequence
 

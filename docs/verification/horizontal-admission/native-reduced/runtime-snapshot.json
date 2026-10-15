@@ -1,0 +1,21 @@
+{
+  "binary": {
+    "source": "output/build-sim-horizontal-admission/echoy_chain_desk",
+    "sha256": "3656be5e830cdf64d75827ceda641828aa7f00890218aa9a7eeb160410ae5b54"
+  },
+  "bundle": {
+    "source": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/build-sim-horizontal-admission/echoy_backend_assets/app.gspb",
+    "sha256": "245d1b7013be501fba5ee56978ab9c602a59bc2ff8c037c679820ee4a999c4b9"
+  },
+  "api": {
+    "source": "/home/zhuzhengming/esp/ts/Mosaico/Echoy/output/build-sim-horizontal-admission/echoy_backend_assets/bundle_gsp.api.json",
+    "sha256": "e922ebf1e4f4f035e9f43560dce26754db5f51bf209524c4cf4e6998634563b3"
+  },
+  "command": [
+    "tools/check_three_chain.py",
+    "--build-dir",
+    "output/build-sim-horizontal-admission",
+    "--output",
+    "output/horizontal-admission-20261015/native-reduced-stamped"
+  ]
+}

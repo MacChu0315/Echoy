@@ -24,6 +24,9 @@ void echoy_group_receive(echoy_group_t *group,uint64_t source,const uint8_t *byt
                           size_t size,int64_t now);
 void echoy_group_delivery(echoy_group_t *group,uint64_t destination,uint16_t service,
                            bool success,int64_t now);
+/* Correct only PING/PONG send timestamps at actual first wire submission.
+ * Caller keeps these bytes unchanged for reliable retransmissions. */
+void echoy_group_stamp_send(echoy_group_t *group,uint8_t *bytes,size_t size,int64_t now);
 void echoy_group_tick(echoy_group_t *group,int64_t now);
 
 /* Copied worker diagnostics for the external native desk / device evidence;
