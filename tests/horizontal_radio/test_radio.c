@@ -6,7 +6,7 @@
 typedef struct { echoy_radio_t *r; uint64_t id; uint32_t boot; uint64_t edge[2];
  unsigned delivered,failed,received,lost; uint8_t payload[64]; int64_t last_send; } node_t;
 static node_t nodes[3];static int64_t now;
-static bool isolated[3],drop_ack;
+static bool isolated[3],drop_ack,wire_busy[3];
 static uint8_t saved_advert[3][100];static size_t saved_size[3];static unsigned send_fail_every,sends;
 static bool stamp_enabled,fail_next_data;static unsigned stamps;static int64_t last_stamp;
 static struct { unsigned from; uint64_t to; uint8_t bytes[100]; size_t size; uint32_t boot; } frames[256];
@@ -42,11 +42,12 @@ static void advance(int64_t duration){int64_t end=now+duration;
 static void stamp(void *ctx,uint8_t *data,size_t size,int64_t at){
  (void)ctx;assert(size==64);memcpy(data,&at,sizeof(at));stamps++;last_stamp=at;
 }
+static bool available(void *ctx){return !wire_busy[(node_t*)ctx-nodes];}
 static void setup(void){
- memset(nodes,0,sizeof(nodes));memset(isolated,0,sizeof(isolated));now=10000;head=tail=sends=send_fail_every=0;drop_ack=false;fail_next_data=false;stamps=0;last_stamp=0;memset(saved_size,0,sizeof(saved_size));
+ memset(nodes,0,sizeof(nodes));memset(wire_busy,0,sizeof(wire_busy));memset(isolated,0,sizeof(isolated));now=10000;head=tail=sends=send_fail_every=0;drop_ack=false;fail_next_data=false;stamps=0;last_stamp=0;memset(saved_size,0,sizeof(saved_size));
  uint64_t ids[]={0x30eda0f45936ULL,0x30eda0f452a0ULL,0x30eda0f40c6cULL};
  for(unsigned i=0;i<3;i++){node_t *n=&nodes[i];n->id=ids[i];n->boot=10+i;n->r=calloc(1,echoy_radio_size());assert(n->r);
-  echoy_radio_callbacks_t cb={send_wire,edge,lost,receive,delivery,n,stamp_enabled?stamp:NULL};assert(echoy_radio_init(n->r,echoy_radio_size(),n->id,n->boot,&cb));
+  echoy_radio_callbacks_t cb={send_wire,edge,lost,receive,delivery,n,stamp_enabled?stamp:NULL,available};assert(echoy_radio_init(n->r,echoy_radio_size(),n->id,n->boot,&cb));
   echoy_radio_contacts(n->r,true,0,now);
  }
 }
@@ -95,7 +96,7 @@ static void reboot_and_stale_boot(void){
  const unsigned order[3]={0,1,2};setup();chain(order);advance(3000000);check_chain(order);
  uint8_t old[100];size_t size=saved_size[1];memcpy(old,saved_advert[1],size);uint32_t boot=nodes[1].boot;
  node_t *n=&nodes[1];free(n->r);n->r=calloc(1,echoy_radio_size());n->boot++;n->edge[0]=n->edge[1]=0;n->last_send=0;
- echoy_radio_callbacks_t cb={send_wire,edge,lost,receive,delivery,n,stamp_enabled?stamp:NULL};assert(echoy_radio_init(n->r,echoy_radio_size(),n->id,n->boot,&cb));echoy_radio_contacts(n->r,true,3,now);
+ echoy_radio_callbacks_t cb={send_wire,edge,lost,receive,delivery,n,stamp_enabled?stamp:NULL,available};assert(echoy_radio_init(n->r,echoy_radio_size(),n->id,n->boot,&cb));echoy_radio_contacts(n->r,true,3,now);
  advance(3000000);check_chain(order);
  for(unsigned i=0;i<3;i++)if(i!=1)echoy_radio_receive(nodes[i].r,n->id,boot,old,size,now);
  advance(2000000);check_chain(order);cleanup();
@@ -130,6 +131,14 @@ static void wire_timestamp_is_stable_across_ack_retries(void){
  cleanup();stamp_enabled=false;
  puts("PASS timestamp follows actual first accepted submission; ACK retries/forwarding retain identical bytes");
 }
+static void driver_completion_controls_wire_submission(void){
+ const unsigned order[3]={0,1,2};setup();chain(order);advance(3000000);check_chain(order);
+ uint8_t data[64]={7};wire_busy[0]=true;int64_t last=nodes[0].last_send;
+ assert(echoy_radio_send(nodes[0].r,nodes[2].id,0xe001,data,sizeof(data),now));advance(250000);
+ assert(nodes[0].last_send==last && nodes[2].received==0);
+ wire_busy[0]=false;advance(1000000);assert(nodes[0].delivered==1 && nodes[2].received==1);cleanup();
+ puts("PASS previous driver completion gates submission without consuming retries");
+}
 int main(void){
  const unsigned orders[6][3]={{0,1,2},{0,2,1},{1,0,2},{1,2,0},{2,0,1},{2,1,0}};
  for(unsigned p=0;p<6;p++){
@@ -146,6 +155,6 @@ int main(void){
  chain(orders[3]);advance(3000000);check_chain(orders[3]);cleanup();
  puts("PASS immediate physical release and fast ABC to BCA");
  pair_and_invalid_graphs();missing_middle_and_legacy_are_not_absent();
- transport_failure_and_backpressure();reboot_and_stale_boot();overflow_and_transport_loss_preserve_contacts();stale_advertisement_after_recover();wire_timestamp_is_stable_across_ack_retries();
+ transport_failure_and_backpressure();reboot_and_stale_boot();overflow_and_transport_loss_preserve_contacts();stale_advertisement_after_recover();wire_timestamp_is_stable_across_ack_retries();driver_completion_controls_wire_submission();
  return 0;
 }

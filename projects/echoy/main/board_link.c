@@ -8,6 +8,7 @@
 #include <string.h>
 #include "bsp/magnetometer.h"
 #include "esp_log.h"
+#include "esp_now.h"
 #ifdef ESP_PLATFORM
 #include "esp_heap_caps.h"
 #endif
@@ -24,7 +25,7 @@ typedef struct {
     board_link_receive_fn receive;
     void *ctx;
     echoy_radio_t *radio;
-    bool radio_started;
+    bool radio_started,send_callback_registered;
     int64_t next_radio_stats;
     echoy_group_t *group;
     uint64_t self;
@@ -44,6 +45,29 @@ typedef struct {
 static const char *TAG="echoy-link";
 static atomic_bool owned;
 static board_link_t *instance;
+/* The pinned peer-link component owns RX but does not register a TX callback.
+ * This singleton callback touches only static atomics, never audio or a freed
+ * board context. A successful submission is not application delivery. */
+static atomic_bool radio_inflight;
+static atomic_uint radio_completed,radio_mac_failed;
+static void radio_sent(const esp_now_send_info_t *info,esp_now_send_status_t status)
+{
+    (void)info;
+    atomic_fetch_add_explicit(&radio_completed,1,memory_order_relaxed);
+    if(status!=ESP_NOW_SEND_SUCCESS)atomic_fetch_add_explicit(&radio_mac_failed,1,memory_order_relaxed);
+    atomic_store_explicit(&radio_inflight,false,memory_order_release);
+}
+static bool radio_available(void *ctx)
+{ (void)ctx;return !atomic_load_explicit(&radio_inflight,memory_order_acquire); }
+static esp_err_t stop_radio(board_link_t *h)
+{
+    if(h->send_callback_registered) {
+        esp_err_t error=esp_now_unregister_send_cb();
+        if(error!=ESP_OK)return error;
+        h->send_callback_registered=false;
+    }
+    return mosaico_peer_link_deinit();
+}
 static esp_err_t init_horizontal_classifier(mosaico_mag_classifier_t *classifier)
 {
     /* The shared read-only profile is the common Flash-backed threshold source.
@@ -68,8 +92,13 @@ static bool network_send(void *ctx,uint64_t to,uint16_t service,const uint8_t *p
 static bool radio_send(void *ctx,uint64_t to,const uint8_t *p,size_t size)
 {
     (void)ctx;
-    return mosaico_peer_link_send_broadcast_to(MOSAICO_PEER_MSG_GAME_EVENT,to,0,
-        MOSAICO_EDGE_NONE,MOSAICO_EDGE_NONE,0,p,size)==ESP_OK;
+    bool expected=false;
+    if(!atomic_compare_exchange_strong_explicit(&radio_inflight,&expected,true,
+        memory_order_acq_rel,memory_order_acquire))return false;
+    esp_err_t error=mosaico_peer_link_send_broadcast_to(MOSAICO_PEER_MSG_GAME_EVENT,to,0,
+        MOSAICO_EDGE_NONE,MOSAICO_EDGE_NONE,0,p,size);
+    if(error!=ESP_OK)atomic_store_explicit(&radio_inflight,false,memory_order_release);
+    return error==ESP_OK;
 }
 static void radio_edge(void *ctx,bool left,uint64_t peer,uint32_t session,int64_t now)
 {
@@ -248,6 +277,10 @@ static void radio_stats(board_link_t *h,int64_t now)
         " reject=%" PRIu32 " retry=%" PRIu32 " drop=%" PRIu32 " queued=%u peak=%u known=%u admitted=%u fresh=%u",
         info.transmitted,info.send_failures,info.received,info.rejected,info.retries,info.queue_drops,
         info.pending,info.queue_high_water,info.known,info.admitted?1u:0u,info.scene_fresh?1u:0u);
+    ESP_LOGI(TAG,"ECHOY_RADIO_TX completed=%u failed=%u busy=%u left=%012" PRIx64 " right=%012" PRIx64 " graph=%016" PRIx64,
+        atomic_load_explicit(&radio_completed,memory_order_relaxed),
+        atomic_load_explicit(&radio_mac_failed,memory_order_relaxed),
+        atomic_load_explicit(&radio_inflight,memory_order_acquire)?1u:0u,info.peers[0],info.peers[1],info.graph);
 }
 static void worker(void *arg)
 {
@@ -309,12 +342,16 @@ esp_err_t board_link_start(board_link_read_fn read,board_link_receive_fn receive
          * the ECHN/version envelope is a separate admission capability. */
         c.network_id=LINK_NETWORK_ID;
         error=mosaico_peer_link_init(&c,radio_event,h);h->radio_started=error==ESP_OK;
+        if(error==ESP_OK) {
+            atomic_store(&radio_inflight,false);atomic_store(&radio_completed,0);atomic_store(&radio_mac_failed,0);
+            error=esp_now_register_send_cb(radio_sent);h->send_callback_registered=error==ESP_OK;
+        }
     }
     if (error==ESP_OK) {
         h->self=mosaico_peer_link_get_device_id();
         uint32_t boot=mosaico_peer_link_get_boot_id();
         echoy_group_callbacks_t cb={owner_read,owner_receive,network_send,h};
-        echoy_radio_callbacks_t rcb={radio_send,radio_edge,radio_lost,radio_receive,radio_delivery,h,radio_stamp};
+        echoy_radio_callbacks_t rcb={radio_send,radio_edge,radio_lost,radio_receive,radio_delivery,h,radio_stamp,radio_available};
         if(!echoy_group_init(h->group,echoy_group_size(),h->self,boot,&cb) ||
            !echoy_radio_init(h->radio,echoy_radio_size(),h->self,boot,&rcb))error=ESP_ERR_INVALID_STATE;
         if (error==ESP_OK && xTaskCreate(worker,"echoy_link",7168,h,tskIDLE_PRIORITY+1,NULL)==pdPASS) {
@@ -324,7 +361,7 @@ esp_err_t board_link_start(board_link_read_fn read,board_link_receive_fn receive
     }
     atomic_store(&h->worker_exited,true);
     if (h->radio_started) {
-        esp_err_t stopped=mosaico_peer_link_deinit();
+        esp_err_t stopped=stop_radio(h);
         if (stopped!=ESP_OK) { instance=h; return stopped; }
     }
     if (h->events) vQueueDelete(h->events);
@@ -340,7 +377,7 @@ esp_err_t board_link_stop(uint32_t timeout_ms)
         if (esp_timer_get_time()>=deadline) return ESP_ERR_TIMEOUT;
         vTaskDelay(1);
     }
-    esp_err_t error=mosaico_peer_link_deinit(); if (error!=ESP_OK) return error;
+    esp_err_t error=stop_radio(h); if (error!=ESP_OK) return error;
     vQueueDelete(h->events); free(h->group); free(h->radio); free(h); instance=NULL;
     atomic_store_explicit(&owned,false,memory_order_release); return ESP_OK;
 }

@@ -55,12 +55,13 @@
   "magnetic_diagnostics": false,
   "standing_update_authorization": true,
   "startup_separation_required": false,
-  "status": "Verified local candidate, not installed yet.",
+  "status": "Installed/HEALTHY all three. Correct A-to-C neighbor observed, but stable transport is not accepted: B/C still have repeated NO_MEM and C relay drops. Driver-completion gate follow-up in progress.",
   "source_base_commit": "10fd8bbc3c02f9a0e80323c96906e94dc192dc27",
-  "source_identity": "Base commit plus exact source-hashes.json and build configuration hashes; implementation committed after verification.",
+  "source_identity": "Verified implementation commit plus exact source/configuration hashes; project version is fixed1.0.0, so this metadata update does not rebuild the image.",
   "build_configuration_sha256": {
     "projects/echoy/main/CMakeLists.txt": "61b02ca4d98d272b65d2050bbf3cf1d49c3f21f0f7b7d02db8dba020b0a7e28b",
     "projects/echoy/pc/CMakeLists.txt": "fcbda3237171037c3d348ce2924d1cbc54dbec41d1ce63327a549a5fcdefffda",
     "docs/dependencies.json": "be8a4e20e0aa0225500a61281f2f511142111addb26dd7daa61601d3824147e4"
-  }
+  },
+  "source_commit": "69f64a1"
 }

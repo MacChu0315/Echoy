@@ -51,6 +51,9 @@
   New ECHN-capable packages must be used together; legacy network packages do
   not complete this handshake. Radio tests must reach all same-scene nodes,
   not assume perfect neighbor routes. Cover all six orders and fast reorder.
+  Wait for the public ESP-NOW TX completion callback before another submission;
+  fixed spacing alone does not bound driver inflight work. The callback must
+  not touch audio or freed board contexts.
   Stamp clock sends at first accepted wire submission; retries/forwarding must
   retain identical bytes. Preserve known sequence/generation watermarks during
   recovery and never infer physical release from stale radio evidence.

@@ -18,6 +18,8 @@ typedef struct {
     /* Optional: stamp clock payload immediately before its first accepted wire
      * submission. Retries retain identical bytes; forwarding never restamps. */
     void (*stamp)(void *ctx,uint8_t *data,size_t size,int64_t now);
+    /* Optional driver completion gate; waiting consumes no attempt or stamp. */
+    bool (*available)(void *ctx);
 } echoy_radio_callbacks_t;
 typedef struct {
     uint64_t graph,members[3],peers[2];

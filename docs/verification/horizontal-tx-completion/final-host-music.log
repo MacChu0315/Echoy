@@ -1,0 +1,2 @@
+PASS: 43536 C plans match frozen JavaScript; all 12 role/phrase combinations, 138 density boundary values, generic cleaning, randomized inputs, ordering and all represented note fields; max 28/64 events.
+PASS: invalid arguments, null pointers, bounded writes and deterministic repeat composition.

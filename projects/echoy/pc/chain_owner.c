@@ -12,6 +12,7 @@ struct chain_node {
     echoy_link_update_t desired;
     bool queued;
     double energy;
+    int64_t radio_busy_until;
 };
 struct echoy_chain {
     struct chain_node nodes[3];
@@ -39,6 +40,8 @@ static bool send_packet(void *ctx,uint64_t to,uint16_t service,const uint8_t *by
     struct chain_node *n=ctx;
     return echoy_radio_send(n->radio,to,service,bytes,size,n->chain->now+echoy_chain_offset(n->id));
 }
+static bool radio_available(void *ctx)
+{ struct chain_node *n=ctx;return n->chain->now>=n->radio_busy_until; }
 static bool send_radio(void *ctx,uint64_t to,const uint8_t *bytes,size_t size)
 {
     struct chain_node *n=ctx; echoy_chain_t *c=n->chain;
@@ -47,7 +50,7 @@ static bool send_radio(void *ctx,uint64_t to,const uint8_t *bytes,size_t size)
         c->packets[i].active=true; c->packets[i].from=(uint8_t)n->id;
         c->packets[i].to=to ? (uint8_t)(to-1) : UINT8_MAX;
         c->packets[i].bytes=(uint8_t)size; memcpy(c->packets[i].payload,bytes,size);
-        c->packets[i].at=c->now+1000; return true;
+        c->packets[i].at=c->now+1000; n->radio_busy_until=c->now+1000; return true;
     }
     return false;
 }
@@ -69,7 +72,7 @@ echoy_chain_t *echoy_chain_create(void)
         n->band=echoy_band_create(); n->group=calloc(1,echoy_group_size());
         n->radio=calloc(1,echoy_radio_size());
         echoy_group_callbacks_t cb={read_owner,receive_owner,send_packet,n};
-        echoy_radio_callbacks_t radio_cb={send_radio,radio_edge,radio_lost,radio_receive,radio_delivery,n,radio_stamp};
+        echoy_radio_callbacks_t radio_cb={send_radio,radio_edge,radio_lost,radio_receive,radio_delivery,n,radio_stamp,radio_available};
         if (!n->band || !n->group || !n->radio ||
             !echoy_radio_init(n->radio,echoy_radio_size(),(uint64_t)i+1,100u+(unsigned)i,&radio_cb) || !echoy_group_init(n->group,echoy_group_size(),(uint64_t)i+1,100u+(unsigned)i,&cb)) {
             echoy_chain_delete(c); return NULL;

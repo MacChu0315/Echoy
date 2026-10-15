@@ -1,0 +1,258 @@
+[
+  {
+    "name": "horizontal-radio",
+    "command": [
+      "sh",
+      "tests/horizontal_radio/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 0.27,
+    "log": "output/horizontal-tx-completion-20261015/final-host-horizontal-radio.log"
+  },
+  {
+    "name": "horizontal-contact",
+    "command": [
+      "sh",
+      "tests/horizontal_contact/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 0.86,
+    "log": "output/horizontal-tx-completion-20261015/final-host-horizontal-contact.log"
+  },
+  {
+    "name": "group-owner",
+    "command": [
+      "sh",
+      "tests/group/run_owner.sh"
+    ],
+    "returncode": 0,
+    "seconds": 0.99,
+    "log": "output/horizontal-tx-completion-20261015/final-host-group-owner.log"
+  },
+  {
+    "name": "group-protocol",
+    "command": [
+      "sh",
+      "tests/group/run_protocol.sh"
+    ],
+    "returncode": 0,
+    "seconds": 0.17,
+    "log": "output/horizontal-tx-completion-20261015/final-host-group-protocol.log"
+  },
+  {
+    "name": "group-adapter",
+    "command": [
+      "sh",
+      "tests/group/run_adapter.sh"
+    ],
+    "returncode": 0,
+    "seconds": 0.57,
+    "log": "output/horizontal-tx-completion-20261015/final-host-group-adapter.log"
+  },
+  {
+    "name": "group-chain-host",
+    "command": [
+      "sh",
+      "tests/group/run_chain_host.sh"
+    ],
+    "returncode": 0,
+    "seconds": 1.78,
+    "log": "output/horizontal-tx-completion-20261015/final-host-group-chain-host.log"
+  },
+  {
+    "name": "group-three",
+    "command": [
+      "sh",
+      "tests/group/run_three.sh"
+    ],
+    "returncode": 0,
+    "seconds": 6.67,
+    "log": "output/horizontal-tx-completion-20261015/final-host-group-three.log"
+  },
+  {
+    "name": "legacy-transactions",
+    "command": [
+      "sh",
+      "tests/cooperation/run_transactions.sh"
+    ],
+    "returncode": 0,
+    "seconds": 2.52,
+    "log": "output/horizontal-tx-completion-20261015/final-host-legacy-transactions.log"
+  },
+  {
+    "name": "legacy-deferred",
+    "command": [
+      "sh",
+      "tests/cooperation/run_deferred.sh"
+    ],
+    "returncode": 0,
+    "seconds": 1.18,
+    "log": "output/horizontal-tx-completion-20261015/final-host-legacy-deferred.log"
+  },
+  {
+    "name": "legacy-board",
+    "command": [
+      "sh",
+      "tests/board_link/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 0.95,
+    "log": "output/horizontal-tx-completion-20261015/final-host-legacy-board.log"
+  },
+  {
+    "name": "magnetic-diagnostics",
+    "command": [
+      "sh",
+      "tests/magnet_diagnostics/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 1.43,
+    "log": "output/horizontal-tx-completion-20261015/final-host-magnetic-diagnostics.log"
+  },
+  {
+    "name": "linked-device",
+    "command": [
+      "sh",
+      "tests/linked_device/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 0.96,
+    "log": "output/horizontal-tx-completion-20261015/final-host-linked-device.log"
+  },
+  {
+    "name": "linked-clock",
+    "command": [
+      "sh",
+      "tests/linked_device/run_clock.sh"
+    ],
+    "returncode": 0,
+    "seconds": 1.09,
+    "log": "output/horizontal-tx-completion-20261015/final-host-linked-clock.log"
+  },
+  {
+    "name": "band",
+    "command": [
+      "sh",
+      "tests/band/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 7.39,
+    "log": "output/horizontal-tx-completion-20261015/final-host-band.log"
+  },
+  {
+    "name": "render-active",
+    "command": [
+      "sh",
+      "tests/render_active/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 2.12,
+    "log": "output/horizontal-tx-completion-20261015/final-host-render-active.log"
+  },
+  {
+    "name": "audio",
+    "command": [
+      "sh",
+      "tests/audio/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 2.24,
+    "log": "output/horizontal-tx-completion-20261015/final-host-audio.log"
+  },
+  {
+    "name": "speaker-voicing",
+    "command": [
+      "sh",
+      "tests/speaker_voicing/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 1.3,
+    "log": "output/horizontal-tx-completion-20261015/final-host-speaker-voicing.log"
+  },
+  {
+    "name": "v4-strip",
+    "command": [
+      "sh",
+      "tests/v4_strip/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 0.71,
+    "log": "output/horizontal-tx-completion-20261015/final-host-v4-strip.log"
+  },
+  {
+    "name": "arrange",
+    "command": [
+      "sh",
+      "tests/arrange/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 3.51,
+    "log": "output/horizontal-tx-completion-20261015/final-host-arrange.log"
+  },
+  {
+    "name": "music",
+    "command": [
+      "node",
+      "tests/music/oracle.mjs"
+    ],
+    "returncode": 0,
+    "seconds": 3.13,
+    "log": "output/horizontal-tx-completion-20261015/final-host-music.log"
+  },
+  {
+    "name": "runtime",
+    "command": [
+      "python3",
+      "tests/device_runtime/test_runtime.py"
+    ],
+    "returncode": 0,
+    "seconds": 30.51,
+    "log": "output/horizontal-tx-completion-20261015/final-host-runtime.log"
+  },
+  {
+    "name": "desk-runtime",
+    "command": [
+      "sh",
+      "tests/desk_runtime/run.sh"
+    ],
+    "returncode": 0,
+    "seconds": 2.83,
+    "log": "output/horizontal-tx-completion-20261015/final-host-desk-runtime.log"
+  },
+  {
+    "name": "host-configure",
+    "command": [
+      "cmake",
+      "-S",
+      "tests",
+      "-B",
+      "build-host"
+    ],
+    "returncode": 0,
+    "seconds": 0.02,
+    "log": "output/horizontal-tx-completion-20261015/final-host-host-configure.log"
+  },
+  {
+    "name": "host-build",
+    "command": [
+      "cmake",
+      "--build",
+      "build-host"
+    ],
+    "returncode": 0,
+    "seconds": 0.06,
+    "log": "output/horizontal-tx-completion-20261015/final-host-host-build.log"
+  },
+  {
+    "name": "host-ctest",
+    "command": [
+      "ctest",
+      "--test-dir",
+      "build-host",
+      "--output-on-failure"
+    ],
+    "returncode": 0,
+    "seconds": 0.02,
+    "log": "output/horizontal-tx-completion-20261015/final-host-host-ctest.log"
+  }
+]

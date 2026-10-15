@@ -23,6 +23,14 @@ int main(void)
     link_event_t e={.received_us=1000000,.message={.type=MOSAICO_PEER_MSG_CONTACT_CLAIM,
         .source_id=44,.source_boot_id=10,.local_edge=MOSAICO_EDGE_TOP}};
     process_event(h,&e);assert(!h->seams[1].peer);
+    uint8_t bytes[8]={0};defer_send_callback=true;
+    assert(radio_available(h));assert(radio_send(h,0,bytes,sizeof(bytes)));
+    assert(!radio_available(h));assert(!radio_send(h,0,bytes,sizeof(bytes)));
+    assert(fake_send_callback);fake_send_callback(NULL,ESP_NOW_SEND_FAIL);
+    assert(radio_available(h) && atomic_load(&radio_completed)==1 && atomic_load(&radio_mac_failed)==1);
+    send_error=ESP_FAIL;assert(!radio_send(h,0,bytes,sizeof(bytes)) && radio_available(h));
+    send_error=ESP_OK;defer_send_callback=false;
+    assert(radio_send(h,0,bytes,sizeof(bytes)) && radio_available(h));
     assert(board_link_stop(0)==ESP_ERR_TIMEOUT && instance==h);
     atomic_store(&h->worker_exited,true); stop_error=ESP_FAIL;
     assert(board_link_stop(5000)==ESP_FAIL && instance==h && h->group);

@@ -1,0 +1,15 @@
+PASS all-broadcast static order 0 and real two-hop delivery
+PASS all-broadcast static order 1 and real two-hop delivery
+PASS all-broadcast static order 2 and real two-hop delivery
+PASS all-broadcast static order 3 and real two-hop delivery
+PASS all-broadcast static order 4 and real two-hop delivery
+PASS all-broadcast static order 5 and real two-hop delivery
+PASS immediate physical release and fast ABC to BCA
+PASS pair plus isolated third; same-side contact cannot pair
+PASS stale known middle/legacy blocks shortcut; radio loss retains physical edges and recovers
+PASS lost acknowledgements never duplicate delivery; bounded slots/retries and send-error backoff
+PASS boot challenge rejects replayed pre-reboot advertisement
+PASS receive loss and excess scene capacity fail closed without inventing contact release
+PASS recovery preserves sequence/contact generation watermarks against old-position replay
+PASS timestamp follows actual first accepted submission; ACK retries/forwarding retain identical bytes
+PASS previous driver completion gates submission without consuming retries

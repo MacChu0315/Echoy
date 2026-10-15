@@ -243,7 +243,7 @@ void echoy_radio_tick(echoy_radio_t *r,int64_t now){
  if(!r||now<0)return;
  topology(r,now);
  for(unsigned i=0;i<OWN;i++)if(r->own[i].used && (now-r->own[i].created>=EXPIRE || (r->own[i].attempts>=5 && now>=r->own[i].due))){pending_t old=r->own[i];r->own[i].used=false;r->cb.delivery(r->cb.ctx,old.destination,old.service,false,now);}
- if(now<r->next_wire)return;
+ if(now<r->next_wire || (r->cb.available && !r->cb.available(r->cb.ctx)))return;
  for(unsigned i=1;i<r->known;i++)if(r->peers[i].reply_challenge){peer_t *p=&r->peers[i];uint8_t frame[88];header(frame,PROOF);w32(frame+8,r->peers[0].value.boot);w32(frame+12,p->reply_boot);w32(frame+16,p->reply_challenge);if(transmit(r,p->value.id,frame,20,now))p->reply_challenge=0;return;}
  if(now>=r->next_advertise){uint8_t frame[88];advertisement(r,frame);if(transmit(r,0,frame,24+20*r->known,now))r->next_advertise=now+INTERVAL;return;}
  for(unsigned i=1;i<r->known;i++){peer_t *p=&r->peers[i];if(p->pending_boot && now>=p->next_probe){uint8_t frame[88];header(frame,PROBE);w32(frame+8,r->peers[0].value.boot);w32(frame+12,p->pending_boot);w32(frame+16,p->challenge);transmit(r,p->value.id,frame,20,now);p->next_probe=now+RETRY;return;}}

@@ -1,0 +1,6 @@
+PASS actual owners/PCM with real radio admission: order0, fast root-to-tail reorder, detach
+PASS actual owners/PCM with real radio admission: order1, fast root-to-tail reorder, detach
+PASS actual owners/PCM with real radio admission: order2, fast root-to-tail reorder, detach
+PASS actual owners/PCM with real radio admission: order3, fast root-to-tail reorder, detach
+PASS actual owners/PCM with real radio admission: order4, fast root-to-tail reorder, detach
+PASS actual owners/PCM with real radio admission: order5, fast root-to-tail reorder, detach

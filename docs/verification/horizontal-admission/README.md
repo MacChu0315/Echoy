@@ -75,3 +75,19 @@ Both have zero PCM late blocks/clipped samples and exactly silent paused windows
 original10ms clock comparison passes. Evidence is in native-normal/native-reduced.
 Package9d00b69f4fce is verified locally; hardware delivery and real fast-reorder
 acceptance remain pending. Earlier6a85b7b9ce13 was never installed.
+
+## Initial hardware result (9d00b69f4fce)
+
+Installed/HEALTHY on all three; identity, retained components, fixed sampling and
+startup audio checks pass. A explicitly admits C on its LEFT; all three report
+a fresh admitted three-participant scene. However stable transport is not
+accepted: B/C show repeated ESP_ERR_ESPNOW_NO_MEM; C has1174 submit failures and
+206 relay/ACK queue drops in the captured cumulative counters. A remained at
+zero submit failures in its captured window. B/C/A owner states were1/5/2 with
+empty banks, so do not count following or original fast-reorder acceptance.
+
+First-wire spacing alone does not bound the driver's inflight work. The pinned
+SDK documentation recommends waiting for the previous ESP-NOW send callback;
+public peer-link does not register one. A follow-up adds application-owned TX
+completion gating and separate MAC completion counters, retaining reliable
+application ACKs. Its hardware effect is not yet verified.

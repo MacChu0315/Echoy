@@ -1092,15 +1092,33 @@ sequence/generation watermarks. Native testing exposed a queued-send clock bias;
 first accepted raw submission now stamps matching PING/PONG fields, with immutable
 retry/forward bytes. Known-offset tests pass without relaxing the10ms limit.
 
-Final SDK candidate `9d00b69f4fce` (ELF
-`cd0487be492dee5fa62087360b2df488c59581004d4e6f3debd659405806fe6c`)
-is built/inspected, not yet installed. Final official native normal/reduced-motion
-runs each pass all seven checks, with zero late blocks/clipping, exactly silent
-paused windows and the original10ms clock comparison intact. The three currently
-normal f9b87dd4d4d7 devices are ready for update under standing authorization. Physical acceptance
-remains at failed test5 until the new artifact is installed and exercised.
-Evidence: `verification/horizontal-admission/`; live helpers:
-`output/horizontal-admission-20261015/`.
+Package `9d00b69f4fce` (ELF cd0487be492dee5fa62087360b2df488c59581004d4e6f3debd659405806fe6c)
+from implementation commit69f64a1 is installed/HEALTHY on all three. Boots:
+B16824075800820969890, C17232752916447458424, A9167656871751075119.
+Identity, retained components, fixed sampling and startup audio checks pass.
+Normal/reduced official native checks had each passed seven checks with zero
+PCM misses/clipping/silent paused output and unchanged10ms clock comparison.
+
+Hardware admission is now fresh/three-member and A explicitly selects C on its
+LEFT, but stable transport remains failed: B/C still emit ESPNOW_NO_MEM (C has
+1174 cumulative raw submit failures and206 relay/ACK drops in the captured window).
+Empty owner states B/C/A were1/5/2; no user fast-reorder acceptance is claimed.
+
+Follow-up in progress: fixed SDK docs recommend waiting for the previous send
+completion, but public peer-link registers no TX callback. The app now registers
+its own public send callback, touches only static atomic busy/completion counters,
+and gates further submissions on completion. It retains the10ms spacing,
+application ACK/retry bounds, timestamp immutability, physical masks and music.
+Driver busy does not consume a retry. Delayed/synchronous/failed callbacks and
+bounded transport regressions pass; independent review finds no open issue.
+Final25 host groups, related sanitizers, fixed SDK build and the matching
+official native normal7/7 checks pass (original clock bound, no PCM late blocks,
+clipping or paused output). Candidate0606e70d3f3c, ELF
+c7e6f0cb031d7c0e496938386e7261958668988271f425b527e3316d360b28b6,
+is ready for rollout. Current installed version remains9d00b69f4fce; no follow-up
+write yet. Start with middle C, then verify each device before the next write.
+Evidence: `verification/horizontal-admission/`; follow-up work:
+`output/horizontal-tx-completion-20261015/`.
 
 ### Dual-device basic physical flow accepted (2026-10-12)
 

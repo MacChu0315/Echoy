@@ -160,11 +160,15 @@ esp_err_t mosaico_network_get_snapshot(mosaico_network_handle_t handle,mosaico_n
 #endif
 
 #ifdef ECHOY_GROUP_ADAPTER_TEST
+static esp_now_send_cb_t fake_send_callback;
+static bool defer_send_callback;
+esp_err_t esp_now_register_send_cb(esp_now_send_cb_t cb){fake_send_callback=cb;return ESP_OK;}
+esp_err_t esp_now_unregister_send_cb(void){fake_send_callback=NULL;return ESP_OK;}
 esp_err_t mosaico_peer_link_init(const mosaico_peer_link_config_t *c,mosaico_peer_receive_cb_t cb,void *ctx)
 { (void)cb;(void)ctx;assert(c->network_id==LINK_NETWORK_ID && c->manage_wifi);return ESP_OK; }
 esp_err_t mosaico_peer_link_deinit(void){stop_calls++;return stop_error;}
 uint64_t mosaico_peer_link_get_device_id(void){return 11;}
 uint32_t mosaico_peer_link_get_boot_id(void){return 1234567;}
 esp_err_t mosaico_peer_link_send_broadcast_to(mosaico_peer_message_type_t type,uint64_t to,uint32_t session,mosaico_edge_t left,mosaico_edge_t right,uint16_t rotation,const void *payload,size_t size)
-{(void)to;(void)payload;assert(type==MOSAICO_PEER_MSG_GAME_EVENT && !session && !left && !right && !rotation && size<=100);sends++;return send_error;}
+{(void)to;(void)payload;assert(type==MOSAICO_PEER_MSG_GAME_EVENT && !session && !left && !right && !rotation && size<=100);sends++;if(send_error==ESP_OK && !defer_send_callback && fake_send_callback)fake_send_callback(NULL,ESP_NOW_SEND_SUCCESS);return send_error;}
 #endif

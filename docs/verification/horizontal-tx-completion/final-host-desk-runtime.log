@@ -1,0 +1,3 @@
+Cannot initialize WAV capture
+Cannot finish WAV capture
+PASS capture errors are reported and stopped audio children are reaped

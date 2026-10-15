@@ -1,0 +1,2 @@
+test_radio: /home/zhuzhengming/esp/ts/Mosaico/Echoy/tests/horizontal_radio/test_radio.c:138: driver_completion_controls_wire_submission: Assertion `nodes[0].last_send==last && nodes[2].received==0' failed.
+Aborted (core dumped)
