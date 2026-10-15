@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-15",
+  "device_id": "4553502d49524953010030eda0f45936",
+  "factory_mac": "30:ed:a0:f4:59:36",
+  "observed_port": "/dev/ttyACM2",
+  "authorization": "User explicitly approved accepted package 2b984e511b98 on replacement f45936 and confirmed all three devices separated >=15 cm on nonmetal surface. This completed application-only operation does not grant later replacement-device writes.",
+  "application_package_sha256": "2b984e511b9837c34a37d818fb15d0335e67c9a4f4e4b88b203c790eb6af1727",
+  "elf_sha256": "5a721bd70413aabd5716c646b5fd1d29091cffe6464e44c7d994e2923b5d5e95",
+  "operation_id": "d17dd45f-b043-40a4-a344-f82c3517dafd",
+  "healthy": true,
+  "validated": true,
+  "application_boot_id": 10218426682111976170,
+  "retained_recovery_version_observed": "0.1.4",
+  "recovery_boot_id": 15229114980827953342,
+  "recovery_crash_count": 0,
+  "retained_bootloader_flash_region_sha256": "925d2541ed213aa29f552f15ee6881b899dd72c4dbc81343ae2b4c88caa72cc4",
+  "source_partition_sector_sha256": "6f0d33a90336cf8a5361aadf787d819ab53e741d8f3c6614f0b8d40d28000fff",
+  "target_partition_sector_sha256": "4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231",
+  "magnetic_baseline_ready": true,
+  "baseline_ready_device_ms": 3483,
+  "baseline_right_y": -1,
+  "baseline_right_z": 205,
+  "normal_home_verified": true,
+  "startup_silent": true,
+  "partial_write_errors_deadline_misses_and_clipping": 0,
+  "current_live_three_devices": {
+    "first": {
+      "device_id": "4553502d49524953010030eda0f452a0",
+      "boot_id": 16302733521290689690,
+      "firmware_mode": "normal",
+      "firmware_sha256": "5a721bd70413aabd5716c646b5fd1d29091cffe6464e44c7d994e2923b5d5e95",
+      "crash_count": 0,
+      "uptime_us": 53036284098
+    },
+    "second": {
+      "device_id": "4553502d49524953010030eda0f40c6c",
+      "boot_id": 6607233552779193098,
+      "firmware_mode": "normal",
+      "firmware_sha256": "5a721bd70413aabd5716c646b5fd1d29091cffe6464e44c7d994e2923b5d5e95",
+      "crash_count": 0,
+      "uptime_us": 53038741869
+    },
+    "replacement": {
+      "device_id": "4553502d49524953010030eda0f45936",
+      "boot_id": 10218426682111976170,
+      "firmware_mode": "normal",
+      "firmware_sha256": "5a721bd70413aabd5716c646b5fd1d29091cffe6464e44c7d994e2923b5d5e95",
+      "crash_count": 0,
+      "uptime_us": 742053724
+    }
+  },
+  "excluded": "Three-board cooperation is not implemented; third-device sound/paired interaction listening acceptance and quantified timing are not established by startup checks. The former f40cd8 diagnostic candidate was not installed."
+}

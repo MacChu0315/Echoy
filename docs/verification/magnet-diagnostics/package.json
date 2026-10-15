@@ -113,5 +113,5 @@
   "ui_data_identical_to_accepted_package": true,
   "accepted_source_and_package_preserved": true,
   "writes_performed": false,
-  "approval": "Pending exact third-device diagnostic update approval; no approval to modify the other devices."
+  "approval": "Not approved or installed. Original target f40cd8 was replaced on 2026-10-15; do not apply its pending request to replacement f45936."
 }

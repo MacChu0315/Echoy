@@ -17,8 +17,10 @@ It is default-off; separate diagnostic defaults retain accepted office voicing.
 `965c61cd405307627f45aba82842cd690f099739b21a93715774089b1b6bd644`.
 Immutable artifact: `output/dual-device/echoy-magnet-diagnostics-2cfd9f7c2bbd.irisfw`.
 Only this candidate is prepared locally; no diagnostic write has occurred.
-Exact third-only update approval is pending. Keep the current bare/separated
-position when collecting startup data. The saved two-device tag/package and
+The user replaced target f40cd8 on 2026-10-15 before approval/installation.
+That pending request does not apply to the replacement f45936. Keep this
+candidate archived; do not install it merely because a different device is
+now called the third unit. The saved two-device tag/package and
 accepted sound baseline remain intact; neither earlier device needs this trial.
 
 Verification:

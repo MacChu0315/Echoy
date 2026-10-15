@@ -794,11 +794,12 @@ The user plans to connect a third Mosaico and sets a product capacity target of
 at most three devices in the same scene. The current desktop arrangement already
 has three logical tiles/two edges, but the physical adapter still owns one active
 peer per board; its middle device cannot yet act as both upstream receiver and
-downstream sender. Third-device identity/installed firmware and write authorization
-must be established after connection. Physical topology is awaiting clarification;
-a same-orientation horizontal chain is proposed, not yet a confirmed new scope.
-No three-device implementation or third-device write has occurred. Preserve the
-accepted two-device behavior and sound while designing/validating that extension.
+downstream sender. Replacement third-device identity and baseline installation are verified below.
+The user confirmed horizontal-only, same-orientation A—B—C support, including
+independent devices and arbitrary pairs. No vertical, L-shaped or rotated scope.
+No three-device implementation has occurred. The original third-device baseline
+installation is recorded below; preserve the accepted two-device behavior and
+sound while designing/validating the three-device extension.
 
 Third-device baseline installation: the user explicitly approved reviewed
 Recovery 0.1.4 plus accepted Echoy `2b984e511b98` and freshly confirmed separated
@@ -820,7 +821,7 @@ hashes cover the full 0x2000..0x8000 bootloader region; reviewed image plus 144
 A file-only versus region-hash assertion initially failed; the public hashing
 implementation and exact bytes resolve it without another firmware write.
 
-**Outstanding:** third startup magnetic calibration fails. Both BMM150 sensors
+**Replaced device f40cd8 (historical unresolved fault):** startup magnetic calibration fails. Both BMM150 sensors
 initialize, but three windows report `right_y=-88`, span 2..3, `edges=0x08`
 (LEFT, as defined by the pinned header). The initial description calling this
 bottom was corrected. Current app boot has zero crashes/output faults but
@@ -835,12 +836,57 @@ The pinned classifier's LEFT predicate requires averaged left-X saturation; the
 BMM150 fixed-point driver can return -32768 without a register-read error. Actual
 left-X and the hardware cause remain unmeasured because the installed application
 has no full-axis readback. A local startup-only diagnostic package `2cfd9f7c2bbd`
-is prepared/verified; third-only update approval is pending. No new device write
-has occurred. See `verification/magnet-diagnostics/README.md`.
+is prepared/verified but was never installed. The user subsequently replaced
+this device; its diagnosis/pending approval must not be transferred to the new
+unit. See `verification/magnet-diagnostics/README.md`.
 Evidence: `verification/third-device/README.md`; initial ROM-only evidence remains
 `verification/third-device-intake.json`. Earlier first/second read-only status
 checks confirmed accepted firmware and zero crashes on later boots
 `11368868697531345372` / `4144219012607374767`; their reboot cause is not inferred.
+
+### Replacement third-device baseline and horizontal-only design (2026-10-15)
+
+The user replaced former f40cd8. Official discovery and a fresh live handshake
+identify `4553502d49524953010030eda0f45936`, factory MAC `30:ed:a0:f4:59:36`,
+initially `/dev/ttyACM2`, endpoint `usb:location=1-8.1:1.0`. It initially ran normal
+`jump_jump 0.1.0`/ELF `8054b957d334f5517f0044fd2e8ce0f3f68438ef6d319ccb9239f448280238d4`,
+boot `1662590448659556080`, crash count zero. Do not reuse the removed device's
+cached identity, magnetic fault or pending diagnostic approval.
+
+The user specifically approved replacing jump_jump with accepted Echoy
+`2b984e511b98` and freshly confirmed three devices separated >=15 cm on a nonmetal
+surface. One official application system update succeeded: operation
+`d17dd45f-b043-40a4-a344-f82c3517dafd`, HEALTHY/validated boot
+`10218426682111976170`, accepted ELF
+`5a721bd70413aabd5716c646b5fd1d29091cffe6464e44c7d994e2923b5d5e95`.
+Existing Recovery 0.1.4 was observed on ready boot `15229114980827953342` with
+crash count zero and retained; no ROM restoration or bootloader replacement.
+Before/after bootloader-region SHA is unchanged
+`925d2541ed213aa29f552f15ee6881b899dd72c4dbc81343ae2b4c88caa72cc4`; target partition
+sector is accepted `4f8786d12001684a3c02385f31ef167247827bd73b744801494a8c5851bc7231`.
+
+Both BMM150 sensors initialize and startup calibration succeeds at 3483 ms:
+right-Y -1, right-Z 205, eight samples, horizontal contact enabled. Real
+Record-only home, silent startup, zero crashes/partial writes/write errors/
+deadline misses/clipping pass. All three active devices have fresh normal-mode
+identity checks with the same accepted ELF and zero crash counts. This resolves
+the replacement's hardware onboarding; it does not diagnose the removed f40cd8's
+cause or establish three-board cooperation/third-device acoustic acceptance.
+Detailed evidence: `verification/replacement-third/README.md`.
+
+The user now explicitly confirms **only a horizontal chain**, with same
+orientation as proposed. The concrete design is
+`plans/2026-10-15-three-device-horizontal-design.md`: retain per-device musical
+owners, add bounded three-node/root coordination, use the pinned public routed
+network, and preserve explicit playback permission and detach semantics.
+The design awaits review before architecture/protocol implementation. It also
+proposes immediate first playback when a joint update is already locked, with
+that fixed boundary retained and a potentially shortened first loop cycle;
+this overlap behavior is proposed, not accepted yet. Current firmware is still
+the accepted two-device implementation. The completed replacement baseline
+installation is not blanket permission for future replacement-device writes.
+The saved tag/package/sound baseline remain intact. Old-target diagnostic
+`2cfd9f7c2bbd` remains archived and uninstalled.
 
 ### Dual-device basic physical flow accepted (2026-10-12)
 

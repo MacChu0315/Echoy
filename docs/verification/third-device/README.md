@@ -1,4 +1,8 @@
-# Third-device baseline installation (2026-10-14)
+# Former third-device baseline installation (2026-10-14)
+
+Device f40cd8 was replaced on 2026-10-15. This record is historical; the replacement
+f45936 has separate intake/authorization evidence. The diagnostic candidate was
+never installed on f40cd8.
 
 The user authorized the exact two-step installation and confirmed all three
 boards separated >=15 cm on a nonmetal surface. Official `mosaico.py recover

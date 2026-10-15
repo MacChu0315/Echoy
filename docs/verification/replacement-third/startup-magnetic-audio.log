@@ -1,0 +1,13 @@
+ECHOY_STRIP tile=A mode=record_only at_us=1851958 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=A mode=record_only record=0 play=0 single=0 at_us=1854846
+I (3083) echoy-link: calibrating magnetometers; keep tiles separated until baseline ready
+I (3133) S31-Mosaico-Sensor: BMM150[0] initialized: address=0x11 shared_INT=2
+I (3143) S31-Mosaico-Sensor: BMM150[1] initialized: address=0x12 shared_INT=2
+I (3163) echoy_device: musical role gain milli: pulse=1600 voice=780 dust=63 harmony=800
+I (3213) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=0 nonzero=0 peak=0 pa=0 activations=0 write_max=0us partial=0 write_errors=0 deadline_misses=0
+I (3213) echoy_device: internal=25671 PSRAM=12232708 owner_stack=8716 prepare=0us render_max=0us rejected=0 overflow=0 cache_busy=0 limited=0 mix=0us pcm=0us core=0 prep_stack=7948
+ECHOY_STRIP_READY tile=A mode=record_only record=1 play=0 single=0 at_us=2085832
+I (3483) mosaico_mag: baseline captured: right_y=-1 right_z=205 samples=8
+I (3483) echoy-link: magnetometer baseline ready; horizontal contact enabled
+I (33213) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=720240 nonzero=0 peak=0 pa=0 activations=0 write_max=8412us partial=0 write_errors=0 deadline_misses=0
+I (33213) echoy_device: internal=24359 PSRAM=12258588 owner_stack=8716 prepare=12us render_max=2529us rejected=0 overflow=0 cache_busy=0 limited=0 mix=1247us pcm=1423us core=1 prep_stack=7948

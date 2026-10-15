@@ -33,9 +33,9 @@
   dual-device test versions, without per-package confirmation. Verify each
   identity/artifact, retain Recovery and use the official workflow; USB port
   names may change. This is not authorization for remote repository writes.
-- Product capacity target: at most three Mosaicos in the same scene. Physical
-  three-board support is not implemented yet; preserve the accepted dual-device
-  baseline while designing that extension.
+- Product capacity target: at most three Mosaicos in the same scene, restricted
+  to same-orientation horizontal chains. Physical three-board support is not yet
+  implemented; preserve the accepted dual-device baseline during the extension.
 - Physical linking uses the pinned BSP's magnetic classifier and ESP-NOW network.
   Start radio/RF initialization before audio activation; network and sensor I/O
   stay off the audio owner. Keep boards separated on a nonmetal surface during
