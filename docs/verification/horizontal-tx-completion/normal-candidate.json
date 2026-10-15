@@ -55,7 +55,8 @@
   "magnetic_diagnostics": false,
   "standing_update_authorization": true,
   "startup_separation_required": false,
-  "status": "Verified local candidate, not installed yet.",
+  "status": "Installed/HEALTHY all three. Correct BCA graph and idle waiting state; raw submit failures zero. App retries/drops remain; manual reorder acceptance pending.",
   "source_base_commit": "69f64a1d16fcf9ea9665cd5674cf399dc396fd03",
-  "source_identity": "Base69f64a1 plus exact source-hashes.json; TX completion gate and counters only."
+  "source_identity": "Base69f64a1 plus exact source-hashes.json; TX completion gate and counters only.",
+  "source_commit": "5bfaff7"
 }

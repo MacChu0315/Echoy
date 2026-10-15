@@ -1104,21 +1104,32 @@ LEFT, but stable transport remains failed: B/C still emit ESPNOW_NO_MEM (C has
 1174 cumulative raw submit failures and206 relay/ACK drops in the captured window).
 Empty owner states B/C/A were1/5/2; no user fast-reorder acceptance is claimed.
 
-Follow-up in progress: fixed SDK docs recommend waiting for the previous send
-completion, but public peer-link registers no TX callback. The app now registers
-its own public send callback, touches only static atomic busy/completion counters,
-and gates further submissions on completion. It retains the10ms spacing,
-application ACK/retry bounds, timestamp immutability, physical masks and music.
-Driver busy does not consume a retry. Delayed/synchronous/failed callbacks and
-bounded transport regressions pass; independent review finds no open issue.
-Final25 host groups, related sanitizers, fixed SDK build and the matching
-official native normal7/7 checks pass (original clock bound, no PCM late blocks,
-clipping or paused output). Candidate0606e70d3f3c, ELF
-c7e6f0cb031d7c0e496938386e7261958668988271f425b527e3316d360b28b6,
-is ready for rollout. Current installed version remains9d00b69f4fce; no follow-up
-write yet. Start with middle C, then verify each device before the next write.
-Evidence: `verification/horizontal-admission/`; follow-up work:
-`output/horizontal-tx-completion-20261015/`.
+The TX-completion follow-up5bfaff7 is installed on all three as
+0606e70d3f3c (ELF c7e6f0cb031d7c0e496938386e7261958668988271f425b527e3316d360b28b6).
+The public TX callback gates submissions using static atomics; waiting consumes
+neither retries nor clock stamps. Application ACKs remain required. Final25
+host groups, sanitizers, fixed SDK build and matching native normal7/7 pass,
+including original clock tolerance, zero PCM misses/clipping and paused silence.
+Independent callback/lifecycle review is clear.
+
+Current boots: B13347265088592221265, C15872866450408188654,
+A8281715504648553660. Identity, HEALTHY/commit, retained components, fixed Flash
+sampling and startup audio checks pass. Actual B—C—A graph agrees across all
+three (fc2f3efc2f779672), with correct reciprocal neighbors. Empty owners are
+1/2/2 (root connected, followers waiting), not recovering. Captured unified raw
+submit-failure counters remain0; app retries and relay/ACK drops still occur.
+C has7 cumulative MAC failures across rolling updates. No application crashes,
+but zero-loss/sustained-RF or acoustic timing acceptance is not claimed.
+
+Current user step awaiting result: keep B—C joined, move current rightmost
+original A to the far left to form A—B—C, record on A, wait until the one-shot
+reply finishes and hold35s. B/C must follow silently. Then perform the original
+fast A-to-right move to B—C—A. The latest user message asked for status; it did
+not answer this test. Do not mark test5 passed. Subsequent physical permutations,
+detach retention and joined-start checks remain open. No further installation
+permission or startup calibration question is required.
+Evidence: verification/horizontal-tx-completion/; helpers/live results:
+output/horizontal-tx-completion-20261015/.
 
 ### Dual-device basic physical flow accepted (2026-10-12)
 

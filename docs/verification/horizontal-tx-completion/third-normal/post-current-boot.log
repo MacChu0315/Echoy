@@ -1,0 +1,199 @@
+I (1431) app_recovery: boot state: running=ota_0@0x00210000 configured=ota_0@0x00210000
+I (1471) gsp_deployable: Opened deployable GSPB: scenes=1 content=0x01652307
+I (1471) ui_bundle: Mapped ui_apps GSPB: 377808 bytes, scenes=1, content_id=0x01652307
+I (1471) S31-Mosaico: Hardware version: v1.2 (variant=v1.2)
+I (1471) S31-Mosaico: Power controls initialized: VCC_PW GPIO60=0(adopted) CODEC_PW=always-on PWR_SW GPIO57=released(open-drain)
+I (1471) S31-Mosaico: Mainboard I2C initialized: port=0 SDA=56 SCL=3
+I (1471) co5300: version: 2.2.0
+I (1471) co5300_spi: LCD panel create success, version: 2.2.0
+W (2231) co5300_spi: The 3Ah command has been used and will be overwritten by external initialization sequence
+I (2831) S31-Mosaico-LCD: CO5300 initialized: 480x480 CS=50 SCL=42 RST=44 D0=36 D1=51 D2=35 D3=9 drive=0 TE=enabled(GPIO43) gap=(0,0) rotation=0
+I (2831) gsp_board: GSP present target 480x480 RGB565 TE=on GPIO=43
+I (2841) cst9220: Controller identified: chip=0x9220 project=0x6854 resolution=480x480 version=4 checkcode=0x0145d234
+I (2841) cst9220: CST9220 touch controller initialized with HYN212 protocol
+I (2841) S31-Mosaico-LCD: touch initialized: INT=6 reset=NC shared_I2C=0 rotation=0
+I (2841) iris_screen: Registered 480x480 RGB565 GSP screen backend (PSRAM shadow retained, capture on demand)
+I (2901) gsp_dma2d: DMA2D M2M copy engine ready
+I (2911) gsp_accel_ppa: PPA blend ready (+/-1 LSB from scalar reference)
+I (2911) gsp_accel_ppa: PPA backend ready: fill>=32768 px, async blit on (>=8192 px)
+I (2911) esp_gsp_esp_lcd: Acceleration: esp-idf-ppa
+I (2911) present_target: target: mode=TE_SYNC panel=IO/GRAM gram=1 rotation=0 te=1 fb=0 drawbuf=34x1
+I (2911) present_target: pipeline: commit=te_push slot=34x1
+I (2911) present_te: TE blanking start auto-detected: gpio=43 idle=0 edge=rising
+I (2911) present_te: TE sync ready: gpio=43 blanking=rise..fall sync=rise irq=both
+I (2911) present_te: te_compose: logical=480x480 physical=480x480 rotate=0 ppa=0 buffers=1 pipeline=0 async_copy=0
+I (2911) presenter: presenter: contract=PARTITION endpoint=te_compose mode=te_compose areas=0 retain=0 previous=0 drawbuf=32640
+I (2911) gsp_lcd_display: Partition canvas: region_capacity=32640 bytes
+I (2911) gsp_lcd_display: Display bound: 480x480 contract=partition owner=gsp region-cost=3/24/512
+E (2911) gpio: gpio_install_isr_service(568): GPIO isr service already installed
+I (2911) gsp_decode_task: Started decode task: stack=4096 memory=internal priority=3 poll=100 ms
+I (2911) gsp_esp_runtime: Background decode started
+I (2911) gsp_esp: Vector assets raise render stack: 12288 -> 32768 bytes
+I (2911) gsp_esp: Started render task: stack=32768 memory=internal priority=4
+I (2911) display_present:hw: Initializing hardware resources
+I (2921) display_present:hw: Hardware resources initialized successfully
+I (2951) present_te: TE schedule=slow/end edge=fall Tf/Tb/Ta/Ttx=16618/535/16083/23040 phase=[0,9661] blank_reuse=0 required=139%
+I (2981) esp_gsp_esp_lcd: UI live: 1 scene(s), 480x480
+ECHOY_UI_ALLOC object=ui status=allocated allocated_size=45056 internal=0 psram=1 internal_free=161287 internal_largest=96256
+I (2981) i2c_bus: I2C Bus V2 uses the externally initialized bus handle
+ECHOY_UI_ALLOC object=art_workspace status=allocated allocated_size=155648 internal=0 psram=1 internal_free=161107 internal_largest=96256
+ECHOY_UI_ALLOC object=standalone_model status=skipped allocated_size=0 internal=0 psram=0 internal_free=161107 internal_largest=96256
+ECHOY_UI_ALLOC object=view_cache status=allocated allocated_size=14592 internal=0 psram=1 internal_free=161107 internal_largest=96256
+ECHOY_HOME_RENDER mode=worker error=0
+I (2991) co5300_spi: set brightness to 100% (hardware value: 255)
+I (2991) S31-Mosaico-LCD: CO5300 brightness set to 100%
+ECHOY_DISPLAY brightness=100 effective=100 ok=1
+ECHOY_STRIP tile=A mode=record_only at_us=1853134 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=A mode=record_only record=0 play=0 single=0 at_us=1855953
+ECHOY_ROUTE route=status_page locale=zh
+ECHOY_LOCALE zh
+ECHOY_STATE phase=0 seed=0000 generation=0 at_us=1853134
+ECHOY_PLAN revision=0 role=pulse phrase=1 anchors=0 events=0
+I (2991) mosaico_mag: classifier initialized: profile=echoy-horizontal-v1 filter_samples=8
+I (2991) mosaico_mag: presence tracker initialized: contact=3 release=3
+I (2991) pp: pp rom version: 395df10
+I (2991) net80211: net80211 rom version: 395df10
+I (3001) wifi:wifi driver task: 2f06bac0, prio:23, stack:6656, core=0
+I (3001) wifi:wifi firmware version: fa44743
+I (3001) wifi:wifi certification version: v7.0
+I (3001) wifi:config NVS flash: enabled
+I (3001) wifi:config nano formatting: disabled
+I (3001) wifi:mac_version:HAL_MAC_ESP32AX_764,ut_version:N, band mode:0x1
+I (3001) wifi:Init data frame dynamic rx buffer num: 32
+I (3001) wifi:Init static rx mgmt buffer num: 5
+I (3001) wifi:Init management short buffer num: 32
+I (3001) wifi:Init dynamic tx buffer num: 32
+I (3001) wifi:Init static tx FG buffer num: 2
+I (3001) wifi:Init static rx buffer size: 1700 (rxctrl:64, csi:512)
+I (3001) wifi:Init static rx buffer num: 10
+I (3001) wifi:Init dynamic rx buffer num: 32
+I (3001) wifi_init: rx ba win: 6
+I (3001) wifi_init: accept mbox: 6
+I (3001) wifi_init: tcpip mbox: 32
+I (3001) wifi_init: udp mbox: 6
+I (3001) wifi_init: tcp mbox: 6
+I (3001) wifi_init: tcp tx win: 5760
+I (3001) wifi_init: tcp rx win: 5760
+I (3001) wifi_init: tcp mss: 1440
+I (3001) wifi_init: WiFi IRAM OP enabled
+I (3001) wifi_init: WiFi RX IRAM OP enabled
+I (3001) wifi_init: WiFi SLP IRAM OP enabled
+I (3001) phy_init: phy_version 100,dd4c590,Jul 14 2026,10:33:03
+I (3011) bq27220: Firmware Version 2002
+I (3031) bq27220: Hardware Version 0004
+W (3071) wifi:(phy)rate:0x0(  LP-1Mbps), pwr:20, txing:20
+W (3071) wifi:(phy)rate:0x1(  LP-2Mbps), pwr:20, txing:20
+W (3071) wifi:(phy)rate:0x2(LP-5.5Mbps), pwr:20, txing:20
+W (3071) wifi:(phy)rate:0x3( LP-11Mbps), pwr:20, txing:20
+W (3071) wifi:(phy)rate:0x5(  SP-2Mbps), pwr:20, txing:20
+W (3071) wifi:(phy)rate:0x6(SP-5.5Mbps), pwr:20, txing:20
+W (3071) wifi:(phy)rate:0x7( SP-11Mbps), pwr:20, txing:20
+W (3071) wifi:(phy)rate:0x8(    48Mbps), pwr:18, txing:18
+W (3081) wifi:(phy)rate:0x9(    24Mbps), pwr:19, txing:19
+W (3081) wifi:(phy)rate:0xa(    12Mbps), pwr:20, txing:20
+W (3081) wifi:(phy)rate:0xb(     6Mbps), pwr:20, txing:20
+W (3081) wifi:(phy)rate:0xc(    54Mbps), pwr:18, txing:18
+W (3081) wifi:(phy)rate:0xd(    36Mbps), pwr:19, txing:19
+W (3081) wifi:(phy)rate:0xe(    18Mbps), pwr:20, txing:20
+W (3081) wifi:(phy)rate:0xf(     9Mbps), pwr:20, txing:20
+W (3081) wifi:(phy)rate:0x10, mcs:0x0, pwr(bw20:20, bw40:19), txing:20
+W (3081) wifi:(phy)rate:0x11, mcs:0x1, pwr(bw20:20, bw40:19), txing:20
+W (3081) wifi:(phy)rate:0x12, mcs:0x2, pwr(bw20:20, bw40:19), txing:20
+W (3081) wifi:(phy)rate:0x13, mcs:0x3, pwr(bw20:20, bw40:19), txing:20
+W (3081) wifi:(phy)rate:0x14, mcs:0x4, pwr(bw20:19, bw40:18), txing:19
+W (3081) wifi:(phy)rate:0x15, mcs:0x5, pwr(bw20:19, bw40:18), txing:19
+W (3081) wifi:(phy)rate:0x16, mcs:0x6, pwr(bw20:18, bw40:17), txing:18
+W (3081) wifi:(phy)rate:0x17, mcs:0x7, pwr(bw20:18, bw40:17), txing:18
+W (3081) wifi:(phy)rate:0x18, mcs:0x8, pwr(bw20:16, bw40:16), txing:16
+W (3081) wifi:(phy)rate:0x19, mcs:0x9, pwr(bw20:15, bw40:15), txing:15
+I (3081) wifi:11ax coex: WDEVAX_PTI0(0x55777555), WDEVAX_PTI1(0x00003377).
+
+I (3081) wifi:mode : sta (30:ed:a0:f4:59:36)
+I (3081) wifi:enable tsf
+I (3081) ESPNOW: espnow [version: 2.0] init
+I (3081) mosaico_peer: started: device=30eda0f45936 boot=c5562d05 network=45434859 channel=1
+I (3081) echoy-link: shared Flash thresholds: profile=echoy-horizontal-v1 saturation=30000 left_reject_z=600; horizontal-only, no startup baseline capture
+I (3121) bq27220: Battery profile readback verified (25 fields, learned_capacity=excluded)
+I (3121) bq27220: Skip battery profile update: verification=full
+I (3131) echoy: Echoy physical link controller ready at 480x480 RGB565; speaker initializes silently
+I (3131) echoy_band: scheduler bytes=10392 internal=1 default_internal_largest=31744
+I (3131) echoy: Read-only plan snapshots ready: RPC 0xECA1
+I (3131) main_task: Returned from app_main()
+I (3131) S31-Mosaico-Sensor: BMM150[0] initialized: address=0x11 shared_INT=2
+I (3131) echoy_band: ECHOY_MODEL_STORAGE tile=A bytes=14336 internal=1 external=0 internal_free=80523 internal_largest=31744
+I (3131) echoy_band: ECHOY_MODEL_STORAGE tile=B bytes=14336 internal=1 external=0 internal_free=66183 internal_largest=31744
+I (3131) echoy_band: ECHOY_MODEL_STORAGE tile=C bytes=14336 internal=1 external=0 internal_free=51843 internal_largest=31744
+I (3131) S31-Mosaico-Sensor: BMM150[1] initialized: address=0x12 shared_INT=2
+I (3141) echoy-link: ECHOY_RADIO tx=1 fail=0 rx=0 reject=0 retry=0 drop=0 queued=0 peak=0 known=1 admitted=0 fresh=0
+I (3141) echoy-link: ECHOY_RADIO_TX completed=0 failed=0 busy=1 left=000000000000 right=000000000000 graph=0000000000000000
+W (3141) present_te: TE schedule=overrun/end edge=fall Tf/Tb/Ta/Ttx=7652/536/7116/58995 required=771%; no safe full-frame window
+I (3171) present_te: TE schedule=slow/end edge=fall Tf/Tb/Ta/Ttx=16647/538/16109/23486 phase=[0,9270] blank_reuse=0 required=142%
+I (3181) echoy_device: musical role gain milli: pulse=1600 voice=780 dust=63 harmony=800
+I (3201) ES8311: Work in Slave mode
+E (3201) i2s_common: i2s_channel_disable(1597): the channel has not been enabled yet
+I (3201) I2S_IF: No paired data, current mode: playback
+I (3201) I2S_IF: STD: TX, data_bit: 16, slot_bit: 16, ws_width: 16, slot_mode: MONO, slot_mask: 0x1
+I (3201) I2S_IF: STD: TX, sample_rate_hz: 24000, mclk_multiple: 256, clk_src: 18
+I (3211) Adev_Codec: Open codec device OK
+I (3231) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=0 nonzero=0 peak=0 pa=0 activations=0 write_max=0us partial=0 write_errors=0 deadline_misses=0
+I (3231) echoy_device: internal=38227 PSRAM=12324420 owner_stack=8716 prepare=0us render_max=0us rejected=0 overflow=0 cache_busy=0 limited=0 mix=0us pcm=0us core=0 prep_stack=7948
+ECHOY_STRIP_READY tile=A mode=record_only record=1 play=0 single=0 at_us=2105241
+ECHOY_ROUTE route=home locale=zh
+I (3471) echoy-link: horizontal sensors ready; fixed Flash thresholds active
+I (3551) mosaico_mag: presence event=CONTACT edge=LEFT mask=0x08
+I (3551) echoy-link: magnetic contact edge=LEFT
+I (3591) echoy-link: horizontal peer=30eda0f40c6c edge=LEFT session=3545802894
+ECHOY_STRIP tile=A mode=play_only at_us=3083091 duration_ms=240 reduced_motion=0
+ECHOY_STRIP_READY tile=A mode=play_only record=0 play=0 single=0 at_us=3086699
+ECHOY_UI_COST route=0 tick_max_us=6637 gap_max_us=82760 stack_min=7652
+ECHOY_ART_COST rendered=2 published=2 stale=0 coalesced=0 draw_max_us=24480 worker_stack_min=10676
+I (7131) S31-Mosaico-Battery: BQ27220 online: address=0x55 SDA=56 SCL=3 4193 mV
+I (7131) S31-Mosaico-Battery: BQ27220 default profile active: 80 mAh EDV=3000/3410/3530 mV
+I (7991) gsp_esp: perf: 2.6 rendered fps
+ECHOY_PLAN revision=3 role=pulse phrase=1 anchors=0 events=0
+ECHOY_UI_COST route=0 tick_max_us=5937 gap_max_us=50101 stack_min=7652
+ECHOY_ART_COST rendered=3 published=3 stale=0 coalesced=0 draw_max_us=24480 worker_stack_min=10544
+I (13001) gsp_esp: perf: 0.4 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=1085 gap_max_us=30254 stack_min=7652
+ECHOY_ART_COST rendered=3 published=3 stale=0 coalesced=0 draw_max_us=24480 worker_stack_min=10544
+I (18011) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=3161 gap_max_us=30375 stack_min=7652
+ECHOY_ART_COST rendered=3 published=3 stale=0 coalesced=0 draw_max_us=24480 worker_stack_min=10544
+I (23021) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=2633 gap_max_us=30308 stack_min=7652
+ECHOY_ART_COST rendered=3 published=3 stale=0 coalesced=0 draw_max_us=24480 worker_stack_min=10544
+I (28021) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=1090 gap_max_us=30438 stack_min=7652
+ECHOY_ART_COST rendered=3 published=3 stale=0 coalesced=0 draw_max_us=24480 worker_stack_min=10544
+I (33021) gsp_esp: perf: 0.0 rendered fps
+I (33141) echoy-link: ECHOY_RADIO tx=513 fail=0 rx=551 reject=0 retry=63 drop=0 queued=2 peak=2 known=3 admitted=1 fresh=1
+I (33141) echoy-link: ECHOY_RADIO_TX completed=512 failed=0 busy=1 left=30eda0f40c6c right=000000000000 graph=fc2f3efc2f779672
+I (33231) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=720240 nonzero=0 peak=0 pa=0 activations=0 write_max=8499us partial=0 write_errors=0 deadline_misses=0
+I (33231) echoy_device: internal=36847 PSRAM=12268284 owner_stack=8716 prepare=12us render_max=1663us rejected=0 overflow=0 cache_busy=537 limited=0 mix=447us pcm=1326us core=1 prep_stack=7948
+ECHOY_UI_COST route=0 tick_max_us=3179 gap_max_us=30340 stack_min=7652
+ECHOY_ART_COST rendered=3 published=3 stale=0 coalesced=0 draw_max_us=24480 worker_stack_min=10544
+I (38031) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=2787 gap_max_us=32241 stack_min=7652
+ECHOY_ART_COST rendered=3 published=3 stale=0 coalesced=0 draw_max_us=24480 worker_stack_min=10544
+I (43041) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=2733 gap_max_us=30260 stack_min=7652
+ECHOY_ART_COST rendered=3 published=3 stale=0 coalesced=0 draw_max_us=24480 worker_stack_min=10544
+I (48041) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=1059 gap_max_us=30304 stack_min=7652
+ECHOY_ART_COST rendered=3 published=3 stale=0 coalesced=0 draw_max_us=24480 worker_stack_min=10544
+I (53051) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=3053 gap_max_us=30263 stack_min=7652
+ECHOY_ART_COST rendered=3 published=3 stale=0 coalesced=0 draw_max_us=24480 worker_stack_min=10544
+I (58061) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=2795 gap_max_us=30322 stack_min=7652
+ECHOY_ART_COST rendered=3 published=3 stale=0 coalesced=0 draw_max_us=24480 worker_stack_min=10544
+I (63071) gsp_esp: perf: 0.0 rendered fps
+I (63151) echoy-link: ECHOY_RADIO tx=1031 fail=0 rx=1131 reject=0 retry=106 drop=0 queued=1 peak=2 known=3 admitted=1 fresh=1
+I (63151) echoy-link: ECHOY_RADIO_TX completed=1031 failed=0 busy=0 left=30eda0f40c6c right=000000000000 graph=fc2f3efc2f779672
+I (63241) echoy_device: pcm_gain_milli=18000 clipped=0 accepted=1440480 nonzero=0 peak=0 pa=0 activations=0 write_max=8499us partial=0 write_errors=0 deadline_misses=0
+I (63241) echoy_device: internal=37227 PSRAM=12268284 owner_stack=8716 prepare=12us render_max=1663us rejected=0 overflow=0 cache_busy=1066 limited=0 mix=447us pcm=1326us core=1 prep_stack=7948
+ECHOY_UI_COST route=0 tick_max_us=2963 gap_max_us=30277 stack_min=7652
+ECHOY_ART_COST rendered=3 published=3 stale=0 coalesced=0 draw_max_us=24480 worker_stack_min=10544
+I (68071) gsp_esp: perf: 0.0 rendered fps
+ECHOY_UI_COST route=0 tick_max_us=2931 gap_max_us=30334 stack_min=7652
+ECHOY_ART_COST rendered=3 published=3 stale=0 coalesced=0 draw_max_us=24480 worker_stack_min=10544
