@@ -1,10 +1,14 @@
 # Developing Echoy
 
 Run all commands below from the **Echoy repository root**, not this `docs/`
-directory. This document describes the dual-device `master` code and its
-three-tile desktop simulation. To reproduce the released three-device firmware,
-check out `echoy-three-basic-ba951963754a` in a separate checkout and use its
-recorded dependencies and verification instructions.
+directory. `master` starts at the three-device release source `a83a64e` and
+adds documentation-only commits. Its application, configuration, tests and tools
+match `echoy-three-basic-ba951963754a`. Use that immutable tag when you need the
+exact release snapshot, including its historical documentation.
+
+The older accepted dual-device source remains at
+`echoy-dual-accepted-20261014`. Later unaccepted experiments belong to
+`archive/echoy-three-device`, not `master`.
 
 The examples assume the original workspace layout: Echoy beside a compatible
 `esp-mosaico-vibe` checkout and the pinned `.toolchains/` directory. A clone of
@@ -67,10 +71,12 @@ python3 ../esp-mosaico-vibe/submodule/esp-mosaico-utils/mosaico-tools/skills/idf
 ```
 
 The portable audio/linkage sources compile for the pinned ESP32-S31 SDK.
-The `master` code includes speaker output, magnetic contact and dual-device
-wireless cooperation. Its dual-device checklist and office sound were accepted;
-build success alone does not establish new hardware acceptance. Physical
-three-device support belongs to `echoy-three-basic-ba951963754a`, not this branch.
+The `master` code includes speaker output, magnetic contact and the original
+three-device horizontal-chain coordinator. Basic three-device operation was
+confirmed, but live ABC→BCA rearrangement remains faulty. Startup still requires
+separation for magnetic calibration. Build success does not establish new
+hardware acceptance; later Flash-threshold and radio-admission repairs are not
+included here.
 No device write is part of these build commands.
 
 The earlier `mosaico.py --workspace . project sim --project projects/echoy

@@ -27,7 +27,7 @@
 
 下载 **v1.0.0** 可以使用留存的三机版本。它是**有已知限制的预发布版本**，并未通过完整三机验收。
 
-**`master` 保留的是已验收的双机代码，不是下载固件的源码。** 要构建发布的三机固件，请使用 [`echoy-three-basic-ba951963754a`](https://github.com/MacChu0315/Echoy/tree/echoy-three-basic-ba951963754a) tag。
+**`master` 现在以发布的三机版本为代码基线，顶部保留后续文档修改。** 要取得发布时的确切源码快照，请使用 [`echoy-three-basic-ba951963754a`](https://github.com/MacChu0315/Echoy/tree/echoy-three-basic-ba951963754a) tag。
 
 [版本、源码 tag 与校验值（英文）](docs/releases/v1.0.0.md) · [已验收双机源码](https://github.com/MacChu0315/Echoy/tree/echoy-dual-accepted-20261014)
 

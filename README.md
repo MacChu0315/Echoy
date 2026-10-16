@@ -27,7 +27,7 @@ Use up to three tiles in a same-orientation horizontal chain. Restarting clears 
 
 Download **v1.0.0** for the preserved three-device build. It is a **pre-release with known limitations**, not a fully accepted three-device version.
 
-**`master` retains the accepted dual-device code; it is not the source of that download.** To build the released firmware, use tag [`echoy-three-basic-ba951963754a`](https://github.com/MacChu0315/Echoy/tree/echoy-three-basic-ba951963754a).
+**`master` now uses the same application code as the three-device download, with newer documentation on top.** For the exact release source snapshot, use tag [`echoy-three-basic-ba951963754a`](https://github.com/MacChu0315/Echoy/tree/echoy-three-basic-ba951963754a).
 
 [Versions, source tags and checksums](docs/releases/v1.0.0.md) · [Accepted dual-device source](https://github.com/MacChu0315/Echoy/tree/echoy-dual-accepted-20261014)
 

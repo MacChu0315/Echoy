@@ -20,39 +20,43 @@ transfer Echoy-specific permissions to other projects.
 Published to the private `MacChu0315/Echoy` repository on branch
 `skills/mosaico-development`, independent root commit
 `3e1face2f393d0fa261f5c028c0213809b140dd8`. Remote SHA and its nine Markdown files
-were verified after the single push. This application repository has no remote;
-the export checkout is `/tmp/echoy-skills-publish-20261015`.
+were verified after the single push. The initial export checkout was `/tmp/echoy-skills-publish-20261015`.
+The application repository is now public; current organization is described below.
 
-## Public repository documentation (2026-10-16)
+## Current repository baseline and publication (2026-10-16)
 
-The repository is public and its default branch is `master`. This branch retains
-accepted dual-device application code; public README, installation/development
-documentation and historical device screenshots now distinguish it from the
-three-device v1.0.0 download. Product tags are immutable: dual148080a9 and
-three-basic a83a64e. Later unaccepted experiments remain on
-`archive/echoy-three-device`; reusable skills are on `skills/mosaico-development`.
+At the user's explicit request, public `master` now starts at
+`echoy-three-basic-ba951963754a` / `a83a64ea4708a4ffcb3cfd70799f6effeef110bd`,
+with the public README/license/installation changes replayed above it and their
+version descriptions corrected. Application, configuration, dependency locks,
+tests, tools and frozen reference bytes match that three-device tag. No later
+experimental source or fixed-Flash startup change is included. The original
+`echoy-v1.0.0.irisfw` bytes and two product tags remain unchanged.
 
-The public English README and README_CN.md now share a compact introduction,
-three primary links and a short play sequence. Startup separation and failed
-three-device rearrangement remain prominent; detailed version tables/checksums
-and Recovery history live in release documentation. Installation instructions
-own the actual update steps. Existing screenshots remain unchanged; the user
-will provide an animated demonstration later. No placeholder animation or new
-media was created, and published firmware/Release assets remain unchanged.
+The previous public master tip `b4fcb0a` and its original documentation commits
+are preserved through a merge into `archive/echoy-three-device`, alongside all
+later unaccepted experimental work and the existing local rename record. The
+archive's code remains unchanged. Master is rebuilt linearly above the three-basic
+tag; remote replacement must be conditional on its previously checked tip.
+Skills remain on their independent `skills/mosaico-development` branch.
 
-The user explicitly confirmed MIT for their own Echoy contributions, copyright
-2026 MacChu0315. Third-party licenses remain separate, particularly ESP-GSP's
-Espressif-only restriction. This license grant covers the author's original
-contributions in the two product tags without rewriting them. See LICENSE,
-THIRD_PARTY_NOTICES.md and docs/releases/v1.0.0.md.
+Release v1.0.0 is a pre-release with user-confirmed basic three-device operation,
+not full three-device acceptance. ABC→BCA can leave moved A independent; startup
+requires devices at least15cm apart on a nonmetal surface for magnetic calibration.
+Old Recovery startup resets and sustained RF/acoustic limits remain unresolved.
+No new hardware test, build, update or resumed optimization is part of this
+branch change. The dual-device accepted baseline remains available at
+`echoy-dual-accepted-20261014` /148080a9.
 
-The preserved package is named `echoy-v1.0.0.irisfw`, SHA-256 ba951963754a…;
-application and bundle metadata were already1.0.0. The public release uses the
-existing three-basic tag and explicitly retains the ABC→BCA defect and startup
-calibration requirements. No regular updates are planned. This documentation
-work does not change the code, firmware bytes, sound or devices and does not
-reopen the user's stopped three-device optimization. Historical sections below
-describe the master baseline, not a new three-device validation.
+The public English README and README_CN.md have a compact introduction and
+three primary links. Detailed versions/checksums and Recovery history live in
+release documentation; installation steps are in docs/installation.md. The user
+will supply an animated demonstration later; existing screenshots are unchanged.
+No regular updates are planned. MIT applies to the author's original Echoy
+contributions, copyright2026 MacChu0315; third-party licenses remain separate,
+including ESP-GSP's Espressif-only restriction. See LICENSE and
+THIRD_PARTY_NOTICES.md. Historical sections below retain evidence from the source
+tag, not a new validation or a description of all later repository work.
 
 ## v4 presentation
 

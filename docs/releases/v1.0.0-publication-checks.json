@@ -2,7 +2,6 @@
   "date": "2026-10-16",
   "source_tag": "echoy-three-basic-ba951963754a",
   "source_commit": "a83a64ea4708a4ffcb3cfd70799f6effeef110bd",
-  "master_application_baseline": "148080a9d6f4916e00ab199328526485f9221699",
   "checks": [
     "Original firmware SHA-256 matches retained candidate; no rebuild",
     "Dependency lock SHA-256 and SDK/BSP/utils commits match three-basic pins",
@@ -43,5 +42,8 @@
       "bytes": 418,
       "sha256": "52cc13f5fb1dadb746f75d0871aaf5a5cc94467c9d13dd7e7aded605231dc4ce"
     }
-  }
+  },
+  "master_application_baseline_at_publication": "148080a9d6f4916e00ab199328526485f9221699",
+  "master_application_baseline_current": "a83a64ea4708a4ffcb3cfd70799f6effeef110bd",
+  "baseline_update": "2026-10-16: master rebased onto the existing three-basic tag with documentation-only descendants. Original publication asset checks below remain historical and unchanged."
 }
