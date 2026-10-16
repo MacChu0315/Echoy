@@ -944,6 +944,14 @@ permission. Old-target diagnostic `2cfd9f7c2bbd` remains archived and uninstalle
 
 #### Right-attachment timeout fix (2026-10-15)
 
+On 2026-10-16 the user chose the existing internal version1.0.0 as the public
+filename. The original ba951963754a package is renamed locally to
+`output/three-device/echoy-v1.0.0.irisfw`; bytes and full SHA-256 remain unchanged.
+`verification/three-device-clock-start/candidate.json` points to the new path.
+No rebuild, upload, release creation or device update accompanies this rename.
+The known live-reorder limitation remains; the filename is not new acceptance.
+
+
 The first v3 package's three-board physical acceptance remains open: the user
 reports stable recovery on attaching a right tile. Live identity/owner evidence
 confirms the expected apps with zero crashes. Root cause: START's absolute root
