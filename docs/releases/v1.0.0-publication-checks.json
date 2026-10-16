@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-16",
+  "source_tag": "echoy-three-basic-ba951963754a",
+  "source_commit": "a83a64ea4708a4ffcb3cfd70799f6effeef110bd",
+  "checks": [
+    "Original firmware SHA-256 matches retained candidate; no rebuild",
+    "Dependency lock SHA-256 and SDK/BSP/utils commits match three-basic pins",
+    "GitHub Markdown render accepts two images and version table",
+    "All relative documentation links resolve; code fences are balanced",
+    "Historical screenshots match original bytes",
+    "No application, tool, test, reference or configuration source changed",
+    "License archive CRC and per-file hashes verified; notice collection is not a link-level SBOM",
+    "All release asset SHA-256 values checked locally"
+  ],
+  "not_run": [
+    "New firmware build",
+    "New native simulator run",
+    "New device update or physical acceptance"
+  ],
+  "assets": {
+    "echoy-v1.0.0.irisfw": {
+      "bytes": 1463953,
+      "sha256": "ba951963754aa1273cda87a38c4cb89612da6461d62b3a63c8db05e4d3e5b85b"
+    },
+    "echoy-v1.0.0-licenses.zip": {
+      "bytes": 746431,
+      "sha256": "419386554d3bf54ed6ccc13b6ad2d295107f361fca8454ff586305bdbbcaaf6a"
+    },
+    "INSTALL.md": {
+      "bytes": 4700,
+      "sha256": "9dc8d7abd08f812629b006862a3b86b522b8e7652b65322dc37439100e0a9a9b"
+    },
+    "LICENSE": {
+      "bytes": 1067,
+      "sha256": "716300f48f2bdfebe7285de47ede679ac6eeea5b0efc428a1043e3a4e863a493"
+    },
+    "THIRD_PARTY_NOTICES.md": {
+      "bytes": 3233,
+      "sha256": "c1da1be567ebcafa324d9fad16eaf94f1a1390b38f3716d479d88a5c63f7a7db"
+    },
+    "SHA256SUMS.txt": {
+      "bytes": 418,
+      "sha256": "52cc13f5fb1dadb746f75d0871aaf5a5cc94467c9d13dd7e7aded605231dc4ce"
+    }
+  },
+  "master_application_baseline_at_publication": "148080a9d6f4916e00ab199328526485f9221699",
+  "master_application_baseline_current": "a83a64ea4708a4ffcb3cfd70799f6effeef110bd",
+  "baseline_update": "2026-10-16: master rebased onto the existing three-basic tag with documentation-only descendants. Original publication asset checks below remain historical and unchanged."
+}

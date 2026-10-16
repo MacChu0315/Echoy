@@ -33,3 +33,26 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Font notices remain under `projects/echoy/ui/fonts/`. Vendor SDK/component
 licenses remain with their pinned upstream distributions.
+
+## License scope and firmware distribution
+
+The root MIT license applies to MacChu0315's original Echoy contributions,
+including those in `echoy-dual-accepted-20261014` and
+`echoy-three-basic-ba951963754a`. It does not replace upstream notices or grant
+rights to third-party components under MIT.
+
+ESP-GSP 1.5.1 is licensed under **Espressif Modified MIT**
+(`LicenseRef-Espressif-Modified-MIT`): use with Espressif products only, and no
+redistribution for use with non-Espressif products. Preserve its complete notice.
+ESP-IDF, ESP-Iris and the BSP have their own license materials; component and
+font licenses are retained separately in the release's license archive.
+
+This product includes software developed by the FreeType Project
+(https://www.freetype.org/). FreeType is distributed here under the FreeType
+License (FTL), not its alternative GPL license. Its FTL text and bundled
+component notices are included with the firmware license materials.
+
+The v1.0.0 download includes `echoy-v1.0.0-licenses.zip` with upstream notices,
+font licenses and a source-path/hash inventory. Retain these materials when
+redistributing the firmware. The inventory identifies collected notices; it is
+not a claim that every SDK component is linked or that this is a certified SBOM.

@@ -7,6 +7,28 @@ and explicit per-device playback permission. Dependency pins remain in
 `dependencies.json`. Firmware history is retained in Git; repository publication scope is recorded below. The first authorized physical
 installation and its follow-up UI fix are recorded below.
 
+## Archive purpose and master migration (2026-10-16)
+
+This branch retains the later experimental application code, including work the
+user stopped after negative physical feedback. No application source changes
+accompany this archive update. The old public master tip b4fcb0a is merged here,
+so its original documentation commits remain reachable before master is rebuilt.
+The local firmware-filename record28f8248 is retained as well.
+
+At the user's request, master now starts at three-basic tag a83a64e, with the two
+public documentation changes replayed and version guidance corrected above it.
+Master does not inherit later experimental application changes. The two product
+tags, original ba951963754a firmware bytes and Release assets remain unchanged;
+release text is updated only to reflect the new master baseline. This replaces
+the earlier organization decision that put master on the dual-device baseline.
+The skill branch and repository visibility/default-branch name are unchanged.
+
+README/README_CN clearly label this branch as an archive and direct users to
+master or the immutable three-basic tag for release code. MIT/third-party notices
+and public documentation are retained here; this does not upgrade the archive's
+physical acceptance status or resume device work. Older organization notes below
+are historical; the active baseline decision is this section.
+
 ## Reusable development skills (2026-10-15)
 
 Five portable guides are indexed in `../.agents/skills/README.md`: GSP parity,
@@ -23,7 +45,7 @@ Published to the private `MacChu0315/Echoy` repository on branch
 were verified after the single push. The initial skills-only export checkout is `/tmp/echoy-skills-publish-20261015`.
 The later application publication authorization is recorded below.
 
-## Repository organization (2026-10-16)
+## Earlier repository organization (superseded baseline, 2026-10-16)
 
 The user explicitly approved publishing application history to the existing
 private `MacChu0315/Echoy` repository via origin
