@@ -1,57 +1,25 @@
-# Reusable Mosaico development skills
+# Mosaico 工程技能
 
-Five focused guides extracted from Echoy's prototype, simulator and physical
-device development. Each skill is usable independently in another Mosaico
-project. They contain techniques and verification boundaries, not Echoy firmware,
-device identities, production tuning values or historical write authorization.
+这 5 项技能侧重实现、调试和交付。全部 8 项技能的选择与安装方式见[统一入口](../../README.md)；体验与设计试用技能见[另一个分组](../../skills/README.md)。每项可独立复制使用，无须同时加载。
 
-## Select by task
+| Skill | 适用任务 | 边界 |
+|---|---|---|
+| [mosaico-gsp-parity](mosaico-gsp-parity/SKILL.md) | 批准原型到 C/GSP、生成资源和原生输入一致性 | 不代替初始视觉设计或浏览器样式工作 |
+| [mosaico-runtime-performance](mosaico-runtime-performance/SKILL.md) | 触摸卡顿、音频超时、并发与内部内存 | 测完整路径；主机测试不证明真机时序 |
+| [mosaico-peer-cooperation](mosaico-peer-cooperation/SKILL.md) | 实现或排查物理接触、通信、成员关系、时钟与权限 | 产品语义和支持的物理拓扑由目标项目决定 |
+| [mosaico-audio-validation](mosaico-audio-validation/SKILL.md) | 参考算法、实际 PCM 和实体声音 | 数字正确性与听感验收分开 |
+| [mosaico-release-evidence](mosaico-release-evidence/SKILL.md) | 固件身份、不确定更新和验收记录 | 不授予设备或远程写入权限 |
 
-| Skill | Use for | Boundary |
-| --- | --- | --- |
-| [mosaico-gsp-parity](mosaico-gsp-parity/SKILL.md) | Approved prototype → shared C/GSP, generated capabilities and real native input | Supplements existing UI/simulator workflows; no browser-only design |
-| [mosaico-runtime-performance](mosaico-runtime-performance/SKILL.md) | Touch stalls, audio deadlines, ownership and internal-memory pressure | Measure the full path; host tests do not establish device timing |
-| [mosaico-peer-cooperation](mosaico-peer-cooperation/SKILL.md) | Contact, radio, membership, clocks, shared data and local permissions | Product semantics and physical topology remain project decisions |
-| [mosaico-audio-validation](mosaico-audio-validation/SKILL.md) | Reference DSP, actual PCM and physical sound | Numerical correctness is separate from acoustic acceptance |
-| [mosaico-release-evidence](mosaico-release-evidence/SKILL.md) | Exact artifacts, uncertain updates and accepted-version records | Supplements device operations; grants no write permissions |
+`mosaico-peer-cooperation` 负责“如何可靠实现已确定行为”；试用的 `modeling-mosaico-multi-device-interactions` 负责“用户操作应影响谁、何时生效、失败时保留什么”。不要把实现检查当成产品规则，也不用每次同时读取两项。
 
-These complement the existing Vibe `mosaico-ui`, `gsp-sim`,
-`mosaico-device-operations` and build guides. They neither copy those skills nor
-require their installation. Each target repository's maintained commands, pinned
-dependencies, public integration contract and user instructions remain the
-source of operational details. Load only the guide relevant to the task.
+## 使用
 
-## Reuse in another project
+复制所需技能的完整目录到目标项目 `.agents/skills/`，保留 `references/`。例如让 agent 使用 `mosaico-runtime-performance` 分析音频播放时的触摸卡顿，并提供目标项目的日志、源码和版本。客户端支持显式技能调用时，可使用其对应语法；否则直接提供 `SKILL.md` 路径。
 
-Copy the selected complete skill directory into that project's `.agents/skills/`.
-Keep `references/` with `mosaico-release-evidence`. Each `SKILL.md` includes its
-own name, task triggers and instructions; the index and validation record are
-not runtime dependencies. Existing directories with the same name need review
-before replacement. Global installation is optional and is not performed by
-this package.
+本组补充现有 Mosaico UI、模拟器、设备操作与构建指南，不复制或要求安装它们。命令、工具版本、公开接口与权限以目标项目为准；不携带 Echoy 的设备身份、生产调参或历史写入授权。发布技能提供可选的[验收记录模板](mosaico-release-evidence/references/acceptance-record.md)，可以省略不适用字段。
 
-For example, ask an agent to use `mosaico-runtime-performance` to investigate a
-touch stall while audio plays. Supply that project's logs, source and version
-information. A runtime that supports explicit `$skill-name` invocation can use
-`$mosaico-runtime-performance`; otherwise provide the installed `SKILL.md` path.
+## 验证状态
 
-No executable helper, new production dependency or additional tool service is
-required. The release skill includes an optional
-[acceptance record](mosaico-release-evidence/references/acceptance-record.md).
+[历史记录](VALIDATION.md)包含有限的独立情景应用、负例选择和结构检查，不是统计基准或跨项目有效性证明。本次整理保留技能正文与参考不变，新增整个技能包的结构检查，详见[本次验证](../../docs/skills-consolidation.md)。
 
-## Scope and provenance
-
-The techniques derive from the Echoy GSP implementation and subsequent physical
-feedback, particularly commits `90485c9` (compiled visibility), `8552b2e`
-(nonblocking audio publication), `443dbfa` (memory/latency), `d4ac5dc`
-(background artwork), `05a2e6b` (bounded measurement), `0953c52` (accepted sound)
-and `cca129d` (cooperation). These identify the source project's history;
-the skills-only distribution intentionally does not include that history or
-its hardware evidence. The guides are self-contained and do not require access
-to those commits.
-
-Echoy-specific layouts, musical rules, sample rates, gains, device IDs, SDK
-revision numbers, flash offsets, attempt budgets and physical capacity are not
-defaults for other applications. Confirm them in each target project.
-
-See [validation](VALIDATION.md) for application scenarios, checks and limits.
+这些方法源于 Echoy 的实现与实物反馈；来源提交与验证边界保留在 Git 历史及上述记录中。后续某个产品修复尚未验收，不会因本包整理而变成已验证的通用经验。

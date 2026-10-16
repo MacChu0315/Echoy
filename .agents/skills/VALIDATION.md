@@ -1,5 +1,7 @@
 # Skill package validation
 
+Historical record; see the [2026-10-16 consolidation checks](../../docs/skills-consolidation.md) for current whole-package structural coverage. Skill bodies and references are unchanged.
+
 Date: 2026-10-15. Scope: five standalone skill documents and one optional record
 template. No application code, SDK, firmware, device or production dependency is
 changed by this package.
