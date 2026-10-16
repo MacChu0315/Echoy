@@ -4,7 +4,7 @@ The approved source is now `reference/v4/echoy-arrange-B-v4.html`; hashes are in
 `reference/v4/SHA256SUMS`. The delivered ZIP and v3 historical baseline remain
 unchanged. The v4 musical/audio/arrangement code matches v3. Preserve the design, musical rules
 and explicit per-device playback permission. Dependency pins remain in
-`dependencies.json`. Firmware history remains local. The first authorized physical
+`dependencies.json`. Public repository publication is recorded below. The first authorized physical
 installation and its follow-up UI fix are recorded below.
 
 ## Reusable development skills (2026-10-15)
@@ -22,6 +22,29 @@ Published to the private `MacChu0315/Echoy` repository on branch
 `3e1face2f393d0fa261f5c028c0213809b140dd8`. Remote SHA and its nine Markdown files
 were verified after the single push. This application repository has no remote;
 the export checkout is `/tmp/echoy-skills-publish-20261015`.
+
+## Public repository documentation (2026-10-16)
+
+The repository is public and its default branch is `master`. This branch retains
+accepted dual-device application code; public README, installation/development
+documentation and historical device screenshots now distinguish it from the
+three-device v1.0.0 download. Product tags are immutable: dual148080a9 and
+three-basic a83a64e. Later unaccepted experiments remain on
+`archive/echoy-three-device`; reusable skills are on `skills/mosaico-development`.
+
+The user explicitly confirmed MIT for their own Echoy contributions, copyright
+2026 MacChu0315. Third-party licenses remain separate, particularly ESP-GSP's
+Espressif-only restriction. This license grant covers the author's original
+contributions in the two product tags without rewriting them. See LICENSE,
+THIRD_PARTY_NOTICES.md and docs/releases/v1.0.0.md.
+
+The preserved package is named `echoy-v1.0.0.irisfw`, SHA-256 ba951963754a…;
+application and bundle metadata were already1.0.0. The public release uses the
+existing three-basic tag and explicitly retains the ABC→BCA defect and startup
+calibration requirements. No regular updates are planned. This documentation
+work does not change the code, firmware bytes, sound or devices and does not
+reopen the user's stopped three-device optimization. Historical sections below
+describe the master baseline, not a new three-device validation.
 
 ## v4 presentation
 
