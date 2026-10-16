@@ -22,11 +22,8 @@ and role selections are session state, not persistent saved projects.
 
 ## Verify and install the bundle
 
-1. Check the downloaded file against `SHA256SUMS.txt`. Its firmware checksum is:
-
-   ```text
-   ba951963754aa1273cda87a38c4cb89612da6461d62b3a63c8db05e4d3e5b85b  echoy-v1.0.0.irisfw
-   ```
+1. Download `SHA256SUMS.txt` and the firmware from the same release. The exact
+   bundle identity is recorded in [release details](releases/v1.0.0.md).
 
    On Linux, run `sha256sum -c SHA256SUMS.txt` in the directory containing all
    listed assets; on macOS, `shasum -a 256 echoy-v1.0.0.irisfw` prints the value
@@ -74,17 +71,6 @@ and role selections are session state, not persistent saved projects.
 
 ## Known issues and acceptance limits
 
-The original failed right-attachment case was fixed and rechecked. Basic
-three-device operation was subsequently confirmed by the user, but rearranging
-ABC into BCA failed: the moved A remained independent. Reattaching did not reliably
-fix that case; no universal recovery workaround is claimed.
-
-Old Recovery 0.1.2 sometimes reset during its own startup in the recorded updates;
-installation proceeded only after stable Recovery readiness. This application
-package does not repair Recovery. Read the official tool guidance before changing
-base firmware.
-
-Sustained RF load, all three-device transitions and measured speaker phase/drift
-remain unaccepted. See [release details](releases/v1.0.0.md). Documentation was
-checked against saved artifacts and official local tool help; no new device
-installation was performed for this publication.
+Three-device rearrangement, the older Recovery startup issue and historical
+acceptance limits are described in [release details](releases/v1.0.0.md#what-was-accepted-and-what-was-not).
+No new device installation was performed for this documentation update.

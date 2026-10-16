@@ -32,6 +32,14 @@ three-device v1.0.0 download. Product tags are immutable: dual148080a9 and
 three-basic a83a64e. Later unaccepted experiments remain on
 `archive/echoy-three-device`; reusable skills are on `skills/mosaico-development`.
 
+The public English README and README_CN.md now share a compact introduction,
+three primary links and a short play sequence. Startup separation and failed
+three-device rearrangement remain prominent; detailed version tables/checksums
+and Recovery history live in release documentation. Installation instructions
+own the actual update steps. Existing screenshots remain unchanged; the user
+will provide an animated demonstration later. No placeholder animation or new
+media was created, and published firmware/Release assets remain unchanged.
+
 The user explicitly confirmed MIT for their own Echoy contributions, copyright
 2026 MacChu0315. Third-party licenses remain separate, particularly ESP-GSP's
 Espressif-only restriction. This license grant covers the author's original
