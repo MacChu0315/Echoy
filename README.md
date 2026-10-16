@@ -1,101 +1,60 @@
-# Echoy for ESP-Mosaico
+# Echoy for Mosaico
 
-A shared-C implementation of the approved v4 HTML in `reference/v4/`. The PC desk runs
-three official ESP-GSP simulators with actual synthesized sound, twelve musical
-expressions, linked phrases, independent play/pause and a common sample clock.
-The 480x480 GSP screens support Chinese and English. The v4 home uses one
-merged Record/Play strip that becomes full-width Cancel or Pause, with an
-interruptible 240ms transition and the browser system reduced-motion preference. The immutable HTML remains
-the design and behavioral reference; it does not generate the native desk's sound.
+Tap a rhythm. Connect another tile. Build a small ensemble.
 
-[Current state](docs/PROJECT_STATE.md) · [Verification](docs/verification/README.md)
+Echoy turns touch-recorded rhythms into musical phrases on ESP-Mosaico. Each tile can use Pulse, Voice, Dust or Harmony, and decides independently when to play or pause. Recording captures **touch timing, not microphone audio**.
 
-## Audible three-tile desk
+**敲出节奏，水平拼接，让不同声部回应彼此。**
 
-Run from this repository after resolving the pinned app dependencies:
+[Download v1.0.0](https://github.com/MacChu0315/Echoy/releases/tag/echoy-three-basic-ba951963754a) · [Install](docs/installation.md) · [Develop](docs/development.md) · [Mosaico Skills](https://github.com/MacChu0315/Echoy/tree/skills/mosaico-development)
 
-```sh
-export GSPC_EXECUTABLE="$PWD/../.toolchains/gspc-0.6.1/gspc"
-python3 tools/desk_preview.py
-```
+<p>
+  <img src="docs/screenshots/v1.0.0-connected.png" width="280" alt="Echoy device screenshot: left tile connected with a recorded phrase">
+  <img src="docs/screenshots/v1.0.0-following.png" width="280" alt="Echoy device screenshot: right tile following the left tile, with its own Play button">
+</p>
 
-Open `http://127.0.0.1:18896/`. A starts on the desk, B/C on the shelf.
-Click the example button or press Record, wait two beats, then tap during four
-beats. One reply follows and stops. Drag B/C beside A, wait for the seam to
-confirm, then press each tile's Play to join. Moving apart preserves phrases and
-play permission; pause affects only the selected tile. Language is shared across
-the desk, as in the prototype. Timing cues never enter the recorded rhythm.
+Actual screenshots from the v1.0.0 package's successful **two-device** check: connected on the left, following on the right. These are device screenshots, not photographs or proof of all three-device transitions. [Screenshot provenance](docs/screenshots/README.md).
 
-The launcher uses the installed `/usr/bin/paplay` and existing PulseAudio output;
-it does not change system volume or install packages. JavaScript handles the
-outer desk geometry and controls; synthesis, arrangement and scheduling run in C.
-Each official GSP screen has its own owner thread. No scene screenshot replaces
-live controls. Native per-tile views use ports 3222/3223/3224.
+## Try it
 
-The launcher owns its child processes and stops them on Ctrl+C. Use fresh ports
-and an alternate `--build-dir` for concurrent work; never rebuild an active
-preview's bundle in place. `--headless --silent` is for generated-PCM tests;
-`--capture path.wav` explicitly records the output adapter until the desk stops.
-Normal use does not continuously record audio. `ECHOY_REDUCED_MOTION=1` forces
-instant visual changes for testing; otherwise the desk follows the browser system
-preference. The approved v4 native input acceptance scope is touch/mouse. An explicit `--control-dir` must
-already exist, belong to the current user and have mode 0700; otherwise a private
-temporary directory is created.
+1. Keep the tiles separated during startup calibration, then wait for the home screen and successful sensor readiness.
+2. On one tile, tap **Record**, wait for **3, 2, 1**, then tap a rhythm during the four recording beats. The reply plays once and stops.
+3. Join another tile on the right, with both tiles facing the same direction. The right tile follows the left phrase; joining does not start continuous playback.
+4. Select a role and tap **Play** on each tile you want to hear. Pause affects that tile only. Detaching retains the current phrase and its playing/paused permission in the running session.
 
-## Firmware and diagnostic UI
+The published three-device package supports same-orientation horizontal chains of up to three tiles. Restarting does not restore your recorded phrase or role choices. See [installation and usage](docs/installation.md).
 
-Versions remain pinned in [docs/dependencies.json](docs/dependencies.json).
+## Download and version boundaries
 
-```sh
-export IDF_PATH="$PWD/../.toolchains/esp-idf-7b9cc1a"
-export GSPC_EXECUTABLE="$PWD/../.toolchains/gspc-0.6.1/gspc"
-export GSP_SIM_EXECUTABLE="$PWD/../.toolchains/gsp-sim-1.5.1/sim"
-python3 ../esp-mosaico-vibe/submodule/esp-mosaico-utils/mosaico-tools/skills/idf-low-noise-build/scripts/idf_low_noise_build.py --project projects/echoy build
-```
+The download is **`echoy-v1.0.0.irisfw`**, an IRIS system-update bundle with application, partition information and UI resources. Its internal version is `1.0.0`; the original package identity remains `ba951963754a…`. Use the official Mosaico update workflow, not a guessed raw-flash address.
 
-The portable audio/linkage sources compile for the pinned ESP32-S31 SDK.
-The physical speaker, device discovery/transport, wireless clocks and real
-peripherals are not connected yet. The firmware remains a UI integration build;
-compilation does not establish physical sound or hardware acceptance. No device
-write is part of these commands.
+| Version / branch | What it preserves | Status |
+|---|---|---|
+| [`echoy-dual-accepted-20261014`](https://github.com/MacChu0315/Echoy/tree/echoy-dual-accepted-20261014) | Dual-device source at `148080a9`; package `2b984e511b98` | User accepted the seven-category physical checklist and retained sound |
+| [`echoy-three-basic-ba951963754a`](https://github.com/MacChu0315/Echoy/tree/echoy-three-basic-ba951963754a) | Source for the v1.0.0 download at `a83a64e` | Basic three-device operation confirmed; live rearrangement remains faulty |
+| `master` | Accepted dual-device code with updated public documentation | **Not the source of the three-device download** |
+| [`archive/echoy-three-device`](https://github.com/MacChu0315/Echoy/tree/archive/echoy-three-device) | Later three-device investigations and changes | Archived experimental work; not the recommended download |
 
-The earlier `mosaico.py --workspace . project sim --project projects/echoy
---interactive` entry remains a **single-screen UI-only diagnostic**. Use the desk
-entry above for audible/multi-tile and v4 animation acceptance. The Linux native
-adapter uses loopback TCP_QUICKACK plus a 1000Hz simulator tick to avoid per-RPC
-frame stalls; this is not a claim of a 1000Hz physical display. C presentation
-updates run at 20ms intervals and audio uses its independent sample clock. Its optional legacy controls in
-`tools/preview_controls.py` also remain diagnostic-only.
+### Known limitations of v1.0.0
 
-## Verification and source generation
+- Moving A from the left of **A—B—C** to the right to form **B—C—A** can leave A independent instead of following C. Reattaching A did not reliably resolve the observed case.
+- Startup still performs magnetic calibration. Separate devices by at least **15 cm** on a nonmetal surface before powering on or restarting; do not start this version already joined.
+- Basic three-device use was confirmed, but the full three-device checklist, sustained wireless load and measured acoustic synchronization were not fully accepted. No vertical, L-shaped or rotated arrangement is supported by the published scope.
 
-```sh
-cmake -S tests -B build-host
-cmake --build build-host
-ctest --test-dir build-host --output-on-failure
-node tests/music/oracle.mjs
-node tests/arrange/oracle.mjs
-sh tests/audio/run.sh
-sh tests/band/run.sh
-sh tests/v4_strip/run.sh
-sh tests/desk_runtime/run.sh
-python3 -m unittest discover -s tests/desk_preview -v
-python3 tools/check_desk.py --build-dir projects/echoy/build-sim-desk
-```
+Version `1.0.0` follows the existing firmware metadata; it is **not a claim that all three-device behavior is stable**. [Release details and checksums](docs/releases/v1.0.0.md).
 
-`check_desk.py` snapshots the binary/bundle into its own temporary runtime,
-uses three official hosts and real pointer input, captures PCM and checks natural
-cleanup. Build the chosen directory first. Browser audio comparison is separate:
+## Development and reusable skills
 
-```sh
-node tests/audio/oracle.mjs /tmp/echoy-audio-oracle
-python3 tests/audio/compare.py /tmp/echoy-audio-oracle
-```
+The application uses shared C musical logic and native ESP-GSP UI. [Development instructions](docs/development.md) cover the pinned environment, audible desktop simulator, build and regression commands. The desktop simulation and physical hardware have different acceptance boundaries.
 
-The browser oracle uses the frozen HTML and local Playwright/Chrome; see the test
-script options for installations on another machine. UI-only regressions remain
-in `tools/check_home.py` and `tools/check_full_ui.py`. Scene regeneration uses the
-recorded fonts, fontTools, Pillow and CairoSVG: `python3 tools/generate_scene.py`.
-Edit the generator rather than its JSON/view-key outputs.
+Eight reusable skills live on the separate [`skills/mosaico-development`](https://github.com/MacChu0315/Echoy/tree/skills/mosaico-development) branch: five engineering guides and three experimental experience/design guides. Their checks are not product acceptance.
 
-Follow [AGENTS.md](AGENTS.md) and preserve [third-party notices](THIRD_PARTY_NOTICES.md).
+## License
+
+Echoy's original code and documentation are licensed under [MIT](LICENSE), copyright © 2026 MacChu0315. This grant also covers the author's original contributions in the two product tags listed above; the tags themselves have not been rewritten. Third-party code, fonts and SDK components retain their own licenses.
+
+The bundled ESP-GSP component uses **Espressif Modified MIT**, restricted to use with Espressif products. The whole firmware is not uniformly MIT-licensed. Preserve the [third-party notices](THIRD_PARTY_NOTICES.md) and the license materials supplied with the download.
+
+## Maintenance
+
+Echoy is preserved as a working experiment. No regular updates or ongoing support are currently planned. The accepted dual-device baseline and the known-limited three-device package remain separately identified for reference and reuse.
