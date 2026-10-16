@@ -4,7 +4,7 @@ The approved source is now `reference/v4/echoy-arrange-B-v4.html`; hashes are in
 `reference/v4/SHA256SUMS`. The delivered ZIP and v3 historical baseline remain
 unchanged. The v4 musical/audio/arrangement code matches v3. Preserve the design, musical rules
 and explicit per-device playback permission. Dependency pins remain in
-`dependencies.json`. Firmware history remains local. The first authorized physical
+`dependencies.json`. Firmware history is retained in Git; repository publication scope is recorded below. The first authorized physical
 installation and its follow-up UI fix are recorded below.
 
 ## Reusable development skills (2026-10-15)
@@ -20,8 +20,28 @@ transfer Echoy-specific permissions to other projects.
 Published to the private `MacChu0315/Echoy` repository on branch
 `skills/mosaico-development`, independent root commit
 `3e1face2f393d0fa261f5c028c0213809b140dd8`. Remote SHA and its nine Markdown files
-were verified after the single push. This application repository has no remote;
-the export checkout is `/tmp/echoy-skills-publish-20261015`.
+were verified after the single push. The initial skills-only export checkout is `/tmp/echoy-skills-publish-20261015`.
+The later application publication authorization is recorded below.
+
+## Repository organization (2026-10-16)
+
+The user explicitly approved publishing application history to the existing
+private `MacChu0315/Echoy` repository via origin
+`https://github.com/MacChu0315/Echoy`. This supersedes the earlier skills-only
+publication scope for this specific operation. Local `master` points exactly
+to dual acceptance commit `148080a9d6f4916e00ab199328526485f9221699`.
+`feat/echoy-rebuild` is renamed `archive/echoy-three-device`, preserving later
+work and the negative physical feedback. `feat/echoy-mosaico` was deleted only
+after verifying its tip `676908b1` is an ancestor of the retained history;
+no tag was created for that old tip.
+
+The authorized push contains only these two branches and the existing tags
+`echoy-dual-accepted-20261014` (148080a9) and
+`echoy-three-basic-ba951963754a` (a83a64e). Preserve existing remote skills
+branches and GitHub default branch `skills/mosaico-development`; no force push,
+remote deletion or device change is authorized by this organization task.
+Untracked `.vscode/` remains local. Firmware bundles and visual export archives
+under ignored `output/` are local artifacts, not included in the Git push.
 
 ## v4 presentation
 
