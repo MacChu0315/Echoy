@@ -21,15 +21,18 @@ typedef struct {
     uint64_t checked_samples;
     int64_t offset,silent_after;
     uint64_t id;
-    bool queued, prepare,fail_next;
-    unsigned rejects;
+    bool queued, prepare,fail_next,hold_prepare;
+    echoy_band_job_t *held_job;
+    unsigned rejects,state_packets;
+    uint32_t sent_edit;
+    int64_t sent_edit_at;
     double energy;
 } node_t;
 static node_t nodes[3];
 static int64_t physical;
 static uint32_t drop_kinds;
 static uint64_t isolated;
-static bool start_empty;
+static bool start_empty,join_immediately;
 static bool wide_boot_offsets;
 static struct {
     bool used; uint64_t from,to; uint16_t service; size_t size;
@@ -46,6 +49,11 @@ static bool receive_owner(void *ctx,const echoy_link_update_t *u)
 static bool send_packet(void *ctx,uint64_t to,uint16_t service,const uint8_t *data,size_t size)
 {
     node_t *n=ctx; assert(size<=64);
+    if(size==64 && data[1]==7) {
+        ++n->state_packets;
+        uint32_t edit=(uint32_t)data[40]|(uint32_t)data[41]<<8|(uint32_t)data[42]<<16|(uint32_t)data[43]<<24;
+        if(edit!=n->sent_edit){n->sent_edit=edit;n->sent_edit_at=physical;}
+    }
     for (unsigned i=0;i<64;++i) if (!packets[i].used) {
         packets[i].used=true; packets[i].from=n->id; packets[i].to=to;
         packets[i].service=service; packets[i].size=size;
@@ -64,7 +72,8 @@ static void owner(node_t *n)
     if (n->prepare) {
         echoy_band_job_t *j=echoy_band_take_job(n->band);
         if (j) {
-            if (n->fail_next) { n->fail_next=false; assert(!echoy_band_finish_job(n->band,j,now)); }
+            if (n->hold_prepare) { assert(!n->held_job); n->held_job=j; }
+            else if (n->fail_next) { n->fail_next=false; assert(!echoy_band_finish_job(n->band,j,now)); }
             else { assert(echoy_band_prepare_job(j)); assert(echoy_band_finish_job(n->band,j,now)); }
         }
     }
@@ -151,6 +160,7 @@ static void initialize(unsigned order)
         echoy_group_callbacks_t cb={read_owner,receive_owner,send_packet,n};
         assert(echoy_group_init(n->group,echoy_group_size(),n->id,100+i,&cb));
     }
+    if(join_immediately){join(0,1,501);join(1,2,502);}
     advance(5000000);
     for (unsigned i=0;i<3;++i) {
         assert(nodes[i].state.state.phase==ECHOY_IDLE);
@@ -321,7 +331,7 @@ static void radio_event_retains_group(void)
 {
     echoy_group_radio_lost(nodes[1].group,true,physical+nodes[1].offset);
     echoy_group_info_t info;
-    assert(echoy_group_info(nodes[1].group,&info) && info.phase==6 && info.count==3 && info.rank==1);
+    assert(echoy_group_info(nodes[1].group,&info) && info.phase==5 && info.count==3 && info.rank==1);
     echoy_group_tick(nodes[1].group,physical+nodes[1].offset); owner(&nodes[1]);
     assert(nodes[1].state.cooperation==ECHOY_COOP_RECOVERING && nodes[1].state.state.following);
     advance(physical+10000000);
@@ -433,7 +443,9 @@ static void capture_result_after_arm(void)
     advance(physical+20000); join(0,1,501);
     advance(capture+300000);
     assert(echoy_band_action(nodes[1].band,ECHOY_TILE_A,ECHOY_ACT_TAP,0,physical+nodes[1].offset));
-    advance(capture+1300000);
+    /* Keep the capture-end checkpoint inside the frozen interval even with
+     * the minimum1s quiet-group lead, rather than after a valid commit. */
+    advance(capture+1600000);
     uint32_t old=nodes[1].view.armed_transaction;
     assert(echoy_band_action(nodes[2].band,ECHOY_TILE_A,ECHOY_ACT_PHRASE,3,physical+nodes[2].offset));
     int64_t limit=capture+2450000;
@@ -446,7 +458,7 @@ static void capture_result_after_arm(void)
     }
     assert(nodes[1].view.armed_transaction && nodes[1].view.armed_transaction!=old);
     uint64_t frozen=nodes[1].view.requested_revision;
-    assert(nodes[1].view.armed_at_us-nodes[1].offset>capture+2500000);
+    assert(nodes[1].view.armed_at_us-nodes[1].offset>capture+2610000);
     advance(capture+2600000);
     assert(nodes[1].view.requested_revision==frozen); /* Capture result queues behind ARM. */
     advance(physical+20000000);
@@ -478,6 +490,130 @@ static void incompatible_peer_stays_local(void)
     puts("PASS incompatible/missing app HELLO cannot establish following; existing recovery feedback and fresh handshake work");
 }
 
+static void local_record_reply_respects_playing_peer(void)
+{
+    initialize(0);join(0,1,501);join(1,2,502);advance(15000000);pause_all();
+    assert(echoy_band_action(nodes[2].band,ECHOY_TILE_A,ECHOY_ACT_TRANSPORT,0,physical+nodes[2].offset));
+    advance(physical+3000000);assert(nodes[2].state.state.continuous);
+    nodes[2].prepare=false;int64_t old_start=nodes[0].state.state.start_us;
+    assert(echoy_band_action(nodes[0].band,ECHOY_TILE_A,ECHOY_ACT_RECORD,0,physical));owner(&nodes[0]);
+    int64_t capture=nodes[0].state.state.capture_at_us;
+    advance(capture+310000);assert(echoy_band_action(nodes[0].band,ECHOY_TILE_A,ECHOY_ACT_TAP,0,physical));
+    advance(capture+2500000);double energy=nodes[0].energy;
+    advance(capture+3200000);
+    assert(nodes[0].state.state.phase==ECHOY_PREPARING && nodes[0].state.state.start_us==old_start);
+    assert(nodes[0].energy==energy && nodes[2].state.state.continuous);
+    nodes[2].prepare=true;advance(physical+10000000);
+    echoy_group_info_t g;assert(echoy_group_info(nodes[0].group,&g) && g.phase==5);
+    assert(nodes[0].state.state.start_us>=g.timing.boundary_us);
+    assert(!nodes[0].state.state.continuous && nodes[2].state.state.continuous);
+    destroy_nodes();puts("PASS an already looping peer keeps the recorded reply on the coordinated path");
+}
+static void local_record_reply_does_not_wait_for_group(unsigned outcome)
+{
+    initialize(0);join(0,1,501);join(1,2,502);advance(15000000);pause_all();
+    echoy_plan_t retained=nodes[0].view.current;
+    uint32_t committed=nodes[0].state.state.committed_revision;
+    nodes[2].prepare=false;
+    /* Exercise a real shared-bar commit in the middle of the private reply:
+     * capture ends at phase0.4s, leaving2.1s until the shared bar. */
+    int64_t phase=(physical-nodes[0].view.clock_origin_us)%2500000;
+    advance(physical+(2340000-phase+2500000)%2500000);
+    assert(echoy_band_action(nodes[0].band,ECHOY_TILE_A,ECHOY_ACT_RECORD,0,physical));owner(&nodes[0]);
+    int64_t capture=nodes[0].state.state.capture_at_us;
+    advance(capture+310000);assert(echoy_band_action(nodes[0].band,ECHOY_TILE_A,ECHOY_ACT_TAP,0,physical));
+    advance(capture+2500000);double quiet_energy=nodes[0].energy;
+    int64_t until=physical+200000;
+    while(nodes[0].state.state.phase!=ECHOY_PREVIEW && physical<until)advance(physical+10000);
+    assert(nodes[0].state.state.phase==ECHOY_PREVIEW);
+    int64_t reply=nodes[0].state.state.start_us;
+    assert(reply<=capture+2600000 && !nodes[0].state.state.continuous);
+    assert(nodes[0].state.state.committed_revision==committed);
+    assert(!nodes[0].state.state.plan_pending && nodes[0].view.proposal_pending);
+    equal_plan(&retained,&nodes[0].view.current); /* Network bank is still old. */
+    if(outcome==2){
+        assert(physical<reply);
+        assert(echoy_band_action(nodes[0].band,ECHOY_TILE_A,ECHOY_ACT_PAUSE,0,physical));
+    }
+    advance(capture+3200000);
+    if(outcome==2)assert(nodes[0].energy==quiet_energy);
+    else {
+        assert(nodes[0].energy>quiet_energy+1e-6);
+        echoy_audio_loops_t *expected=NULL;
+        assert(echoy_audio_prepare(&nodes[0].state.plan,true,&expected)==ECHOY_AUDIO_OK);
+        float pcm[240];echoy_band_render(nodes[0].band,physical,pcm,240);
+        for(unsigned k=0;k<240;k++){
+            int64_t at=physical+(int64_t)k*1000000/ECHOY_AUDIO_SAMPLE_RATE;
+            uint64_t pos=((uint64_t)(at-reply)*ECHOY_AUDIO_SAMPLE_RATE+500000)/1000000;
+            assert(fabs(pcm[k]-expected->samples[ECHOY_AUDIO_FULL][pos%expected->frames]*.65*.45)<1e-6);
+        }
+        echoy_audio_free_loops(expected);
+    }
+    assert(!nodes[1].state.state.continuous && !nodes[2].state.state.continuous);
+    echoy_group_info_t g;assert(echoy_group_info(nodes[0].group,&g) && g.phase==1);
+    nodes[2].prepare=true;nodes[2].fail_next=outcome==1;
+    if(outcome==0){
+        uint32_t transaction=g.attempt;
+        while(nodes[0].view.committed_transaction!=transaction && physical<reply+2400000)
+            advance(physical+10000);
+        assert(nodes[0].view.committed_transaction==transaction && physical<reply+2500000);
+        assert(nodes[0].state.state.phase==ECHOY_PREVIEW && nodes[0].state.state.start_us==reply);
+        echoy_audio_loops_t *expected=NULL;
+        assert(echoy_audio_prepare(&nodes[0].state.plan,true,&expected)==ECHOY_AUDIO_OK);
+        float pcm[240];echoy_band_render(nodes[0].band,physical,pcm,240);
+        for(unsigned k=0;k<240;k++){
+            int64_t at=physical+(int64_t)k*1000000/ECHOY_AUDIO_SAMPLE_RATE;
+            uint64_t pos=((uint64_t)(at-reply)*ECHOY_AUDIO_SAMPLE_RATE+500000)/1000000;
+            assert(fabs(pcm[k]-expected->samples[ECHOY_AUDIO_FULL][pos%expected->frames]*.65*.45)<1e-6);
+        }
+        echoy_audio_free_loops(expected);
+    }
+    advance(physical+8000000);
+    assert(nodes[0].state.state.phase==ECHOY_IDLE && !nodes[0].state.state.continuous);
+    assert(nodes[0].state.state.start_us==reply); /* Group completion cannot replay it. */
+    if(outcome==1)equal_plan(&retained,&nodes[0].view.current);
+    else assert(nodes[0].view.committed_transaction==nodes[1].view.committed_transaction);
+    double energy=nodes[0].energy;advance(physical+3000000);assert(nodes[0].energy==energy);
+    destroy_nodes();puts(outcome==1?"PASS local recording reply survives group preparation failure without publishing the candidate":
+        outcome==2?"PASS Pause cancels an early local reply and group commit cannot restart it":
+        "PASS local recording reply precedes stalled follower readiness and plays exactly once");
+}
+static void group_commit_retains_bar_phase(bool tail_playing)
+{
+    initialize(0);join(0,1,501);join(1,2,502);advance(15000000);pause_all();
+    if(tail_playing){
+        assert(echoy_band_action(nodes[2].band,ECHOY_TILE_A,ECHOY_ACT_TRANSPORT,0,physical+nodes[2].offset));
+        advance(physical+3000000);
+        assert(nodes[2].state.state.continuous && !nodes[0].state.state.continuous);
+    }
+    echoy_group_info_t before,g;assert(echoy_group_info(nodes[0].group,&before));
+    int64_t origin=nodes[0].view.clock_origin_us;
+    assert(echoy_band_action(nodes[0].band,ECHOY_TILE_A,ECHOY_ACT_PHRASE,2,physical));
+    int64_t deadline=physical+8000000;
+    do {advance(physical+10000);assert(echoy_group_info(nodes[0].group,&g));}
+    while((g.attempt==before.attempt || g.timing.armed_us<0) && physical<deadline);
+    assert(g.attempt!=before.attempt && g.timing.armed_us>=0);
+    int64_t wait=g.timing.boundary_us-g.timing.armed_us;
+    assert(wait>=1000000);
+    assert((g.timing.boundary_us-origin)%2500000==0);
+    advance(g.timing.boundary_us+1000000);
+    for(unsigned i=0;i<3;i++){
+        echoy_group_info_t after;assert(echoy_group_info(nodes[i].group,&after) && after.phase==5);
+        assert(nodes[i].state.state.continuous==(tail_playing && i==2));
+    }
+    destroy_nodes();puts(tail_playing?"PASS tail-only playback retains old bar phase despite paused root":"PASS quiet group retains shared bar while local reply is independent");
+}
+static void empty_chain_boot_ready(void)
+{
+    start_empty=join_immediately=true;initialize(0);start_empty=join_immediately=false;
+    advance(physical+8000000);
+    assert(nodes[0].view.requested_revision==0);
+    for(unsigned i=0;i<3;i++){
+        echoy_group_info_t g;assert(echoy_group_info(nodes[i].group,&g));
+        assert(g.phase==5 && !nodes[i].state.preparation_failed && !nodes[i].state.plan.count);
+    }
+    destroy_nodes();puts("PASS joined startup commits valid empty revision zero without a recording");
+}
 static void empty_chain_gets_first_recording(void)
 {
     start_empty=true; initialize(0); start_empty=false;
@@ -605,8 +741,115 @@ static void boot_clock_offsets(void)
     wide_boot_offsets=false;
     puts("PASS 70/140-second boot clock differences: six steady pairs, all six orders/both triple joins, first starts and bounded unmapped timeout despite edits/lost ABORT");
 }
+static void transient_radio_preserves_committed_transaction(void)
+{
+    initialize(0);join(0,1,501);join(1,2,502);advance(15000000);
+    first_start(1,false);
+    echoy_group_info_t before[3],after;
+    echoy_plan_t plans[3];int64_t origins[3];
+    for(unsigned i=0;i<3;i++) {
+        assert(echoy_group_info(nodes[i].group,&before[i]) && before[i].phase==5);
+        plans[i]=nodes[i].state.plan;origins[i]=nodes[i].view.clock_origin_us;
+    }
+    drop_kinds=UINT32_MAX;
+    echoy_group_radio_lost(nodes[0].group,false,physical+nodes[0].offset);
+    echoy_group_radio_lost(nodes[1].group,true,physical+nodes[1].offset);
+    echoy_group_radio_lost(nodes[1].group,false,physical+nodes[1].offset);
+    echoy_group_radio_lost(nodes[2].group,true,physical+nodes[2].offset);
+    for(unsigned i=0;i<3;i++) {
+        assert(echoy_group_info(nodes[i].group,&after));
+        assert(after.phase==5 && after.attempt==before[i].attempt && after.identity==before[i].identity);
+        assert(memcmp(&after.timing,&before[i].timing,sizeof(after.timing))==0);
+    }
+    advance(physical+3000000); /* Real PCM still renders throughout the gap. */
+    for(unsigned i=0;i<3;i++) {
+        assert(nodes[i].state.cooperation==ECHOY_COOP_RECOVERING && nodes[i].state.state.continuous);
+        assert(nodes[i].view.committed_transaction==before[i].attempt && !nodes[i].view.failed_transaction);
+        assert(nodes[i].view.clock_origin_us==origins[i]);equal_plan(&plans[i],&nodes[i].state.plan);
+    }
+    drop_kinds=0;advance(physical+4000000);
+    for(unsigned i=0;i<3;i++) {
+        assert(echoy_group_info(nodes[i].group,&after) && after.phase==5 && after.attempt==before[i].attempt);
+        assert(nodes[i].state.cooperation!=ECHOY_COOP_RECOVERING && nodes[i].state.state.continuous);
+        equal_plan(&plans[i],&nodes[i].state.plan);
+    }
+    pause_all();
+    echoy_group_radio_lost(nodes[1].group,true,physical+nodes[1].offset);
+    advance(physical+1000000);assert(!nodes[1].state.state.continuous);
+    nodes[1].prepare=false;
+    assert(echoy_band_action(nodes[1].band,ECHOY_TILE_A,ECHOY_ACT_PHRASE,3,physical+nodes[1].offset));
+    int64_t until=physical+1000000;
+    do {
+        advance(physical+20000);assert(echoy_group_info(nodes[1].group,&after));
+    } while(after.phase==5 && physical<until);
+    assert(after.phase>0 && after.phase<5);
+    assert(after.timing.started_us>before[1].timing.started_us);
+    assert(after.timing.membership_us==before[1].timing.membership_us);
+    assert(after.timing.committed_us==-1 && after.timing.boundary_us==-1);
+    echoy_group_radio_lost(nodes[1].group,true,physical+nodes[1].offset);
+    assert(echoy_group_info(nodes[1].group,&after) && after.phase==6); /* Pending work still aborts. */
+    destroy_nodes();
+    puts("PASS transient radio recovery keeps committed phrase/clock/transaction and local Pause; unfinished updates still abort");
+}
+static void plan_transfer_overlaps_audio(unsigned outcome)
+{
+    initialize(0);join(0,1,501);join(1,2,502);advance(15000000);
+    echoy_plan_t retained[3];for(unsigned i=0;i<3;i++)retained[i]=nodes[i].state.plan;
+    nodes[0].hold_prepare=true;
+    assert(echoy_band_action(nodes[0].band,ECHOY_TILE_A,ECHOY_ACT_PHRASE,2,physical));
+    advance(physical+2000000);
+    assert(nodes[0].held_job && !nodes[0].view.offer_ready);
+    for(unsigned i=0;i<3;i++) {
+        echoy_group_info_t g;assert(echoy_group_info(nodes[i].group,&g));
+        assert(g.phase==1 && g.timing.boundary_us==-1 && g.timing.armed_us==-1);
+        if(i)assert(g.timing.input_ready_us>=0 && nodes[i].view.offer_ready);
+        else assert(g.timing.encoded_us>=g.timing.offered_us && g.timing.output_ready_us==-1);
+        equal_plan(&retained[i],&nodes[i].state.plan);
+    }
+    echoy_band_job_t *job=nodes[0].held_job;nodes[0].held_job=NULL;nodes[0].hold_prepare=false;
+    if(outcome==2)assert(echoy_band_action(nodes[0].band,ECHOY_TILE_A,ECHOY_ACT_PHRASE,3,physical));
+    if(outcome!=1)assert(echoy_band_prepare_job(job));
+    assert(echoy_band_finish_job(nodes[0].band,job,physical)==(outcome==0));
+    advance(physical+1000000);
+    if(outcome==1) {
+        for(unsigned i=0;i<3;i++) {
+            echoy_group_info_t g;assert(echoy_group_info(nodes[i].group,&g) && g.phase==6);
+            equal_plan(&retained[i],&nodes[i].state.plan);
+        }
+        assert(echoy_band_action(nodes[0].band,ECHOY_TILE_A,ECHOY_ACT_PHRASE,3,physical));
+    }
+    advance(physical+10000000);
+    for(unsigned i=0;i<3;i++) {
+        echoy_group_info_t g;assert(echoy_group_info(nodes[i].group,&g) && g.phase==5);
+        assert(!nodes[i].state.preparation_failed && !nodes[i].state.state.continuous);
+    }
+    destroy_nodes();
+    puts(outcome==2?"PASS superseded early plan discards obsolete audio completion and commits new edit":
+         outcome==1?"PASS early phrase transfer cannot commit failed audio; old banks retained and retry succeeds":"PASS phrase transfer overlaps held source audio; commit waits for all banks");
+}
+static void unchanged_state_bandwidth(void)
+{
+    initialize(0);join(0,1,501);join(1,2,502);advance(15000000);
+    for(unsigned i=1;i<3;i++)nodes[i].state_packets=0;
+    advance(physical+1000000);
+    for(unsigned i=1;i<3;i++)assert(nodes[i].state_packets<=3);
+    /* A follower edit must be published promptly even just after a refresh;
+     * reducing duplicate traffic must not defer new readiness/edit state. */
+    int64_t changed=physical;
+    uint32_t previous=nodes[1].sent_edit;
+    assert(echoy_band_action(nodes[1].band,ECHOY_TILE_A,ECHOY_ACT_PHRASE,3,physical+nodes[1].offset));
+    advance(physical+60000);
+    assert(nodes[1].sent_edit!=previous && nodes[1].sent_edit_at-changed<60000);
+    advance(physical+10000000);
+    for(unsigned i=0;i<3;i++){echoy_group_info_t g;assert(echoy_group_info(nodes[i].group,&g)&&g.phase==5);}
+    destroy_nodes();
+    puts("PASS bounded unchanged-state traffic with prompt follower edits and completed sync");
+}
 int main(int argc,char **argv)
 {
+    if (argc>1 && !strcmp(argv[1],"prepare-overlap")) { plan_transfer_overlaps_audio(0); plan_transfer_overlaps_audio(1); plan_transfer_overlaps_audio(2); return 0; }
+    if (argc>1 && !strcmp(argv[1],"state-bandwidth")) { unchanged_state_bandwidth(); return 0; }
+    if (argc>1 && !strcmp(argv[1],"radio-transient")) { transient_radio_preserves_committed_transaction(); return 0; }
     if (argc>1 && !strcmp(argv[1],"boot-offsets")) { boot_clock_offsets(); return 0; }
     if (argc>1 && !strcmp(argv[1],"cached")) { cached_owner_across_root_replacement(); return 0; }
     if (argc>1 && !strcmp(argv[1],"available")) { owner_availability_recovery(); return 0; }
@@ -616,8 +859,12 @@ int main(int argc,char **argv)
     if (argc>1 && !strcmp(argv[1],"unmapped")) { initialize(0); join(0,1,501); join(1,2,502); advance(15000000); unmapped_simultaneous_start(); destroy_nodes(); return 0; }
     if (argc>1 && !strcmp(argv[1],"capture")) { capture_result_after_arm(); return 0; }
     if (argc>1 && !strcmp(argv[1],"incompatible")) { incompatible_peer_stays_local(); return 0; }
+    if (argc>1 && !strcmp(argv[1],"local-reply")) { for(unsigned i=0;i<3;i++)local_record_reply_does_not_wait_for_group(i); local_record_reply_respects_playing_peer(); return 0; }
+    if (argc>1 && !strcmp(argv[1],"quiet-commit")) { group_commit_retains_bar_phase(false); group_commit_retains_bar_phase(true); return 0; }
+    if (argc>1 && !strcmp(argv[1],"empty-boot")) { empty_chain_boot_ready(); return 0; }
     if (argc>1 && !strcmp(argv[1],"empty")) { empty_chain_gets_first_recording(); return 0; }
-    boot_clock_offsets(); cached_owner_across_root_replacement(); owner_availability_recovery(); empty_chain_gets_first_recording(); incompatible_peer_stays_local(); deferred_upstream(); capture_result_after_arm();
+    local_record_reply_respects_playing_peer();for(unsigned i=0;i<3;i++)local_record_reply_does_not_wait_for_group(i);
+    group_commit_retains_bar_phase(false); group_commit_retains_bar_phase(true); empty_chain_boot_ready(); plan_transfer_overlaps_audio(0); plan_transfer_overlaps_audio(1); plan_transfer_overlaps_audio(2); unchanged_state_bandwidth(); transient_radio_preserves_committed_transaction(); boot_clock_offsets(); cached_owner_across_root_replacement(); owner_availability_recovery(); empty_chain_gets_first_recording(); incompatible_peer_stays_local(); deferred_upstream(); capture_result_after_arm();
     for (unsigned i=0;i<6;++i) for (unsigned j=0;j<2;++j) {
         if (argc>1 && (unsigned)atoi(argv[1])!=i) continue;
         run(i,j!=0);

@@ -1,6 +1,12 @@
 #include "echoy_snapshot_diagnostics.h"
 #include "echoy_link_codec.h"
 #include "board_touch_trace.h"
+#ifdef CONFIG_ECHOY_MAGNET_DIAGNOSTICS
+#include "board_link.h"
+#define SNAPSHOT_METHODS 5u
+#else
+#define SNAPSHOT_METHODS 3u
+#endif
 #include "esp_heap_caps.h"
 #include "esp_iris.h"
 #include <inttypes.h>
@@ -20,7 +26,7 @@ struct snapshot_slot {
 struct echoy_snapshot_diagnostics {
     bool (*read_control)(void *, echoy_control_view_t *);
     void *ctx;
-    bool registered[3], valid;
+    bool registered[SNAPSHOT_METHODS], valid;
     atomic_bool ready;
     unsigned active;
     struct snapshot_slot slots[2];
@@ -37,7 +43,7 @@ static esp_err_t stop_locked(echoy_snapshot_diagnostics_handle_t *handle)
     struct echoy_snapshot_diagnostics *d = *handle;
     atomic_store(&d->ready, false);
     esp_err_t result = ESP_OK;
-    for (unsigned method = 1; method <= 3; ++method) {
+    for (unsigned method = 1; method <= SNAPSHOT_METHODS; ++method) {
         if (!d->registered[method - 1]) continue;
         esp_err_t err = esp_iris_rpc_unregister(ECHOY_SNAPSHOT_SERVICE_ID, method);
         /* Iris may already have stopped and removed the registration. Its
@@ -47,7 +53,9 @@ static esp_err_t stop_locked(echoy_snapshot_diagnostics_handle_t *handle)
     }
     /* Public Iris unregister refuses while its executor can hold user_ctx.
      * Never release storage while even one handler remains registered. */
-    if (!d->registered[0] && !d->registered[1] && !d->registered[2]) {
+    bool retained=false;
+    for(unsigned i=0;i<SNAPSHOT_METHODS;i++) retained=retained || d->registered[i];
+    if (!retained) {
         free(d);
         *handle = NULL;
     }
@@ -208,6 +216,88 @@ done:
     return result;
 }
 
+#ifdef CONFIG_ECHOY_MAGNET_DIAGNOSTICS
+static esp_err_t capture_transfer(uint8_t *out,size_t capacity,size_t *size)
+{
+    if(capacity<ECHOY_LINK_SNAPSHOT_BYTES)return ESP_ERR_INVALID_SIZE;
+    board_link_diagnostics_t *d=heap_caps_calloc(1,sizeof(*d),MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    size_t at=0;bool ok;
+    if(!d || !board_link_diagnostics_snapshot(d)) {
+        ok=append_json(out,capacity,&at,"{\"schema\":\"echoy-transfer-v1\",\"available\":false,\"reason\":\"%s\"}",d?"inactive_or_busy":"no_psram");
+    } else {
+        const echoy_radio_phrase_timing_t *p=&d->phrase;
+        ok=append_json(out,capacity,&at,
+            "{\"schema\":\"echoy-transfer-v1\",\"available\":true,\"present\":%s,\"generation\":%" PRIu32 ",",
+            p->generation?"true":"false",p->generation) &&
+        append_json(out,capacity,&at,
+            "\"graph\":\"%016" PRIx64 "\",\"destination\":\"%012" PRIx64 "\",\"plan\":\"%016" PRIx64 "\",",
+            p->graph,p->destination,p->plan) &&
+        append_json(out,capacity,&at,
+            "\"group_id\":\"%08" PRIx32 "\",\"attempt\":%" PRIu32 ",\"first_queued_us\":%" PRId64 ",\"last_acked_us\":%" PRId64 ",",
+            p->identity,p->attempt,p->first_queued_us,p->last_acked_us) &&
+        append_json(out,capacity,&at,
+            "\"queued\":%" PRIu32 ",\"first_sent\":%" PRIu32 ",\"acked\":%" PRIu32 ",\"ack_samples\":%" PRIu32 ",",
+            p->queued,p->first_sent,p->acked,p->ack_samples) &&
+        append_json(out,capacity,&at,
+            "\"failed\":%" PRIu32 ",\"submit_failures\":%" PRIu32 ",\"retransmitted\":%" PRIu32 ",",
+            p->failed,p->submit_failures,p->retransmitted) &&
+        append_json(out,capacity,&at,
+            "\"queue_us_sum\":%" PRIu64 ",\"queue_us_max\":%" PRIu64 ",\"ack_us_sum\":%" PRIu64 ",\"ack_us_max\":%" PRIu64 "}",
+            p->queue_us_sum,p->queue_us_max,p->ack_us_sum,p->ack_us_max);
+    }
+    free(d);if(!ok)return ESP_ERR_INVALID_SIZE;*size=at;return ESP_OK;
+}
+static esp_err_t capture_link(uint8_t *out,size_t capacity,size_t *size)
+{
+    if (capacity<ECHOY_LINK_SNAPSHOT_BYTES) return ESP_ERR_INVALID_SIZE;
+    board_link_diagnostics_t *d=heap_caps_calloc(1,sizeof(*d),MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    size_t at=0;
+    bool ok;
+    if (!d || !board_link_diagnostics_snapshot(d)) {
+        ok=append_json(out,capacity,&at,"{\"schema\":\"echoy-link-v1\",\"available\":false,\"reason\":\"%s\"}",
+            d?"inactive_or_busy":"no_psram");
+    } else {
+        /* Keep each variadic call small so diagnostic formatting also fits
+         * the existing stack budget with sanitizer redzones enabled. */
+        ok=append_json(out,capacity,&at,
+            "{\"schema\":\"echoy-link-v1\",\"available\":true,\"sequence\":%" PRIu32 ","
+            "\"sampled_us\":%" PRId64 ",\"sample_valid\":%s,\"sensors_ready\":%s,",
+            d->sequence,d->sampled_us,d->sample_valid?"true":"false",d->sensors_ready?"true":"false") &&
+        append_json(out,capacity,&at,
+            "\"raw_left\":[%d,%d,%d],\"raw_right\":[%d,%d,%d],"
+            "\"filtered_left\":[%ld,%ld,%ld],\"filtered_right\":[%ld,%ld,%ld],",
+            d->raw[0][0],d->raw[0][1],d->raw[0][2],d->raw[1][0],d->raw[1][1],d->raw[1][2],
+            (long)d->filtered[0][0],(long)d->filtered[0][1],(long)d->filtered[0][2],
+            (long)d->filtered[1][0],(long)d->filtered[1][1],(long)d->filtered[1][2]) &&
+        append_json(out,capacity,&at,
+            "\"samples\":%u,\"calibration\":%u,\"classified\":%u,\"contacts\":%u,\"reported\":%u,",
+            d->samples,d->calibration,d->classified,d->contacts,d->reported) &&
+        append_json(out,capacity,&at,
+            "\"peers\":[\"%012" PRIx64 "\",\"%012" PRIx64 "\"],\"sessions\":[%" PRIu32 ",%" PRIu32 "],"
+            "\"group\":[%u,%u,%u],\"clock_mapped\":%s,\"group_id\":\"%08" PRIx32 "\",\"attempt\":%" PRIu32 ",",
+            d->peers[0],d->peers[1],d->sessions[0],d->sessions[1],d->group_count,d->group_rank,d->group_phase,
+            d->clock_mapped?"true":"false",d->group_identity,d->attempt) &&
+        append_json(out,capacity,&at,
+            "\"radio_admitted\":%s,\"radio_fresh\":%s,\"radio_known\":%u,\"radio_graph\":\"%016" PRIx64 "\","
+            "\"radio_submit_failures\":%" PRIu32 ",\"radio_queue_drops\":%" PRIu32 ",",
+            d->radio_admitted?"true":"false",d->radio_fresh?"true":"false",d->radio_known,d->radio_graph,
+            d->radio_submit_failures,d->radio_queue_drops) &&
+        append_json(out,capacity,&at,
+                "\"timing_us\":{\"membership\":%" PRId64 ",\"started\":%" PRId64 ","
+                "\"input_first\":%" PRId64 ",\"input_ready\":%" PRId64 ",\"offered\":%" PRId64 ",",
+                d->timing.membership_us,d->timing.started_us,d->timing.input_first_us,
+                d->timing.input_ready_us,d->timing.offered_us) &&
+            append_json(out,capacity,&at,
+                "\"output_ready\":%" PRId64 ",\"armed\":%" PRId64 ","
+                "\"committed\":%" PRId64 ",\"boundary\":%" PRId64 ",\"encoded\":%" PRId64 "}}",
+                d->timing.output_ready_us,d->timing.armed_us,d->timing.committed_us,d->timing.boundary_us,d->timing.encoded_us);
+    }
+    free(d);
+    if (!ok) return ESP_ERR_INVALID_SIZE;
+    *size=at;
+    return ESP_OK;
+}
+#endif
 static esp_err_t snapshot_rpc(const esp_iris_rpc_request_t *request, uint8_t *response,
                               size_t capacity, size_t *size, void *ctx)
 {
@@ -236,6 +326,12 @@ static esp_err_t snapshot_rpc(const esp_iris_rpc_request_t *request, uint8_t *re
         err = ESP_OK;
     } else if (request->method_id == 3) {
         err = request->payload_size ? ESP_ERR_INVALID_SIZE : capture_touch(response, capacity, size);
+#ifdef CONFIG_ECHOY_MAGNET_DIAGNOSTICS
+    } else if (request->method_id == 4) {
+        err = request->payload_size ? ESP_ERR_INVALID_SIZE : capture_link(response, capacity, size);
+    } else if (request->method_id == 5) {
+        err = request->payload_size ? ESP_ERR_INVALID_SIZE : capture_transfer(response, capacity, size);
+#endif
     } else {
         err = ESP_ERR_NOT_SUPPORTED;
     }
@@ -257,7 +353,7 @@ esp_err_t echoy_snapshot_diagnostics_start(const echoy_platform_t *platform,
     d->read_control = platform->read_control;
     d->ctx = platform->ctx;
     *out = d;
-    for (unsigned method = 1; method <= 3; ++method) {
+    for (unsigned method = 1; method <= SNAPSHOT_METHODS; ++method) {
         result = esp_iris_rpc_register(ECHOY_SNAPSHOT_SERVICE_ID, method, snapshot_rpc, d);
         if (result != ESP_OK) {
             (void)stop_locked(out); /* Retained non-NULL handle documents busy cleanup. */

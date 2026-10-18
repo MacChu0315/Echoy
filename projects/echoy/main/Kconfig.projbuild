@@ -1,10 +1,12 @@
 menu "Echoy diagnostic build"
 config ECHOY_MAGNET_DIAGNOSTICS
-    bool "Log magnetometer axes on rejected startup calibration windows"
+    bool "Enable read-only magnetic/link snapshots and rejected-startup logs"
     default n
     help
         Link-worker-only readback of both successful BMM150 compensated outputs
         and exact INT16_MIN sentinel bits. Logs at most three startup windows.
+        Read-only ECA1 method 4 returns a nonblocking cache of the latest sample,
+        filtered axes, contact masks and admitted neighbors. No query reads I2C.
         Does not change sensor settings, classification, retries, UI, sound or
         playback permission. Keep disabled in accepted release builds.
 config ECHOY_AUDIO_DIAGNOSTICS

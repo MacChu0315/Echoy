@@ -15,3 +15,9 @@ sh "$root/tests/band/run_upstream_synthesis.sh"
 sh "$root/tests/band/run_harmony_bass.sh"
 
 sh "$root/tests/band/run_speaker_voicing.sh"
+
+sh "$root/tests/band/run_pad_preview.sh"
+
+sh "$root/tests/band/run_random_preview.sh"
+
+sh "$root/tests/band/run_interval_preview.sh"

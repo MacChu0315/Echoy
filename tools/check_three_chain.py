@@ -43,6 +43,16 @@ class ChainCheck(DeskCheck):
         self.pad('A'); time.sleep(.5)
         self.windows['ordinary-pad']=[start,self.mark('ordinary-pad-end')['sample_index']]
         self.passed('Three native UI hosts read three separately allocated actual musical owners and different clocks')
+        time.sleep(1.1)
+        slow=self.mark('slow-preview-begin')['sample_index']
+        self.pad('A'); time.sleep(1.35)
+        self.windows['slow-preview-tail']=[slow+12000,slow+26400]
+        self.pad('A'); time.sleep(.12)
+        fast=self.mark('fast-preview-begin')['sample_index']
+        self.pad('A'); time.sleep(.5)
+        self.windows['fast-preview-silence']=[fast+7200,self.mark('fast-preview-end')['sample_index']]
+        assert all(t['phase']==0 and not t['loop'] and not t['events'] for t in self.status()['tiles'].values())
+        self.passed('Actual native slow taps give longer replies; fast taps retire them without recording or autoplay')
         start=self.mark('example-begin')['sample_index']
         for tile in TILES: self.command('example '+tile)
         self.until(lambda s: all(t['phase']==0 and t['events'] for t in s['tiles'].values()) and self.stable(s),
@@ -57,6 +67,30 @@ class ChainCheck(DeskCheck):
         assert all(not t['loop'] and t['events'] for t in linked['tiles'].values())
         self.export('linked-silent')
         self.passed('Actual A→B→C candidate/READY/ARM/authorization/activation completes while every tile stays paused')
+        # An empty/paused follower can try its own voice without a group edit.
+        before_preview=self.status()
+        for n in range(4):
+            start=self.mark(f'random-pad-{n}-begin')['sample_index']
+            self.pad('B'); time.sleep(.5)
+            self.windows[f'random-pad-{n}']=[start,self.mark(f'random-pad-{n}-end')['sample_index']]
+        preview=self.status()
+        assert preview['independent_owners'][0]['energy']==0 and preview['independent_owners'][2]['energy']==0
+        assert all(not t['loop'] and t['phase']==0 for t in preview['tiles'].values())
+        assert [o['attempt'] for o in preview['independent_owners']]==[o['attempt'] for o in before_preview['independent_owners']]
+        self.silent()
+        self.passed('Native follower pad sounds only locally, keeps the group transaction and Pause clears it')
+        # Actual local record feedback must not wait for the distributed commit.
+        self.record_ready('A'); self.tap_at('A',170,420)
+        self.until(lambda s: s['tiles']['A']['phase']==1,'Root Record did not count in')
+        self.until(lambda s: s['tiles']['A']['phase']==2,'Root Record did not capture',timeout=5)
+        self.pad('A')
+        reply=self.until(lambda s: s['tiles']['A']['phase']==4,'Local recorded reply did not start',timeout=5)
+        assert not any(t['loop'] for t in reply['tiles'].values())
+        assert any(o['phase']!=5 for o in reply['independent_owners']),reply['independent_owners']
+        self.until(lambda s: s['tiles']['A']['phase']==0 and self.stable(s),
+                   'Local reply did not finish exactly once',timeout=10)
+        self.joined()
+        self.passed('Native root recorded reply starts before group completion; followers stay paused')
         for first in TILES:
             self.silent(); self.play_ready(first); self.tap(first,'transport')
             self.until(lambda s: s['tiles'][first]['loop'] and s['tiles'][first]['phase']==5,'First native Play did not start')
@@ -136,7 +170,7 @@ class ChainCheck(DeskCheck):
         metrics={'all':pcm_statistics(samples)}
         for name,window in self.windows.items(): metrics[name]=pcm_statistics(samples,*window)
         assert metrics['all']['clipped']==0
-        for name in ('ordinary-pad','example-once','middle-continues'): assert metrics[name]['nonzero']>100,metrics[name]
+        for name in ('ordinary-pad','example-once','middle-continues','slow-preview-tail',*[f'random-pad-{n}' for n in range(4)]): assert metrics[name]['nonzero']>100,metrics[name]
         assert metrics['paused-silence']['nonzero']==0
         history=[json.loads(line) for line in (self.output/'status-history.jsonl').read_text().splitlines()]
         assert all(len(row['status']['independent_owners'])==3 and all(
@@ -144,6 +178,7 @@ class ChainCheck(DeskCheck):
         self.passed('Official native hosts and three actual C owners exit cleanly; PCM has no late blocks/clipping and paused output is exactly silent')
         (self.output/'audio-metrics.json').write_text(json.dumps({'frames':len(samples),'sample_rate':24000,
             'metrics':metrics,'scope':'actual independent C owner PCM; no speaker or RF acceptance'},indent=2)+'\n')
+        assert metrics['fast-preview-silence']['nonzero']==0,metrics['fast-preview-silence']
         (self.output/'checks.json').write_text(json.dumps({'passed':self.checks,
             'scope':'official GSP 1.5.1, native pointer input, three actual v3/group/band/PCM owners, simulated physical/radio/clock adapters'},indent=2)+'\n')
 

@@ -6,6 +6,26 @@ only observe `platform.read_control`'s coherent cached view: they never call
 the band, input actions, audio hardware or playback/stop functions. The PCM
 publisher retains its existing zero-wait cache publication behavior.
 
+Magnetic diagnostic builds also register method 4 (empty payload). It returns
+`echoy-link-v1` with `available:false` when the worker is inactive, has not sampled,
+or its cache is busy. Otherwise it copies the worker's latest sample sequence,
+local `sampled_us`, validity/readiness, compensated and filtered axes, sample
+count, calibration state, classified/debounced/reported BSP masks, admitted
+peers/sessions, group count/rank/phase and mapped-clock flag. Mask bits are TOP1,
+RIGHT2, BOTTOM4, LEFT8. All axes are invalid when `sample_valid` is false; do not
+interpret zero-filled failed reads as disconnection measurements. Compare the
+sample timestamp with the same boot's uptime before drawing freshness conclusions.
+The RPC never samples sensors, sends network packets, or replaces a plan token.
+`radio_admitted`/`radio_fresh` distinguish a usable route from retained physical
+peers during recovery; `radio_known`, graph, submit-failure/drop counters and
+group identity/attempt permit coherent interpretation. A DONE phase alone is
+not proof of radio availability. The copied structure uses bounded temporary
+PSRAM; allocation failure returns `available:false/reason:no_psram` without
+reading the cache. All paths release the copy and preserve the stack limit.
+Its complete JSON fits the existing1024-byte Iris response. It is absent from
+ordinary builds. Test both profiles with `sh tests/snapshot_rpc/run.sh` and
+`SNAPSHOT_TEST_CFLAGS=-DCONFIG_ECHOY_MAGNET_DIAGNOSTICS=1 sh tests/snapshot_rpc/run.sh`.
+
 - Method 1 takes an empty payload. It reads one complete view and encodes its
   current `plan` using the production ECHP codec. The JSON reply includes a
   16-digit hexadecimal token, byte size, hexadecimal CRC32, exact UI target

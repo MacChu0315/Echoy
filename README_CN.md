@@ -4,7 +4,7 @@
 
 在 Mosaico 上敲出节奏，水平拼接设备，让不同声部回应彼此。
 
-**[下载固件](https://github.com/MacChu0315/Echoy/releases/tag/echoy-three-basic-ba951963754a) · [安装说明（英文）](docs/installation.md) · [开发文档（英文）](docs/development.md)**
+**[已发布 v1.0.0 固件](https://github.com/MacChu0315/Echoy/releases/tag/echoy-three-basic-ba951963754a) · [安装说明（英文）](docs/installation.md) · [开发文档（英文）](docs/development.md)**
 
 <p>
   <img src="docs/screenshots/v1.0.0-connected.png" width="280" alt="左侧 Mosaico 已连接，保留录制的乐句">
@@ -13,7 +13,7 @@
 
 真机截图：两台已连接，均处于暂停状态。[图片来源](docs/screenshots/README.md)。
 
-> **使用前请注意：** v1.0.0 仍需启动磁校准，开机或重启时请将设备**分开至少 15 cm，放在非金属桌面上**。**三台运行中换位后，移动的设备可能无法重新跟随。** [已知问题详情（英文）](docs/releases/v1.0.0.md#what-was-accepted-and-what-was-not)。
+> **v1.1.0 源码：** 包含三机换位修复、共用 Flash 校准、录制后的本机提前回应和随角色变化的中央试奏，支持拼接状态下开机。源码已打 tag，等待审阅合入；上方下载仍是历史 v1.0.0，启动时需要分开校准。[v1.1.0 详情（英文）](docs/releases/v1.1.0.md)。
 
 ## 三步开始玩
 
@@ -25,11 +25,9 @@
 
 ## 应该用哪个版本？
 
-下载 **v1.0.0** 可以使用留存的三机版本。它是**有已知限制的预发布版本**，并未通过完整三机验收。
+**v1.1.0** 的源码和固件记录见[版本说明（英文）](docs/releases/v1.1.0.md)。v1.1.0 固件下载尚未发布，现有下载仍为 v1.0.0。
 
-**`master` 现在以发布的三机版本为代码基线，顶部保留后续文档修改。** 要取得发布时的确切源码快照，请使用 [`echoy-three-basic-ba951963754a`](https://github.com/MacChu0315/Echoy/tree/echoy-three-basic-ba951963754a) tag。
-
-[版本、源码 tag 与校验值（英文）](docs/releases/v1.0.0.md) · [已验收双机源码](https://github.com/MacChu0315/Echoy/tree/echoy-dual-accepted-20261014)
+本版本包含验收通过的三机修复、玩法说明和中央试奏。旧的 [`echoy-three-basic-ba951963754a`](https://github.com/MacChu0315/Echoy/tree/echoy-three-basic-ba951963754a) 和[已验收双机](https://github.com/MacChu0315/Echoy/tree/echoy-dual-accepted-20261014) tag 保持不变。v1.0.0 的校验值与限制保留在[历史版本记录（英文）](docs/releases/v1.0.0.md)。
 
 ## 开发与复用
 

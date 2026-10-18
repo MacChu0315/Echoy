@@ -53,7 +53,7 @@ endif()
 # existing shared-band reference desk remains a separate target and oracle.
 get_target_property(echoy_chain_sources echoy_desk SOURCES)
 add_executable(echoy_chain_desk ${echoy_chain_sources} chain_owner.c
-    ../main/echoy_group.c ../main/echoy_link_protocol.c ../main/echoy_link_codec.c)
+    ../main/echoy_radio.c ../main/echoy_group.c ../main/echoy_link_protocol.c ../main/echoy_link_codec.c)
 add_dependencies(echoy_chain_desk echoy_backend_bundle)
 target_compile_definitions(echoy_chain_desk PRIVATE ECHOY_INDEPENDENT_CHAIN=1)
 target_include_directories(echoy_chain_desk PRIVATE ../main "${CMAKE_CURRENT_BINARY_DIR}/echoy_backend_assets")

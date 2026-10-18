@@ -13,6 +13,12 @@ echoy_band_profile_t echoy_band_render_profile(const echoy_band_t *band);
 /* Portable, externally serialized owner of three instruments. Preparation is
  * the one operation performed outside the owner's lock, on an immutable job. */
 echoy_band_t *echoy_band_create(void);
+/* Device startup uses the final output profile directly, without preparing a
+ * second, inaudible set of preview buffers first. */
+echoy_band_t *echoy_band_create_configured(bool speaker, const float gains[4]);
+/* Startup worker only, before actions/render/publication. Replaces local pad
+ * previews atomically; recording and count-in cues remain unchanged. */
+bool echoy_band_prepare_previews(echoy_band_t *band, bool speaker, const float gains[4]);
 void echoy_band_delete(echoy_band_t *band);
 bool echoy_band_action(echoy_band_t *band, echoy_tile_id_t tile, echoy_action_t action,
                        double value, int64_t now_us);

@@ -13,6 +13,8 @@ from io import BytesIO
 import cairosvg
 ROOT=Path(__file__).resolve().parents[1]
 UI=ROOT/'projects/echoy/ui'
+VERSION=re.search(r'project\(echoy VERSION ([0-9.]+)\)',
+                  (ROOT/'projects/echoy/CMakeLists.txt').read_text()).group(1)
 SOURCE=ROOT/'reference/v4/echoy-arrange-B-v4.html'
 assert hashlib.sha256(SOURCE.read_bytes()).hexdigest()=='c7e3e2e6992dc1f21857bfa6a8dc1357b5f95ea2dfad0425f60e83b1085ee7e3'
 text=SOURCE.read_text()
@@ -461,10 +463,10 @@ for obj in objects:
 guide_page=settings_page('guide','怎么玩','How to play')
 guide_copy=locales('guide',guide_page)
 steps=[
-    ('中央试奏','Try a sound','敲敲中央，先听听声音。','Tap the center to hear a sound.','不会改变已有节奏。','Your rhythm stays unchanged.'),
-    ('录下节奏','Record a rhythm','点“录制”，预备 3 秒后，','Tap Record. After 3 seconds,','在 4 拍内敲出你的节奏。','tap your rhythm over 4 beats.'),
-    ('换种回应','Choose a reply','在“角色”里选择声音和表达。','Choose a voice and expression in Role.','同一段节奏，也能有不同回应。','The same rhythm can reply differently.'),
-    ('循环播放','Keep it playing','点“播放”循环，点“暂停”停下。','Tap Play to loop; tap Pause to stop.','节奏保留，随时再来。','Your rhythm is ready for another go.')]
+    ('先听听声音','Try a sound','轻点屏幕中央，试试这个角色的声音。','Tap the center to try this role’s sound.','到“角色”里，还能换一种声音。','Open Role to choose a different sound.'),
+    ('录下你的节奏','Record your rhythm','点“录制”，等倒数结束后再敲。','Tap Record. Wait for the countdown, then tap.','录制共四拍，结束后会回放一次。','You have 4 beats. Your rhythm plays back once.'),
+    ('让节奏继续','Keep it playing','点“播放”循环，点“暂停”停下。','Tap Play to repeat your rhythm; Pause to stop.','想听哪台，就点那台的“播放”。','Tap Play on each tile you want to hear.'),
+    ('再加一台试试','Try adding another tile','再找一台装好 Echoy 的 Mosaico','Put another Mosaico running Echoy on the right.','同朝向贴到右侧，最多支持三台。','Face both the same way. Connect up to 3 tiles.')]
 for i,step in enumerate(steps):
     y=108+i*86
     label('guide_step_'+str(i),38,y+7,30,30,str(i+1),18,'#879571',guide_page,font=LATIN)
@@ -478,7 +480,7 @@ label('info_brand',42,120,396,40,'Echoy',30,'#4f6340',info_page,font=LATIN_BOLD)
 text_pair('info_tagline',42,166,396,28,'让你的节奏，有个回应。','A reply to your rhythm.',17,'#7c886e',info_copy)
 for i,(name,zh,en,value,en_value) in enumerate([
     ('platform','设备','Device','Mosaico','Mosaico'),
-    ('version','软件版本','Software','1.0.0','1.0.0'),
+    ('version','软件版本','Software',VERSION,VERSION),
     ('battery','电量','Battery','--%','--%')]):
     y=232+i*66
     add('container','info_divider_'+name,42,y-12,396,1,info_page,bg_color='#dce0d2')

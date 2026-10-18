@@ -85,7 +85,7 @@ def main():
                 'echoy_view_cache.c', 'echoy_art_producer.c')], '-Wl,--gc-sections',
             '-Wl,--wrap=echoy_model_create', '-Wl,--wrap=echoy_model_delete',
             '-Wl,--wrap=echoy_art_draw', '-pthread', '-lm', '-o', str(executable)], check=True)
-        for case in ('input-during-draw', 'continuous-progress', 'role-replaces-inflight',
+        for case in ('role-preview-gate', 'input-during-draw', 'continuous-progress', 'role-replaces-inflight',
                      'static-final-queue-full', 'route-role-visibility', 'startup-fallback',
                      'worker-stop-retry', 'active-owner-close-retry', 'canvas-stop-retry',
                      'release-closed-retry', 'publish-error'):

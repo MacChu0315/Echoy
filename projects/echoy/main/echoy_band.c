@@ -13,6 +13,13 @@
 #define FADE INT64_C(8000)
 #define RECORDS 8
 #define CUES 96
+#define PREVIEW_FIRST_US INT64_C(350000)
+#define PREVIEW_MIN_US INT64_C(80000)
+#define PREVIEW_MAX_US INT64_C(1200000)
+#define PREVIEW_GRAIN_GAP_US INT64_C(350000)
+#define PREVIEW_FADE_FRAMES 384u
+_Static_assert(PREVIEW_MAX_US * ECHOY_AUDIO_SAMPLE_RATE / 1000000 <=
+               ECHOY_AUDIO_LOOP_FRAMES, "Preview windows wrap at most once");
 struct bank {
     unsigned refs;
     echoy_audio_loops_t *loops;
@@ -24,9 +31,10 @@ struct playback {
 };
 struct cue {
     int tile;
-    echoy_audio_cue_t kind;
-    int64_t at;
-    bool used, guide;
+    const echoy_audio_buffer_t *buffer;
+    int64_t at, stop_at;
+    size_t offset,frames;
+    bool used, guide,pad_preview;
 };
 struct voice {
     echoy_model_handle_t model;
@@ -36,7 +44,13 @@ struct voice {
     double volume, smoothed_volume;
     unsigned battery;
     echoy_condition_t condition;
-    bool failed, automatic_preview;
+    bool failed, automatic_preview,recorded_reply_pending;
+    uint32_t preview_rng;
+    int64_t preview_tap_us;
+    int64_t preview_next_at;
+    unsigned preview_tap_role;
+    bool preview_has_tap;
+    uint8_t preview_order[4][ECHOY_PREVIEW_COUNT],preview_left[4],preview_last[4];
 };
 struct echoy_band_job {
     echoy_arrange_job_t arrangement;
@@ -69,6 +83,7 @@ struct echoy_band {
     echoy_arrange_t *arrange;
     struct voice voices[N];
     echoy_audio_buffer_t *cues[3];
+    echoy_audio_preview_pool_t previews[4];
     struct cue scheduled[CUES];
     echoy_band_job_t *ready;
     uint64_t issued;
@@ -116,8 +131,14 @@ static bool capture(echoy_phase_t p)
 {
     return p == ECHOY_COUNT_IN || p == ECHOY_RECORDING;
 }
+static void finish_cue(struct cue *c)
+{
+    memset(c,0,sizeof(*c));
+}
 static void stop_voice(echoy_band_t *b, int id, int64_t now)
 {
+    b->voices[id].preview_has_tap=false;
+    b->voices[id].preview_next_at=0;
     for (unsigned i = 0; i < RECORDS; i++) {
         if (b->voices[id].play[i].bank) {
             struct playback *p = &b->voices[id].play[i];
@@ -128,7 +149,7 @@ static void stop_voice(echoy_band_t *b, int id, int64_t now)
     }
     for (unsigned i = 0; i < CUES; i++) {
         if (b->scheduled[i].used && b->scheduled[i].tile == id) {
-            b->scheduled[i].used = false;
+            finish_cue(&b->scheduled[i]);
         }
     }
 }
@@ -169,17 +190,80 @@ static bool play_voice(echoy_band_t *b, int id, struct bank *bank, int64_t at, b
         (struct playback){.bank = retain(bank), .at = at, .loop = loop, .fade = crossfade};
     return true;
 }
-static bool cue(echoy_band_t *b, int id, echoy_audio_cue_t kind, int64_t at, bool guide)
+static bool schedule_cue(echoy_band_t *b, int id, const echoy_audio_buffer_t *buffer, int64_t at, bool guide)
 {
     for (unsigned i = 0; i < CUES; i++) {
         if (!b->scheduled[i].used) {
             b->scheduled[i] =
-                (struct cue){.tile = id, .kind = kind, .at = at, .used = true, .guide = guide};
+                (struct cue){.tile = id, .buffer = buffer, .at = at, .used = true, .guide = guide};
             return true;
         }
     }
     return false;
 }
+static uint32_t preview_random(struct voice *v)
+{
+    uint32_t x=v->preview_rng;x^=x<<13;x^=x>>17;x^=x<<5;
+    return v->preview_rng=x;
+}
+static bool schedule_preview(echoy_band_t *b,int id,unsigned role,int64_t now,int64_t at)
+{
+    struct voice *v=&b->voices[id];
+    /* Ignore excess input, without shortening sound or advancing random/time
+     * history. The actual scheduled onset also guards a backed-up input queue. */
+    if(at<v->preview_next_at)return true;
+    unsigned slot=CUES;
+    for(unsigned i=0;i<CUES;i++)if(!b->scheduled[i].used){slot=i;break;}
+    /* When input timestamps queue before one output block, supersede an older
+     * pending local preview rather than making a simultaneous burst. */
+    if(slot==CUES)for(unsigned i=0;i<CUES;i++){
+        struct cue *c=&b->scheduled[i];
+        if(!c->pad_preview || c->tile!=id)continue;
+        bool ended=at>=c->at && at-c->at>=(int64_t)c->frames*1000000/ECHOY_AUDIO_SAMPLE_RATE;
+        bool faded=c->stop_at && at>=c->stop_at && at-c->stop_at>=16000;
+        if(c->at>=at || ended || faded){slot=i;break;}
+    }
+    if(slot==CUES)return false;
+    int64_t duration=PREVIEW_FIRST_US;bool granular=false;
+    if(v->preview_has_tap && v->preview_tap_role==role && now>=v->preview_tap_us){
+        int64_t gap=now-v->preview_tap_us;
+        duration=gap>=1500000 ? PREVIEW_MAX_US : gap*4/5;
+        if(duration<PREVIEW_MIN_US)duration=PREVIEW_MIN_US;
+        granular=gap<=PREVIEW_GRAIN_GAP_US;
+    }
+    if(!v->preview_rng){
+        v->preview_rng=(uint32_t)now^(uint32_t)((uint64_t)now>>32)^((id+1u)*UINT32_C(0x9e3779b9));
+        if(!v->preview_rng)v->preview_rng=1;
+    }
+    uint8_t *order=v->preview_order[role];
+    if(!v->preview_left[role]){
+        for(unsigned i=0;i<ECHOY_PREVIEW_COUNT;i++)order[i]=(uint8_t)i;
+        for(unsigned i=ECHOY_PREVIEW_COUNT-1;i;i--){
+            unsigned j=preview_random(v)%(i+1);uint8_t swap=order[i];order[i]=order[j];order[j]=swap;
+        }
+        if(order[ECHOY_PREVIEW_COUNT-1]==v->preview_last[role]){
+            uint8_t swap=order[0];order[0]=order[ECHOY_PREVIEW_COUNT-1];order[ECHOY_PREVIEW_COUNT-1]=swap;
+        }
+        v->preview_left[role]=ECHOY_PREVIEW_COUNT;
+    }
+    unsigned choice=order[--v->preview_left[role]];v->preview_last[role]=(uint8_t)choice;
+    const echoy_audio_preview_pool_t *pool=&b->previews[role];
+    size_t frames=(size_t)(duration*ECHOY_AUDIO_SAMPLE_RATE/1000000);
+    if(granular && frames>pool->short_frames[choice])frames=pool->short_frames[choice];
+    for(unsigned i=0;i<CUES;i++){
+        struct cue *c=&b->scheduled[i];
+        if(!c->used || !c->pad_preview || c->tile!=id)continue;
+        if(c->at>=at)finish_cue(c);
+        else if(!c->stop_at || at<c->stop_at)c->stop_at=at;
+    }
+    b->scheduled[slot]=(struct cue){.tile=id,.buffer=pool->phrase,.offset=pool->source_frames[choice],
+                                  .frames=frames,.at=at,.used=true,.pad_preview=true};
+    v->preview_tap_us=now;v->preview_tap_role=role;v->preview_has_tap=true;
+    v->preview_next_at=at+ECHOY_PREVIEW_MIN_INTERVAL_US;
+    return true;
+}
+static bool cue(echoy_band_t *b, int id, echoy_audio_cue_t kind, int64_t at, bool guide)
+{ return schedule_cue(b,id,b->cues[kind],at,guide); }
 static void cancel_auto(echoy_band_t *b, int except, int64_t now)
 {
     for (int i = 0; i < N; i++) {
@@ -192,6 +276,7 @@ static void cancel_auto(echoy_band_t *b, int except, int64_t now)
                 stop_voice(b, i, now);
             }
             b->voices[i].automatic_preview = false;
+            b->voices[i].recorded_reply_pending = false;
         }
     }
 }
@@ -244,7 +329,7 @@ static void sync_plans(echoy_band_t *b)
             c->origin_us, c->started);
     }
 }
-echoy_band_t *echoy_band_create(void)
+echoy_band_t *echoy_band_create_configured(bool speaker,const float gains[4])
 {
     echoy_band_t *b = calloc(1, sizeof(*b));
     if (!b) {
@@ -293,8 +378,34 @@ echoy_band_t *echoy_band_create(void)
             return NULL;
         }
     }
+    if (!echoy_band_prepare_previews(b,speaker,gains)) {
+        echoy_band_delete(b);return NULL;
+    }
     sync_plans(b);
     return b;
+}
+echoy_band_t *echoy_band_create(void)
+{ return echoy_band_create_configured(false,NULL); }
+bool echoy_band_prepare_previews(echoy_band_t *b, bool speaker, const float gains[4])
+{
+    if (!b || b->render_until) return false;
+    for (unsigned i=0;i<CUES;i++) if(b->scheduled[i].used)return false;
+    echoy_audio_preview_pool_t prepared[4]={0};
+    for(unsigned role=0;role<4;role++) {
+        if(echoy_audio_render_preview_pool((echoy_role_t)role,speaker,gains?gains[role]:1,
+                                      &prepared[role])!=ECHOY_AUDIO_OK) {
+            for(unsigned i=0;i<4;i++)echoy_audio_free_preview_pool(&prepared[i]);
+            return false;
+        }
+    }
+    for(unsigned role=0;role<4;role++) {
+        echoy_audio_free_preview_pool(&b->previews[role]);b->previews[role]=prepared[role];
+        for(unsigned id=0;id<N;id++){
+            b->voices[id].preview_left[role]=0;b->voices[id].preview_last[role]=ECHOY_PREVIEW_COUNT;
+            b->voices[id].preview_has_tap=false;
+        }
+    }
+    return true;
 }
 void echoy_band_delete(echoy_band_t *b)
 {
@@ -302,6 +413,7 @@ void echoy_band_delete(echoy_band_t *b)
         return;
     }
     echoy_band_discard_job(b->ready);
+    for(unsigned i=0;i<CUES;i++)finish_cue(&b->scheduled[i]);
     for (int i = 0; i < N; i++) {
         for (unsigned j = 0; j < RECORDS; j++) {
             release(b->voices[i].play[j].bank);
@@ -312,6 +424,7 @@ void echoy_band_delete(echoy_band_t *b)
     for (unsigned i = 0; i < 3; i++) {
         echoy_audio_free_buffer(b->cues[i]);
     }
+    for(unsigned i=0;i<4;i++)echoy_audio_free_preview_pool(&b->previews[i]);
     echoy_arrange_delete(b->arrange);
     free(b->cooperation);
     free(b);
@@ -408,7 +521,7 @@ static void discard_candidate(echoy_band_t *b, bool failed)
             echoy_model_get_snapshot(b->voices[i].model,&s);
             if (s.phase==ECHOY_PREPARING) {
                 echoy_model_pause(b->voices[i].model);
-                b->voices[i].automatic_preview=false;
+                b->voices[i].automatic_preview=false;b->voices[i].recorded_reply_pending=false;
             }
         }
         if (i==ECHOY_TILE_A && failed) b->voices[i].failed=true;
@@ -536,6 +649,7 @@ bool echoy_band_link_read(echoy_band_t *b, echoy_link_view_t *out)
     out->requested_revision=rev;
     out->proposal_pending=rev!=c->settled_revision || c->candidate_exists;
     if (c->candidate_exists && c->candidate_revision==rev) {
+        out->proposal_compiled=true;
         out->proposal=c->candidate;
         out->proposal_revision=rev;
         out->proposal_ready=c->candidate_ready;
@@ -762,7 +876,7 @@ bool echoy_band_action(echoy_band_t *b, echoy_tile_id_t id, echoy_action_t actio
     case ECHOY_ACT_CANCEL_RECORD:
         ok = echoy_model_cancel_record(v->model);
         if (ok) {
-            v->automatic_preview = false;
+            v->automatic_preview = false; v->recorded_reply_pending=false;
             stop_voice(b, id, now);
             echoy_arrange_mute(b->arrange, id);
             if (b->deferred[id]) echoy_band_tick(b, now);
@@ -771,6 +885,7 @@ bool echoy_band_action(echoy_band_t *b, echoy_tile_id_t id, echoy_action_t actio
     case ECHOY_ACT_RECORD:
         ok = echoy_model_record(v->model, now);
         if (ok) {
+            v->automatic_preview=false;v->recorded_reply_pending=false;
             stop_voice(b, id, now);
             echoy_arrange_mute(b->arrange, id);
             echoy_model_get_snapshot(v->model, &s);
@@ -792,20 +907,26 @@ bool echoy_band_action(echoy_band_t *b, echoy_tile_id_t id, echoy_action_t actio
         }
         return ok;
     case ECHOY_ACT_TAP:
+        if(!capture(s.phase) && value!=0){
+            if(value<1 || value>4 || value!=floor(value))return false;
+            /* An accepted UI input may outlive its visible role in the queue. */
+            if(value!=s.role+1)return true;
+        }
         if (!echoy_model_tap(v->model, now)) {
             return false;
         }
-        return cue(b, id, ECHOY_AUDIO_TAP, (now > b->render_until ? now : b->render_until) + 3000,
-                   false);
+        if(!capture(s.phase))return schedule_preview(b,id,s.role,now,
+                                                (now>b->render_until?now:b->render_until)+3000);
+        return cue(b,id,ECHOY_AUDIO_TAP,(now>b->render_until?now:b->render_until)+3000,false);
     case ECHOY_ACT_PAUSE:
-        v->automatic_preview = false;
+        v->automatic_preview = false; v->recorded_reply_pending=false;
         echoy_model_pause(v->model);
         echoy_arrange_mute(b->arrange, id);
         stop_voice(b, id, now);
         if (b->deferred[id]) echoy_band_tick(b, now);
         return true;
     case ECHOY_ACT_TRANSPORT:
-        v->automatic_preview = false;
+        v->automatic_preview = false; v->recorded_reply_pending=false;
         if (s.phase==ECHOY_IDLE && s.plan_pending && retained_start(b,id,now))
             echoy_model_set_external_pending(v->model,false,0);
         ok = echoy_model_transport(v->model, now);
@@ -819,7 +940,7 @@ bool echoy_band_action(echoy_band_t *b, echoy_tile_id_t id, echoy_action_t actio
         }
         return ok;
     case ECHOY_ACT_AUDITION:
-        v->automatic_preview = false;
+        v->automatic_preview = false; v->recorded_reply_pending=false;
         ok = echoy_model_audition(v->model, now);
         if (ok) {
             echoy_arrange_mute(b->arrange, id);
@@ -903,7 +1024,7 @@ bool echoy_band_action(echoy_band_t *b, echoy_tile_id_t id, echoy_action_t actio
         stop_voice(b, id, now);
         echoy_arrange_mute(b->arrange, id);
         cancel_auto(b, id, now);
-        v->automatic_preview = true;
+        v->automatic_preview = true;v->recorded_reply_pending=false;
         v->observed_seed = 5;
         return set_seed(b, id, 5);
     default:
@@ -914,6 +1035,8 @@ bool echoy_band_action(echoy_band_t *b, echoy_tile_id_t id, echoy_action_t actio
     }
     cancel_auto(b, -1, now);
     ok=echoy_arrange_configure(b->arrange,id,&patch);
+    if (ok && action==ECHOY_ACT_ROLE && value!=s.role)
+        v->preview_has_tap=false;
     if (ok && id==ECHOY_TILE_A && !++cooperation->local_edit_serial)
         ++cooperation->local_edit_serial;
     return ok;
@@ -1109,6 +1232,24 @@ static void align_group_boundary(echoy_band_t *b, int64_t at, int64_t now,
     }
 }
 
+static void start_local_record_reply(echoy_band_t *b,int64_t now)
+{
+    struct cooperation *c=b->cooperation;struct voice *v=&b->voices[ECHOY_TILE_A];
+    if(!joint_hold(b) || !c->align_boundary || c->follower || b->upstream_connected || c->peer_looping || c->seed_queued ||
+       !b->ready || !c->candidate_ready || c->candidate_failed || v->failed ||
+       !v->automatic_preview || !v->recorded_reply_pending || v->condition!=ECHOY_NORMAL) return;
+    const echoy_arrange_plan_t *plan=&b->ready->arrangement.plans[ECHOY_TILE_A];
+    if(!plan->valid || plan->source!=ECHOY_TILE_NONE || !plan->music.count) return;
+    struct bank *bank=(b->ready->arrangement.changed_mask&1u) ? b->ready->banks[ECHOY_TILE_A] : v->prepared;
+    if(!bank)return;
+    echoy_snapshot_t s;echoy_model_get_snapshot(v->model,&s);
+    int64_t at=now+50000;
+    if(!echoy_model_start_local_preview(v->model,&plan->music,s.generation,at))return;
+    if(!play_voice(b,ECHOY_TILE_A,bank,at,false,false)) {
+        echoy_model_pause(v->model);v->failed=true;
+    }
+    v->automatic_preview=false;v->recorded_reply_pending=false;
+}
 void echoy_band_tick(echoy_band_t *b, int64_t now)
 {
     if (!b || now < 0) {
@@ -1125,6 +1266,7 @@ void echoy_band_tick(echoy_band_t *b, int64_t now)
         if (s.seed != v->observed_seed || (capture(before.phase) && s.phase == ECHOY_PREPARING)) {
             cancel_auto(b, i, now);
             v->automatic_preview = true;
+            v->recorded_reply_pending=capture(before.phase) && s.phase==ECHOY_PREPARING;
             v->observed_seed = s.seed;
             if (s.seed && !set_seed(b, i, s.seed)) {
                 v->failed = true;
@@ -1148,6 +1290,7 @@ void echoy_band_tick(echoy_band_t *b, int64_t now)
         echoy_band_discard_job(b->ready);
         b->ready = NULL;
     }
+    start_local_record_reply(b,now);
     if (b->ready && !b->ready->staged && !joint_hold(b)) {
         bool preview = false;
         for (int i = 0; i < N; i++) {
@@ -1248,7 +1391,7 @@ void echoy_band_tick(echoy_band_t *b, int64_t now)
         if (play_voice(b, i, v->prepared, at, s.continuous, false)) {
             echoy_model_start_external(v->model, s.generation, at);
             if (retained) echoy_model_set_external_pending(v->model,true,s.apply_at_us);
-            v->automatic_preview = false;
+            v->automatic_preview = false; v->recorded_reply_pending=false;
         } else {
             v->failed = true;
         }
@@ -1280,6 +1423,11 @@ bool echoy_band_read(echoy_band_t *b, echoy_tile_id_t id, echoy_control_view_t *
     out->clock = t->clock_id;
     out->condition = v->condition;
     out->preparing = out->state.plan_pending && out->state.apply_at_us == 0;
+    if(echoy_model_local_preview(v->model)) {
+        /* Existing reply UI describes the sound already being heard. Group
+         * readiness remains visible through link_read, never this UI copy. */
+        out->state.plan_pending=false;out->state.apply_at_us=0;out->preparing=false;
+    }
     out->preparation_failed = v->failed;
     bool incoming=false,outgoing=false;
     for (size_t j=0;j<b->requested_count;++j) {
@@ -1382,13 +1530,24 @@ void echoy_band_render(echoy_band_t *b, int64_t at, float *out, size_t frames)
                 if (!c->used || c->tile != i || t < c->at) {
                     continue;
                 }
-                const echoy_audio_buffer_t *buffer = b->cues[c->kind];
                 uint64_t pos = ((uint64_t)(t - c->at) * ECHOY_AUDIO_SAMPLE_RATE + 500000) / 1000000;
-                if (pos >= buffer->frames) {
-                    c->used = false;
+                size_t frames=c->pad_preview ? c->frames : c->buffer->frames;
+                if (pos >= frames) {
+                    finish_cue(c);
                     continue;
                 }
-                sample += buffer->samples[pos];
+                if(c->pad_preview){
+                    double gain=pos<48 ? pos/48.0 : pos+PREVIEW_FADE_FRAMES>=frames ?
+                                (frames-1-pos)/(double)PREVIEW_FADE_FRAMES : 1;
+                    if(c->stop_at && t>=c->stop_at){
+                        uint64_t stop=((uint64_t)(t-c->stop_at)*ECHOY_AUDIO_SAMPLE_RATE+500000)/1000000;
+                        if(stop>=PREVIEW_FADE_FRAMES){finish_cue(c);continue;}
+                        gain*=1-stop/(double)PREVIEW_FADE_FRAMES;
+                    }
+                    size_t source=c->offset+(size_t)pos;
+                    if(source>=c->buffer->frames)source-=c->buffer->frames;
+                    sample+=c->buffer->samples[source]*gain;
+                }else sample += c->buffer->samples[pos];
             }
             PROFILE_PART(cue_cycles);
             sum += sample * v->smoothed_volume;

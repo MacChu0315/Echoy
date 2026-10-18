@@ -14,6 +14,9 @@
 #define LEAD INT64_C(1000000)
 #define GUARD INT64_C(200000)
 #define RETRY INT64_C(750000)
+/* Unchanged state uses the same refresh cadence as HELLO/CLOCK; changes bypass
+ * this interval. Reliable transport retains its existing ACK/retry bounds. */
+#define STATE_REFRESH INT64_C(500000)
 #define VERSION 3u
 #define HEADER 16u
 #define CHUNK (64u-HEADER-10u)
@@ -34,6 +37,7 @@ typedef struct {
     int64_t seen,next_control,next_clock,last_packet;
 } participant_t;
 struct echoy_group {
+    echoy_group_timing_t timing;
     uint64_t self;
     uint32_t boot,identity,generation,serial,attempt,sequence,clock_sequence,clock_epoch,clock_commit;
     echoy_group_callbacks_t cb;
@@ -42,6 +46,7 @@ struct echoy_group {
     unsigned count,rank,phase;
     bool mapped,music_valid,publish,offer_issued,have_view,output_valid,meta_acked;
     bool hello_dirty,recovery_requested;
+    uint8_t sent_state[48];
     int64_t root_offset,origin,last_boundary,at,deadline,unmapped_deadline,began,next_read,last_tick;
     int64_t next_state,next_clock,next_meta,next_send,retry_at,last_progress,next_want;
     int64_t ping_t1,next_ping,pong_t1,pong_t2;
@@ -98,7 +103,7 @@ static void status(echoy_group_t *g)
     /* Retained membership also holds retry edits during recovery. A local
      * worker must not publish a new bank before the group hears that edit. */
     u->hold_changes=g->count>1;
-    u->recovering=g->phase==BROKEN || unknown;
+    u->recovering=g->phase==BROKEN || g->radio_lost || unknown;
     u->connection_generation=g->generation;
     u->session=g->identity;
     u->peer_looping=(g->playing & ~(1u<<g->rank))!=0;
@@ -122,12 +127,17 @@ static void command(echoy_group_t *g,echoy_link_command_t cmd,uint64_t revision)
     g->update.failed=g->phase==BROKEN;
     status(g);
 }
+static echoy_group_timing_t empty_timing(int64_t membership)
+{
+    return (echoy_group_timing_t){membership,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+}
 static void reset_attempt(echoy_group_t *g,uint32_t attempt,int64_t deadline,int64_t now)
 {
     /* START carries the root's absolute deadline. Before clock mapping it
      * cannot be compared with local uptime. Keep a separate local bound;
      * superseding edits within the same root budget must not extend it. */
     if (!g->attempt || deadline!=g->deadline) g->unmapped_deadline=now+LIMIT;
+    g->timing=empty_timing(g->timing.membership_us); g->timing.started_us=now;
     g->attempt=attempt; g->phase=PREPARING; g->deadline=deadline;
     g->recovery_requested=false;
     g->offer_issued=g->output_valid=g->meta_acked=false;
@@ -185,6 +195,7 @@ static void topology(echoy_group_t *g,int64_t now)
     bool changed=identity!=g->identity;
     if (changed) {
         TRACE("GROUP self=%llu ids=%llu,%llu,%llu identity=%u\n",(unsigned long long)g->self,(unsigned long long)ids[0],(unsigned long long)ids[1],(unsigned long long)ids[2],identity);
+        g->timing=empty_timing(now);
         g->identity=identity; if (!++g->generation) ++g->generation;
         memset(g->members,0,sizeof(g->members));
         for (unsigned i=0;i<count;++i) g->members[i].id=ids[i];
@@ -243,7 +254,13 @@ void echoy_group_edge(echoy_group_t *g,bool left,uint64_t peer,uint32_t session,
 void echoy_group_radio_lost(echoy_group_t *g,bool left,int64_t now)
 {
     if (!g || now<0 || !admitted(g,left ? 0 : 1) || g->count<2) return;
-    g->radio_lost|=(uint8_t)(left ? 1u : 2u); broken(g);
+    g->radio_lost|=(uint8_t)(left ? 1u : 2u);
+    /* A completed transaction is immutable. Brief radio evidence loss must
+     * not abort/re-offer its bank or discard its established clock. Keep the
+     * recovery indication and existing 30-second silence bound; unfinished
+     * transactions still abort immediately and physical release still leaves. */
+    if (g->phase!=DONE) broken(g);
+    else status(g);
 }
 static bool emit(echoy_group_t *g,uint64_t to,uint8_t *p,size_t size,bool control,int64_t now)
 {
@@ -309,23 +326,30 @@ static void start_request(echoy_group_t *g,unsigned rank,uint32_t serial,int64_t
     else g->playing&=(uint8_t)~(1u<<rank);
     if (old!=g->playing) clock_due(g);
 }
-static void encode_output(echoy_group_t *g)
+static void encode_output(echoy_group_t *g,int64_t now)
 {
-    if (!g->offer_issued || !owner_current(g) || !g->view.offer_ready || g->output_valid ||
+    if (!g->offer_issued || !owner_current(g) || !g->view.available || g->view.deferred ||
+        g->view.offer_failed || g->view.proposal_failed || g->output_valid ||
         g->view.offered_transaction!=g->attempt ||
         g->view.offered_revision!=g->local_revision) return;
     const echoy_plan_t *plan;
     if (g->view.proposal_pending) {
-        if (!g->view.proposal_ready || g->view.proposal_revision!=g->view.requested_revision) return;
+        /* The owner publishes the immutable compiled plan before rendering its
+         * audio bank. Transfer that same revision while audio prepares; READY
+         * and ARM still require every owner's completed bank. */
+        if (!g->view.proposal_compiled || g->view.proposal_revision!=g->view.requested_revision) return;
         plan=&g->view.proposal;
-    } else plan=&g->view.current;
+    } else {
+        if (!g->view.offer_ready) return; /* Unchanged committed bank. */
+        plan=&g->view.current;
+    }
     size_t size=echoy_link_plan_encode(plan,g->output_bytes,sizeof(g->output_bytes));
     if (!size) { broken(g); return; }
     g->output_size=(uint16_t)size;
     g->output_crc=echoy_link_crc32(g->output_bytes,size);
     g->output=((uint64_t)g->output_crc<<32) | ((uint32_t)g->view.requested_revision+1u);
     if (!g->output) g->output=1;
-    g->output_valid=true; g->next_meta=0;
+    g->output_valid=true; g->next_meta=0; g->timing.encoded_us=now;
 }
 static void begin_root(echoy_group_t *g,int64_t now,bool continuing)
 {
@@ -377,10 +401,10 @@ static void advance(echoy_group_t *g,int64_t now)
             if (g->view.proposal_pending && g->view.proposal_revision!=g->view.requested_revision) return;
             g->local_revision=g->view.proposal_pending ? g->view.proposal_revision : 0;
             command(g,ECHOY_LINK_BEGIN,g->local_revision);
-            g->offer_issued=true;
+            g->offer_issued=true; g->timing.offered_us=now;
         } else if (g->rx.size && g->rx.covered==g->rx.size && g->input) {
             g->update.valid=true; g->update.plan=g->incoming;
-            command(g,ECHOY_LINK_OFFER,0); g->offer_issued=true;
+            command(g,ECHOY_LINK_OFFER,0); g->offer_issued=true; g->timing.offered_us=now;
         }
     }
     if (g->offer_issued && owner_current(g) && g->view.offered_transaction==g->attempt) {
@@ -388,10 +412,13 @@ static void advance(echoy_group_t *g,int64_t now)
         if (g->update.command==ECHOY_LINK_BEGIN || g->update.command==ECHOY_LINK_OFFER)
             command(g,ECHOY_LINK_NONE,g->local_revision);
     }
-    encode_output(g);
+    encode_output(g,now);
     self->flags=flags(g); self->input=g->input; self->output=g->output;
+    if ((self->flags&READY) && g->output_valid && g->timing.output_ready_us<0)
+        g->timing.output_ready_us=now;
     if (self->flags&FAILED) { broken(g); return; }
     if ((self->flags&COMMITTED) && g->at>g->last_boundary) {
+        g->timing.committed_us=now;
         g->last_boundary=g->at; g->origin=g->at; g->music_valid=true; g->clock_commit=g->attempt;
         if (!g->rank) { ++g->clock_epoch; clock_due(g); }
         status(g);
@@ -409,6 +436,8 @@ static void advance(echoy_group_t *g,int64_t now)
             g->at=g->origin;
             if (g->at<earliest) g->at+=((earliest-g->at+PERIOD-1)/PERIOD)*PERIOD;
             TRACE("ARM root=%llu attempt=%u at=%lld\n",(unsigned long long)g->self,g->attempt,(long long)g->at);
+            if (g->timing.armed_us<0) g->timing.armed_us=now;
+            g->timing.boundary_us=g->at+g->root_offset;
             g->phase=ARMING; command(g,ECHOY_LINK_ARM,g->local_revision);
             g->next_state=0;
         }
@@ -523,7 +552,10 @@ void echoy_group_receive(echoy_group_t *g,uint64_t source,const uint8_t *p,size_
         bool fresh=g->rx.revision!=token || g->rx.crc!=r32(p+24) || g->rx.size!=r16(p+28);
         if (!echoy_link_receiver_begin(&g->rx,token,r32(p+24),r16(p+28))) return;
         g->input=token;
-        if (fresh) g->last_progress=now;
+        if (fresh) {
+            g->last_progress=now;
+            g->timing.input_first_us=now; g->timing.input_ready_us=-1;
+        }
         return;
     }
     if (p[1]==DATA) {
@@ -533,9 +565,10 @@ void echoy_group_receive(echoy_group_t *g,uint64_t source,const uint8_t *p,size_
         echoy_link_fragment_result_t result=echoy_link_receiver_chunk(&g->rx,r64(p+16),
             r16(p+24),p+26,size-26);
         if (g->rx.covered!=old) g->last_progress=now;
-        if (result==ECHOY_LINK_COMPLETE &&
-            !echoy_link_plan_decode(g->rx.bytes,g->rx.size,&g->incoming)) {
-            g->rx.covered=0; memset(g->rx.coverage,0,sizeof(g->rx.coverage));
+        if (result==ECHOY_LINK_COMPLETE) {
+            if (!echoy_link_plan_decode(g->rx.bytes,g->rx.size,&g->incoming)) {
+                g->rx.covered=0; memset(g->rx.coverage,0,sizeof(g->rx.coverage));
+            } else if (g->timing.input_ready_us<0) g->timing.input_ready_us=now;
         }
         return;
     }
@@ -555,7 +588,9 @@ void echoy_group_receive(echoy_group_t *g,uint64_t source,const uint8_t *p,size_
         if (p[1]==ARM) {
             if (g->phase!=PREPARING && (g->phase!=ARMING || g->at!=at)) return;
             if (!(flags(g)&READY)) return;
-            g->at=at; g->phase=ARMING; command(g,ECHOY_LINK_ARM,g->local_revision);
+            g->at=at; if (g->timing.armed_us<0) g->timing.armed_us=now;
+            g->timing.boundary_us=g->at+g->root_offset;
+            g->phase=ARMING; command(g,ECHOY_LINK_ARM,g->local_revision);
         } else {
             if (g->at!=at || !(flags(g)&ARMED) ||
                 (g->phase!=ARMING && g->phase!=AUTHORIZING)) return;
@@ -613,13 +648,17 @@ static void send_clock_sample(echoy_group_t *g,int64_t now)
 }
 static void send_state(echoy_group_t *g,int64_t now)
 {
-    if (!g->rank || now<g->next_state || !g->attempt) return;
+    if (!g->rank || !g->attempt) return;
     uint8_t p[64]; frame(g,p,STATE);
     w64(p+16,g->local_revision); w64(p+24,g->input); w64(p+32,g->output);
     w32(p+40,g->view.local_edit_serial); w32(p+44,g->view.local_start_serial);
     w64(p+48,g->mapped && owner_current(g) ? (uint64_t)(g->view.clock_origin_us-g->root_offset) : UINT64_MAX);
     w32(p+56,g->clock_epoch); p[60]=flags(g);
-    if (emit(g,g->members[0].id,p,64,true,now)) g->next_state=now+100000;
+    if (now<g->next_state && !memcmp(p+HEADER,g->sent_state,sizeof(g->sent_state))) return;
+    if (emit(g,g->members[0].id,p,64,true,now)) {
+        memcpy(g->sent_state,p+HEADER,sizeof(g->sent_state));
+        g->next_state=now+STATE_REFRESH;
+    }
 }
 static void send_root(echoy_group_t *g,int64_t now)
 {
@@ -669,6 +708,18 @@ static void send_phrase(echoy_group_t *g,int64_t now)
     memcpy(p+26,g->output_bytes+g->queued,size);
     if (emit(g,to,p,26+size,false,now)) g->queued+=(uint16_t)size;
 }
+void echoy_group_stamp_send(echoy_group_t *g,uint8_t *p,size_t size,int64_t now)
+{
+    if(!g || !p || size<4 || p[0]!=VERSION || now<0)return;
+    if(p[1]==PING && size==20 && g->edges[0].peer &&
+       r32(p+4)==g->edges[0].session && g->ping_wait &&
+       r32(p+8)==g->ping_wait && rt(p+12)==g->ping_t1) {
+        g->ping_t1=now;w64(p+12,(uint64_t)now);
+    } else if(p[1]==PONG && size==36 && g->edges[1].peer &&
+              r32(p+4)==g->edges[1].session && rt(p+20)>=0 && now>=rt(p+20)) {
+        w64(p+28,(uint64_t)now);
+    }
+}
 void echoy_group_tick(echoy_group_t *g,int64_t now)
 {
     if (!g || now<0) return;
@@ -704,7 +755,7 @@ void echoy_group_tick(echoy_group_t *g,int64_t now)
 bool echoy_group_info(const echoy_group_t *g,echoy_group_info_t *out)
 {
     if (!g || !out) return false;
-    *out=(echoy_group_info_t){.identity=g->identity,.generation=g->generation,
+    *out=(echoy_group_info_t){.timing=g->timing,.identity=g->identity,.generation=g->generation,
         .attempt=g->attempt,.count=g->count,.rank=g->rank,.phase=g->phase,
         .clock_mapped=g->mapped,.root_offset_us=g->root_offset,
         .origin_us=g->origin,.boundary_us=g->last_boundary,.deadline_us=g->deadline};

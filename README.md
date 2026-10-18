@@ -4,7 +4,7 @@ English · [简体中文](README_CN.md)
 
 Tap a rhythm on Mosaico, connect tiles side by side, and let different musical voices respond to each other.
 
-**[Download firmware](https://github.com/MacChu0315/Echoy/releases/tag/echoy-three-basic-ba951963754a) · [Installation guide](docs/installation.md) · [Developer guide](docs/development.md)**
+**[Published v1.0.0 firmware](https://github.com/MacChu0315/Echoy/releases/tag/echoy-three-basic-ba951963754a) · [Installation guide](docs/installation.md) · [Developer guide](docs/development.md)**
 
 <p>
   <img src="docs/screenshots/v1.0.0-connected.png" width="280" alt="Left Mosaico connected with a recorded phrase">
@@ -13,7 +13,7 @@ Tap a rhythm on Mosaico, connect tiles side by side, and let different musical v
 
 Actual device screenshots: a connected pair, both paused. [Image source](docs/screenshots/README.md).
 
-> **Before you start:** v1.0.0 needs startup calibration—keep tiles at least **15 cm apart on a nonmetal surface** when powering on or restarting. **Rearranging a running three-tile chain can fail to reconnect the moved tile.** [Known issues](docs/releases/v1.0.0.md#what-was-accepted-and-what-was-not).
+> **v1.1.0 source:** includes three-device reorder fixes, shared Flash calibration, earlier local recording replies and role-aware center audition. Joined startup is supported. The source is tagged for review; the download above remains historical v1.0.0, which requires separated startup calibration. [v1.1.0 details](docs/releases/v1.1.0.md).
 
 ## Play in three steps
 
@@ -25,11 +25,9 @@ Use up to three tiles in a same-orientation horizontal chain. Restarting clears 
 
 ## Which version should I use?
 
-Download **v1.0.0** for the preserved three-device build. It is a **pre-release with known limitations**, not a fully accepted three-device version.
+The **v1.1.0** source and package are documented in [release details](docs/releases/v1.1.0.md). A v1.1.0 firmware download has not been published; the existing download is v1.0.0.
 
-**`master` now uses the same application code as the three-device download, with newer documentation on top.** For the exact release source snapshot, use tag [`echoy-three-basic-ba951963754a`](https://github.com/MacChu0315/Echoy/tree/echoy-three-basic-ba951963754a).
-
-[Versions, source tags and checksums](docs/releases/v1.0.0.md) · [Accepted dual-device source](https://github.com/MacChu0315/Echoy/tree/echoy-dual-accepted-20261014)
+This version includes the accepted three-device repair, corrected guide and center-audition work. The old [`echoy-three-basic-ba951963754a`](https://github.com/MacChu0315/Echoy/tree/echoy-three-basic-ba951963754a) and [accepted dual-device](https://github.com/MacChu0315/Echoy/tree/echoy-dual-accepted-20261014) tags remain unchanged. Historical v1.0.0 checksums and limitations are in [its release record](docs/releases/v1.0.0.md).
 
 ## For developers
 

@@ -477,15 +477,15 @@ bool board_health_battery_empty(const board_health_snapshot_t *s)
 {
     return s->valid && s->present_known && s->present && s->percentage == 0;
 }
-echoy_band_t *__real_echoy_band_create(void);
-echoy_band_t *__wrap_echoy_band_create(void)
+echoy_band_t *__real_echoy_band_create_configured(bool,const float *);
+echoy_band_t *__wrap_echoy_band_create_configured(bool speaker,const float *gains)
 {
     while (atomic_load(&hold_create)) {
         atomic_store(&create_blocked, true);
         fake_sleep_ms(1);
     }
     atomic_store(&create_blocked, false);
-    return __real_echoy_band_create();
+    return __real_echoy_band_create_configured(speaker,gains);
 }
 bool fake_create_is_blocked(void)
 {

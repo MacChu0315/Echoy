@@ -1,6 +1,22 @@
-# Installing and using Echoy v1.0.0
+# Installing and using Echoy
 
-[Project home](../README.md) · [Release identity and limitations](releases/v1.0.0.md)
+[Project home](../README.md) · [Release identity and limitations](releases/v1.1.0.md)
+
+## v1.1.0
+
+This version includes the three-device repair, corrected guide and center audition.
+Use the exact accepted package identified below; it supports joined startup.
+
+The v1.1.0 package and checksum are retained locally; see
+[its release record](releases/v1.1.0.md). No v1.1.0 GitHub download is published.
+Use the official `mosaico.py iris system-update --bundle /absolute/path/echoy-v1.1.0.irisfw --device-id YOUR_VERIFIED_DEVICE_ID` workflow.
+The retained Recovery/layout and session-state rules below still apply.
+Use the same v1.1.0 package on all cooperating tiles. Fixed Flash calibration
+allows joined startup; v1.1.0 does not require the15cm startup separation below.
+Verify successful update, healthy startup and software1.1.0 in About this tile.
+
+The remaining installation instructions describe the preserved **v1.0.0 download**.
+Do not apply its startup-calibration requirements to v1.1.0.
 
 ## Before installing
 

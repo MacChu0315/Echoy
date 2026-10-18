@@ -6,6 +6,7 @@
 #define ECHOY_SNAPSHOT_CHUNK_BYTES 512u
 #define ECHOY_SNAPSHOT_METADATA_BYTES 1024u
 #define ECHOY_TOUCH_SNAPSHOT_BYTES 3500u
+#define ECHOY_LINK_SNAPSHOT_BYTES 1024u
 
 typedef struct echoy_snapshot_diagnostics *echoy_snapshot_diagnostics_handle_t;
 
@@ -14,8 +15,13 @@ typedef struct echoy_snapshot_diagnostics *echoy_snapshot_diagnostics_handle_t;
  * Method 2: little-endian u64 token, u32 offset, u16 length -> raw ECHP bytes.
  * Method 3: empty payload -> read-only touch summary and latest <=16 pressed
  * observer edges, with explicit omission counts; does not replace plan token.
+ * Method 4 (magnetic diagnostic builds only): empty payload -> latest cached
+ * link/sensor JSON, without hardware reads, writes or plan-token replacement.
+ * Method 5 (diagnostic builds): latest originated phrase-DATA queue/ACK timing,
+ * retries and failures, scoped by graph/group/attempt/plan/destination. Reads
+ * the same worker cache and never replaces the plan token.
  * A new successful capture invalidates the previous token. Max chunk is 512.
- * Reads use only platform.read_control's coherent cache, never band/hardware.
+ * Reads use coherent caches only, never band/hardware operations.
  * The platform context must outlive this registration. Large storage is PSRAM.
  * On startup failure, *out can remain non-NULL if RPC rollback was busy; retain
  * the context and retry stop. A non-NULL handle must never be freed directly.
