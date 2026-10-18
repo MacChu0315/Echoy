@@ -10,5 +10,5 @@ ${CC:-cc} -std=c11 -Wall -Wextra -Werror -g -O1 ${GROUP_TEST_CFLAGS:-} \
  "$root/projects/echoy/main/echoy_link_protocol.c" "$root/projects/echoy/main/echoy_link_codec.c" \
  "$root/projects/echoy/main/echoy_band.c" "$root/projects/echoy/main/echoy_arrange.c" \
  "$root/projects/echoy/main/echoy_model.c" "$root/projects/echoy/main/echoy_music.c" \
- "$root/projects/echoy/main/echoy_audio.c" -lm -o "$build/test_pressure"
+ "$root/projects/echoy/main/echoy_audio.c" "$root/projects/echoy/main/echoy_pickup.c" -lm -o "$build/test_pressure"
 "$build/test_pressure"

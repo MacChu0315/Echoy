@@ -23,6 +23,8 @@ _Static_assert(PREVIEW_MAX_US * ECHOY_AUDIO_SAMPLE_RATE / 1000000 <=
 struct bank {
     unsigned refs;
     echoy_audio_loops_t *loops;
+    echoy_pickup_t pickup;
+    float *intro;
 };
 struct playback {
     struct bank *bank;
@@ -57,6 +59,7 @@ struct echoy_band_job {
     uint32_t generation;
     uint8_t inaudible_mask;
     struct bank *banks[N];
+    bool pickup_enabled, pickup_prepared;
     bool ok, staged, calibrated, bass_cut_attempted, speaker_voicing_attempted, handed_off;
 };
 struct queued_action { echoy_action_t action; double value; };
@@ -94,6 +97,7 @@ struct echoy_band {
     size_t requested_count;
     echoy_arrange_edge_t requested[ECHOY_ARRANGE_MAX_EDGES];
     struct cooperation *cooperation;
+    bool pickup_enabled, pickup_config_locked;
     bool profiled;
     echoy_band_profile_t profile;
     int64_t render_until;
@@ -108,6 +112,7 @@ static void release(struct bank *p)
 {
     if (p && --p->refs == 0) {
         echoy_audio_free_loops(p->loops);
+        free(p->intro);
         free(p);
     }
 }
@@ -1059,7 +1064,9 @@ echoy_band_job_t *echoy_band_take_job(echoy_band_t *b)
         return NULL;
     }
     b->issued = rev;
+    b->pickup_config_locked=true;
     j->generation=b->job_generation;
+    j->pickup_enabled=b->pickup_enabled;
     /* Physical B carries the upstream phrase and clock, never local audio.
      * Snapshot the identity here; the immutable worker must not read band. */
     j->inaudible_mask=b->upstream_connected ? (1u << ECHOY_TILE_B) : 0;
@@ -1079,9 +1086,41 @@ echoy_band_job_t *echoy_band_take_job(echoy_band_t *b)
     }
     return j;
 }
+bool echoy_band_enable_pickup(echoy_band_t *b, bool enabled)
+{
+    if (!b || b->pickup_config_locked) return false;
+    b->pickup_enabled=enabled;
+    return true;
+}
+bool echoy_band_prepare_pickup_job(echoy_band_job_t *j)
+{
+    if (!j || !j->ok || j->staged || j->handed_off || j->pickup_prepared) return false;
+    j->pickup_prepared=true;
+    if (!j->pickup_enabled) return true;
+    for (int i=0; i<N; ++i) {
+        struct bank *k=j->banks[i];
+        if (!k) continue;
+        const echoy_plan_t *plan=&j->arrangement.plans[i].music;
+        if (k->refs != 1 || !echoy_pickup_apply(plan, &k->pickup)) goto fail;
+        if (!k->pickup.count) continue;
+#ifdef ESP_PLATFORM
+        k->intro=heap_caps_malloc(ECHOY_AUDIO_LOOP_FRAMES*sizeof(float),MALLOC_CAP_SPIRAM|MALLOC_CAP_8BIT);
+#else
+        k->intro=malloc(ECHOY_AUDIO_LOOP_FRAMES*sizeof(float));
+#endif
+        if (!k->intro || echoy_audio_render_pickup(k->pickup.notes,k->pickup.count,
+                plan->role,j->speaker_voicing_attempted,k->intro) != ECHOY_AUDIO_OK ||
+            !echoy_pickup_mix(&k->pickup,k->loops->samples[ECHOY_AUDIO_FULL],k->intro,
+                k->loops->full_gain,k->intro)) goto fail;
+    }
+    return true;
+fail:
+    j->ok=false;
+    return false;
+}
 bool echoy_band_prepare_job(echoy_band_job_t *j)
 {
-    if (!j || j->ok || j->bass_cut_attempted || j->speaker_voicing_attempted || j->handed_off) {
+    if (!j || j->ok || j->bass_cut_attempted || j->speaker_voicing_attempted || j->pickup_prepared || j->handed_off) {
         return false;
     }
     for (int i = 0; i < N; i++) {
@@ -1108,7 +1147,7 @@ bool echoy_band_prepare_job(echoy_band_job_t *j)
 bool echoy_band_cut_harmony_bass_job(echoy_band_job_t *j)
 {
     if (!j || !j->ok || j->staged || j->calibrated || j->bass_cut_attempted ||
-        j->speaker_voicing_attempted || j->handed_off) return false;
+        j->speaker_voicing_attempted || j->pickup_prepared || j->handed_off) return false;
     j->bass_cut_attempted = true;
     for (int i = 0; i < N; ++i) {
         if (!j->banks[i] || j->arrangement.plans[i].music.role != ECHOY_HARMONY) continue;
@@ -1124,7 +1163,7 @@ bool echoy_band_cut_harmony_bass_job(echoy_band_job_t *j)
 bool echoy_band_voice_for_speaker_job(echoy_band_job_t *j)
 {
     if (!j || !j->ok || j->staged || j->calibrated || j->handed_off ||
-        j->bass_cut_attempted || j->speaker_voicing_attempted) return false;
+        j->bass_cut_attempted || j->speaker_voicing_attempted || j->pickup_prepared) return false;
     j->speaker_voicing_attempted = true;
     /* Check every bank before modifying any. The worker cannot alter a bank
      * retained by a prepared/live voice or another consumer. */
@@ -1146,7 +1185,7 @@ bool echoy_band_voice_for_speaker_job(echoy_band_job_t *j)
 }
 bool echoy_band_calibrate_job(echoy_band_job_t *j, const float role_gains[4])
 {
-    if (!j || !j->ok || j->staged || j->calibrated || j->handed_off || !role_gains) return false;
+    if (!j || !j->ok || j->staged || j->calibrated || j->handed_off || j->pickup_prepared || !role_gains) return false;
     for (unsigned role=0; role<4; ++role)
         if (!isfinite(role_gains[role]) || role_gains[role] < 0 || role_gains[role] > 4)
             return false;
@@ -1154,6 +1193,7 @@ bool echoy_band_calibrate_job(echoy_band_job_t *j, const float role_gains[4])
         if (!j->banks[i]) continue;
         echoy_audio_loops_t *loops=j->banks[i]->loops;
         float gain=role_gains[j->arrangement.plans[i].music.role];
+        loops->full_gain *= gain;
 #ifdef ESP_PLATFORM
         float peak_before = 0, peak_after = 0;
 #endif
@@ -1186,7 +1226,7 @@ bool echoy_band_finish_job(echoy_band_t *b, echoy_band_job_t *j, int64_t now)
         echoy_band_discard_job(j);
         return false;
     }
-    if (!j->ok) {
+    if (!j->ok || (j->pickup_enabled && !j->pickup_prepared)) {
         b->cooperation->candidate_failed=true;
         for (int i = 0; i < N; i++) {
             if (j->arrangement.changed_mask & (1u << i)) {
@@ -1408,6 +1448,7 @@ bool echoy_band_read(echoy_band_t *b, echoy_tile_id_t id, echoy_control_view_t *
     echoy_model_get_snapshot(v->model, &out->state);
     out->state.current_playable=retained_start(b,id,b->render_until);
     out->plan = *echoy_model_get_plan(v->model);
+    if (v->prepared) out->pickup=v->prepared->pickup;
     memcpy(out->memories, t->memories, sizeof(out->memories));
     out->state.role = t->role;
     out->state.phrase = t->phrase;
@@ -1424,6 +1465,16 @@ bool echoy_band_read(echoy_band_t *b, echoy_tile_id_t id, echoy_control_view_t *
     out->condition = v->condition;
     out->preparing = out->state.plan_pending && out->state.apply_at_us == 0;
     if(echoy_model_local_preview(v->model)) {
+        /* The early reply can use an uncommitted bank, even if its group job
+         * later fails. Match the retained playback, not prepared/ready state. */
+        memset(&out->pickup,0,sizeof(out->pickup));
+        for (unsigned i=0;i<RECORDS;++i) {
+            const struct playback *p=&v->play[i];
+            if (p->bank && !p->loop && p->at==out->state.start_us) {
+                out->pickup=p->bank->pickup;
+                break;
+            }
+        }
         /* Existing reply UI describes the sound already being heard. Group
          * readiness remains visible through link_read, never this UI copy. */
         out->state.plan_pending=false;out->state.apply_at_us=0;out->preparing=false;
@@ -1464,12 +1515,14 @@ static void active_mix_refresh(const echoy_band_t *b, struct active_mix *active)
             active->cues[c->tile][active->cue_count[c->tile]++] = (uint8_t)j;
     }
 }
-void echoy_band_render(echoy_band_t *b, int64_t at, float *out, size_t frames)
+static void render_layers(echoy_band_t *b, int64_t at, float *out, float *intro, uint8_t *gate, size_t frames)
 {
     if (!b || !out || at < 0) {
         return;
     }
     memset(out, 0, frames * sizeof(*out));
+    if (intro) memset(intro, 0, frames*sizeof(*intro));
+    if (gate) memset(gate, 0, frames);
 #ifdef ESP_PLATFORM
     bool trace = !b->profiled;
     uint32_t mark = esp_cpu_get_cycle_count();
@@ -1490,7 +1543,7 @@ void echoy_band_render(echoy_band_t *b, int64_t at, float *out, size_t frames)
         group->authorized==group->armed && group->committed!=group->armed ? group->armed_at : 0;
     for (size_t k = 0; k < frames; k++) {
         int64_t t = at + (int64_t)(k * 1000000 / ECHOY_AUDIO_SAMPLE_RATE);
-        double sum = 0;
+        double sum = 0, intro_sum = 0;
         if ((pending && t >= pending->at_us) || (group_at && t>=group_at)) {
             if (!b->profiled) ++b->profile.tick_calls;
             echoy_band_tick(b, t);
@@ -1501,7 +1554,7 @@ void echoy_band_render(echoy_band_t *b, int64_t at, float *out, size_t frames)
         PROFILE_PART(clock_cycles);
         for (int i = 0; i < N; i++) {
             struct voice *v = &b->voices[i];
-            double sample = 0;
+            double sample = 0, pickup_sample = 0;
             if (v->smoothed_volume != v->volume)
                 v->smoothed_volume = v->volume + (v->smoothed_volume - v->volume) * smooth;
             if (!active.play_count[i] && !active.cue_count[i]) {
@@ -1523,6 +1576,12 @@ void echoy_band_render(echoy_band_t *b, int64_t at, float *out, size_t frames)
                     gain *= 1 - (t - p->stop) / (double)FADE;
                 }
                 sample += p->bank->loops->samples[ECHOY_AUDIO_FULL][pos] * gain;
+                /* Retiring loops still fade their original PCM, but must not
+                 * start another pickup at the replacement boundary. */
+                if (p->bank->intro && (!p->stop || t < p->stop) && pos < p->bank->pickup.end) {
+                    pickup_sample += p->bank->intro[pos] * gain;
+                    if (gate) gate[k]=1;
+                }
             }
             PROFILE_PART(voice_cycles);
             for (unsigned j = 0; j < active.cue_count[i]; j++) {
@@ -1551,9 +1610,12 @@ void echoy_band_render(echoy_band_t *b, int64_t at, float *out, size_t frames)
             }
             PROFILE_PART(cue_cycles);
             sum += sample * v->smoothed_volume;
+            intro_sum += pickup_sample * v->smoothed_volume;
             PROFILE_PART(voice_cycles);
         }
         out[k] = (float)(sum * .45);
+        if (intro) intro[k]=(float)(intro_sum*.45);
+        else if (intro_sum != 0) out[k]+=(float)(intro_sum*.45);
         PROFILE_PART(voice_cycles);
     }
     b->render_until = at + (int64_t)(frames * 1000000 / ECHOY_AUDIO_SAMPLE_RATE);
@@ -1563,4 +1625,15 @@ void echoy_band_render(echoy_band_t *b, int64_t at, float *out, size_t frames)
 echoy_band_profile_t echoy_band_render_profile(const echoy_band_t *b)
 {
     return b ? b->profile : (echoy_band_profile_t){0};
+}
+
+void echoy_band_render(echoy_band_t *b, int64_t at, float *out, size_t frames)
+{
+    render_layers(b,at,out,NULL,NULL,frames);
+}
+void echoy_band_render_layers(echoy_band_t *b, int64_t at, float *out,
+    float *intro, uint8_t *gate, size_t frames)
+{
+    if (!intro || !gate) return;
+    render_layers(b,at,out,intro,gate,frames);
 }

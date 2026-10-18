@@ -8,5 +8,5 @@ trap 'rm -rf "$build"' EXIT HUP INT TERM
  -I"$root/projects/echoy/main" "$root/tests/band/test_calibration.c" \
  "$root/projects/echoy/main/echoy_band.c" "$root/projects/echoy/main/echoy_model.c" \
  "$root/projects/echoy/main/echoy_music.c" "$root/projects/echoy/main/echoy_arrange.c" \
- "$root/projects/echoy/main/echoy_audio.c" -lm -o "$build/test"
+ "$root/projects/echoy/main/echoy_audio.c" "$root/projects/echoy/main/echoy_pickup.c" -lm -o "$build/test"
 "$build/test"

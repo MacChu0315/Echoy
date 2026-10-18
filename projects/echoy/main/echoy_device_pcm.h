@@ -31,3 +31,13 @@ typedef struct {
 void echoy_device_pcm_reset(echoy_device_pcm_t *state);
 bool echoy_device_pcm_convert(echoy_device_pcm_t *state, const float *source, int16_t *out,
                               size_t frames, echoy_device_pcm_stats_t *stats);
+
+/* Independent state prevents pickup energy from changing the original filter
+ * or limiter. A closed gate discards its delayed tail before touching PCM. */
+typedef struct {
+    echoy_device_pcm_t processor;
+    bool active;
+} echoy_pickup_pcm_t;
+void echoy_pickup_pcm_reset(echoy_pickup_pcm_t *state);
+bool echoy_device_pcm_add_pickup(echoy_pickup_pcm_t *state, const float *source,
+    const uint8_t *gate, int16_t *original, size_t frames);

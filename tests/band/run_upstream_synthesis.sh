@@ -7,7 +7,7 @@ trap 'rm -rf "$upstream_build"' EXIT HUP INT TERM
  -I"$root/projects/echoy/main" "$root/tests/band/test_upstream_synthesis.c" \
  "$root/projects/echoy/main/echoy_band.c" "$root/projects/echoy/main/echoy_arrange.c" \
  "$root/projects/echoy/main/echoy_model.c" "$root/projects/echoy/main/echoy_music.c" \
- "$root/projects/echoy/main/echoy_audio.c" \
+ "$root/projects/echoy/main/echoy_audio.c" "$root/projects/echoy/main/echoy_pickup.c" \
  -Wl,--wrap=echoy_audio_prepare -Wl,--wrap=echoy_audio_free_loops \
  -lm -o "$upstream_build/test_upstream_synthesis"
 "$upstream_build/test_upstream_synthesis" "$@"

@@ -25,6 +25,9 @@
 #error "Echoy audio trials are mutually exclusive"
 #endif
 
+#ifndef CONFIG_ECHOY_PHRASE_PICKUP
+#define CONFIG_ECHOY_PHRASE_PICKUP 0
+#endif
 #define BLOCK_FRAMES 240u
 #define QUEUE_US                                                                                   \
     ((int64_t)BOARD_AUDIO_DMA_FRAMES * BOARD_AUDIO_DMA_DESCRIPTORS * 1000000 /                     \
@@ -59,6 +62,8 @@ typedef struct {
 } prepared_t;
 typedef struct {
     float floating[BLOCK_FRAMES];
+    float pickup[BLOCK_FRAMES];
+    uint8_t pickup_gate[BLOCK_FRAMES];
     int16_t pcm[BLOCK_FRAMES];
 } pcm_block_t;
 enum owner_trace_phase {
@@ -105,6 +110,7 @@ struct echoy_device {
     int audio_core;
     uint64_t accepted_frames;
     echoy_device_pcm_t pcm_processor;
+    echoy_pickup_pcm_t pickup_processor;
     uint64_t pcm_clipped, pcm_limited;
     unsigned deadline_misses, rejected_actions, queue_overflows, cache_busy;
     esp_err_t shutdown_error;
@@ -566,6 +572,7 @@ static void fail_audio(struct echoy_device *d, board_audio_t **audio, const char
 {
     d->audio_fault = true;
     echoy_device_pcm_reset(&d->pcm_processor);
+    echoy_pickup_pcm_reset(&d->pickup_processor);
     if (atomic_load(&d->probe_busy)) {
         finish_probe(d, ECHOY_PROBE_FAILED, error);
     }
@@ -627,6 +634,7 @@ static bool open_audio(struct echoy_device *d, board_audio_t **audio)
     }
     d->audio_fault = false;
     echoy_device_pcm_reset(&d->pcm_processor);
+    echoy_pickup_pcm_reset(&d->pickup_processor);
     d->last_audio_stats = (board_audio_stats_t){0};
     d->accepted_frames = 0;
     /* I2S owns three 5 ms DMA descriptors. This is an estimated presentation
@@ -806,6 +814,7 @@ static void prepare_worker(void *arg)
     xEventGroupWaitBits(d->done, STARTED, pdFALSE, pdTRUE, portMAX_DELAY);
     echoy_band_t *band = atomic_load(&d->stopping) ? NULL :
                         echoy_band_create_configured(preview_speaker,role_gains);
+    if (band) echoy_band_enable_pickup(band, CONFIG_ECHOY_PHRASE_PICKUP);
     xQueueSend(d->startup, &band, portMAX_DELAY);
     ESP_LOGI(TAG, "musical role gain milli: pulse=%u voice=%u dust=%u harmony=%u",
              (unsigned)(role_gains[0]*1000), (unsigned)(role_gains[1]*1000),
@@ -835,6 +844,7 @@ static void prepare_worker(void *arg)
             result.ok = echoy_band_calibrate_job(job, role_gains);
             result.calibration_failed = !result.ok;
         }
+        if (result.ok) result.ok=echoy_band_prepare_pickup_job(job);
         result.elapsed_us = now_us(d) - start;
         if (!result.ok) {
             ESP_LOGE(TAG, "sound preparation/calibration failed");
@@ -1040,6 +1050,7 @@ static void owner_worker(void *arg)
         if (flush) {
             if (d->trace_active) d->trace_active->flags |= TRACE_FLUSH;
             echoy_device_pcm_reset(&d->pcm_processor);
+            echoy_pickup_pcm_reset(&d->pickup_processor);
         }
         if (flush && audio
 #if CONFIG_ECHOY_OUTPUT_MEASUREMENT
@@ -1083,6 +1094,7 @@ static void owner_worker(void *arg)
             esp_err_t error = board_audio_readback(audio, &d->probe.after);
             if (error == ESP_OK) {
                 echoy_device_pcm_reset(&d->pcm_processor);
+                echoy_pickup_pcm_reset(&d->pickup_processor);
                 error = board_audio_flush(audio);
             }
             if (error != ESP_OK) {
@@ -1165,7 +1177,8 @@ static void owner_worker(void *arg)
             if (d->trace_active) d->trace_active->flags |= TRACE_PROBE;
             echoy_audio_probe_render(d->probe_position, d->block->pcm, BLOCK_FRAMES);
         } else {
-            echoy_band_render(d->band, at, d->block->floating, BLOCK_FRAMES);
+            echoy_band_render_layers(d->band, at, d->block->floating,
+                d->block->pickup, d->block->pickup_gate, BLOCK_FRAMES);
             int64_t mix_done = now_us(d);
             if (mix_done - start > d->max_mix_us) d->max_mix_us = mix_done - start;
             echoy_device_pcm_stats_t stats;
@@ -1175,6 +1188,9 @@ static void owner_worker(void *arg)
             } else {
                 d->pcm_clipped += stats.clipped;
                 d->pcm_limited += stats.limited;
+                if (!echoy_device_pcm_add_pickup(&d->pickup_processor,d->block->pickup,
+                        d->block->pickup_gate,d->block->pcm,BLOCK_FRAMES))
+                    fail_audio(d, &audio, "nonfinite pickup PCM", ESP_ERR_INVALID_RESPONSE);
             }
             int64_t converted = now_us(d) - mix_done;
             if (converted > d->max_convert_us) d->max_convert_us = converted;

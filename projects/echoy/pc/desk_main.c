@@ -202,6 +202,7 @@ static void *prepare_thread(void *ctx)
             continue;
         }
         bool ok = echoy_band_prepare_job(j);
+        if (ok) ok=echoy_band_prepare_pickup_job(j);
         pthread_mutex_lock(&d->lock);
         bool accepted = echoy_band_finish_job(band,j,now_us(NULL)+owner_offset(id));
         pthread_mutex_unlock(&d->lock);
@@ -878,6 +879,8 @@ int main(int argc, char **argv)
     if (!d.chain) {
 #else
     d.band = echoy_band_create();
+    if (d.band) echoy_band_enable_pickup(d.band, getenv("ECHOY_PHRASE_PICKUP") &&
+        strcmp(getenv("ECHOY_PHRASE_PICKUP"), "0") != 0);
     if (!d.band) {
 #endif
         fprintf(stderr, "Cannot initialize C instruments\n");

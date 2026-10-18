@@ -71,6 +71,7 @@ struct echoy_ui {
     atomic_uint home_users;
     struct home_structure home_structure;
     echoy_plan_t home_plan;
+    echoy_pickup_t home_pickup;
     uint32_t home_epoch, home_published_epoch;
     echoy_role_t home_published_role;
     bool home_structure_valid, home_request_pending, home_waiting_visibility;
@@ -306,6 +307,10 @@ static void prepare_graphics(echoy_ui_handle_t u, const echoy_snapshot_t *s, int
                 }
             }
         }
+        if (active && !cap && u->platform.read_control) {
+            for (size_t i=0; i<u->external.pickup.count && i<2; ++i)
+                if ((int)floor(u->external.pickup.notes[i].step) == step) u->last_hit_us=now;
+        }
         u->last_step = step;
     }
     float energy = now >= u->last_hit_us && now - u->last_hit_us < 400000
@@ -322,6 +327,7 @@ static void prepare_graphics(echoy_ui_handle_t u, const echoy_snapshot_t *s, int
                                        .width = 300,
                                        .height = 204,
                                        .background = 0xf1efe8};
+    if (!cap && u->platform.read_control) u->frames[0].pickup=u->external.pickup;
     u->frames[1] = u->frames[0];
     u->frames[1].height = 15;
     uint16_t seed = plan->source_count ? source_mask(plan) : s->seed;
@@ -377,7 +383,8 @@ static void sync_home_structure(echoy_ui_handle_t u, const echoy_snapshot_t *s)
         old->selected_role != s->role || old->selected_phrase != s->phrase ||
         old->route != u->route || old->condition != u->condition || old->removed != u->removed ||
         old->reduced_motion != u->reduced_motion || old->active != u->frames[0].active ||
-        memcmp(&u->home_plan, u->frames[0].plan, sizeof(u->home_plan)) != 0;
+        memcmp(&u->home_plan, u->frames[0].plan, sizeof(u->home_plan)) != 0 ||
+        memcmp(&u->home_pickup, &u->frames[0].pickup, sizeof(u->home_pickup)) != 0;
     if (changed) {
         if (++u->home_epoch == 0) ++u->home_epoch;
         echoy_art_producer_set_epoch(u->home_producer, u->home_epoch);
@@ -397,6 +404,7 @@ static void sync_home_structure(echoy_ui_handle_t u, const echoy_snapshot_t *s)
             .condition=u->condition, .removed=u->removed, .reduced_motion=u->reduced_motion,
             .active=u->frames[0].active};
         u->home_plan = *u->frames[0].plan;
+        u->home_pickup = u->frames[0].pickup;
         u->home_structure_valid = true;
         u->home_request_pending = visible;
     }

@@ -3,6 +3,7 @@
 #include "echoy_audio.h"
 #include "echoy_control.h"
 #include "echoy_coop.h"
+#include "echoy_pickup.h"
 typedef struct echoy_band echoy_band_t;
 typedef struct echoy_band_job echoy_band_job_t;
 typedef struct {
@@ -58,3 +59,14 @@ void echoy_band_discard_job(echoy_band_job_t *job);
 /* Additive scheduling uses absolute microseconds; every tile shares this
  * sample block. Output is mono float, unclipped, ready for the device adapter. */
 void echoy_band_render(echoy_band_t *band, int64_t first_sample_us, float *out, size_t frames);
+
+/* Startup-only choice, before taking the first preparation job. Default false
+ * retains reference playback. Device Kconfig and native desk select the mode. */
+bool echoy_band_enable_pickup(echoy_band_t *band, bool enabled);
+/* Last preparation operation, after optional speaker voicing and calibration.
+ * No plan mutation. Enabled jobs cannot finish until this succeeds. */
+bool echoy_band_prepare_pickup_job(echoy_band_job_t *job);
+/* Same scheduler, separate streams: original is byte-identical to render with
+ * pickup disabled. gate closes at the HTML tail cutoff, including loop ends. */
+void echoy_band_render_layers(echoy_band_t *band, int64_t at, float *original,
+    float *pickup, uint8_t *gate, size_t frames);

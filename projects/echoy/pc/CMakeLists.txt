@@ -34,7 +34,7 @@ target_link_libraries(echoy_backend PRIVATE Threads::Threads)
 add_executable(echoy_desk desk_main.c
     ../main/echoy_ui.c ../main/echoy_strip.c ../main/echoy_strip_image.c ../main/echoy_model.c ../main/echoy_music.c
     ../main/echoy_view_cache.c ../main/echoy_art.c ../main/echoy_art_image.c
-    ../main/echoy_band.c ../main/echoy_audio.c ../main/echoy_arrange.c)
+    ../main/echoy_band.c ../main/echoy_audio.c ../main/echoy_pickup.c ../main/echoy_arrange.c)
 add_dependencies(echoy_desk echoy_backend_bundle)
 target_sources(echoy_desk PRIVATE ../main/echoy_display.c)
 target_sources(echoy_desk PRIVATE ../main/echoy_art_producer.c)

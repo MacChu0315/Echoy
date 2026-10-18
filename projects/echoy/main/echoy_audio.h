@@ -16,6 +16,7 @@ typedef struct {
     float *samples[ECHOY_AUDIO_KIND_COUNT];
     size_t frames;
     double target_rms;
+    double full_gain; /* Original normalization, reused only for local pickup. */
 } echoy_audio_loops_t;
 
 typedef enum {
@@ -72,3 +73,8 @@ echoy_audio_result_t echoy_audio_render_preview_pool(echoy_role_t role, bool spe
                                                     float gain, echoy_audio_preview_pool_t *out);
 void echoy_audio_free_preview_pool(echoy_audio_preview_pool_t *pool);
 void echoy_audio_free_buffer(echoy_audio_buffer_t *buffer);
+
+/* Independent, unnormalized synthesis for a local pickup. Uses the same synth
+ * and accepted speaker profile; owns a bounded preparation-only workspace. */
+echoy_audio_result_t echoy_audio_render_pickup(const echoy_note_t *notes, size_t count,
+    echoy_role_t role, bool speaker, float *out);

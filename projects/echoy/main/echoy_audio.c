@@ -602,6 +602,7 @@ echoy_audio_result_t echoy_audio_prepare(const echoy_plan_t *plan, bool original
     for (unsigned kind = 0; kind < 3; ++kind) {
         double gain = rms[kind] > 1e-10 ? target / rms[kind] : 0;
         if (kind == ECHOY_AUDIO_SOURCE && peak[kind] > 0) gain = fmin(gain, .65 / peak[kind]);
+        if (kind == ECHOY_AUDIO_FULL) loops->full_gain = gain;
         for (size_t i = 0; i < loops->frames; ++i) loops->samples[kind][i] = (float)(loops->samples[kind][i] * (float)gain);
     }
     if (original_pulse1) memcpy(loops->samples[ECHOY_AUDIO_FOREGROUND], loops->samples[ECHOY_AUDIO_SOURCE], loops->frames * sizeof(float));
@@ -650,8 +651,9 @@ bool echoy_audio_voice_for_speaker(const echoy_plan_t *plan, echoy_audio_loops_t
     double rms, peak;
     statistics(full, loops->frames, &rms, &peak);
     bool ok = isfinite(rms) && isfinite(peak);
+    float gain=0;
     if (ok) {
-        float gain = rms > 1e-10 && peak > 0 ?
+        gain = rms > 1e-10 && peak > 0 ?
             (float)fmin(loops->target_rms / rms, .65 / peak) : 0;
         for (size_t i = 0; i < loops->frames; ++i) {
             full[i] *= gain;
@@ -660,7 +662,10 @@ bool echoy_audio_voice_for_speaker(const echoy_plan_t *plan, echoy_audio_loops_t
     }
     if (ok && plan->role == ECHOY_HARMONY)
         ok = echoy_audio_cut_harmony_bass(full, loops->frames);
-    if (ok) memcpy(loops->samples[ECHOY_AUDIO_FULL], full, bytes);
+    if (ok) {
+        memcpy(loops->samples[ECHOY_AUDIO_FULL], full, bytes);
+        loops->full_gain=gain;
+    }
     free(work);
     return ok;
 }
@@ -823,3 +828,22 @@ finish:
     return result;
 }
 void echoy_audio_free_buffer(echoy_audio_buffer_t *buffer) { free(buffer); }
+
+echoy_audio_result_t echoy_audio_render_pickup(const echoy_note_t *notes, size_t count,
+    echoy_role_t role, bool speaker, float *out)
+{
+    if (!notes || !out || count > 2 || role > ECHOY_HARMONY) return ECHOY_AUDIO_INVALID;
+#ifdef ESP_PLATFORM
+    workspace_t *work = heap_caps_malloc(sizeof(*work),MALLOC_CAP_SPIRAM|MALLOC_CAP_8BIT);
+#else
+    workspace_t *work = malloc(sizeof(*work));
+#endif
+    if (!work) return ECHOY_AUDIO_NO_MEMORY;
+    workspace_init(work);
+    work->speaker_profile = speaker;
+    render(out, ECHOY_AUDIO_LOOP_FRAMES, notes, count, false, role == ECHOY_PULSE, true, work);
+    free(work);
+    if (speaker && role == ECHOY_HARMONY &&
+        !echoy_audio_cut_harmony_bass(out, ECHOY_AUDIO_LOOP_FRAMES)) return ECHOY_AUDIO_INVALID;
+    return ECHOY_AUDIO_OK;
+}

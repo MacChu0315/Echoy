@@ -1,5 +1,6 @@
 #pragma once
 #include "echoy_model.h"
+#include "echoy_pickup.h"
 /* Local audition only; touch recording keeps every input timestamp. */
 #define ECHOY_PREVIEW_MIN_INTERVAL_US INT64_C(100000)
 typedef enum {
@@ -44,6 +45,7 @@ typedef enum {
 typedef struct {
     echoy_snapshot_t state;
     echoy_plan_t plan;
+    echoy_pickup_t pickup; /* Display only; plan remains the relationship source. */
     unsigned memories[4], battery;
     double volume;
     bool present, preparing, preparation_failed, english, reduced_motion;

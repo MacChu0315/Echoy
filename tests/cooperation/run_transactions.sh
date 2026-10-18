@@ -12,5 +12,5 @@ trap 'rm -rf "$transaction_build"' EXIT HUP INT TERM
  "$root/tests/cooperation/test_transactions.c" "$root/projects/echoy/main/echoy_link_codec.c" \
  "$root/projects/echoy/main/echoy_band.c" "$root/projects/echoy/main/echoy_arrange.c" \
  "$root/projects/echoy/main/echoy_model.c" "$root/projects/echoy/main/echoy_music.c" \
- "$root/projects/echoy/main/echoy_audio.c" -lm -o "$transaction_build/test_transactions"
+ "$root/projects/echoy/main/echoy_audio.c" "$root/projects/echoy/main/echoy_pickup.c" -lm -o "$transaction_build/test_transactions"
 "$transaction_build/test_transactions" "$@"

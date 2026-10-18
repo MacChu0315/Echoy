@@ -8,5 +8,5 @@ trap 'rm -rf "$clock_build"' EXIT HUP INT TERM
  -I"$root/projects/echoy/main" "$root/tests/linked_device/test_clock_peer.c" \
  "$root/projects/echoy/main/echoy_band.c" "$root/projects/echoy/main/echoy_arrange.c" \
  "$root/projects/echoy/main/echoy_model.c" "$root/projects/echoy/main/echoy_music.c" \
- "$root/projects/echoy/main/echoy_audio.c" -lm -o "$clock_build/test_clock_peer"
+ "$root/projects/echoy/main/echoy_audio.c" "$root/projects/echoy/main/echoy_pickup.c" -lm -o "$clock_build/test_clock_peer"
 "$clock_build/test_clock_peer" "$@"

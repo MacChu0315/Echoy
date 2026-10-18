@@ -33,3 +33,5 @@ bool fake_prepare_is_blocked(void);
 bool fake_create_is_blocked(void);
 void fake_sleep_ms(unsigned ms);
 void fake_join_tasks(void);
+
+extern atomic_bool fake_pickup_hold, fake_pickup_blocked;
