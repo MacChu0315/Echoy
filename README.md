@@ -15,6 +15,10 @@ Actual device screenshots: a connected pair, both paused. [Image source](docs/sc
 
 > **v1.1.0:** three-device reorder fixes, shared Flash calibration, earlier local recording replies and role-aware center audition. Joined startup is supported. [Release details](docs/releases/v1.1.0.md).
 
+The local **1.2.0** source adds the accepted phrase pickup and battery/slider
+fixes while retaining v1.1.0 behavior. [Local release details](docs/releases/v1.2.0.md).
+GitHub publication is pending; the download links above still refer to v1.1.0.
+
 ## Play in three steps
 
 1. **Record.** Tap Record, wait for **3, 2, 1**, then tap during four beats. Your phrase plays back once and stops. Recording captures touch timing, not microphone audio.

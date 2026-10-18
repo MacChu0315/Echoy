@@ -1,49 +1,24 @@
 # Echoy project state
 
-The v1.1.0 source includes the three-device horizontal-link repair, shared Flash
-calibration, earlier local recording replies, corrected guide and center audition.
-See [release details](releases/v1.1.0.md) for behavior, package identity and checks,
-and [development](development.md) for the pinned environment and test commands.
+## Local v1.2.0 release
 
-The v1.1.0 source is merged into `master`; the source tag remains unchanged.
-The [GitHub Release](https://github.com/MacChu0315/Echoy/releases/tag/v1.1.0)
-provides the accepted firmware, checksums, installation guide and license
-materials. README download links point to this release. The older v1.0.0
-package remains available as a historical version.
+The accepted phrase pickup, complete battery percentage and richness feedback
+fixes are frozen for v1.2.0, retaining the v1.1.0 three-device repair, early local
+reply, random audition, input guards and office speaker profile. Version
+identifiers and generated About text are unified at 1.2.0; the version-freeze
+step does not change musical or interaction behavior.
 
-Detailed device snapshots, experiment logs and local workspace notes for this
-release are retained privately. Existing published verification records remain
-historical and do not describe the current release unless explicitly referenced.
-The accepted firmware is unchanged by publication cleanup. Unmerged experimental
-features are excluded. Archive branches are frozen, not ongoing state journals.
+The fresh pinned build and release regressions pass. The exact 1.2.0 package
+was installed and validated on three devices while retaining their bootloaders
+and Recovery. The release is preserved on `release/v1.2.0` with the local
+annotated tag `v1.2.0`. See
+[release details](releases/v1.2.0.md) and [development](development.md) for the
+artifact identity, original-mode switch and validation scope. Private device
+snapshots, local paths and experiment logs remain outside tracked release files.
 
+## Published version
 
-## Unreleased phrase pickup integration
-
-The auditioned opening behavior is integrated on the v1.1.0 source baseline.
-Pickup notes are prepared only for local playback and artwork; recorded input,
-relationship plans, upstream transport and fallback remain unchanged. Original
-PCM is preserved from the first input onward with the same office voicing.
-
-The v1.1.0 early local reply keeps its original timing and uses pickup metadata
-from its actual playback bank, including before group commit or after a failed
-transaction. Random audition, input limiting and role/image guards are retained.
-Shared-C, retained-baseline PCM, runtime, UI and native three-owner regression
-checks pass. The integrated candidate has been installed for listening through
-the retained-Recovery workflow, with matching firmware identity and healthy
-startup verified. User listening acceptance remains pending; the published
-v1.1.0 package and its acceptance are unchanged. See
-[development](development.md#phrase-pickup-regression) for the original-mode switch
-and reproducible checks. Private run artifacts are not part of this Git tree.
-
-
-## UI feedback corrections
-
-Battery labels now fit `100%` on all six pages. Richness dragging retains the
-latest requested position until the controller publishes it, and reports a
-rejected queued request back to the UI so controls cannot remain busy forever.
-The existing debounce interval, musical plans and wireless protocol are unchanged.
-Native pointer/pixel checks, UI/runtime regressions and the pinned firmware
-build pass. This follow-up is installed with matching firmware identity and
-healthy startup verified. A device screenshot confirms the full battery
-percentage; physical slider feedback remains subject to user confirmation.
+`master` and the existing GitHub download remain at v1.1.0. No remote merge,
+push, tag publication or GitHub Release for 1.2.0 has been performed. README
+links continue to point to the available v1.1.0 download until publication is
+authorized. Previous release tags and firmware remain unchanged.

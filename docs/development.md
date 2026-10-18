@@ -1,9 +1,10 @@
 # Developing Echoy
 
 Run all commands below from the **Echoy repository root**, not this `docs/`
-directory. The v1.1.0 source includes the accepted three-device repair and local
-recording-reply work. See [v1.1.0](releases/v1.1.0.md) for current source/package
-identity and validation. Historical `echoy-three-basic-ba951963754a` and
+directory. The local [v1.2.0](releases/v1.2.0.md) source freezes the accepted
+phrase pickup and UI fixes, retaining the v1.1.0 three-device repair and local
+recording-reply work. GitHub publication is pending; [v1.1.0](releases/v1.1.0.md)
+remains the published download. Historical `echoy-three-basic-ba951963754a` and
 `echoy-dual-accepted-20261014` tags remain immutable. Unmerged experimental features are excluded from this version.
 
 The examples assume the original workspace layout: Echoy beside a compatible
@@ -67,7 +68,7 @@ python3 ../esp-mosaico-vibe/submodule/esp-mosaico-utils/mosaico-tools/skills/idf
 ```
 
 The portable audio/linkage sources compile for the pinned ESP32-S31 SDK.
-The v1.1.0 code includes speaker output, fixed Flash contact calibration,
+The v1.2.0 code retains speaker output, fixed Flash contact calibration,
 complete horizontal-neighbor admission and the three-device coordinator. Joined
 startup is supported. Targeted recording/following and ABC→BCA were confirmed
 on hardware; this is not exhaustive RF/acoustic qualification. A recorded root
