@@ -6,6 +6,7 @@
 #ifdef ESP_PLATFORM
 #include "esp_timer.h"
 #include "esp_log.h"
+#include "esp_heap_caps.h"
 #endif
 
 #define PI 3.14159265358979323846f
@@ -743,5 +744,82 @@ echoy_audio_result_t echoy_audio_render_cue(echoy_audio_cue_t cue, echoy_audio_b
     }
     *out = buffer;
     return ECHOY_AUDIO_OK;
+}
+static bool same_preview_sound(const echoy_note_t *a,const echoy_note_t *b)
+{
+    return a->kind==b->kind && a->note==b->note && a->note_count==b->note_count &&
+           a->articulation==b->articulation && !memcmp(a->notes,b->notes,sizeof(a->notes));
+}
+void echoy_audio_free_preview_pool(echoy_audio_preview_pool_t *pool)
+{
+    if(!pool)return;
+    echoy_audio_free_buffer(pool->phrase);
+    memset(pool,0,sizeof(*pool));
+}
+echoy_audio_result_t echoy_audio_render_preview_pool(echoy_role_t role, bool speaker,
+                                                    float gain, echoy_audio_preview_pool_t *out)
+{
+    if(out)memset(out,0,sizeof(*out));
+    if(!out || (unsigned)role>ECHOY_HARMONY || !isfinite(gain) || gain<0 || gain>4)
+        return ECHOY_AUDIO_INVALID;
+#ifdef ESP_PLATFORM
+    echoy_plan_t *plan=heap_caps_calloc(1,sizeof(*plan),MALLOC_CAP_SPIRAM|MALLOC_CAP_8BIT);
+#else
+    echoy_plan_t *plan=calloc(1,sizeof(*plan));
+#endif
+    if(!plan)return ECHOY_AUDIO_NO_MEMORY;
+    echoy_audio_loops_t *loops=NULL;
+    echoy_audio_result_t result=ECHOY_AUDIO_INVALID;
+    if(!echoy_compose_mask(ECHOY_PREVIEW_SEED,role,1,.5,plan))goto finish;
+    unsigned events[ECHOY_MAX_EVENTS],groups[ECHOY_MAX_EVENTS],selected[ECHOY_PREVIEW_COUNT];
+    uint32_t starts[ECHOY_MAX_EVENTS];
+    unsigned count=0,group_count=0,chosen=0;
+    bool used[ECHOY_MAX_EVENTS]={0};
+    /* Collapse simultaneous notes into one onset; retain their real mixed sound. */
+    for(unsigned i=0;i<plan->count;i++){
+        uint32_t at=(uint32_t)ceil(plan->events[i].step*.15625*ECHOY_AUDIO_SAMPLE_RATE);
+        unsigned pos=0;while(pos<count && starts[pos]<at)++pos;
+        if(pos<count && starts[pos]==at)continue;
+        for(unsigned j=count;j>pos;j--){starts[j]=starts[j-1];events[j]=events[j-1];}
+        starts[pos]=at;events[pos]=i;++count;
+    }
+    if(count<ECHOY_PREVIEW_COUNT)goto finish;
+    for(unsigned i=0;i<count;i++){
+        unsigned g=0;
+        while(g<group_count && !same_preview_sound(&plan->events[events[i]],&plan->events[events[groups[g]]]))++g;
+        if(g==group_count)groups[group_count++]=i;
+    }
+    /* Visit different timbres/pitches first, then their other occurrences.
+     * This includes kick/hat/rim rather than filling Pulse with only kicks. */
+    while(chosen<ECHOY_PREVIEW_COUNT){
+        for(unsigned g=0;g<group_count && chosen<ECHOY_PREVIEW_COUNT;g++){
+            for(unsigned i=0;i<count;i++)if(!used[i] &&
+                same_preview_sound(&plan->events[events[i]],&plan->events[events[groups[g]]])){
+                used[i]=true;selected[chosen++]=i;break;
+            }
+        }
+    }
+    result=echoy_audio_prepare(plan,role==ECHOY_PULSE,&loops);
+    if(result!=ECHOY_AUDIO_OK)goto finish;
+    if(speaker && !echoy_audio_voice_for_speaker(plan,loops)){result=ECHOY_AUDIO_INVALID;goto finish;}
+#ifdef ESP_PLATFORM
+    out->phrase=heap_caps_calloc(1,sizeof(*out->phrase)+loops->frames*sizeof(float),MALLOC_CAP_SPIRAM|MALLOC_CAP_8BIT);
+#else
+    out->phrase=calloc(1,sizeof(*out->phrase)+loops->frames*sizeof(float));
+#endif
+    if(!out->phrase){result=ECHOY_AUDIO_NO_MEMORY;goto finish;}
+    out->phrase->samples=(float *)(out->phrase+1);out->phrase->frames=loops->frames;
+    for(size_t i=0;i<loops->frames;i++)out->phrase->samples[i]=loops->samples[ECHOY_AUDIO_FULL][i]*gain;
+    for(unsigned n=0;n<ECHOY_PREVIEW_COUNT;n++){
+        unsigned index=selected[n];size_t at=starts[index];
+        size_t end=index+1<count ? starts[index+1] : loops->frames;
+        if(end>at+ECHOY_AUDIO_SAMPLE_RATE/2)end=at+ECHOY_AUDIO_SAMPLE_RATE/2;
+        if(at>=loops->frames || end>loops->frames || end<=at+384){result=ECHOY_AUDIO_INVALID;goto finish;}
+        out->source_frames[n]=(uint32_t)at;out->short_frames[n]=(uint32_t)(end-at);
+    }
+finish:
+    echoy_audio_free_loops(loops);free(plan);
+    if(result!=ECHOY_AUDIO_OK)echoy_audio_free_preview_pool(out);
+    return result;
 }
 void echoy_audio_free_buffer(echoy_audio_buffer_t *buffer) { free(buffer); }

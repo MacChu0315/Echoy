@@ -74,6 +74,7 @@ struct echoy_ui {
     uint32_t home_epoch, home_published_epoch;
     echoy_role_t home_published_role;
     bool home_structure_valid, home_request_pending, home_waiting_visibility;
+    int64_t preview_next_us;
     echoy_plan_t capture_plan, gallery[3];
     route_t route;
     echoy_condition_t condition;
@@ -132,7 +133,7 @@ static void error_at(echoy_ui_handle_t u, esp_gsp_err_t error, const char *opera
 #define ENABLE(u, name, v) CHECK(u, echoy_view_enable((u)->view, (name), (v)))
 #define TEXT(u, name, v) CHECK(u, echoy_view_text((u)->view, (name), (v)))
 #define COLOR(u, name, v) CHECK(u, echoy_view_color((u)->view, (name), (v)))
-static bool act(echoy_ui_handle_t u, echoy_action_t action, double value, int64_t now)
+static bool perform(echoy_ui_handle_t u, echoy_action_t action, double value, int64_t now)
 {
     if (u->platform.perform_action) {
         return u->platform.perform_action(u->platform.ctx, action, value, now);
@@ -165,6 +166,13 @@ static bool act(echoy_ui_handle_t u, echoy_action_t action, double value, int64_
     default:
         return false;
     }
+}
+static bool act(echoy_ui_handle_t u, echoy_action_t action, double value, int64_t now)
+{
+    bool ok=perform(u,action,value,now);
+    if(ok && (action==ECHOY_ACT_PAUSE || action==ECHOY_ACT_RECORD ||
+              action==ECHOY_ACT_CANCEL_RECORD))u->preview_next_us=0;
+    return ok;
 }
 static void read_state(echoy_ui_handle_t u, echoy_snapshot_t *out)
 {
@@ -1061,6 +1069,14 @@ static void tick(esp_gsp_handle_t gsp, void *ctx)
     }
 #endif
 }
+static bool preview_ready(echoy_ui_handle_t u,const echoy_snapshot_t *s,int64_t now)
+{
+    if(now<u->preview_next_us || current_plan(u)->role!=s->role)
+        return false;
+    if(!u->home_producer)return u->frames[0].role==s->role;
+    return u->home_published_epoch && !u->home_waiting_visibility &&
+           u->home_published_role==s->role;
+}
 static void pointer(esp_gsp_handle_t gsp, int32_t x, int32_t y, bool pressed, void *ctx)
 {
     (void)gsp;
@@ -1086,7 +1102,9 @@ static void pointer(esp_gsp_handle_t gsp, int32_t x, int32_t y, bool pressed, vo
                     u->drag = 2;
                     u->drag_value = u->richness;
                 } else if (x >= 90 && x < 390 && y >= 89 && y < 293 &&
-                           (tap_submitted = act(u, ECHOY_ACT_TAP, 0, now))) {
+                           (capturing(s.phase) || preview_ready(u,&s,now)) &&
+                           (tap_submitted = act(u, ECHOY_ACT_TAP, capturing(s.phase)?0:s.role+1, now))) {
+                    if(!capturing(s.phase))u->preview_next_us=now+ECHOY_PREVIEW_MIN_INTERVAL_US;
                     u->last_hit_us = now;
                     echoy_strip_state_t strip = echoy_strip_compute(
                         &s, current_plan(u)->count != 0,

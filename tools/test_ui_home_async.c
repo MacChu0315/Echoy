@@ -15,6 +15,7 @@ static echoy_role_t last_draw_role;
 static float last_draw_energy;
 static bool last_draw_active;
 static int64_t last_tap_at;
+static double last_tap_value;
 
 void __real_echoy_art_draw(const esp_gsp_canvas_surface_t *, void *);
 void __wrap_echoy_art_draw(const esp_gsp_canvas_surface_t *surface, void *ctx)
@@ -59,7 +60,7 @@ static void wait_for_draw(void)
 static bool async_action(void *ctx, echoy_action_t action, double value, int64_t at)
 {
     (void)ctx;
-    if (action==ECHOY_ACT_TAP) { ++tap_actions; last_tap_at=at; }
+    if (action==ECHOY_ACT_TAP) { ++tap_actions; last_tap_at=at; last_tap_value=value; }
     if (action==ECHOY_ACT_VOLUME) owner.volume=value;
     return true;
 }
@@ -101,17 +102,54 @@ int main(int argc,char **argv)
     assert(ui->home_producer && main_draw_callbacks==0 && feedback_draw_callbacks==1);
     wait_for_draw();
     uint32_t epoch=ui->home_epoch;
-    if (!strcmp(argv[1],"input-during-draw")) {
+    if (!strcmp(argv[1],"role-preview-gate")) {
+        set_hold(false);pump_until_published(ui,0);
+        assert(act(ui,ECHOY_ACT_ROLE,ECHOY_VOICE,test_now));
+        /* Owner cache may still describe the old role after queuing the edit. */
+        pointer(NULL,220,200,true,ui);pointer(NULL,220,200,false,ui);
+        assert(tap_actions==1 && last_tap_value==ECHOY_PULSE+1);
+        test_now+=100000;
+        owner.state.role=ECHOY_VOICE;owner.state.plan_pending=true;
+        tick(NULL,ui);
+        pointer(NULL,220,200,true,ui);pointer(NULL,220,200,false,ui);
+        assert(tap_actions==1); /* Selected role changed; committed plan has not. */
+        set_hold(true);
+        assert(echoy_compose_mask(9,ECHOY_VOICE,1,.5,&owner.plan));
+        owner.state.plan_pending=false;++owner.state.committed_revision;tick(NULL,ui);
+        pointer(NULL,220,200,true,ui);pointer(NULL,220,200,false,ui);
+        assert(tap_actions==1 && !art_visible);
+        unsigned before=stream_submissions;set_hold(false);pump_until_published(ui,before);
+        assert(art_visible && stream_marker==ECHOY_VOICE+1);
+        pointer(NULL,220,200,true,ui);pointer(NULL,220,200,false,ui);
+        assert(tap_actions==2 && last_tap_value==ECHOY_VOICE+1);
+        for(unsigned i=0;i<99;i++){
+            test_now+=1000;pointer(NULL,220,200,true,ui);pointer(NULL,220,200,false,ui);
+        }
+        assert(tap_actions==2);
+        ++test_now; /* Still before the100ms boundary. */
+        owner.state.phase=ECHOY_RECORDING;
+        for(unsigned i=0;i<4;i++){
+            test_now+=1000;pointer(NULL,220,200,true,ui);pointer(NULL,220,200,false,ui);
+        }
+        assert(tap_actions==6 && last_tap_value==0); /* Capture bypasses both guards. */
+        owner.state.phase=ECHOY_IDLE;
+        assert(act(ui,ECHOY_ACT_PAUSE,0,test_now));
+        pointer(NULL,220,200,true,ui);pointer(NULL,220,200,false,ui);
+        assert(tap_actions==7); /* Explicit Pause clears the preview input gate. */
+    } else if (!strcmp(argv[1],"input-during-draw")) {
+        set_hold(false);pump_until_published(ui,0);
+        unsigned before=stream_submissions;
+        set_hold(true);ui->frames_dirty=true;tick(NULL,ui);
         for (unsigned i=0;i<10;++i) {
-            test_now+=20000;
+            test_now+=100000;
             pointer(NULL,220,200,true,ui);
             pointer(NULL,220,200,false,ui);
             tick(NULL,ui);
         }
-        assert(tap_actions==10 && last_tap_at==test_now && stream_submissions==0);
+        assert(tap_actions==10 && last_tap_at==test_now && stream_submissions==before);
         assert(main_invalidations==0 && feedback_invalidations>0 && ui->home_epoch==epoch);
         set_hold(false);
-        pump_until_published(ui,0);
+        pump_until_published(ui,before);
         assert(art_visible && ui->home_published_epoch==epoch);
     } else if (!strcmp(argv[1],"continuous-progress")) {
         owner.state.phase=ECHOY_PLAYING;

@@ -798,11 +798,14 @@ static void prepare_worker(void *arg)
     struct echoy_device *d = arg;
 #if CONFIG_ECHOY_OFFICE_VOICING_TRIAL
     const float *role_gains = echoy_office_role_gains;
+    const bool preview_speaker=true;
 #else
     const float *role_gains = echoy_device_role_gains;
+    const bool preview_speaker=false;
 #endif
     xEventGroupWaitBits(d->done, STARTED, pdFALSE, pdTRUE, portMAX_DELAY);
-    echoy_band_t *band = atomic_load(&d->stopping) ? NULL : echoy_band_create();
+    echoy_band_t *band = atomic_load(&d->stopping) ? NULL :
+                        echoy_band_create_configured(preview_speaker,role_gains);
     xQueueSend(d->startup, &band, portMAX_DELAY);
     ESP_LOGI(TAG, "musical role gain milli: pulse=%u voice=%u dust=%u harmony=%u",
              (unsigned)(role_gains[0]*1000), (unsigned)(role_gains[1]*1000),

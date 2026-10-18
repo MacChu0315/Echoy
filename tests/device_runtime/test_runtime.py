@@ -46,7 +46,7 @@ class DeviceRuntime(unittest.TestCase):
                  '-Wl,--wrap=echoy_band_cut_harmony_bass_job',
                  '-Wl,--wrap=echoy_band_voice_for_speaker_job',
                  '-Wl,--wrap=echoy_audio_voice_for_speaker',
-                 '-Wl,--wrap=fake_log','-Wl,--wrap=xSemaphoreTake','-Wl,--wrap=board_audio_write','-Wl,--wrap=echoy_band_create','-Wl,--wrap=echoy_band_prepare_job','-Wl,--wrap=echoy_band_calibrate_job','-lm','-o',str(cls.binary)]
+                 '-Wl,--wrap=fake_log','-Wl,--wrap=xSemaphoreTake','-Wl,--wrap=board_audio_write','-Wl,--wrap=echoy_band_create_configured','-Wl,--wrap=echoy_band_prepare_job','-Wl,--wrap=echoy_band_calibrate_job','-lm','-o',str(cls.binary)]
         if os.environ.get('ECHOY_RUNTIME_SANITIZE')=='1':
             command[1:1]=['-fsanitize=address,undefined','-fno-omit-frame-pointer','-fno-pie','-no-pie']
         subprocess.run(command,check=True)

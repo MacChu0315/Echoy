@@ -4822,13 +4822,13 @@
       "y": 108,
       "w": 352,
       "h": 28,
-      "text": "中央试奏",
+      "text": "先听听声音",
       "font_size": 18,
       "fg_color": "#4f6340",
       "font": "fonts/NotoSansSC-Medium.otf",
       "bind": "guide_title_0",
       "bind_target": "text",
-      "font_charset": "中央试奏"
+      "font_charset": "先听听声音"
     },
     {
       "type": "label",
@@ -4838,13 +4838,13 @@
       "y": 138,
       "w": 352,
       "h": 22,
-      "text": "敲敲中央，先听听声音。",
+      "text": "轻点屏幕中央，试试这个角色的声音。",
       "font_size": 15,
       "fg_color": "#637555",
       "font": "fonts/NotoSansSC-Regular.otf",
       "bind": "guide_body_0_0",
       "bind_target": "text",
-      "font_charset": "敲敲中央，先听听声音。"
+      "font_charset": "轻点屏幕中央，试试这个角色的声音。"
     },
     {
       "type": "label",
@@ -4854,13 +4854,13 @@
       "y": 160,
       "w": 352,
       "h": 22,
-      "text": "不会改变已有节奏。",
+      "text": "到“角色”里，还能换一种声音。",
       "font_size": 15,
       "fg_color": "#637555",
       "font": "fonts/NotoSansSC-Regular.otf",
       "bind": "guide_body_0_1",
       "bind_target": "text",
-      "font_charset": "不会改变已有节奏。"
+      "font_charset": "到“角色”里，还能换一种声音。"
     },
     {
       "type": "label",
@@ -4870,13 +4870,13 @@
       "y": 194,
       "w": 352,
       "h": 28,
-      "text": "录下节奏",
+      "text": "录下你的节奏",
       "font_size": 18,
       "fg_color": "#4f6340",
       "font": "fonts/NotoSansSC-Medium.otf",
       "bind": "guide_title_1",
       "bind_target": "text",
-      "font_charset": "录下节奏"
+      "font_charset": "录下你的节奏"
     },
     {
       "type": "label",
@@ -4886,13 +4886,13 @@
       "y": 224,
       "w": 352,
       "h": 22,
-      "text": "点“录制”，预备 3 秒后，",
+      "text": "点“录制”，等倒数结束后再敲。",
       "font_size": 15,
       "fg_color": "#637555",
       "font": "fonts/NotoSansSC-Regular.otf",
       "bind": "guide_body_1_0",
       "bind_target": "text",
-      "font_charset": "点“录制”，预备 3 秒后，"
+      "font_charset": "点“录制”，等倒数结束后再敲。"
     },
     {
       "type": "label",
@@ -4902,13 +4902,13 @@
       "y": 246,
       "w": 352,
       "h": 22,
-      "text": "在 4 拍内敲出你的节奏。",
+      "text": "录制共四拍，结束后会回放一次。",
       "font_size": 15,
       "fg_color": "#637555",
       "font": "fonts/NotoSansSC-Regular.otf",
       "bind": "guide_body_1_1",
       "bind_target": "text",
-      "font_charset": "在 4 拍内敲出你的节奏。"
+      "font_charset": "录制共四拍，结束后会回放一次。"
     },
     {
       "type": "label",
@@ -4918,13 +4918,13 @@
       "y": 280,
       "w": 352,
       "h": 28,
-      "text": "换种回应",
+      "text": "让节奏继续",
       "font_size": 18,
       "fg_color": "#4f6340",
       "font": "fonts/NotoSansSC-Medium.otf",
       "bind": "guide_title_2",
       "bind_target": "text",
-      "font_charset": "换种回应"
+      "font_charset": "让节奏继续"
     },
     {
       "type": "label",
@@ -4934,13 +4934,13 @@
       "y": 310,
       "w": 352,
       "h": 22,
-      "text": "在“角色”里选择声音和表达。",
+      "text": "点“播放”循环，点“暂停”停下。",
       "font_size": 15,
       "fg_color": "#637555",
       "font": "fonts/NotoSansSC-Regular.otf",
       "bind": "guide_body_2_0",
       "bind_target": "text",
-      "font_charset": "在“角色”里选择声音和表达。"
+      "font_charset": "点“播放”循环，点“暂停”停下。"
     },
     {
       "type": "label",
@@ -4950,13 +4950,13 @@
       "y": 332,
       "w": 352,
       "h": 22,
-      "text": "同一段节奏，也能有不同回应。",
+      "text": "想听哪台，就点那台的“播放”。",
       "font_size": 15,
       "fg_color": "#637555",
       "font": "fonts/NotoSansSC-Regular.otf",
       "bind": "guide_body_2_1",
       "bind_target": "text",
-      "font_charset": "同一段节奏，也能有不同回应。"
+      "font_charset": "想听哪台，就点那台的“播放”。"
     },
     {
       "type": "label",
@@ -4966,13 +4966,13 @@
       "y": 366,
       "w": 352,
       "h": 28,
-      "text": "循环播放",
+      "text": "再加一台试试",
       "font_size": 18,
       "fg_color": "#4f6340",
       "font": "fonts/NotoSansSC-Medium.otf",
       "bind": "guide_title_3",
       "bind_target": "text",
-      "font_charset": "循环播放"
+      "font_charset": "再加一台试试"
     },
     {
       "type": "label",
@@ -4982,13 +4982,13 @@
       "y": 396,
       "w": 352,
       "h": 22,
-      "text": "点“播放”循环，点“暂停”停下。",
+      "text": "再找一台装好 Echoy 的 Mosaico",
       "font_size": 15,
       "fg_color": "#637555",
       "font": "fonts/NotoSansSC-Regular.otf",
       "bind": "guide_body_3_0",
       "bind_target": "text",
-      "font_charset": "点“播放”循环，点“暂停”停下。"
+      "font_charset": "再找一台装好 Echoy 的 Mosaico"
     },
     {
       "type": "label",
@@ -4998,13 +4998,13 @@
       "y": 418,
       "w": 352,
       "h": 22,
-      "text": "节奏保留，随时再来。",
+      "text": "同朝向贴到右侧，最多支持三台。",
       "font_size": 15,
       "fg_color": "#637555",
       "font": "fonts/NotoSansSC-Regular.otf",
       "bind": "guide_body_3_1",
       "bind_target": "text",
-      "font_charset": "节奏保留，随时再来。"
+      "font_charset": "同朝向贴到右侧，最多支持三台。"
     },
     {
       "type": "layer",
@@ -5042,13 +5042,13 @@
       "y": 138,
       "w": 352,
       "h": 22,
-      "text": "Tap the center to hear a sound.",
+      "text": "Tap the center to try this role’s sound.",
       "font_size": 14,
       "fg_color": "#637555",
       "font": "fonts/LiberationSans-Regular.ttf",
       "bind": "guide_body_0_0_en",
       "bind_target": "text",
-      "font_charset": "Tap the center to hear a sound."
+      "font_charset": "Tap the center to try this role’s sound."
     },
     {
       "type": "label",
@@ -5058,13 +5058,13 @@
       "y": 160,
       "w": 352,
       "h": 22,
-      "text": "Your rhythm stays unchanged.",
+      "text": "Open Role to choose a different sound.",
       "font_size": 14,
       "fg_color": "#637555",
       "font": "fonts/LiberationSans-Regular.ttf",
       "bind": "guide_body_0_1_en",
       "bind_target": "text",
-      "font_charset": "Your rhythm stays unchanged."
+      "font_charset": "Open Role to choose a different sound."
     },
     {
       "type": "label",
@@ -5074,13 +5074,13 @@
       "y": 194,
       "w": 352,
       "h": 28,
-      "text": "Record a rhythm",
+      "text": "Record your rhythm",
       "font_size": 18,
       "fg_color": "#4f6340",
       "font": "fonts/LiberationSans-Bold.ttf",
       "bind": "guide_title_1_en",
       "bind_target": "text",
-      "font_charset": "Record a rhythm"
+      "font_charset": "Record your rhythm"
     },
     {
       "type": "label",
@@ -5090,13 +5090,13 @@
       "y": 224,
       "w": 352,
       "h": 22,
-      "text": "Tap Record. After 3 seconds,",
+      "text": "Tap Record. Wait for the countdown, then tap.",
       "font_size": 14,
       "fg_color": "#637555",
       "font": "fonts/LiberationSans-Regular.ttf",
       "bind": "guide_body_1_0_en",
       "bind_target": "text",
-      "font_charset": "Tap Record. After 3 seconds,"
+      "font_charset": "Tap Record. Wait for the countdown, then tap."
     },
     {
       "type": "label",
@@ -5106,13 +5106,13 @@
       "y": 246,
       "w": 352,
       "h": 22,
-      "text": "tap your rhythm over 4 beats.",
+      "text": "You have 4 beats. Your rhythm plays back once.",
       "font_size": 14,
       "fg_color": "#637555",
       "font": "fonts/LiberationSans-Regular.ttf",
       "bind": "guide_body_1_1_en",
       "bind_target": "text",
-      "font_charset": "tap your rhythm over 4 beats."
+      "font_charset": "You have 4 beats. Your rhythm plays back once."
     },
     {
       "type": "label",
@@ -5122,13 +5122,13 @@
       "y": 280,
       "w": 352,
       "h": 28,
-      "text": "Choose a reply",
+      "text": "Keep it playing",
       "font_size": 18,
       "fg_color": "#4f6340",
       "font": "fonts/LiberationSans-Bold.ttf",
       "bind": "guide_title_2_en",
       "bind_target": "text",
-      "font_charset": "Choose a reply"
+      "font_charset": "Keep it playing"
     },
     {
       "type": "label",
@@ -5138,13 +5138,13 @@
       "y": 310,
       "w": 352,
       "h": 22,
-      "text": "Choose a voice and expression in Role.",
+      "text": "Tap Play to repeat your rhythm; Pause to stop.",
       "font_size": 14,
       "fg_color": "#637555",
       "font": "fonts/LiberationSans-Regular.ttf",
       "bind": "guide_body_2_0_en",
       "bind_target": "text",
-      "font_charset": "Choose a voice and expression in Role."
+      "font_charset": "Tap Play to repeat your rhythm; Pause to stop."
     },
     {
       "type": "label",
@@ -5154,13 +5154,13 @@
       "y": 332,
       "w": 352,
       "h": 22,
-      "text": "The same rhythm can reply differently.",
+      "text": "Tap Play on each tile you want to hear.",
       "font_size": 14,
       "fg_color": "#637555",
       "font": "fonts/LiberationSans-Regular.ttf",
       "bind": "guide_body_2_1_en",
       "bind_target": "text",
-      "font_charset": "The same rhythm can reply differently."
+      "font_charset": "Tap Play on each tile you want to hear."
     },
     {
       "type": "label",
@@ -5170,13 +5170,13 @@
       "y": 366,
       "w": 352,
       "h": 28,
-      "text": "Keep it playing",
+      "text": "Try adding another tile",
       "font_size": 18,
       "fg_color": "#4f6340",
       "font": "fonts/LiberationSans-Bold.ttf",
       "bind": "guide_title_3_en",
       "bind_target": "text",
-      "font_charset": "Keep it playing"
+      "font_charset": "Try adding another tile"
     },
     {
       "type": "label",
@@ -5186,13 +5186,13 @@
       "y": 396,
       "w": 352,
       "h": 22,
-      "text": "Tap Play to loop; tap Pause to stop.",
+      "text": "Put another Mosaico running Echoy on the right.",
       "font_size": 14,
       "fg_color": "#637555",
       "font": "fonts/LiberationSans-Regular.ttf",
       "bind": "guide_body_3_0_en",
       "bind_target": "text",
-      "font_charset": "Tap Play to loop; tap Pause to stop."
+      "font_charset": "Put another Mosaico running Echoy on the right."
     },
     {
       "type": "label",
@@ -5202,13 +5202,13 @@
       "y": 418,
       "w": 352,
       "h": 22,
-      "text": "Your rhythm is ready for another go.",
+      "text": "Face both the same way. Connect up to 3 tiles.",
       "font_size": 14,
       "fg_color": "#637555",
       "font": "fonts/LiberationSans-Regular.ttf",
       "bind": "guide_body_3_1_en",
       "bind_target": "text",
-      "font_charset": "Your rhythm is ready for another go."
+      "font_charset": "Face both the same way. Connect up to 3 tiles."
     },
     {
       "type": "layer",
@@ -5487,14 +5487,14 @@
       "y": 298,
       "w": 230,
       "h": 28,
-      "text": "1.0.0",
+      "text": "1.1.0",
       "font_size": 17,
       "fg_color": "#34392f",
       "text_align": "right",
       "font": "fonts/NotoSansSC-Regular.otf",
       "bind": "info_value_version",
       "bind_target": "text",
-      "font_charset": "1.0.0 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%._+-电脑模拟本地构建模拟电量未知"
+      "font_charset": "1.1.0 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%._+-电脑模拟本地构建模拟电量未知"
     },
     {
       "type": "label",
@@ -5614,14 +5614,14 @@
       "y": 298,
       "w": 230,
       "h": 28,
-      "text": "1.0.0",
+      "text": "1.1.0",
       "font_size": 17,
       "fg_color": "#34392f",
       "text_align": "right",
       "font": "fonts/LiberationSans-Regular.ttf",
       "bind": "info_value_version_en",
       "bind_target": "text",
-      "font_charset": "1.0.0 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%._+-"
+      "font_charset": "1.1.0 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%._+-"
     },
     {
       "type": "label",

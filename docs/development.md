@@ -1,14 +1,10 @@
 # Developing Echoy
 
 Run all commands below from the **Echoy repository root**, not this `docs/`
-directory. `master` starts at the three-device release source `a83a64e` and
-adds documentation-only commits. Its application, configuration, tests and tools
-match `echoy-three-basic-ba951963754a`. Use that immutable tag when you need the
-exact release snapshot, including its historical documentation.
-
-The older accepted dual-device source remains at
-`echoy-dual-accepted-20261014`. Later unaccepted experiments belong to
-`archive/echoy-three-device`, not `master`.
+directory. The v1.1.0 source includes the accepted three-device repair and local
+recording-reply work. See [v1.1.0](releases/v1.1.0.md) for current source/package
+identity and validation. Historical `echoy-three-basic-ba951963754a` and
+`echoy-dual-accepted-20261014` tags remain immutable. Unmerged experimental features are excluded from this version.
 
 The examples assume the original workspace layout: Echoy beside a compatible
 `esp-mosaico-vibe` checkout and the pinned `.toolchains/` directory. A clone of
@@ -25,7 +21,7 @@ merged Record/Play strip that becomes full-width Cancel or Pause, with an
 interruptible 240ms transition and the browser system reduced-motion preference. The immutable HTML remains
 the design and behavioral reference; it does not generate the native desk's sound.
 
-[Project home](../README.md) · [Historical state](PROJECT_STATE.md) · [Verification](verification/README.md)
+[Project home](../README.md) · [Project state](PROJECT_STATE.md) · [Verification](verification/README.md)
 
 ## Audible three-tile desk
 
@@ -71,12 +67,11 @@ python3 ../esp-mosaico-vibe/submodule/esp-mosaico-utils/mosaico-tools/skills/idf
 ```
 
 The portable audio/linkage sources compile for the pinned ESP32-S31 SDK.
-The `master` code includes speaker output, magnetic contact and the original
-three-device horizontal-chain coordinator. Basic three-device operation was
-confirmed, but live ABC→BCA rearrangement remains faulty. Startup still requires
-separation for magnetic calibration. Build success does not establish new
-hardware acceptance; later Flash-threshold and radio-admission repairs are not
-included here.
+The v1.1.0 code includes speaker output, fixed Flash contact calibration,
+complete horizontal-neighbor admission and the three-device coordinator. Joined
+startup is supported. Targeted recording/following and ABC→BCA were confirmed
+on hardware; this is not exhaustive RF/acoustic qualification. A recorded root
+can reply locally before background activation when peers are not looping.
 No device write is part of these build commands.
 
 The earlier `mosaico.py --workspace . project sim --project projects/echoy

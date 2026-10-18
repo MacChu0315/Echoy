@@ -47,11 +47,13 @@ int main(void)
         }
         assert(energy>.01);
         render(role,false,true,base);render(role,true,true,calibrated);
+        /* Random preview uses its own prepared role palette; changing a
+         * recorded bank's calibration must not retune that palette. */
         assert(!memcmp(base,calibrated,60000*sizeof(float)));
         energy=0;
         for(unsigned i=0;i<60000;i++)energy+=base[i]*base[i];
         assert(energy>.00001);
     }
     free(base);free(calibrated);
-    puts("PASS musical bank calibration and unchanged tap cues across all roles");
+    puts("PASS musical bank calibration leaves the separate random preview palette unchanged");
 }

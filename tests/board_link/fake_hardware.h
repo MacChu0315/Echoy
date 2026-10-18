@@ -1,5 +1,6 @@
 #pragma once
 #include <assert.h>
+#include "mosaico_network.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -61,7 +62,8 @@ const char *esp_err_to_name(esp_err_t error) { (void)error; return "test"; }
 #ifdef LINK_TEST_MAG_LOG
 static struct bmm150_mag_data sensor_samples[BSP_MAGNETOMETER_NUM];
 static bool reject_baseline;
-static char sensor_log[4096];
+static bool valid_classification;
+static char sensor_log[65536];
 static size_t sensor_log_size;
 void fake_log(const char *tag, const char *format, ...)
 {
@@ -79,7 +81,9 @@ void fake_log(const char *tag, const char *format, ...)
 void fake_log(const char *tag, const char *format, ...) { (void)tag; (void)format; }
 #endif
 
+#ifndef LINK_TEST_REAL_MAG
 const mosaico_mag_calibration_t MOSAICO_MAG_CALIBRATION_S31_V1 = {0};
+#endif
 esp_err_t bsp_magnetometer_init_all(void) { return sensor_error; }
 esp_err_t bsp_magnetometer_deinit(bsp_magnetometer_t id) { (void)id; return ESP_OK; }
 esp_err_t bsp_magnetometer_read(bsp_magnetometer_t id, struct bmm150_mag_data *data)
@@ -91,6 +95,7 @@ esp_err_t bsp_magnetometer_read(bsp_magnetometer_t id, struct bmm150_mag_data *d
 #endif
     return sensor_error;
 }
+#ifndef LINK_TEST_REAL_MAG
 esp_err_t mosaico_mag_classifier_init(mosaico_mag_classifier_t *c, const mosaico_mag_calibration_t *p)
 { (void)c; (void)p; return ESP_OK; }
 esp_err_t mosaico_mag_classifier_process(mosaico_mag_classifier_t *c,
@@ -101,7 +106,11 @@ esp_err_t mosaico_mag_classifier_process(mosaico_mag_classifier_t *c,
     if (reject_baseline) {
         ++c->calibration_rejections;
         c->calibration_state=c->calibration_rejections>=3 ? MOSAICO_MAG_CALIBRATION_FAILED : MOSAICO_MAG_CALIBRATING;
-    } else c->calibration_state=MOSAICO_MAG_CALIBRATION_READY;
+    } else {
+        c->calibration_state=MOSAICO_MAG_CALIBRATION_READY;
+        o->valid=valid_classification;
+        o->edge_mask=MOSAICO_EDGE_MASK_LEFT;
+    }
 #else
     (void)c;
 #endif
@@ -115,6 +124,7 @@ esp_err_t mosaico_mag_presence_tracker_process(mosaico_mag_presence_tracker_t *t
     const mosaico_mag_classification_t *c) { (void)t; (void)c; return ESP_OK; }
 mosaico_edge_mask_t mosaico_edge_to_mask(mosaico_edge_t edge)
 { return edge >= MOSAICO_EDGE_TOP && edge <= MOSAICO_EDGE_LEFT ? 1u << (edge - 1) : 0; }
+#endif
 const char *mosaico_edge_to_string(mosaico_edge_t edge) { (void)edge; return "edge"; }
 esp_err_t mosaico_network_start(const mosaico_network_config_t *c, mosaico_network_handle_t *out)
 { assert(c->network_id == LINK_NETWORK_ID && c->manage_wifi); *out = (void *)1; return ESP_OK; }
@@ -147,4 +157,24 @@ esp_err_t mosaico_network_send(mosaico_network_handle_t handle, uint64_t destina
 uint32_t esp_random(void) { return 1234567; }
 esp_err_t mosaico_network_get_snapshot(mosaico_network_handle_t handle,mosaico_network_snapshot_t *out)
 { (void)handle; *out=(mosaico_network_snapshot_t){.device_id=11}; return ESP_OK; }
+#endif
+
+#ifdef ECHOY_GROUP_ADAPTER_TEST
+static esp_now_send_cb_t fake_send_callback;
+static bool defer_send_callback,peer_link_running;
+static esp_err_t unregister_send_error;
+esp_err_t esp_now_register_send_cb(esp_now_send_cb_t cb){fake_send_callback=cb;return ESP_OK;}
+esp_err_t esp_now_unregister_send_cb(void){if(unregister_send_error)return unregister_send_error;fake_send_callback=NULL;return ESP_OK;}
+esp_err_t mosaico_peer_link_init(const mosaico_peer_link_config_t *c,mosaico_peer_receive_cb_t cb,void *ctx)
+{ (void)cb;(void)ctx;assert(c->network_id==LINK_NETWORK_ID && c->manage_wifi);peer_link_running=true;return ESP_OK; }
+esp_err_t mosaico_peer_link_deinit(void){
+    stop_calls++;
+    if(!peer_link_running)return ESP_OK;
+    peer_link_running=false; /* Pinned SDK does this before fallible cleanup. */
+    return stop_error;
+}
+uint64_t mosaico_peer_link_get_device_id(void){return 11;}
+uint32_t mosaico_peer_link_get_boot_id(void){return 1234567;}
+esp_err_t mosaico_peer_link_send_broadcast_to(mosaico_peer_message_type_t type,uint64_t to,uint32_t session,mosaico_edge_t left,mosaico_edge_t right,uint16_t rotation,const void *payload,size_t size)
+{(void)to;(void)payload;assert(type==MOSAICO_PEER_MSG_GAME_EVENT && !session && !left && !right && !rotation && size<=100);sends++;if(send_error==ESP_OK && !defer_send_callback && fake_send_callback)fake_send_callback(NULL,ESP_NOW_SEND_SUCCESS);return send_error;}
 #endif

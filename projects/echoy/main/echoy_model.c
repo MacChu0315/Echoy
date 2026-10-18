@@ -12,7 +12,7 @@
 #define PLAN_RUNNING_LEAD_US INT64_C(120000)
 struct echoy_model {
     echoy_snapshot_t state;
-    bool managed;
+    bool managed,local_preview;
     echoy_plan_t current, staged;
     unsigned memories[4];
 };
@@ -92,7 +92,7 @@ void echoy_model_get_snapshot(echoy_model_handle_t m, echoy_snapshot_t *out)
 }
 const echoy_plan_t *echoy_model_get_plan(echoy_model_handle_t m)
 {
-    return m ? &m->current : NULL;
+    return m ? (m->local_preview && m->state.phase==ECHOY_PREVIEW ? &m->staged : &m->current) : NULL;
 }
 unsigned echoy_model_get_role_phrase(echoy_model_handle_t m, echoy_role_t role)
 {
@@ -106,6 +106,7 @@ void echoy_model_pause(echoy_model_handle_t m)
     echoy_snapshot_t *s = &m->state;
     ++s->generation;
     s->phase = ECHOY_IDLE;
+    m->local_preview = false;
     s->continuous = false;
     s->pending_seed = 0;
     s->capture_at_us = 0;
@@ -367,3 +368,18 @@ bool echoy_model_start_external(echoy_model_handle_t m, uint32_t generation, int
     m->state.phase = m->state.continuous ? ECHOY_PLAYING : ECHOY_PREVIEW;
     return true;
 }
+
+bool echoy_model_start_local_preview(echoy_model_handle_t m,const echoy_plan_t *plan,
+                                     uint32_t generation,int64_t at_us)
+{
+    if(!m || !m->managed || !plan || !plan->count || at_us<0 ||
+       m->state.generation!=generation || m->state.phase!=ECHOY_PREPARING ||
+       m->state.fault || m->state.continuous || m->state.following) return false;
+    /* Managed mode does not use staged for compilation. Keep a private copy
+     * for the audible reply; current/committed_revision remain transactional. */
+    m->staged=*plan; m->local_preview=true;
+    m->state.start_us=at_us; m->state.phase=ECHOY_PREVIEW;
+    return true;
+}
+bool echoy_model_local_preview(echoy_model_handle_t m)
+{ return m && m->local_preview && m->state.phase==ECHOY_PREVIEW; }

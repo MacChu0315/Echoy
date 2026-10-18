@@ -65,3 +65,10 @@ void echoy_model_set_external_pending(echoy_model_handle_t model, bool pending, 
 /* Clock corrections must preserve pending plans, captures and playback permission. */
 void echoy_model_sync_clock(echoy_model_handle_t model, int64_t origin_us, bool started);
 bool echoy_model_start_external(echoy_model_handle_t model, uint32_t generation, int64_t start_us);
+
+/* An explicitly recorded local reply may use a prepared private plan before
+ * group commit. This does not publish current, clear network-pending state or
+ * grant continuous/follower playback. The model owns the plan copy. */
+bool echoy_model_start_local_preview(echoy_model_handle_t model,const echoy_plan_t *plan,
+                                     uint32_t generation,int64_t start_us);
+bool echoy_model_local_preview(echoy_model_handle_t model);

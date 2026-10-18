@@ -39,8 +39,10 @@ typedef struct {
     bool busy;
     int64_t clock_origin_us;
     echoy_plan_t current, proposal;
+    /* proposal_compiled identifies the immutable plan, including revision zero;
+     * proposal_ready additionally requires its audio. */
     uint64_t requested_revision, proposal_revision;
-    bool proposal_pending, proposal_ready, proposal_failed;
+    bool proposal_pending, proposal_compiled, proposal_ready, proposal_failed;
     uint32_t offered_transaction, armed_transaction, authorized_transaction;
     uint32_t committed_transaction, failed_transaction;
     uint64_t offered_revision, armed_revision;

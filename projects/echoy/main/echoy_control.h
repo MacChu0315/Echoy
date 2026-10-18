@@ -1,5 +1,7 @@
 #pragma once
 #include "echoy_model.h"
+/* Local audition only; touch recording keeps every input timestamp. */
+#define ECHOY_PREVIEW_MIN_INTERVAL_US INT64_C(100000)
 typedef enum {
     ECHOY_NORMAL,
     ECHOY_AUDIO_FAULT,
@@ -24,7 +26,7 @@ typedef enum {
 } echoy_command_t;
 typedef enum {
     ECHOY_ACT_RECORD,
-    ECHOY_ACT_TAP,
+    ECHOY_ACT_TAP, /* value0: legacy/capture; value1..4: visible preview role+1 */
     ECHOY_ACT_PAUSE,
     ECHOY_ACT_TRANSPORT,
     ECHOY_ACT_AUDITION,

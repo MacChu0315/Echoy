@@ -60,4 +60,15 @@ bool echoy_audio_voice_for_speaker(const echoy_plan_t *plan, echoy_audio_loops_t
 /* Short tap and timing-cue buffers start at sample zero. Scheduling the .003s
  * tap lead and the two count-in/four recording beats belongs to the caller. */
 echoy_audio_result_t echoy_audio_render_cue(echoy_audio_cue_t cue, echoy_audio_buffer_t **out);
+#define ECHOY_PREVIEW_COUNT 8u
+#define ECHOY_PREVIEW_SEED 0x2555u
+typedef struct {
+    echoy_audio_buffer_t *phrase;
+    uint32_t source_frames[ECHOY_PREVIEW_COUNT],short_frames[ECHOY_PREVIEW_COUNT];
+} echoy_audio_preview_pool_t;
+/* One immutable voiced phrase and eight onset choices, prepared off the audio
+ * owner. Preview windows keep this sample rate, normalization and pitch. */
+echoy_audio_result_t echoy_audio_render_preview_pool(echoy_role_t role, bool speaker,
+                                                    float gain, echoy_audio_preview_pool_t *out);
+void echoy_audio_free_preview_pool(echoy_audio_preview_pool_t *pool);
 void echoy_audio_free_buffer(echoy_audio_buffer_t *buffer);

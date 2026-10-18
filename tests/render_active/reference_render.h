@@ -1,4 +1,6 @@
-/* Frozen pre-optimization scheduler from 5fa0d8f, used only as a PCM oracle. */
+/* Pre-optimization scheduler from 5fa0d8f, used only as a PCM oracle.
+ * Interval-adaptive preview cues read/fade windows of immutable palettes.
+ * Original voice/timing-cue arithmetic and the full-scan scheduler are retained. */
 static void reference_render(echoy_band_t *b, int64_t at, float *out, size_t frames)
 {
     if (!b || !out || at < 0) {
@@ -38,13 +40,24 @@ static void reference_render(echoy_band_t *b, int64_t at, float *out, size_t fra
                 if (!c->used || c->tile != i || t < c->at) {
                     continue;
                 }
-                const echoy_audio_buffer_t *buffer = b->cues[c->kind];
                 uint64_t pos = ((uint64_t)(t - c->at) * ECHOY_AUDIO_SAMPLE_RATE + 500000) / 1000000;
-                if (pos >= buffer->frames) {
-                    c->used = false;
+                size_t frames=c->pad_preview ? c->frames : c->buffer->frames;
+                if (pos >= frames) {
+                    finish_cue(c);
                     continue;
                 }
-                sample += buffer->samples[pos];
+                if(c->pad_preview){
+                    double gain=pos<48 ? pos/48.0 : pos+PREVIEW_FADE_FRAMES>=frames ?
+                                (frames-1-pos)/(double)PREVIEW_FADE_FRAMES : 1;
+                    if(c->stop_at && t>=c->stop_at){
+                        uint64_t stop=((uint64_t)(t-c->stop_at)*ECHOY_AUDIO_SAMPLE_RATE+500000)/1000000;
+                        if(stop>=PREVIEW_FADE_FRAMES){finish_cue(c);continue;}
+                        gain*=1-stop/(double)PREVIEW_FADE_FRAMES;
+                    }
+                    size_t source=c->offset+(size_t)pos;
+                    if(source>=c->buffer->frames)source-=c->buffer->frames;
+                    sample+=c->buffer->samples[source]*gain;
+                }else sample += c->buffer->samples[pos];
             }
             sum += sample * v->smoothed_volume;
         }

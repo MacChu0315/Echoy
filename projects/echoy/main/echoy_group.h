@@ -3,6 +3,13 @@
 #include <stddef.h>
 
 typedef struct echoy_group echoy_group_t;
+/* Diagnostic timestamps use this device's monotonic microseconds; -1 means
+ * not observed in this attempt. Readback never drives protocol decisions. */
+typedef struct {
+    int64_t membership_us, started_us, input_first_us, input_ready_us;
+    int64_t offered_us, output_ready_us, armed_us, committed_us, boundary_us;
+    int64_t encoded_us; /* Immutable plan serialized; audio may still be pending. */
+} echoy_group_timing_t;
 typedef struct {
     bool (*read)(void *ctx,echoy_link_view_t *out);
     bool (*receive)(void *ctx,const echoy_link_update_t *update);
@@ -24,11 +31,15 @@ void echoy_group_receive(echoy_group_t *group,uint64_t source,const uint8_t *byt
                           size_t size,int64_t now);
 void echoy_group_delivery(echoy_group_t *group,uint64_t destination,uint16_t service,
                            bool success,int64_t now);
+/* Correct only PING/PONG send timestamps at actual first wire submission.
+ * Caller keeps these bytes unchanged for reliable retransmissions. */
+void echoy_group_stamp_send(echoy_group_t *group,uint8_t *bytes,size_t size,int64_t now);
 void echoy_group_tick(echoy_group_t *group,int64_t now);
 
 /* Copied worker diagnostics for the external native desk / device evidence;
  * these never grant musical permission or appear on the 480x480 interface. */
 typedef struct {
+    echoy_group_timing_t timing;
     uint64_t members[3];
     uint32_t identity,generation,attempt;
     unsigned count,rank,phase,operations;
