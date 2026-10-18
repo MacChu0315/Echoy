@@ -35,3 +35,14 @@ startup verified. User listening acceptance remains pending; the published
 v1.1.0 package and its acceptance are unchanged. See
 [development](development.md#phrase-pickup-regression) for the original-mode switch
 and reproducible checks. Private run artifacts are not part of this Git tree.
+
+
+## UI feedback corrections
+
+Battery labels now fit `100%` on all six pages. Richness dragging retains the
+latest requested position until the controller publishes it, and reports a
+rejected queued request back to the UI so controls cannot remain busy forever.
+The existing debounce interval, musical plans and wireless protocol are unchanged.
+Native pointer/pixel checks, UI/runtime regressions and the pinned firmware
+build pass. This follow-up is locally validated; installation and physical
+confirmation of these two UI fixes remain pending.

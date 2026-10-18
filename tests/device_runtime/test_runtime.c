@@ -14,6 +14,7 @@
 /* Capture only deadline diagnostics; normal fake logging remains silent. */
 static char deadline_lines[4][640];
 static atomic_uint deadline_line_count;
+static atomic_bool reject_density_once;
 static atomic_int fake_write_delay_ms;
 static atomic_bool fake_write_delay_entered;
 static atomic_llong observed_write_delay_us;
@@ -29,6 +30,7 @@ bool __wrap_echoy_band_action(echoy_band_t *band, echoy_tile_id_t tile, echoy_ac
         atomic_store(&measure_completion_blocked, true);
         while (atomic_load(&hold_measure_completion)) fake_sleep_ms(1);
     }
+    if(action==ECHOY_ACT_DENSITY && atomic_exchange(&reject_density_once,false))return false;
     return __real_echoy_band_action(band, tile, action, value, at);
 }
 BaseType_t __real_xSemaphoreTake(SemaphoreHandle_t, TickType_t);
@@ -1133,10 +1135,28 @@ static void pickup_worker(bool shutdown)
     assert(v.state.phase==ECHOY_IDLE && !v.state.continuous && !atomic_load(&fake_nonzero_since_flush));
     stop(&d);puts("PASS blocked pickup worker cannot delay PCM, publish stale role/phrase or undo Pause");
 }
+
+static void density_rejection_feedback(void)
+{
+    echoy_device_handle_t d;start(&d);
+    int64_t at=esp_timer_get_time();double old=view().state.density;
+    atomic_store(&reject_density_once,true);
+    assert(p.perform_action(p.ctx,ECHOY_ACT_DENSITY,.8,at)); /* Enqueue succeeds. */
+    int64_t end=esp_timer_get_time()+2000000;
+    while(view().density_rejected_request!=(uint64_t)at+1) {
+        assert(esp_timer_get_time()<end);fake_sleep_ms(1);
+    }
+    echoy_control_view_t v=view();assert(v.condition==ECHOY_NORMAL && v.state.density==old);
+    assert(action(ECHOY_ACT_DENSITY,.7));
+    while(view().state.density!=.7){assert(esp_timer_get_time()<end);fake_sleep_ms(1);}
+    assert(view().density_rejected_request==(uint64_t)at+1); /* Correlate, do not erase another request. */
+    stop(&d);puts("PASS owner rejection after successful enqueue reaches UI cache; next density edit still applies");
+}
 int main(int argc, char **argv)
 {
     assert(argc == 2);
-    if (!strcmp(argv[1], "pickup_worker")) pickup_worker(false);
+    if (!strcmp(argv[1], "density_rejection")) density_rejection_feedback();
+    else if (!strcmp(argv[1], "pickup_worker")) pickup_worker(false);
     else if (!strcmp(argv[1], "pickup_stop")) pickup_worker(true);
     else if (!strcmp(argv[1], "office_disabled")) office_disabled();
     else if (!strcmp(argv[1], "office_roles")) office_all_roles();

@@ -101,7 +101,7 @@ dyn('phrase_title',110,25,220,32,'重音',18,'#78836d',home)
 add('container','battery_outline',399,37,19,12,home,border_color='#78836c',border_width=1,radius=2)
 add('container','battery_tip',420,41,1,4,home,bg_color='#78836c')
 add('container','battery_fill',402,40,9,6,home,bg_color='#78836c',bind='battery_fill_visible',bind_target='visible')
-dyn('battery_text',428,31,23,22,'72%',12,'#78836c',home,font='fonts/DejaVuSansMono.ttf')
+dyn('battery_text',428,31,32,22,'72%',12,'#78836c',home,font='fonts/DejaVuSansMono.ttf')
 dyn('status',24,339,432,23,'中央试奏 · 录制才保存',13,'#7c886e',home,text_align='center',hidden=True)
 label('capture_status',24,339,432,23,'预备-3',13,'#a46848',home,text_align='center',hidden=True,bind='capture_status',bind_target='text',font_charset=charset)
 for name,x,color,default,top,bottom in [('volume',16,'#657756',65,'','音量'),('richness',400,'#d95535',50,'丰富','简洁')]:
@@ -197,7 +197,7 @@ def header(name,parent,zh,en):
     add('container',name+'_battery_outline',407,42,19,12,parent,border_color='#78836c',border_width=1,radius=2)
     add('container',name+'_battery_tip',428,46,1,4,parent,bg_color='#78836c')
     add('container',name+'_battery_fill',410,45,9,6,parent,bg_color='#78836c',bind=name+'_battery_fill_visible',bind_target='visible')
-    dyn(name+'_battery_text',435,35,25,22,'72%',11,'#78836c',parent,font='fonts/DejaVuSansMono.ttf',font_charset='0123456789%-')
+    dyn(name+'_battery_text',435,35,32,22,'72%',11,'#78836c',parent,font='fonts/DejaVuSansMono.ttf',font_charset='0123456789%-')
     return (zh,en)
 
 def scroll_area(name,parent,w,h,content_height,x,y):

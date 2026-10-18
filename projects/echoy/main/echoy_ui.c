@@ -86,7 +86,9 @@ struct echoy_ui {
     unsigned battery;
     int drag, drag_y;
     double volume, richness, drag_value;
-    bool density_dirty;
+    bool density_dirty, density_pending;
+    double density_sent;
+    uint64_t density_sent_request;
     int64_t density_due_us;
     int64_t last_hit_us, last_draw_us;
     unsigned trial_taps;
@@ -134,6 +136,10 @@ static void error_at(echoy_ui_handle_t u, esp_gsp_err_t error, const char *opera
 #define ENABLE(u, name, v) CHECK(u, echoy_view_enable((u)->view, (name), (v)))
 #define TEXT(u, name, v) CHECK(u, echoy_view_text((u)->view, (name), (v)))
 #define COLOR(u, name, v) CHECK(u, echoy_view_color((u)->view, (name), (v)))
+static bool density_busy(echoy_ui_handle_t u)
+{
+    return u->density_dirty || u->density_pending;
+}
 static bool perform(echoy_ui_handle_t u, echoy_action_t action, double value, int64_t now)
 {
     if (u->platform.perform_action) {
@@ -196,13 +202,18 @@ static void read_state(echoy_ui_handle_t u, echoy_snapshot_t *out)
     u->battery = u->external.battery;
     u->volume = u->external.volume;
     u->reduced_motion = u->external.reduced_motion;
-    if (u->external.measurement_active) {
-        /* A delayed richness drag from before the explicit measurement must
-         * not become a new action that cancels the bounded run. */
-        u->density_dirty = false;
-        u->drag = 0;
+    if (u->external.measurement_active || !u->external.present ||
+        u->external.condition != ECHOY_NORMAL || u->external.state.fault ||
+        capturing(u->external.state.phase)) {
+        /* Invalidated gestures cannot become delayed edits after recovery,
+         * recording or a bounded measurement has taken ownership. */
+        u->density_dirty = u->density_pending = false;
+        if (u->external.measurement_active || u->drag == 2) u->drag = 0;
     }
-    if (!u->density_dirty) {
+    if (u->density_pending && (u->external.state.density == u->density_sent ||
+        u->external.density_rejected_request == u->density_sent_request))
+        u->density_pending = false;
+    if (!density_busy(u) && u->drag != 2) {
         u->richness = u->external.state.density;
     }
     *out = u->external.state;
@@ -259,11 +270,22 @@ static void commit_density(echoy_ui_handle_t u, int64_t now)
         echoy_snapshot_t state;
         read_state(u, &state);
     }
-    if (u->density_dirty) {
-        act(u, ECHOY_ACT_DENSITY, u->richness, now);
+    if (!u->density_dirty || u->density_pending) return;
+    /* One submitted value at a time: stale cached values cannot acknowledge
+     * a newer gesture that happens to return to the old position. Keep only
+     * the latest unsent target while the owner (possibly a group) catches up. */
+    if (u->platform.read_control && u->richness == u->external.state.density) {
         u->density_dirty = false;
-        u->frames_dirty = true;
+        return;
     }
+    bool accepted = act(u, ECHOY_ACT_DENSITY, u->richness, now);
+    u->density_dirty = false;
+    u->density_pending = accepted && u->platform.read_control;
+    u->density_sent = u->richness;
+    u->density_sent_request = (uint64_t)now + 1;
+    if (!accepted && u->platform.read_control)
+        u->richness = u->external.state.density;
+    u->frames_dirty = true;
 }
 static void prepare_graphics(echoy_ui_handle_t u, const echoy_snapshot_t *s, int64_t now)
 {
@@ -640,7 +662,7 @@ static void strip_glyph(echoy_ui_handle_t u, unsigned kind, unsigned alpha, uint
 }
 static void show_strip(echoy_ui_handle_t u, const echoy_snapshot_t *s, int64_t now)
 {
-    bool preparing = u->density_dirty || (u->platform.read_control && u->external.preparing);
+    bool preparing = density_busy(u) || (u->platform.read_control && u->external.preparing);
     echoy_strip_state_t v = echoy_strip_compute(s, current_plan(u)->count != 0, preparing);
     if (u->platform.read_control && u->external.measurement_active) {
         v = (echoy_strip_state_t){.mode = ECHOY_STRIP_PAUSE, .single_enabled = true};
@@ -733,7 +755,7 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
         u->record_hint_until_us = 0;
     }
     bool hint = !measuring && !plan->count && s->phase == ECHOY_IDLE && !s->following &&
-                !s->plan_pending && !u->density_dirty &&
+                !s->plan_pending && !density_busy(u) &&
                 !(u->platform.read_control && u->external.preparing) &&
                 now < u->record_hint_until_us;
     SHOW(u, "record_hint_popup", hint);
@@ -757,7 +779,7 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
             snprintf(status, sizeof(status), u->english ? "Recording · %d / 4" : "录入 · %d / 4",
                      beat);
         }
-    } else if (u->density_dirty || (u->platform.read_control && u->external.preparing)) {
+    } else if (density_busy(u) || (u->platform.read_control && u->external.preparing)) {
         strcpy(status, tr(u, "准备新的声音", "Preparing a new sound"));
     } else if (s->plan_pending) {
         strcpy(status, tr(u, "下一小节生效", "Changes at the next bar"));
@@ -842,7 +864,7 @@ static void show_home_state(echoy_ui_handle_t u, const echoy_snapshot_t *s, int6
     ENABLE(u, "settings", !cap && !measuring);
     SHOW(u, "pad_border", !plan->count && !cap);
     ENABLE(u, "gallery_transport",
-           !cap && (busy || (plan->count && !s->plan_pending && !u->density_dirty)));
+           !cap && (busy || (plan->count && !s->plan_pending && !density_busy(u))));
     SHOW(u, "gallery_play", !busy);
     SHOW(u, "gallery_pause", busy);
     local_text(u, "gallery_text",
@@ -1116,7 +1138,7 @@ static void pointer(esp_gsp_handle_t gsp, int32_t x, int32_t y, bool pressed, vo
                     u->last_hit_us = now;
                     echoy_strip_state_t strip = echoy_strip_compute(
                         &s, current_plan(u)->count != 0,
-                        u->density_dirty || (u->platform.read_control && u->external.preparing));
+                        density_busy(u) || (u->platform.read_control && u->external.preparing));
                     if (strip.mode == ECHOY_STRIP_RECORD_ONLY && strip.record_enabled &&
                         u->trial_taps < TRIAL_HINT_TAPS && ++u->trial_taps == TRIAL_HINT_TAPS) {
                         u->record_hint_until_us = now + TRIAL_HINT_US;
@@ -1186,7 +1208,7 @@ static void event(esp_gsp_handle_t gsp, const esp_gsp_event_t *e, void *ctx)
     }
     echoy_strip_state_t strip = echoy_strip_compute(
         &s, current_plan(u)->count != 0,
-        u->density_dirty || (u->platform.read_control && u->external.preparing));
+        density_busy(u) || (u->platform.read_control && u->external.preparing));
     if (gsp_echoy_event_is_record_click(e)) {
         if ((u->route == HOME && strip.record_enabled) && act(u, ECHOY_ACT_RECORD, 0, now)) {
             board_touch_trace_reset();

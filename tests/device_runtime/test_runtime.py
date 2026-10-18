@@ -126,6 +126,7 @@ class DeviceRuntime(unittest.TestCase):
     def test_harmony_trial_stays_on_worker_and_paused(self):self.run_case('harmony_worker',self.trial_binary)
     def test_harmony_trial_failure_keeps_old_valid_bank(self):self.run_case('harmony_failure',self.trial_binary)
     def test_harmony_trial_stale_job_cannot_play(self):self.run_case('harmony_stale',self.trial_binary)
+    def test_density_owner_rejection_reaches_ui(self):self.run_case('density_rejection')
     def test_pickup_worker_and_stale_role(self):self.run_case('pickup_worker',self.office_binary)
     def test_pickup_shutdown_in_flight(self):self.run_case('pickup_stop',self.office_binary)
     def test_office_voicing_disabled_in_ordinary_build(self):self.run_case('office_disabled',self.normal_binary)

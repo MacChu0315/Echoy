@@ -48,6 +48,9 @@ typedef struct {
     echoy_pickup_t pickup; /* Display only; plan remains the relationship source. */
     unsigned memories[4], battery;
     double volume;
+    /* Local UI feedback only: rejected density action timestamp + 1; zero
+     * means none. Never serialized into a musical or wireless plan. */
+    uint64_t density_rejected_request;
     bool present, preparing, preparation_failed, english, reduced_motion;
     /* Hardware adapters distinguish unavailable readings from real zeroes. */
     bool battery_unknown, imu_unknown;

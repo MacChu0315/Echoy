@@ -113,6 +113,7 @@ struct echoy_device {
     echoy_pickup_pcm_t pickup_processor;
     uint64_t pcm_clipped, pcm_limited;
     unsigned deadline_misses, rejected_actions, queue_overflows, cache_busy;
+    uint64_t density_rejected_request;
     esp_err_t shutdown_error;
     board_audio_stats_t last_audio_stats;
     atomic_bool probe_busy;
@@ -502,6 +503,7 @@ static void publish(struct echoy_device *d)
     d->staging.battery_unknown = !known;
     d->staging.battery = known ? (unsigned)health.percentage : 0;
     d->staging.imu_unknown = true;
+    d->staging.density_rejected_request = d->density_rejected_request;
     d->staging.condition = d->condition;
     d->staging.state.fault = d->condition != ECHOY_NORMAL;
 #if CONFIG_ECHOY_OUTPUT_MEASUREMENT
@@ -939,6 +941,8 @@ static bool process_commands(struct echoy_device *d, board_audio_t **audio)
                     d->measure.result_ready = d->measure_publish_result = false;
                 }
             }
+            if (command.action == ECHOY_ACT_DENSITY)
+                d->density_rejected_request = (uint64_t)command.at + 1;
             /* The cancelling touch is consumed; a separate later touch may play. */
             continue;
         }
@@ -959,6 +963,8 @@ static bool process_commands(struct echoy_device *d, board_audio_t **audio)
             continue;
         }
         if (!d->band || d->condition != ECHOY_NORMAL) {
+            if (command.action == ECHOY_ACT_DENSITY)
+                d->density_rejected_request = (uint64_t)command.at + 1;
             ++d->rejected_actions;
             continue;
         }
@@ -967,6 +973,8 @@ static bool process_commands(struct echoy_device *d, board_audio_t **audio)
         bool accepted =
             echoy_band_action(d->band, ECHOY_TILE_A, command.action, command.value, command.at);
         if (!accepted) {
+            if (command.action == ECHOY_ACT_DENSITY)
+                d->density_rejected_request = (uint64_t)command.at + 1;
             ++d->rejected_actions;
             continue;
         }
