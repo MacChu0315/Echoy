@@ -5,10 +5,11 @@ calibration, earlier local recording replies, corrected guide and center auditio
 See [release details](releases/v1.1.0.md) for behavior, package identity and checks,
 and [development](development.md) for the pinned environment and test commands.
 
-The release is submitted through a review branch targeting `master`; merging is
-left to the maintainer. A source tag does not imply that a downloadable firmware
-asset or GitHub Release has been published. The linked v1.0.0 download remains the
-historical package until a new release asset is explicitly published.
+The v1.1.0 source is merged into `master`; the source tag remains unchanged.
+The [GitHub Release](https://github.com/MacChu0315/Echoy/releases/tag/v1.1.0)
+provides the accepted firmware, checksums, installation guide and license
+materials. README download links point to this release. The older v1.0.0
+package remains available as a historical version.
 
 Detailed device snapshots, experiment logs and local workspace notes for this
 release are retained privately. Existing published verification records remain

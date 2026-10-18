@@ -2,91 +2,83 @@
 
 [Project home](../README.md) · [Release identity and limitations](releases/v1.1.0.md)
 
-## v1.1.0
-
-This version includes the three-device repair, corrected guide and center audition.
-Use the exact accepted package identified below; it supports joined startup.
-
-The v1.1.0 package and checksum are retained locally; see
-[its release record](releases/v1.1.0.md). No v1.1.0 GitHub download is published.
-Use the official `mosaico.py iris system-update --bundle /absolute/path/echoy-v1.1.0.irisfw --device-id YOUR_VERIFIED_DEVICE_ID` workflow.
-The retained Recovery/layout and session-state rules below still apply.
-Use the same v1.1.0 package on all cooperating tiles. Fixed Flash calibration
-allows joined startup; v1.1.0 does not require the15cm startup separation below.
-Verify successful update, healthy startup and software1.1.0 in About this tile.
-
-The remaining installation instructions describe the preserved **v1.0.0 download**.
-Do not apply its startup-calibration requirements to v1.1.0.
-
 ## Before installing
 
-Use the `echoy-v1.0.0.irisfw` asset from the
-[v1.0.0 release](https://github.com/MacChu0315/Echoy/releases/tag/echoy-three-basic-ba951963754a),
-plus its checksum and license materials. The bundle is for **ESP-Mosaico,
-ESP32-S31, 16 MiB Flash**, with the retained Mosaico Recovery/Vibe Mode layout
-`mosaico-retained-recovery-2m-v1`. It is not a generic ESP32 firmware image.
+Download `echoy-v1.1.0.irisfw`, `SHA256SUMS.txt` and the license materials from the
+[v1.1.0 release](https://github.com/MacChu0315/Echoy/releases/tag/v1.1.0).
+Use the same package on every cooperating tile.
 
-A compatible Mosaico bootloader, Recovery and official host tools must already
-be available. This package contains no bootloader or Recovery replacement.
-The original installations used Recovery 0.1.2 and 0.1.4; this is not a promise
-of compatibility with arbitrary hardware or future tool versions. Follow the
-official Mosaico provisioning guide for a blank or unverified device instead
-of attempting raw application flashing.
+The bundle is for **ESP-Mosaico, ESP32-S31, 16 MiB Flash** with the retained
+Mosaico Recovery/Vibe Mode layout `mosaico-retained-recovery-2m-v1`. A compatible
+bootloader, Recovery and official host tools must already be available. This
+package contains no bootloader or Recovery replacement. Follow the official
+Mosaico provisioning guide for blank or unverified devices; do not use arbitrary
+application offsets or raw flashing commands.
 
 Updates restart the application and replace the installed app. Recorded phrases
-and role selections are session state, not persistent saved projects.
+and role selections are session state and reset on restart.
 
-## Verify and install the bundle
+## Verify and install
 
-1. Download `SHA256SUMS.txt` and the firmware from the same release. The exact
-   bundle identity is recorded in [release details](releases/v1.0.0.md).
+1. Download the firmware and checksums from the same release. The expected
+   firmware SHA-256 is:
 
-   On Linux, run `sha256sum -c SHA256SUMS.txt` in the directory containing all
-   listed assets; on macOS, `shasum -a 256 echoy-v1.0.0.irisfw` prints the value
-   for comparison. A checksum verifies bytes; it is not a publisher signature.
+   ```text
+   ac6401462aed62fb492561a0400ccd9e49c31b48fa13a886b8553b7fb2345c3a
+   ```
 
-2. Separate every tile by at least **15 cm**, on a **nonmetal surface**, before
-   the update/restart. This older version captures a startup magnetic baseline.
-   Do not start with the tiles joined; move nearby magnetic accessories away.
+   On Linux, `sha256sum echoy-v1.1.0.irisfw` prints the value for comparison;
+   on macOS use `shasum -a 256 echoy-v1.1.0.irisfw`. If all listed release assets
+   are downloaded, run `sha256sum -c SHA256SUMS.txt`. Checksums verify bytes,
+   not publisher signatures.
 
-3. Use the official Mosaico tools from an initialized `esp-mosaico-vibe`
-   workspace. Verify the live device identity with those tools. With the bundle
-   at an absolute local path and the verified ID substituted, the existing-bundle
-   update command is:
+2. v1.1.0 uses shared read-only Flash calibration and supports startup while
+   tiles are joined. It does **not** require separated startup calibration.
+   For cooperation, arrange at most three tiles horizontally, facing the same
+   direction, and wait for contact readiness.
+
+3. In an initialized `esp-mosaico-vibe` workspace, use the official tools to
+   verify each live device identity. Install the existing bundle with its
+   absolute path and the verified ID:
 
    ```sh
    python mosaico.py iris system-update \
-     --bundle /absolute/path/echoy-v1.0.0.irisfw \
+     --bundle /absolute/path/echoy-v1.1.0.irisfw \
      --device-id YOUR_VERIFIED_DEVICE_ID
    ```
 
-   Do not paste the placeholder ID. With multiple attached devices, select each
-   explicitly. Check your installed CLI's `iris system-update --help`; do not
-   replace this with an arbitrary `esptool` address or `idf.py flash` command.
-   The system-update workflow preserves the retained Recovery and bootloader.
+   Replace the placeholder ID; select each attached device explicitly. Check
+   your installed CLI's `iris system-update --help`. This workflow preserves
+   the retained Recovery and bootloader.
 
-4. Confirm that the operation completed successfully and the intended application
-   boots healthy. Keep the tiles separated until magnetic calibration succeeds;
-   the home screen alone does not prove calibration readiness. If an update
-   times out, inspect the operation and live device state before retrying.
-
-5. Use the **same published package on every cooperating tile**. Do not mix it
-   with the dual-device package or later experimental firmware.
+4. Confirm successful completion, healthy application startup and software
+   version **1.1.0** in About this tile. If the operation times out, inspect its
+   status and the live device before retrying. Do not infer success solely from
+   the home screen.
 
 ## Basic operation
 
-- Choose a role: Pulse, Voice, Dust or Harmony, each with three expressions.
-- Tap the center to try a sound. To keep a rhythm, tap Record, wait for the
-  three one-second counts, and tap during four recording beats. The initial
-  silence is preserved. The result replies once, then stops.
-- Join tiles left-to-right with the same orientation. Let the right tile finish
-  receiving/preparing its phrase. Joining alone never grants continuous Play.
-- Tap Play on each tile you want to hear. Pause controls only that tile.
-- During the running session, detaching retains the committed phrase and local
-  playing/paused permission. Restarting clears session phrases and resets roles.
+- Tap the center to audition the selected role. Slow taps give longer fragments;
+  fast taps give shorter grains. Audition accepts at most ten inputs per second.
+  After a role change, wait for its image to appear before auditioning it.
+- To record a rhythm, tap Record, wait for three one-second counts, then tap
+  during four beats. Recording captures touch timing, not microphone audio;
+  audition limits do not filter recorded taps. Initial rests are preserved.
+- The recorded phrase replies once, then stops. With peers paused, the recording
+  tile may reply before the group's background synchronization finishes.
+- Add a same-orientation tile on the right and let it receive/prepare the phrase.
+  Joining does not start continuous playback. Use Play/Pause on each tile.
+- Detaching retains the phrase and local playback permission for that session.
+  Restarting clears phrases and resets roles.
 
-## Known issues and acceptance limits
+## Older versions and limitations
 
-Three-device rearrangement, the older Recovery startup issue and historical
-acceptance limits are described in [release details](releases/v1.0.0.md#what-was-accepted-and-what-was-not).
-No new device installation was performed for this documentation update.
+The [historical v1.0.0 package](https://github.com/MacChu0315/Echoy/releases/tag/echoy-three-basic-ba951963754a)
+requires tiles to be separated by at least15cm on a nonmetal surface before
+startup calibration. This requirement does not apply to v1.1.0. Do not mix
+firmware versions in one cooperating group.
+
+See the [v1.1.0 verification scope](releases/v1.1.0.md#validation). Targeted
+following, reorder and audition tests do not establish exhaustive RF/load or
+acoustic qualification. Keep the distributed license materials with firmware
+redistributions.

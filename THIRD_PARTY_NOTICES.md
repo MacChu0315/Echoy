@@ -52,7 +52,7 @@ This product includes software developed by the FreeType Project
 License (FTL), not its alternative GPL license. Its FTL text and bundled
 component notices are included with the firmware license materials.
 
-The v1.0.0 download includes `echoy-v1.0.0-licenses.zip` with upstream notices,
+The v1.1.0 download includes `echoy-v1.1.0-licenses.zip` with upstream notices,
 font licenses and a source-path/hash inventory. Retain these materials when
 redistributing the firmware. The inventory identifies collected notices; it is
 not a claim that every SDK component is linked or that this is a certified SBOM.

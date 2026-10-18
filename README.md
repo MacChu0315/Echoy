@@ -4,7 +4,7 @@ English · [简体中文](README_CN.md)
 
 Tap a rhythm on Mosaico, connect tiles side by side, and let different musical voices respond to each other.
 
-**[Published v1.0.0 firmware](https://github.com/MacChu0315/Echoy/releases/tag/echoy-three-basic-ba951963754a) · [Installation guide](docs/installation.md) · [Developer guide](docs/development.md)**
+**[Download v1.1.0 firmware](https://github.com/MacChu0315/Echoy/releases/tag/v1.1.0) · [Installation guide](docs/installation.md) · [Developer guide](docs/development.md)**
 
 <p>
   <img src="docs/screenshots/v1.0.0-connected.png" width="280" alt="Left Mosaico connected with a recorded phrase">
@@ -13,7 +13,7 @@ Tap a rhythm on Mosaico, connect tiles side by side, and let different musical v
 
 Actual device screenshots: a connected pair, both paused. [Image source](docs/screenshots/README.md).
 
-> **v1.1.0 source:** includes three-device reorder fixes, shared Flash calibration, earlier local recording replies and role-aware center audition. Joined startup is supported. The source is tagged for review; the download above remains historical v1.0.0, which requires separated startup calibration. [v1.1.0 details](docs/releases/v1.1.0.md).
+> **v1.1.0:** three-device reorder fixes, shared Flash calibration, earlier local recording replies and role-aware center audition. Joined startup is supported. [Release details](docs/releases/v1.1.0.md).
 
 ## Play in three steps
 
@@ -25,7 +25,7 @@ Use up to three tiles in a same-orientation horizontal chain. Restarting clears 
 
 ## Which version should I use?
 
-The **v1.1.0** source and package are documented in [release details](docs/releases/v1.1.0.md). A v1.1.0 firmware download has not been published; the existing download is v1.0.0.
+Use the [v1.1.0 release](https://github.com/MacChu0315/Echoy/releases/tag/v1.1.0) and install the same package on every tile. Checksums and license materials accompany the firmware; see [installation](docs/installation.md) and [release details](docs/releases/v1.1.0.md).
 
 This version includes the accepted three-device repair, corrected guide and center-audition work. The old [`echoy-three-basic-ba951963754a`](https://github.com/MacChu0315/Echoy/tree/echoy-three-basic-ba951963754a) and [accepted dual-device](https://github.com/MacChu0315/Echoy/tree/echoy-dual-accepted-20261014) tags remain unchanged. Historical v1.0.0 checksums and limitations are in [its release record](docs/releases/v1.0.0.md).
 
