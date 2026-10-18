@@ -29,7 +29,9 @@ The v1.1.0 early local reply keeps its original timing and uses pickup metadata
 from its actual playback bank, including before group commit or after a failed
 transaction. Random audition, input limiting and role/image guards are retained.
 Shared-C, retained-baseline PCM, runtime, UI and native three-owner regression
-checks pass. Physical listening of the integrated version remains pending; the
-published v1.1.0 package and its acceptance are unchanged. See
+checks pass. The integrated candidate has been installed for listening through
+the retained-Recovery workflow, with matching firmware identity and healthy
+startup verified. User listening acceptance remains pending; the published
+v1.1.0 package and its acceptance are unchanged. See
 [development](development.md#phrase-pickup-regression) for the original-mode switch
 and reproducible checks. Private run artifacts are not part of this Git tree.
