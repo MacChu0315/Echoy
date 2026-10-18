@@ -44,5 +44,6 @@ latest requested position until the controller publishes it, and reports a
 rejected queued request back to the UI so controls cannot remain busy forever.
 The existing debounce interval, musical plans and wireless protocol are unchanged.
 Native pointer/pixel checks, UI/runtime regressions and the pinned firmware
-build pass. This follow-up is locally validated; installation and physical
-confirmation of these two UI fixes remain pending.
+build pass. This follow-up is installed with matching firmware identity and
+healthy startup verified. A device screenshot confirms the full battery
+percentage; physical slider feedback remains subject to user confirmation.
