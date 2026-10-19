@@ -69,7 +69,9 @@ echoy_chain_t *echoy_chain_create(void)
     echoy_chain_t *c=calloc(1,sizeof(*c)); if (!c) return NULL;
     for (int i=0;i<3;++i) {
         struct chain_node *n=&c->nodes[i]; n->chain=c; n->id=i;
-        n->band=echoy_band_create(); n->group=calloc(1,echoy_group_size());
+        n->band=echoy_band_create();
+        if (n->band) echoy_band_enable_pickup(n->band, getenv("ECHOY_PHRASE_PICKUP") &&
+            strcmp(getenv("ECHOY_PHRASE_PICKUP"), "0") != 0); n->group=calloc(1,echoy_group_size());
         n->radio=calloc(1,echoy_radio_size());
         echoy_group_callbacks_t cb={read_owner,receive_owner,send_packet,n};
         echoy_radio_callbacks_t radio_cb={send_radio,radio_edge,radio_lost,radio_receive,radio_delivery,n,radio_stamp,radio_available};

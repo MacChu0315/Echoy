@@ -377,14 +377,29 @@ static bool included(const echoy_art_frame_t *frame, const echoy_note_t *note)
 static size_t note_count(const echoy_art_frame_t *frame)
 {
     if (!frame->plan) return 0;
-    return frame->plan->count < ECHOY_MAX_EVENTS ? frame->plan->count : ECHOY_MAX_EVENTS;
+    return (frame->plan->count < ECHOY_MAX_EVENTS ? frame->plan->count : ECHOY_MAX_EVENTS) +
+        (frame->pickup.count <= 2 ? frame->pickup.count : 0);
+}
+
+/* Merge for display without changing the retained or transmitted plan. */
+static const echoy_note_t *note_at(const echoy_art_frame_t *f, size_t index)
+{
+    size_t base=0, intro=0, count=f->plan->count < ECHOY_MAX_EVENTS ? f->plan->count : ECHOY_MAX_EVENTS;
+    size_t added=f->pickup.count <= 2 ? f->pickup.count : 0;
+    const echoy_note_t *note=NULL;
+    do {
+        if (intro < added && (base == count || f->pickup.notes[intro].step <= f->plan->events[base].step))
+            note=&f->pickup.notes[intro++];
+        else note=&f->plan->events[base++];
+    } while (index--);
+    return note;
 }
 
 static void onset_cells(const echoy_art_frame_t *frame, unsigned cells[16])
 {
     memset(cells, 0, sizeof(unsigned) * 16);
     for (size_t i = 0; i < note_count(frame); ++i) {
-        const echoy_note_t *n = &frame->plan->events[i];
+        const echoy_note_t *n = note_at(frame,i);
         if (included(frame, n) && n->step >= 0 && n->step < 16) {
             const unsigned step = (unsigned)n->step;
             unsigned mark = n->layer == ECHOY_ANCHOR ? 2 : 1;
@@ -423,7 +438,7 @@ static void voice(const raster_t *r, const echoy_art_frame_t *frame,
 {
     const echoy_note_t *event = NULL;
     for (size_t i = 0; i < note_count(frame); ++i) {
-        const echoy_note_t *n = &frame->plan->events[i];
+        const echoy_note_t *n = note_at(frame,i);
         if (!included(frame, n)) continue;
         if (frame->active ? n->step <= now : !event && n->layer == ECHOY_ANCHOR) event = n;
     }
@@ -458,7 +473,7 @@ static void voice(const raster_t *r, const echoy_art_frame_t *frame,
         stroke_path(r, points, 141, false, row == 2 ? 2 : 1.1f, ink, 1);
     }
     for (size_t i = 0; i < note_count(frame); ++i) {
-        const echoy_note_t *n = &frame->plan->events[i];
+        const echoy_note_t *n = note_at(frame,i);
         if (!included(frame, n)) continue;
         bool anchor = n->layer == ECHOY_ANCHOR;
         float x = 10 + n->step / 15 * 280, y = 168 - ((n->note - 48) % 24) * 1.25f;
@@ -482,7 +497,7 @@ static void dust(const raster_t *r, const echoy_art_frame_t *frame,
         circle(r, x, y, radius, 0, event ? color : 0xbbc4a8, opacity);
     }
     for (size_t i = 0; i < note_count(frame); ++i) {
-        const echoy_note_t *n = &frame->plan->events[i];
+        const echoy_note_t *n = note_at(frame,i);
         if (!included(frame, n)) continue;
         float x = 10 + n->step / 15 * 280;
         bool anchor = n->layer == ECHOY_ANCHOR;
@@ -496,7 +511,7 @@ static void harmony(const raster_t *r, const echoy_art_frame_t *frame,
 {
     const echoy_note_t *current = NULL;
     for (size_t i = 0; i < note_count(frame); ++i) {
-        const echoy_note_t *n = &frame->plan->events[i];
+        const echoy_note_t *n = note_at(frame,i);
         if (!included(frame, n)) continue;
         if (frame->active ? n->step <= now && n->step + n->duration / STEP_SECONDS > now : !current) {
             current = n;
@@ -524,7 +539,7 @@ static void harmony(const raster_t *r, const echoy_art_frame_t *frame,
         stroke_path(r, points, PATH_POINTS, true, held ? 1.8f : 1.2f, row == 1 ? color : 0xb7a587, 1);
     }
     for (size_t i = 0; i < note_count(frame); ++i) {
-        const echoy_note_t *n = &frame->plan->events[i];
+        const echoy_note_t *n = note_at(frame,i);
         if (!included(frame, n)) continue;
         float x = 10 + n->step / 16 * 280, length = fmaxf(3, n->duration / STEP_SECONDS / 16 * 280);
         float end = fminf(294, x + length);
@@ -534,7 +549,7 @@ static void harmony(const raster_t *r, const echoy_art_frame_t *frame,
              * endpoints also accommodates the rounded strokes. Hidden capture
              * layers must not affect spacing; event order is not assumed. */
             for (size_t next = 0; next < note_count(frame); ++next) {
-                const echoy_note_t *after = &frame->plan->events[next];
+                const echoy_note_t *after = note_at(frame,next);
                 if (included(frame, after) && after->step > n->step)
                     end = fminf(end, 10 + after->step / 16 * 280 - 5);
             }
@@ -577,6 +592,7 @@ static bool same_frame(const struct echoy_art_workspace *work, const echoy_art_f
            old->active == frame->active && old->energy == frame->energy &&
            old->empty == frame->empty && old->anchors_only == frame->anchors_only &&
            (!frame->active || old->progress == frame->progress) &&
+           !memcmp(&old->pickup, &frame->pickup, sizeof(frame->pickup)) &&
            (!!old->plan == !!frame->plan) &&
            (!frame->plan || !memcmp(&work->plan, frame->plan, sizeof(work->plan)));
 }

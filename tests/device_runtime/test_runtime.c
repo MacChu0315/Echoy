@@ -14,6 +14,7 @@
 /* Capture only deadline diagnostics; normal fake logging remains silent. */
 static char deadline_lines[4][640];
 static atomic_uint deadline_line_count;
+static atomic_bool reject_density_once;
 static atomic_int fake_write_delay_ms;
 static atomic_bool fake_write_delay_entered;
 static atomic_llong observed_write_delay_us;
@@ -29,6 +30,7 @@ bool __wrap_echoy_band_action(echoy_band_t *band, echoy_tile_id_t tile, echoy_ac
         atomic_store(&measure_completion_blocked, true);
         while (atomic_load(&hold_measure_completion)) fake_sleep_ms(1);
     }
+    if(action==ECHOY_ACT_DENSITY && atomic_exchange(&reject_density_once,false))return false;
     return __real_echoy_band_action(band, tile, action, value, at);
 }
 BaseType_t __real_xSemaphoreTake(SemaphoreHandle_t, TickType_t);
@@ -1108,10 +1110,55 @@ static void office_shutdown_during_voicing(void)
     atomic_store(&fake_office_voice_hold,false);stop(&d);
     puts("PASS shutdown retains office job ownership until the preparation worker returns");
 }
+
+static void pickup_worker(bool shutdown)
+{
+    echoy_device_handle_t d;office_start(&d,ECHOY_VOICE);
+    echoy_control_view_t old=view();
+    atomic_store(&fake_pickup_hold,true);
+    assert(action(ECHOY_ACT_PHRASE,2));
+    int64_t end=esp_timer_get_time()+2000000;
+    while(!atomic_load(&fake_pickup_blocked)){assert(esp_timer_get_time()<end);fake_sleep_ms(1);}
+    int writes=atomic_load(&fake_write_calls);fake_sleep_ms(40);
+    assert(atomic_load(&fake_write_calls)>writes);
+    echoy_control_view_t pending=view();assert(!memcmp(&old.plan,&pending.plan,sizeof old.plan));
+    if(shutdown) {
+        assert(echoy_device_stop(&d,5)==ESP_ERR_TIMEOUT && d);
+        atomic_store(&fake_pickup_hold,false);stop(&d);
+        puts("PASS shutdown retains pickup job until worker returns");return;
+    }
+    assert(action(ECHOY_ACT_ROLE,ECHOY_HARMONY));
+    assert(action(ECHOY_ACT_PHRASE,3));assert(action(ECHOY_ACT_PAUSE,0));
+    fake_sleep_ms(20);atomic_store(&fake_pickup_hold,false);
+    do {if(view().plan.role==ECHOY_HARMONY && view().plan.phrase==3)break;fake_sleep_ms(1);}while(esp_timer_get_time()<end);
+    echoy_control_view_t v=view();assert(v.plan.role==ECHOY_HARMONY && v.plan.phrase==3);
+    assert(v.state.phase==ECHOY_IDLE && !v.state.continuous && !atomic_load(&fake_nonzero_since_flush));
+    stop(&d);puts("PASS blocked pickup worker cannot delay PCM, publish stale role/phrase or undo Pause");
+}
+
+static void density_rejection_feedback(void)
+{
+    echoy_device_handle_t d;start(&d);
+    int64_t at=esp_timer_get_time();double old=view().state.density;
+    atomic_store(&reject_density_once,true);
+    assert(p.perform_action(p.ctx,ECHOY_ACT_DENSITY,.8,at)); /* Enqueue succeeds. */
+    int64_t end=esp_timer_get_time()+2000000;
+    while(view().density_rejected_request!=(uint64_t)at+1) {
+        assert(esp_timer_get_time()<end);fake_sleep_ms(1);
+    }
+    echoy_control_view_t v=view();assert(v.condition==ECHOY_NORMAL && v.state.density==old);
+    assert(action(ECHOY_ACT_DENSITY,.7));
+    while(view().state.density!=.7){assert(esp_timer_get_time()<end);fake_sleep_ms(1);}
+    assert(view().density_rejected_request==(uint64_t)at+1); /* Correlate, do not erase another request. */
+    stop(&d);puts("PASS owner rejection after successful enqueue reaches UI cache; next density edit still applies");
+}
 int main(int argc, char **argv)
 {
     assert(argc == 2);
-    if (!strcmp(argv[1], "office_disabled")) office_disabled();
+    if (!strcmp(argv[1], "density_rejection")) density_rejection_feedback();
+    else if (!strcmp(argv[1], "pickup_worker")) pickup_worker(false);
+    else if (!strcmp(argv[1], "pickup_stop")) pickup_worker(true);
+    else if (!strcmp(argv[1], "office_disabled")) office_disabled();
     else if (!strcmp(argv[1], "office_roles")) office_all_roles();
     else if (!strcmp(argv[1], "office_worker")) office_worker_and_publication();
     else if (!strcmp(argv[1], "office_failure")) office_filter_failure();

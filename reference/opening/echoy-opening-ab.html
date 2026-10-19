@@ -1,0 +1,1254 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>合拍 / Echoy · 起音 A/B 试听</title><style>:root{--paper:#f1efe8;--ink:#34392f;--muted:#74806b;--green:#58694b;--soft:#e5e7de;--line:#d2d7c8;--accent:#d95535;--note:#899678;font-family:Arial,'Noto Sans CJK SC','Microsoft YaHei',sans-serif;color:var(--ink);background:#f6f5ef;font-synthesis:none}*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button{color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}button:disabled{opacity:.43;cursor:default}button:focus-visible,[tabindex]:focus-visible{outline:2px solid #8f9c7d;outline-offset:-4px}button:hover:not(:disabled){filter:brightness(.98)}button:active:not(:disabled){filter:brightness(.94)}.mast{max-width:1152px;margin:auto;padding:30px 24px 23px}.wordmark{font:12px/1.5 monospace;letter-spacing:2px;color:#7b846d}.mast h1{font-size:32px;font-weight:550;letter-spacing:-1px;margin:16px 0 9px}.mast p{font-size:15px;line-height:1.75;max-width:750px;margin:0;color:#67755d}.layout{max-width:1152px;padding:0 24px 28px;margin:auto;display:grid;grid-template-columns:602px 1fr;gap:32px;align-items:start}.bench{background:#e8eae0;border:1px solid #d7dccc;border-radius:16px;overflow:hidden}.bench-top{height:50px;padding:16px 22px;border-bottom:1px solid #d3d9c7;display:flex;justify-content:space-between;font:11px/18px monospace;color:#7b876e;letter-spacing:.6px}.viewport{overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#b8c2ab transparent}.device-space{width:598px;min-width:598px;height:592px;padding:34px 45px 40px}.shell{position:relative;width:508px;height:508px;padding:14px;border-radius:74px;background:linear-gradient(140deg,#3b3e34,#23271e 66%,#4a4e3f);box-shadow:0 18px 25px -19px #37402a8a,inset 0 1px 1px #ffffff36}.screen{position:relative;width:480px;height:480px;border-radius:60px;overflow:hidden;background:var(--paper);isolation:isolate;box-shadow:inset 0 0 0 1px #ffffff40}.screen:after{content:'';position:absolute;inset:0;border-radius:60px;box-shadow:inset 0 0 0 1px #ffffff24;pointer-events:none}.hardware{position:absolute;border-radius:4px;background:#555e48;border:1px solid #838d74;pointer-events:none}.hardware.ai{right:-6px;top:39px;width:8px;height:42px}.hardware.boot{bottom:-5px;left:105px;width:37px;height:8px}.hardware.power{bottom:-5px;right:105px;width:37px;height:8px}.usb{position:absolute;bottom:-3px;left:237px;width:34px;height:7px;background:#11170e;border:1px solid #858d76;border-radius:4px}.bench-foot{padding:0 22px 17px;font-size:11px;line-height:1.7;color:#849076}.page{position:absolute;inset:0;width:480px;height:480px;background:var(--paper)}.home-head{height:89px;pointer-events:none}.identity{position:absolute;left:35px;top:25px;font-size:25px;line-height:31px;font-weight:600;color:var(--accent);letter-spacing:1px}.identity small{display:block;font-size:14px;font-weight:400;color:#78836d;letter-spacing:.4px;line-height:23px;margin-top:1px}.battery{position:absolute;right:34px;top:35px;display:flex;align-items:center;gap:7px;font:12px/22px monospace;color:#78836c;pointer-events:none}.battery.low{color:#a14e32}.state-line{position:absolute;top:88px;left:90px;right:90px;height:24px;font-size:15px;line-height:23px;color:#657457;text-align:center;pointer-events:none;white-space:nowrap}.state-line.capture{color:var(--accent)}.state-line.candidate{color:#a4753b}.side{position:absolute;top:113px;width:64px;height:207px;border:1px solid #d8dece;border-radius:24px;background:#e7ebdf;cursor:ns-resize;touch-action:none;user-select:none;-webkit-user-select:none;color:#67785a}.side *{pointer-events:none}.side.volume{left:16px}.side.richness{right:16px}.side.grabbing{background:#dde5d1;border-color:#93a383}.side .top,.side .bottom-label{position:absolute;left:0;right:0;text-align:center;display:flex;align-items:center;justify-content:center;font-size:14px;line-height:22px}.side .top{top:13px;height:24px}.side .bottom-label{bottom:14px}.rail{position:absolute;left:50%;transform:translateX(-50%);top:49px;width:4px;height:111px;background:#c3cdb6;border-radius:4px}.rail .fill{position:absolute;bottom:0;width:100%;height:calc(var(--value)*100%);border-radius:4px;background:#657756}.richness .fill{background:var(--accent)}.thumb{position:absolute;left:50%;bottom:calc(var(--value)*100%);transform:translate(-50%,50%);height:25px;width:25px;border-radius:50%;border:1px solid #93a382;background:#fafbf5;box-shadow:0 1px 3px #53644319}.richness .thumb{width:30px;height:27px;border-radius:10px;border-color:#b87943;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:400;line-height:20px;color:#687b57}.pad{position:absolute;left:90px;top:113px;width:300px;height:204px;border:0;padding:0;margin:0;background:transparent;border-radius:30px;touch-action:none;user-select:none;-webkit-user-select:none;cursor:pointer;overflow:hidden}.pad:hover{filter:none!important}.pad:active{filter:none!important}.pad.disabled{pointer-events:none}.pad canvas{width:300px;height:204px;display:block;pointer-events:none}.pad-label{position:absolute;left:0;right:0;top:90px;text-align:center;font-size:15px;color:#f1f1e9;pointer-events:none;line-height:22px;opacity:0;transition:opacity .12s}.pad.empty .pad-label{opacity:1}.progress-line{position:absolute;top:318px;left:103px;right:103px;height:2px;background:#dce0d2;overflow:hidden;opacity:0}.progress-line.shown{opacity:1}.progress-line i{display:block;height:100%;width:0;background:var(--accent)}.steps{position:absolute;top:330px;left:90px;width:300px;height:13px;display:flex;justify-content:space-between;align-items:center;padding:0 10px;pointer-events:none}.steps i{width:4px;height:4px;border-radius:50%;background:#cdd3c1;flex-shrink:0}.steps i.hit{width:6px;height:6px;background:#3d4735}.steps i.partner{background:transparent;border:1.4px solid #b78355}.steps i.current{width:8px;height:8px;background:var(--accent);border:none;box-shadow:0 0 0 3px #d9553512}.hint{position:absolute;left:28px;right:28px;top:349px;height:23px;font-size:13px;line-height:23px;color:#7d896e;text-align:center;white-space:nowrap;pointer-events:none}.actions{position:absolute;left:28px;right:28px;bottom:15px;height:84px;display:grid;grid-template-columns:140px 84px 140px;justify-content:space-between;align-items:center;gap:0}.action{height:84px;border:1px solid #cfd8c3;border-radius:21px;background:#e7ecdf;display:flex;flex-direction:column;gap:7px;align-items:center;justify-content:center;color:#4c613e;padding:8px;font-size:17px;line-height:22px;user-select:none;-webkit-user-select:none}.action strong{font-size:16px;font-weight:500}.action svg{width:23px;height:23px}.action.pending{border-color:#bda479;color:#927445}.action.held{background:#e9d7c5;border-color:#b87548;color:#934824;touch-action:none}.action.hold-capable{touch-action:none}.transport{width:84px;height:84px;border:1px solid #53664a;border-radius:50%;display:grid;place-items:center;background:#596d4b;color:#fafbf3;padding:0}.transport svg{width:34px;height:34px}.transport.active{background:#415936}.screen-header{position:absolute;top:0;left:0;right:0;height:100px;background:var(--paper)}.back{position:absolute;top:12px;left:18px;width:84px;height:84px;border:0;border-radius:22px;background:transparent;display:grid;place-items:center;color:#5d6c50}.back:before{content:'';position:absolute;inset:18px;border:1px solid #d7dfcd;border-radius:14px;background:#e6ecdd;z-index:-1}.back svg{width:25px;height:25px}.screen-header h2{font-size:23px;line-height:31px;font-weight:550;position:absolute;left:108px;right:98px;top:35px;margin:0;white-space:nowrap;text-align:center}.screen-header .battery{top:36px;right:26px;font-size:11px;gap:4px}.scroll-list{position:absolute;left:24px;right:24px;top:108px;bottom:22px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#b7c5a8 transparent;padding-right:6px}.row{min-height:84px;margin-bottom:12px;border:1px solid #d9e0d0;border-radius:17px;background:#ecefe5;display:flex;align-items:center;gap:13px;padding:14px 19px;width:100%;font-size:18px;color:#576b47;text-align:left}.row svg{width:22px;height:22px;flex-shrink:0}.row span{flex:1}.row small{font-size:13px;color:#7d8c6f}.detail{position:absolute;left:35px;right:35px;top:108px;bottom:27px;overflow:auto;font-size:17px;line-height:1.8;scrollbar-width:thin}.detail h3{font-size:23px;line-height:1.4;margin:10px 0 13px;font-weight:550;color:#4f6340}.detail p{margin:0 0 18px}.detail small{font-size:13px;line-height:1.65;color:#8c987e}.detail .row{min-height:84px;justify-content:center}.status-page .status-art{position:absolute;left:150px;top:130px;width:180px;height:120px;display:grid;place-items:center;color:#a9693f}.status-art svg{width:60px;height:60px}.status-page h2{position:absolute;top:245px;left:36px;right:36px;text-align:center;font-size:25px;line-height:33px;font-weight:550;margin:0}.status-page p{position:absolute;top:294px;left:40px;right:40px;text-align:center;font-size:16px;line-height:1.7;margin:0;color:#7d8b6f}.status-page button{position:absolute;left:36px;right:36px;bottom:24px;height:84px;border:1px solid #c6d2b6;border-radius:19px;background:#e1e9d7;font-size:18px;color:#5a7046}.status-art.loading svg{animation:breathe .9s ease-in-out infinite alternate}@keyframes breathe{to{opacity:.2;transform:scale(.85)}}.right{padding-top:7px}.right .eyebrow{font:10px/1.5 monospace;letter-spacing:1.3px;color:#899477;margin-bottom:11px}.right h2{font-size:20px;line-height:1.5;font-weight:550;margin:0 0 12px}.contract{font-size:17px;line-height:1.95;color:#536347;margin:0 0 23px}.instructions{border-top:1px solid #d7decd;padding-top:21px;display:flex;flex-direction:column;gap:15px}.instructions p{margin:0;font-size:14px;line-height:1.8;color:#728361}.instructions b{font-weight:500;color:#536849;margin-right:9px}.example{min-height:46px;width:100%;border:1px solid #b9c7ac;border-radius:10px;background:#e8eedf;color:#506541;font-size:14px;padding:10px;margin:22px 0 9px}.example-note{font-size:11px;color:#8b977c;line-height:1.7;margin:0 0 23px}.language-switch{display:flex;align-items:center;gap:5px;margin:14px 0 20px}.language-switch button{height:36px;min-width:69px;padding:6px 12px;border:1px solid #cdd7c2;border-radius:6px;background:transparent;color:#758566;font-size:12px}.language-switch button.selected{background:#566949;color:#fbfcf5;border-color:#566949}details.panel{border-top:1px solid #d7decb;margin-top:13px;padding-top:2px}details.panel summary{padding:14px 0;cursor:pointer;font-size:13px;color:#7b8d69}.panel-body{padding-bottom:15px}.lab-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.lab-grid label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:#6e805d}.lab-grid input{accent-color:#596d48;max-width:100%}.lab-grid select{height:31px;border:1px solid #cbd6be;border-radius:4px;background:#f1f5e9;font-size:11px;color:#607450;max-width:100%}.small-buttons{display:flex;gap:7px;flex-wrap:wrap;margin-top:16px}.small-buttons button{min-height:33px;padding:6px 9px;border:1px solid #c8d3bb;border-radius:5px;background:#edf2e3;font-size:12px;color:#60744e}.diagnostic{font:11px/1.8 monospace;color:#76886b;white-space:pre-wrap;overflow-wrap:anywhere;max-height:245px;overflow:auto}.fine{font-size:11px;line-height:1.8;color:#95a287}.footer{max-width:1104px;padding:8px 24px 32px;margin:auto;display:flex;justify-content:space-between;color:#909e7f;font:11px/1.8 monospace;gap:22px}.footer a{color:#748467}html:lang(en) .identity{font-size:25px;letter-spacing:0}html:lang(en) .identity small{font-size:13px;letter-spacing:0}html:lang(en) .state-line{font-size:14px}html:lang(en) .hint{font-size:12px}html:lang(en) .action strong{font-size:14px;line-height:18px;max-width:123px;text-align:center}html:lang(en) .row{font-size:16px}html:lang(en) .screen-header h2{font-size:22px}html:lang(en) .detail{font-size:16px}body.embedded .mast,body.embedded>.footer{display:none}body.embedded .layout{padding-top:18px}
+@media(max-width:1050px){.layout{grid-template-columns:minmax(0,602px);justify-content:center}.right{max-width:602px}.mast{max-width:650px}.footer{max-width:650px}.instructions{display:grid;grid-template-columns:repeat(3,1fr)}.lab-grid{grid-template-columns:repeat(3,1fr)}}@media(max-width:600px){.layout{padding:0 10px 24px;display:block}.mast{padding:24px 20px}.mast h1{font-size:28px}.right{padding:25px 15px}.instructions{display:flex}.lab-grid{grid-template-columns:1fr 1fr}.footer{padding:0 20px 25px;display:block}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+
+.side .top svg{width:22px;height:22px;flex:0 0 22px}
+/* Comparison adapter: identical product UI in both conditions. */
+.compare-description{font-size:15px;line-height:1.85;color:#66755a;margin:0 0 20px}
+.presets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.presets button{min-height:48px;padding:7px 8px;border:1px solid #ccd5c0;background:#f4f4eb;border-radius:9px;font-size:13px;line-height:1.5;white-space:normal}
+.presets button.selected{border-color:#839573;background:#e6ebde}
+.seed-info{font-size:12px;line-height:20px;min-height:25px;color:#79866d;margin:12px 0 17px}
+.ab-switch{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ab-button{display:flex;align-items:center;gap:13px;min-height:88px;padding:12px 17px;border:1px solid #becbb1;background:#e9ede0;color:#43553a;border-radius:17px;text-align:left}
+.ab-button>b{font:24px/1 monospace;font-weight:500;color:#627452}
+.ab-button span{display:block}.ab-button strong{font-weight:550;font-size:17px;white-space:nowrap}.ab-button small{display:block;font-size:11px;line-height:1.7;color:#7c8b6e;margin-top:5px}
+.ab-button[aria-pressed=true]{border-color:#7b8f65;box-shadow:inset 0 -3px #7b8f65;background:#e2e8d6}
+.reference-button{min-height:43px;width:100%;border:1px solid #d2dbc8;border-radius:9px;background:transparent;font-size:13px;padding:9px 12px;color:#687d55;margin-top:12px}
+.match-note{font-size:12px;line-height:1.8;color:#859276;margin:12px 0 22px}
+.identity small{max-width:260px}.actions .action strong{font-size:17px}.actions .action{flex-direction:row;gap:7px}
+.steps i.support{background:#a8b99a}.steps i.anchor{background:#45513a}.steps i.current{background:var(--accent)}
+.pad-label{top:89px;font-size:14px;line-height:21px}.pad.empty .pad-label{opacity:.95}
+.status-page .status-art svg{width:60px;height:60px}
+html:lang(en) .ab-button{padding:12px;gap:10px}html:lang(en) .ab-button strong{font-size:16px}html:lang(en) .hint{font-size:12px}html:lang(en) .state-line{font-size:14px}
+@media(max-width:950px){.layout{grid-template-columns:minmax(0,602px);max-width:650px}.mast{max-width:650px}.right{padding:12px 5px 0}.bench{min-width:0}.device-space{min-width:598px}.footer{max-width:650px}}
+.lang-small{min-width:84px;height:84px;border:1px solid #c9d4bc;border-radius:13px;background:#e6ecdc;font-size:17px}
+
+/* Geometry keeps the familiar square instrument; controls belong to this study. */
+.identity small{font-size:17px;line-height:24px}.side.richness .fill{background:var(--accent)}
+.side.richness .thumb{border-color:var(--accent);color:var(--accent)}
+.role-quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:8px}
+.role-quick button{min-height:52px;padding:8px 4px;border:1px solid #d0d7c8;border-radius:11px;background:transparent;font-size:15px;line-height:1.4}
+.role-quick button[aria-pressed=true]{color:var(--choice);border-color:var(--choice);background:#e5e7de;box-shadow:inset 0 -2px var(--choice)}
+.expression-quick{display:flex;gap:8px;margin-top:12px}.expression-quick button{flex:1;min-height:52px;background:#efefe7;border:1px solid #d5dacf;border-radius:10px;font-size:14px;line-height:1.45;padding:6px}
+.expression-quick button[aria-pressed=true]{border-color:var(--accent);color:var(--accent);background:#e5e7de}
+.expression-desc{font-size:13px;line-height:1.75;min-height:40px;margin:12px 0 16px;color:#77856c}
+.audition-main{width:100%;min-height:58px;background:#45513c;color:#f5f5ef;border:1px solid #45513c;border-radius:12px;font-size:16px}
+.listen-comparison{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.listen-comparison button{min-height:46px;border:1px solid #cdd6c2;background:transparent;border-radius:10px;font-size:13px;padding:7px;line-height:1.5}
+.audition-main svg{height:18px;width:18px;vertical-align:middle;margin-right:8px}
+.role-gallery{position:absolute;top:105px;left:0;width:480px;height:141px}
+.role-card{height:141px;width:232px;position:absolute;left:124px;top:0;border:1px solid #d4dbca;background:#e5e7de;border-radius:23px;text-align:center;display:flex;align-items:center;flex-direction:column}
+.role-card canvas{width:206px;height:101px;margin-top:2px}.role-card strong{font-size:22px;line-height:30px;color:var(--accent);font-weight:550}
+.role-neighbor{position:absolute;top:12px;width:84px;height:124px;border:1px solid #d6dccd;border-radius:18px;background:#ecefe4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:#738263;padding:5px;font-size:14px}
+.role-neighbor.prev{left:28px}.role-neighbor.next{right:28px}.role-neighbor svg{width:19px;height:19px}.role-neighbor canvas{width:73px;height:48px}.role-note{position:absolute;top:254px;left:26px;right:26px;font-size:12px;line-height:20px;text-align:center;color:#7c886e;margin:0;white-space:nowrap}
+.phrase-choices{position:absolute;top:284px;left:24px;right:24px;display:flex;gap:12px;justify-content:center;height:84px}
+.phrase-choices button{width:136px;height:84px;border:1px solid #d0d8c4;border-radius:17px;background:#eceee3;color:#637555;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:17px;font-weight:500;line-height:22px;padding:6px}
+.phrase-choices button span{display:flex;align-items:end;justify-content:center;gap:4px;height:19px;color:var(--accent)}.phrase-choices button span i{width:3px;border-radius:2px;background:currentColor}
+.phrase-choices button[aria-pressed=true]{background:#e5e7de;color:var(--accent);border-color:var(--accent);box-shadow:inset 0 -2px var(--accent)}
+.gallery-transport{position:absolute;left:120px;right:120px;top:380px;height:84px;border:1px solid #becbb1;border-radius:19px;background:#e4eadb;color:#536b40;display:flex;align-items:center;justify-content:center;gap:11px;font-size:19px}.gallery-transport svg{width:24px;height:24px}
+.input-touch-label{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:13px;line-height:20px;color:#6b795c;pointer-events:none;background:var(--paper);opacity:.9}
+.pad-label{display:none}.pad.empty{border:1px dashed #ccd4c1;background:#ffffff0b}.pad.empty .input-touch-label{bottom:4px}
+.steps i.support{background:var(--accent);opacity:.45}.steps i.anchor{background:#414b38;opacity:1}.steps i.current{background:var(--accent);opacity:1}
+.screen .status-progress{position:absolute;left:150px;right:150px;top:355px;height:2px;background:#ccd5c0}.screen .status-progress i{display:block;width:50%;height:2px;background:var(--accent);animation:prep 1s infinite alternate}@keyframes prep{to{transform:translateX(100%)}}
+html:lang(en) .role-note{font-size:11px;letter-spacing:-.15px}html:lang(en) .role-card strong{font-size:21px}html:lang(en) .role-neighbor{font-size:12px}html:lang(en) .phrase-choices button{font-size:15px;line-height:20px}html:lang(en) .identity small{font-size:16px}
+html:lang(en) .screen-header h2{font-size:21px}html:lang(en) .role-quick button{font-size:13px}.screen .scroll-list .row.lang-row{gap:8px}
+
+/* Desktop is a simulator, not product UI. Product CSS above is inherited intact. */
+.mast{max-width:1800px;padding-bottom:20px;display:grid;grid-template-columns:1fr auto;gap:8px 32px;align-items:end}.mast .wordmark,.mast h1,.mast p{grid-column:1}.mast h1{font-size:29px;line-height:1.4;margin:10px 0 2px}.mast p{max-width:980px;font-size:14px}.mast .quick-start{grid-column:2;grid-row:1/4;display:flex;flex-direction:column;align-items:flex-end;gap:13px}.quick-start button{background:#e5ebdb;border:1px solid #cbd6be;border-radius:9px;min-height:41px;padding:10px 15px;color:#526646;font-size:13px}.language-outer{display:flex;gap:4px}.language-outer button{border:none;background:transparent;font-size:12px;padding:4px 9px;min-height:28px}
+.layout{display:block;max-width:1800px;padding:0 24px 25px}.bench-top{height:auto;min-height:44px;gap:14px;align-items:center;font-size:11px;padding:12px 22px}.viewport{height:646px;position:relative;overflow:auto;touch-action:pan-x pan-y;background:radial-gradient(circle at center,#c9d1bc 1px,transparent 1.4px);background-size:24px 24px;background-color:#e8ebdf}
+#stage{width:1850px;height:1160px;position:relative}.unit{position:absolute;width:508px;height:566px;z-index:2}.unit.moving{z-index:8;filter:drop-shadow(0 14px 14px #30422120)}.device-handle{height:42px;display:flex;align-items:center;justify-content:space-between;padding:4px 28px;color:#7d8b6f;font:11px/20px monospace;cursor:grab;touch-action:none;user-select:none}.device-handle:focus-visible{outline-offset:-4px;border-radius:20px}.device-handle:active{cursor:grabbing}.handle-grip{font-size:25px;color:#6c7a5a;letter-spacing:3px}.unit .shell{position:absolute;top:42px;left:0}.unit .screen{width:480px;height:480px;min-width:480px;min-height:480px;isolation:isolate}
+#snap-ghost{position:absolute;width:508px;height:566px;border:2px dashed #b99b6d;border-radius:40px;z-index:1;pointer-events:none;background:#faf7ec38}#empty-desk{position:absolute;left:60px;top:180px;color:#809070;font-size:20px;line-height:1.8}
+.shelf{display:flex;align-items:center;gap:18px;min-height:113px;padding:15px 24px;border-top:1px solid #cfd7c2;background:#eef0e6;flex-wrap:wrap}.shelf h2{font-size:14px;font-weight:500;color:#7d8c6c;margin:0 16px 0 0}.shelf-tile{width:236px;height:78px;border:1px solid #cbd5bf;background:#e2e8d7;border-radius:18px;display:flex;align-items:flex-start;justify-content:center;flex-direction:column;gap:6px;padding:12px 20px;cursor:grab;touch-action:none;user-select:none;color:#4c6040}.shelf-tile strong{font-size:17px;font-weight:550}.shelf-tile span{font-size:11px;color:#7c8e68}.shelf-tile[hidden],.unit[hidden]{display:none}
+.transport{position:relative;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0}.transport>svg{width:34px;height:34px}.transport .transport-label{font-size:12px;line-height:17px;font-weight:400;letter-spacing:.5px}.hint{font-size:12px}.state-line{font-size:14px}.input-touch-label{white-space:nowrap}.screen .action{touch-action:manipulation}
+.seam-mark{position:absolute;top:146px;height:162px;width:3px;pointer-events:none;z-index:10;border-radius:3px;opacity:0}.seam-mark.left{left:3px}.seam-mark.right{right:3px}.seam-mark.connected{opacity:.8;background:#87986d;box-shadow:0 0 9px #91a67144}.seam-mark.pending{opacity:1;border-left:3px dashed #b99b6d}.status-page~.seam-mark{opacity:0}
+#lab{margin:18px auto 0;max-width:1752px;border:1px solid #d4ddc9;background:#f1f3e9;border-radius:12px;color:#6b7d59}.lab-layout{padding:4px 20px 20px;display:grid;grid-template-columns:1fr 400px;gap:26px}.lab-controls{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:14px}.lab-controls label{font-size:12px;display:flex;flex-direction:column;gap:7px}.lab-controls select{height:34px;border:1px solid #cbd5bd;border-radius:7px;background:#fafbf6;padding:5px;color:#5a6b4b}.lab-controls input{accent-color:#6e8259}.lab-actions{display:flex;gap:10px;flex-wrap:wrap;grid-column:1/-1;margin-top:6px}.lab-actions button{border:1px solid #c6d2b7;border-radius:7px;padding:8px 11px;min-height:36px;font-size:12px;background:#e8eedf;color:#60764a}.lab-note{font-size:12px;line-height:1.7;margin-top:16px}#audit{max-height:230px;overflow:auto;margin:0;font:11px/1.65 monospace;white-space:pre-wrap;color:#879572}.footer{max-width:1800px;margin:0 auto 20px;padding:0 24px}.screen .detail p{overflow-wrap:anywhere}.scroll-list .row:disabled{opacity:.53}.screen-header h2{overflow:hidden;text-overflow:ellipsis}
+@media(max-width:980px){.mast{grid-template-columns:1fr}.mast .quick-start{grid-column:1;grid-row:auto;flex-direction:row;align-items:center;justify-content:space-between}.lab-layout{grid-template-columns:1fr}.lab-controls{grid-template-columns:1fr 1fr}.viewport{height:646px}}
+@media(max-width:540px){.mast{padding:20px 14px}.mast h1{font-size:24px}.layout{padding-left:10px;padding-right:10px}.bench-top{padding:10px 12px;font-size:10px}.shelf{padding:16px}.shelf-tile{width:218px}.mast p{font-size:13px}.quick-start button{font-size:12px}.unit{transform:none}}
+
+/* One explicit recording entry in the existing header. The sound area and lower controls stay put. */
+.record-entry{position:absolute;left:244px;top:0;width:132px;height:84px;padding:0;pointer-events:auto;border:0;background:transparent;color:#667256;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;touch-action:manipulation;z-index:1}
+.record-entry:before{content:'';position:absolute;inset:20px 3px 12px;border-radius:16px;background:#e5e9de;border:1px solid #d0d8c6;z-index:-1}
+.record-entry svg{width:15px;height:15px;flex:0 0 15px;color:#b26950}.record-entry[aria-pressed=true]:before{background:#eee2d8;border-color:#ceae94}.record-entry[aria-pressed=true]{color:#956244}
+.record-entry:disabled{opacity:.38}.record-entry:focus-visible{outline-offset:-4px;border-radius:20px}.record-entry svg,.record-entry span{transform:translateY(4px);pointer-events:none}
+.transport:disabled{opacity:.36}.progress-line.recording i{background:#b66e50}.state-line.capture{color:#a36646}
+
+/* Approved Scheme A. Home presentation only; the original role/settings pages,
+   event rendering and 480px screen contract stay in the inherited source. */
+.page[data-route="home"] .home-head{height:78px}
+.page[data-route="home"] .identity{left:34px;top:26px;display:flex;align-items:center;gap:10px;height:32px;font-size:25px;line-height:32px;letter-spacing:.2px;white-space:nowrap;max-width:305px}
+.identity-role{flex:0 0 auto}.identity-separator{font-size:17px;font-weight:400;line-height:32px;color:#74806b}
+.page[data-route="home"] .identity small{display:block;margin:0;font-size:18px;line-height:32px;letter-spacing:0;flex:0 0 auto}
+.page[data-route="home"] .battery{top:31px;right:30px}
+.page[data-route="home"] .side{top:89px}
+.page[data-route="home"] .pad{top:89px}
+.page[data-route="home"] .progress-line{top:301px}
+.page[data-route="home"] .steps{top:316px}
+.page[data-route="home"] .state-line{top:340px;left:24px;right:24px;height:23px;font-size:13px;line-height:23px;color:#7c886e;white-space:nowrap}
+.page[data-route="home"] .state-line.capture{color:#a46848}
+.page[data-route="home"] .state-line:empty{visibility:hidden}
+.page[data-route="home"] .actions{left:22px;right:22px;bottom:18px;height:84px;display:grid;grid-template-columns:84px 244px 84px;gap:12px;justify-content:normal}
+.page[data-route="home"] .action{width:84px;height:84px;min-width:84px;padding:6px;flex-direction:row;gap:6px;border-radius:22px;font-size:16px;background:#e9ede2;color:#536746}
+.page[data-route="home"] .action strong{font-size:16px;line-height:22px;font-weight:500}
+.page[data-route="home"] .action svg{width:20px;height:20px;flex:0 0 20px}
+.merge-strip{position:relative;height:84px;width:244px;border:0;--strip-border:#d2d9c9;border-radius:23px;overflow:hidden;isolation:isolate;background:#e7ecdf;touch-action:manipulation}
+.merge-strip:after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px var(--strip-border);pointer-events:none;z-index:4;transition:box-shadow .24s ease-out}
+.merge-tint{position:absolute;top:0;bottom:0;pointer-events:none;z-index:0;transition:left .24s ease-out,width .24s ease-out,background-color .24s ease-out,opacity .20s ease-out}
+.merge-tint.record-tint{left:0;width:50%;background:#eee8df}
+.merge-tint.play-tint{left:50%;width:50%;background:#e8ede1}
+.merge-divider{position:absolute;left:50%;top:22px;bottom:22px;width:1px;background:#d4d7c9;z-index:1;pointer-events:none;transition:opacity .15s ease-out}
+.merge-strip button{position:absolute;top:0;bottom:0;height:100%;margin:0;padding:0;border:0;border-radius:0;background:transparent;display:flex;align-items:center;justify-content:center;gap:9px;font-size:17px;line-height:24px;font-weight:400;white-space:nowrap;touch-action:manipulation;user-select:none;-webkit-user-select:none;z-index:2}
+.merge-strip button svg{display:block;width:23px;height:23px;flex:0 0 23px;pointer-events:none}
+.merge-strip button span{pointer-events:none}
+.merge-strip button:focus-visible{outline:2px solid #889877;outline-offset:-5px;border-radius:20px}
+.merge-strip .merge-record{left:0;width:50%;color:#aa6140}
+.merge-strip .merge-record svg{width:19px;height:19px;flex-basis:19px}
+.merge-strip .merge-play{right:0;width:50%;color:#536648}
+.merge-strip .merge-record,.merge-strip .merge-play{opacity:1;transform:translateX(0);transition:opacity .13s ease-out,transform .24s ease-out}
+.merge-strip .merge-single{left:0;right:0;width:100%;opacity:0;transform:scale(.97);pointer-events:none;color:#a36144;transition:opacity .20s ease-out,transform .24s ease-out}
+.merge-strip[data-mode="cancel"]{--strip-border:#d5a98d}
+.merge-strip[data-mode="cancel"] .record-tint{width:100%;background:#f0e1d7}
+.merge-strip[data-mode="cancel"] .play-tint{left:100%;width:0;opacity:0}
+.merge-strip[data-mode="pause"]{--strip-border:#455b3b}
+.merge-strip[data-mode="pause"] .play-tint{left:0;width:100%;background:#455d38}
+.merge-strip[data-mode="pause"] .record-tint{width:0;opacity:0}
+.merge-strip[data-mode="pause"] .merge-single{color:#f8f8ee}
+.merge-strip:not([data-mode="idle"]) .merge-divider{opacity:0}
+.merge-strip:not([data-mode="idle"]) .merge-record{opacity:0;pointer-events:none;transform:translateX(-8px)}
+.merge-strip:not([data-mode="idle"]) .merge-play{opacity:0;pointer-events:none;transform:translateX(8px)}
+.merge-strip:not([data-mode="idle"]) .merge-single{opacity:1;pointer-events:auto;transform:scale(1)}
+.merge-strip[data-mode="pause"] .merge-single:focus-visible{outline-color:#e5ebdb}
+.merge-strip[data-mode="idle"] .merge-single:disabled{opacity:0}
+html:lang(en) .page[data-route="home"] .identity{font-size:23px;gap:8px;letter-spacing:0}
+html:lang(en) .page[data-route="home"] .identity small{font-size:16px}
+html:lang(en) .page[data-route="home"] .action{gap:4px}
+html:lang(en) .page[data-route="home"] .action strong{font-size:12px;letter-spacing:0}
+html:lang(en) .page[data-route="home"] .action svg{width:17px;height:17px;flex-basis:17px}
+html:lang(en) .merge-strip button{font-size:16px;gap:8px}
+html:lang(en) .page[data-route="home"] .state-line{font-size:12px}
+@media(prefers-reduced-motion:reduce){.merge-strip,.merge-strip:after,.merge-strip .merge-tint,.merge-strip .merge-divider,.merge-strip button{transition:none!important;transform:none!important}}
+
+/* Opening study controls are outside all 480 x 480 device screens. */
+.opening-study{margin:0 0 18px;border:1px solid #c9d3be;border-radius:16px;background:#f8f8f1;padding:20px 24px;display:grid;grid-template-columns:minmax(280px,1fr) minmax(360px,1fr);gap:18px 36px}
+.opening-study h2{font-size:20px;font-weight:550;line-height:1.4;margin:0 0 8px;color:#4e6241}
+.opening-study p{margin:0;font-size:13px;line-height:1.8;color:#718163}
+.opening-presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
+.opening-study button,.opening-study select{min-height:39px;border:1px solid #c8d3bb;border-radius:9px;background:#edf1e5;padding:8px 12px;color:#506541;font-size:13px}
+.opening-presets button{background:transparent}
+.opening-controls{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:11px}
+.opening-controls label{font-size:12px;color:#79876b;display:flex;align-items:center;gap:8px}
+.opening-controls select{min-height:34px;padding:5px 11px}
+.opening-controls .opening-choice{min-width:136px;min-height:46px;font-size:15px}
+.opening-controls .opening-choice[aria-pressed=true]{background:#536749;border-color:#536749;color:#fbfcf5;box-shadow:inset 0 -2px #405638}
+.opening-controls #opening-b[aria-pressed=true]{background:#a56340;border-color:#a56340;box-shadow:inset 0 -2px #8a4f32}
+.opening-study #opening-state{font-size:12px;color:#526447;margin-bottom:3px}
+.opening-study #opening-info{min-height:24px;font-size:13px;color:#697c58}
+.opening-study #opening-hint{font-size:11px;margin-top:7px;color:#859078}
+.opening-timelines{display:grid;grid-template-columns:70px 1fr;gap:8px 12px;align-items:center;margin-top:13px;max-width:530px}
+.opening-row-label{font-size:11px;line-height:1.4;color:#7d8b70}
+.opening-grid{display:grid;grid-template-columns:repeat(16,minmax(0,1fr));gap:4px}
+.opening-cell{height:15px;background:#e6eadd;border-radius:3px;border-bottom:2px solid transparent}
+.opening-cell.beat{border-bottom-color:#becab0}.opening-cell.tap{background:#4f6343;border-color:#4f6343}.opening-cell.reply{background:#a6b696;border-color:#a6b696}.opening-cell.pickup{background:#c47b51;border-color:#c47b51}
+.opening-study #opening-legend{font-size:10px;margin-top:8px;color:#88947c}
+@media(max-width:1000px){.opening-study{grid-template-columns:1fr;gap:18px;padding:18px}.opening-controls{margin-bottom:9px}}
+@media(max-width:540px){.opening-controls .opening-choice{min-width:0;flex:1;padding:9px 8px;font-size:14px}.opening-controls label{width:100%;margin-bottom:2px}.opening-grid{gap:3px}.opening-timelines{grid-template-columns:56px 1fr;gap:8px}.opening-study{padding:16px}}
+</style></head><body><header class="mast"><div class="wordmark">合拍 / ECHOY · ARRANGE B</div><h1 id="page-title"></h1><p id="page-desc"></p><div class="quick-start"><button id="sample"></button><div class="language-outer"><button data-lang="zh-CN">中文</button><button data-lang="en">English</button></div></div></header>
+<main class="layout"><section class="opening-study" aria-labelledby="opening-title">
+<div><h2 id="opening-title"></h2><p id="opening-desc"></p><div class="opening-presets"><button id="opening-example"></button><button id="opening-head-example"></button></div>
+<div class="opening-timelines" role="img" aria-label="16-step input and reply rhythm; dark green original taps, light green accompaniment, orange pickup">
+<span class="opening-row-label" id="opening-input-label"></span><div class="opening-grid" id="opening-input"></div>
+<span class="opening-row-label" id="opening-reply-label"></span><div class="opening-grid" id="opening-reply"></div></div><p id="opening-legend"></p></div>
+<div><div class="opening-controls"><label><span id="opening-target-label"></span><select id="opening-target"><option>A</option><option>B</option><option>C</option></select></label><button class="opening-choice" id="opening-a" aria-pressed="true"></button><button class="opening-choice" id="opening-b" aria-pressed="false"></button><button id="opening-stop"></button></div>
+<p id="opening-state"></p><p id="opening-info" role="status" aria-live="polite"></p><p id="opening-hint"></p></div></section>
+<section class="bench"><div class="bench-top"><span id="desk-help"></span><span>480 × 480 / TILE</span></div><div class="viewport" id="viewport"><div id="stage"><div id="snap-ghost" hidden></div><p id="empty-desk" hidden></p></div></div><div class="shelf" id="shelf"><h2 id="shelf-title"></h2><div class="shelf-tile" role="button" tabindex="0" data-shelf="A" hidden><strong></strong><span></span></div><div class="shelf-tile" role="button" tabindex="0" data-shelf="B"><strong></strong><span></span></div><div class="shelf-tile" role="button" tabindex="0" data-shelf="C"><strong></strong><span></span></div></div></section>
+<details id="lab" class="panel"><summary id="lab-summary"></summary><div class="lab-layout"><div><div class="lab-controls"><label>设备 / Tile<select id="sim-target"><option>A</option><option>B</option><option>C</option></select></label><label>电量 / Battery<input id="sim-battery" type="range" min="0" max="100" value="72"></label><label>IMU<input id="sim-imu" type="range" min="-45" max="45" value="0"></label><label>同伴无线 / Peer link<select id="sim-network"><option value="online">Online</option><option value="offline">Offline</option></select></label><label>左扩展 / Left module<select id="sim-left"><option value="none">None</option><option value="camera">Camera</option><option value="buttons">Buttons</option><option value="joystick">Joystick</option></select></label><label>右扩展 / Right module<select id="sim-right"><option value="none">None</option><option value="buttons">Buttons</option><option value="joystick">Joystick</option></select></label><div class="lab-actions"><button id="sim-fault">输出失败 / Audio fault</button><button id="sim-loading">加载 / Loading</button><button id="sim-remove">收起 / Remove</button><button id="sim-recover">恢复静止 / Recover</button><button id="export-all">导出 JSON / Export</button></div></div><p class="lab-note">数据与接缝来自模拟。IMU、扩展模块不驱动音乐，实体按键不绑定 GPIO。拖动范围较大时可滚动桌面；外壳握柄支持方向键，收纳设备支持 Enter。Esc 停止模拟器全部声音；设备上的静音仅作用本机。</p></div><pre id="audit"></pre></div></details></main><footer class="footer"><span id="footer-note"></span><span>HTML STUDY · NOT FIRMWARE</span></footer>
+<script>/* Echoy Pulse cooperation study. A bounded, explicit permission model.
+   No DOM, clocks, wireless or audio in this module; all times are injected. */
+(function(root){'use strict';
+const BPM=96, STEP=60/BPM/4, BAR=16*STEP;
+const clone=x=>JSON.parse(JSON.stringify(x)),clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const EXAMPLE=Object.freeze([{step:0,kind:'kick',vel:.78},{step:2,kind:'kick',vel:.69},{step:7,kind:'kick',vel:.72},{step:12,kind:'kick',vel:.76}].map(Object.freeze));
+function clean(notes){const slots=new Map();for(const n of notes||[]){if(!Number.isFinite(n.step))continue;const step=clamp(Math.round(n.step),0,15),kind=['kick','rim','hat'].includes(n.kind)?n.kind:'kick';slots.set(step,{step,kind,vel:clamp(Number.isFinite(n.vel)?n.vel:.73,.16,.85),dur:kind==='kick'?.22:kind==='rim'?.09:.045,origin:n.origin==='partner'?'partner':'you'});}return [...slots.values()].sort((a,b)=>a.step-b.step);}
+const signature=p=>JSON.stringify(clean(p).map(n=>[n.step,n.kind,Math.round(n.vel*100)]));
+const hash=p=>clean(p).reduce((h,n)=>(h*31+n.step*17+{kick:1,rim:3,hat:5}[n.kind])>>>0,97);
+function variation(pattern,seed,version=0,density=.5,style='develop'){
+ const p=clean(pattern),source=clean(seed);if(!p.length)return {notes:[],reason:'empty'};
+ let q=clone(p),reason='',h=(hash(source)+version*13)>>>0;
+ const used=new Set(q.map(n=>n.step));const count=style==='fill'?1+(density>.75?1:0):1;
+ // Stable base is never modified here. Every change returns a separate candidate.
+ if(style==='fill'){
+  const slots=[14,15,13,11,10,9,6,5,3,1].filter(s=>!used.has(s));
+  for(let i=0;i<Math.min(count,slots.length);i++)q.push({step:slots[(h+i)%slots.length],kind:i?'hat':'rim',vel:.38+density*.13,origin:'partner'});
+  reason='ending-fill';
+ }else{
+  const movable=q.map((n,i)=>i).filter(i=>i>0);const at=movable.length?movable[h%movable.length]:0;
+  const op=style==='proposal'?version%3:version%4;
+  if(op===0 && q.length>1){const n=q[at],sign=h%2?1:-1;let target=n.step+sign;
+   if(target<=0||target>15||used.has(target))target=n.step-sign;
+   if(target>0&&target<=15&&!used.has(target)){n.step=target;n.origin='partner';reason=target>p[at].step?'later-hit':'earlier-hit';}
+  }else if(op===1 && q.length>2){q.splice(at,1);reason='more-space';}
+  else if(op===2){q[at]={...q[at],kind:q[at].kind==='kick'?'rim':'kick',vel:q[at].kind==='kick'?.53:.72,origin:'partner'};reason='lighter-hit';}
+  if(!reason){const slots=[3,6,10,14,15,5,9,13,2,7].filter(s=>!used.has(s));if(slots.length&&q.length<10){q.push({step:slots[h%slots.length],kind:'rim',vel:.46,origin:'partner'});reason='one-reply';}else {q[at]={...q[at],kind:q[at].kind==='rim'?'kick':'rim',vel:.57,origin:'partner'};reason='lighter-hit';}}
+ }
+ q=clean(q);
+ if(signature(q)===signature(p)){const n=q[q.length-1];n.kind=n.kind==='kick'?'rim':'kick';n.vel=.54;n.origin='partner';reason='lighter-hit';}
+ return {notes:q,reason};
+}
+function answer(seed,context,round,density){
+ const base=clean(seed),v=variation(base,context.length?context:base,round,density,'develop');
+ // Keep the input's backbone. Only one timing/timbre change per response.
+ const notes=v.notes.map((n,i)=>({...n,kind:n.kind==='kick'?(i%2?'rim':'kick'):n.kind,vel:Math.min(n.vel,.65),origin:'partner'}));
+ return {notes:clean(notes),reason:v.reason};
+}
+class PulseModel{
+ constructor(mode='A'){
+  if(!'ABCDE'.includes(mode)||mode.length!==1)throw new TypeError('Unknown cooperation mode');
+  this.mode=mode;this.state=mode==='B'?'follow':'empty';this.seed=[];this.base=[];this.original=[];this.current=[];this.currentOwner='base';this.epoch=0;this.bar=-1;this.cursor=0;
+  this.captureAt=0;this.captureEnd=0;this.raw=[];this.richness=.5;this.follow=true;this.followQueue=[];this.userTimes=[];this.userCount=0;this.followRecent=[];this.followEpoch=null;this.demo=[];
+  this.held=false;this.nextChange=Infinity;this.holdBackup=null;this.round=0;this.changes=0;this.serial=0;this.proposal=null;this.lastCandidate=null;this.pending=null;this.pendingBar=Infinity;this.history=[];this.context=[];this.journal=[];this.notice='empty';this.lastNow=0;this.cancelToken=0;
+ }
+ log(type,detail=''){this.journal.unshift({type,detail,time:this.lastNow,bar:this.bar});this.journal=this.journal.slice(0,40);}
+ backup(){return clone({seed:this.seed,base:this.base,original:this.original,current:this.current,currentOwner:this.currentOwner,round:this.round,context:this.context});}
+ remember(){this.history.push(this.backup());if(this.history.length>12)this.history.shift();}
+ clearPermission(){this.pending=null;this.pendingBar=Infinity;this.held=false;this.nextChange=Infinity;this.followQueue=[];this.demo=[];this.cancelToken++;}
+ load(notes,now=0){const p=clean(notes);if(!p.length)return false;this.lastNow=now;this.remember();this.clearPermission();this.seed=clone(p);this.base=clone(p);this.original=clone(p);this.current=clone(p);this.proposal=null;this.lastCandidate=null;this.round=0;this.context=[];this.notice='sample';this.launch(now);return true;}
+ launch(now){this.epoch=now+.08;this.bar=-1;this.cursor=0;this.pending=null;this.held=false;this.nextChange=Infinity;
+  if(this.mode==='A'){const v=answer(this.seed,this.context,this.round,this.richness);this.current=v.notes;this.round++;this.context=clone(this.seed);this.currentOwner='reply';this.state='answer';this.log('reply',v.reason);}
+  else if(this.mode==='B'){this.state='follow';}
+  else{this.current=clone(this.base);this.currentOwner='base';this.state='playing';}
+ }
+ arm(now){this.lastNow=now;this.clearPermission();this.proposal=null;this.raw=[];this.state='armed';this.notice='armed';}
+ cancel(now){this.lastNow=now;this.clearPermission();this.raw=[];this.state=this.seed.length?'paused':this.mode==='B'?'follow':'empty';this.current=clone(this.base);this.currentOwner='base';this.notice='canceled';}
+ stop(now){this.lastNow=now;if(this.held)this.hold(false,now);this.clearPermission();this.raw=[];if(!(this.mode==='E'&&this.proposal?.heard))this.proposal=null;this.state=this.mode==='B'?'follow':this.seed.length?'paused':'empty';if(this.mode!=='A'){this.current=clone(this.base.length?this.base:this.current);this.currentOwner='base';}this.notice='paused';this.log('stop');}
+ play(now){this.lastNow=now;if(this.mode==='B'){this.follow=true;this.notice='following';return true;}if(!this.seed.length)return false;this.clearPermission();this.epoch=now+.08;this.cursor=0;this.bar=-1;this.proposal=null;
+  if(this.mode==='A'){this.state='answer';this.current=this.lastCandidate?.notes?clone(this.lastCandidate.notes):clone(this.current.length?this.current:this.seed);this.currentOwner='reply';}
+  else{this.state='playing';this.current=clone(this.base);this.currentOwner='base';}return true;}
+ tap(now,fromDemo=false){this.lastNow=now;
+  if(this.mode==='B')return this.followTap(now,fromDemo);
+  if(['empty','armed'].includes(this.state)||(this.mode==='A'&&['waiting','answer','paused'].includes(this.state))){this.clearPermission();this.raw=[];this.state='capture';this.captureAt=now;this.captureEnd=now+BAR;this.notice='recording';}
+  if(this.state==='capture'&&now<this.captureEnd)this.raw.push({time:now-this.captureAt});
+  return {at:now,step:0,kind:'kick',vel:.78,dur:.22,owner:'you',triggerAt:now};
+ }
+ followTap(now,fromDemo=false){if(!fromDemo)this.demo=[];this.userCount++;const previous=this.userTimes.at(-1);this.userTimes.push(now);this.userTimes=this.userTimes.slice(-8);if(this.followEpoch===null)this.followEpoch=now;
+  const event={at:now,kind:'kick',vel:.78,dur:.22,step:Math.floor((now-this.followEpoch)/STEP)%16,owner:'you',triggerAt:now};this.followRecent.push(event);this.followRecent=this.followRecent.filter(e=>now-e.at<BAR);
+  // A single input may authorize one short complement, never a generated chain.
+  if(this.follow&&this.richness>.1&&previous!==undefined&&now-previous>.085&&now-previous<1.6){const interval=now-previous;const delay=clamp(interval*(this.richness>.7?.42:.5),.10,.28);const at=now+delay;
+   this.followQueue=this.followQueue.filter(e=>e.at<now-.005||e.at>now+.04);this.followQueue.push({at,kind:this.richness<.4?'hat':'rim',vel:.29+this.richness*.16,dur:.065,owner:'partner',triggerAt:now,step:Math.floor((at-this.followEpoch)/STEP)%16});}
+  this.state='follow';return event;
+ }
+ sampleFollow(now){this.clearPermission();this.follow=true;this.userTimes=[];this.followRecent=[];this.followEpoch=now+.1;this.demo=[0,.3125,1.09375,1.875].map(x=>now+.1+x);this.notice='demo';}
+ finishCapture(now){if(!this.raw.length){this.cancel(now);return;}
+  const p=clean(this.raw.map(n=>({step:Math.round(n.time/STEP),kind:'kick',vel:.74})));if(!p.length){this.cancel(now);return;}
+  this.remember();this.seed=clone(p);this.base=clone(p);if(!this.original.length)this.original=clone(p);this.proposal=null;this.lastCandidate=null;this.raw=[];this.notice='captured';this.launch(now);
+ }
+ request(now){this.lastNow=now;if(!['C','E'].includes(this.mode)||!this.base.length||this.pending)return false;
+  if(this.mode==='E'&&this.proposal)return false;if(this.state!=='playing')this.play(now);
+  const v=variation(this.base,this.original,++this.serial,this.richness,this.mode==='C'?'fill':'proposal');
+  this.proposal={...v,id:this.serial,heard:false};this.pending=this.mode==='C'?'fill':'proposal';this.pendingBar=Math.max(1,this.bar+1);this.notice='queued';this.log('requested',v.reason);return true;
+ }
+ adopt(now){this.lastNow=now;const c=this.proposal?.heard?this.proposal:this.lastCandidate;if(!c?.notes)return false;if(this.mode==='E'&&!this.proposal?.heard)return false;
+  this.pending={type:'adopt',notes:clone(c.notes)};this.pendingBar=this.bar+1;this.notice='adopt-pending';if(this.state!=='playing')this.applyBase(c.notes,'adopt');return true;
+ }
+ reject(now){this.lastNow=now;this.pending=null;this.pendingBar=Infinity;this.proposal=null;this.notice='rejected';this.log('reject');}
+ applyBase(notes,type){this.remember();this.base=clean(notes);this.current=clone(this.base);this.currentOwner='base';this.proposal=null;this.pending=null;this.pendingBar=Infinity;this.changes++;this.notice=type;this.log(type);}
+ hold(down,now){this.lastNow=now;if(this.mode!=='D'||!this.base.length)return false;
+  if(down){if(this.held)return false;if(this.state!=='playing')this.play(now);this.held=true;this.nextChange=Math.max(1,this.bar+1);this.holdBackup=this.backup();this.notice='holding';}
+  else if(this.held){this.held=false;this.nextChange=Infinity;if(signature(this.base)!==signature(this.current)){if(this.holdBackup){this.history.push(this.holdBackup);this.history=this.history.slice(-12);}this.base=clone(this.current);}this.holdBackup=null;this.notice='held';this.log('hold-release');}
+  return true;
+ }
+ undo(now){this.lastNow=now;if(this.pending){this.pending=null;this.pendingBar=Infinity;this.proposal=null;this.notice='canceled';return true;}if(!this.history.length)return false;
+  const old=this.history.pop();if(this.state==='playing'){this.pending={type:'undo',data:old};this.pendingBar=this.bar+1;}else this.restore(old);return true;
+ }
+ restore(data){this.clearPermission();Object.assign(this,clone(data));this.proposal=null;this.currentOwner='base';if(!this.seed.length)this.state='empty';this.notice='undone';this.log('undo');}
+ origin(now){if(!this.original.length)return false;this.lastNow=now;if(this.state==='playing'){this.pending={type:'adopt',notes:clone(this.original)};this.pendingBar=this.bar+1;}else this.applyBase(this.original,'origin');return true;}
+ enterBar(bar){
+  const previous=this.currentOwner;this.bar=bar;this.cursor=0;
+  if(this.mode==='A')return;
+  if(this.pending&&bar>=this.pendingBar){const action=this.pending;this.pending=null;this.pendingBar=Infinity;
+   if(action==='fill'||action==='proposal'){if(this.proposal){this.current=clone(this.proposal.notes);this.currentOwner=action;this.proposal.heard=true;this.lastCandidate=clone(this.proposal);this.log(action,this.proposal.reason);}return;}
+   if(action.type==='adopt'){this.applyBase(action.notes,'adopt');return;}
+   if(action.type==='undo'){const data=action.data;this.restore(data);this.current=clone(this.base);return;}
+  }
+  if(this.mode==='D'){
+   if(this.held&&bar>=this.nextChange){const v=variation(this.current,this.original,++this.serial,this.richness,'develop');this.current=v.notes;this.currentOwner='develop';this.changes++;this.nextChange=bar+2;this.log('develop',v.reason);}
+   else if(!this.held){this.current=clone(this.base);this.currentOwner='base';}
+  }else{this.current=clone(this.base);this.currentOwner='base';if(['fill','proposal'].includes(previous)){this.notice='returned';this.log('return-base');if(this.mode==='C')this.proposal=null;}}
+ }
+ tick(now){if(!Number.isFinite(now))return[];this.lastNow=now;let out=[];
+  if(this.mode==='B'){
+   while(this.demo.length&&this.demo[0]<=now){const at=this.demo.shift();if(now-at<.07)out.push(this.followTap(at,true));}
+   const due=this.followQueue.filter(e=>e.at<=now+.018);this.followQueue=this.followQueue.filter(e=>e.at>now+.018);for(const e of due)if(e.at>=now-.07){out.push(e);this.followRecent.push(e);}this.followRecent=this.followRecent.filter(e=>now-e.at<BAR);return out;
+  }
+  if(this.state==='capture'&&now>=this.captureEnd)this.finishCapture(now);
+  if(!['playing','answer'].includes(this.state)||now<this.epoch)return out;
+  const bar=Math.floor((now-this.epoch)/BAR);
+  if(this.mode==='A'&&bar>=1){this.state='waiting';this.lastCandidate={notes:clone(this.current),heard:true};this.notice='your-turn';this.log('reply-ended');return out;}
+  if(bar!==this.bar)this.enterBar(bar);
+  const start=this.epoch+bar*BAR,horizon=Math.min(now+.018,start+BAR-.00001);
+  while(this.cursor<this.current.length){const n=this.current[this.cursor],at=start+n.step*STEP;if(at>horizon)break;this.cursor++;if(at>=now-.065)out.push({...n,at,owner:this.currentOwner==='base'?'base':'partner',bar,triggerAt:this.epoch});}
+  return out;
+ }
+ phase(now){if(this.state==='capture')return {step:clamp(Math.floor((now-this.captureAt)/STEP),0,15),fraction:clamp((now-this.captureAt)/BAR,0,1),active:true};
+  if(this.mode==='B'){const last=this.userTimes.at(-1),active=last!==undefined&&now-last<.46;return{step:this.followEpoch!==null?Math.floor(Math.max(0,now-this.followEpoch)/STEP)%16:-1,fraction:0,active};}
+  const active=['playing','answer'].includes(this.state)&&now>=this.epoch,total=Math.max(0,(now-this.epoch)/STEP);return {step:Math.floor(total)%16,fraction:(total%16)/16,active};
+ }
+ score(now){if(this.state==='capture')return clean(this.raw.map(n=>({step:n.time/STEP,kind:'kick'})));if(this.mode==='B')return clean(this.followRecent.map(n=>({...n,origin:n.owner==='partner'?'partner':'you'})));return clone(this.current.length?this.current:this.base);}
+ snapshot(){return clone({mode:this.mode,state:this.state,seed:this.seed,base:this.base,original:this.original,current:this.current,currentOwner:this.currentOwner,pending:this.pending,held:this.held,proposal:this.proposal,lastCandidate:this.lastCandidate,round:this.round,changes:this.changes,bar:this.bar,richness:this.richness,follow:this.follow,followQueue:this.followQueue,userCount:this.userCount,journal:this.journal});}
+}
+const api={PulseModel,clean,signature,variation,EXAMPLE,BPM,BAR,STEP};if(typeof module!=='undefined'&&module.exports)module.exports=api;root.PulseLab=api;
+})(typeof window!=='undefined'?window:globalThis);
+
+
+/* Browser sound adapter only. Each tile has its own gain, expression and wet tail.
+ * The browser clock and final limiter are shared: this is NOT a firmware sync proof. */
+(function(root){'use strict';
+const midi=n=>440*Math.pow(2,(n-69)/12);
+class DuijuSynth{
+ constructor(ctx,destination){
+  this.ctx=ctx;this.nodes=new Set();this.channels={};this.master=ctx.createGain();this.master.gain.value=.55;
+  const limit=ctx.createDynamicsCompressor();limit.threshold.value=-12;limit.knee.value=12;limit.ratio.value=8;limit.attack.value=.003;limit.release.value=.15;
+  this.master.connect(limit);limit.connect(destination||ctx.destination);
+  this.noise=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate);const ar=this.noise.getChannelData(0);let s=1187;
+  for(let i=0;i<ar.length;i++){s=(s*16807)%2147483647;ar[i]=(s/2147483647*2-1);}
+ }
+ channel(id,pan=0){
+  const c=this.ctx;
+  if(!this.channels[id]){
+   const input=c.createGain(),color=c.createBiquadFilter(),dry=c.createGain(),sum=c.createGain(),gain=c.createGain(),p=c.createStereoPanner();
+   color.type='highshelf';color.frequency.value=1000;color.gain.value=0;dry.gain.value=.5;gain.gain.value=1;
+   input.connect(color);color.connect(dry);dry.connect(sum);sum.connect(gain);gain.connect(p);p.connect(this.master);
+   const send=c.createGain(),delay=c.createDelay(1),feedback=c.createGain(),damp=c.createBiquadFilter(),wet=c.createGain();
+   delay.delayTime.value=.3125;feedback.gain.value=.18;wet.gain.value=.2;damp.type='lowpass';damp.frequency.value=2900;
+   send.connect(delay);delay.connect(damp);damp.connect(feedback);feedback.connect(delay);damp.connect(wet);wet.connect(sum);
+   this.channels[id]={input,color,dry,gain,p,send,delay,volume:.70,muted:false};
+  }
+  this.channels[id].p.pan.setTargetAtTime(pan,c.currentTime,.02);return this.channels[id].input;
+ }
+ env(target,t,peak,attack,release){target.gain.setValueAtTime(.00001,t);target.gain.exponentialRampToValueAtTime(Math.max(peak,.0001),t+attack);target.gain.exponentialRampToValueAtTime(.00001,t+attack+release);}
+ note(id,e,t,pan=0){
+  const c=this.ctx,dest=this.channel(id,pan),g=c.createGain(),nodes=[g],sources=[];
+  g.connect(dest);const dur=e.dur||.2,expr=e.expression||0,stretch=1+expr*.45;
+  const node=n=>{nodes.push(n);return n;};
+  const source=(n,end,offset)=>{sources.push(n);n._duijuId=id;this.nodes.add(n);n.start(t,offset);n.stop(end);};
+  if(e.kind==='kick'){
+   const o=node(c.createOscillator());o.type='sine';o.frequency.setValueAtTime(128,t);o.frequency.exponentialRampToValueAtTime(47,t+.095*stretch);this.env(g,t,e.vel*.72,.004,.28*stretch);o.connect(g);source(o,t+.34*stretch);
+  }else if(e.kind==='rim'){
+   this.env(g,t,e.vel*.34,.001,.095*stretch);
+   [238,517,1034].forEach((f,i)=>{const o=node(c.createOscillator()),v=node(c.createGain());o.frequency.value=f;v.gain.value=[.7,.23,.1][i];o.connect(v);v.connect(g);source(o,t+.13*stretch);});
+  }else if(e.kind==='hat'){
+   const n=node(c.createBufferSource());n.buffer=this.noise;const hp=node(c.createBiquadFilter());hp.type='highpass';hp.frequency.value=6500*(1+expr*.22);this.env(g,t,e.vel*.16,.001,.055*stretch);n.connect(hp);hp.connect(g);source(n,t+.08*stretch,.2);
+  }else if(e.kind==='chord'){
+   // Up to three locally synthesised pitches; no network audio and no new global bus.
+   const pitches=(Array.isArray(e.notes)?e.notes:[e.note]).filter(Number.isFinite).slice(0,3);
+   const rhythmic=e.articulation==='short'||e.articulation==='answer';
+   const total=Math.max(rhythmic?.025:.07,Math.min(dur,e.maxDuration||2.45)),broken=e.articulation==='broken';
+   const short=e.articulation==='short',answer=e.articulation==='answer',pickup=answer&&pitches.length===1;
+   const attack=Math.min(total*.25,broken?.015:short?.008:answer?(pickup?.010:.018):e.articulation==='flow'?.13:.075);
+   const release=Math.min(total*(short?.42:answer?.38:.32),broken?.12:short?.075:answer?.10:.23),hold=Math.max(attack+.001,total-release);
+   const filter=node(c.createBiquadFilter());filter.type='lowpass';filter.Q.value=.48;
+   filter.frequency.setValueAtTime((broken?2900:short?2700:answer?2350:1750)*(1+expr*.4),t);
+   filter.frequency.exponentialRampToValueAtTime((broken?1700:short?1050:answer?1250:1100)*(1+expr*.3),t+total);
+   filter.connect(g);g.connect(this.channels[id].send);
+   // The gain is per chord, not per voice. Adding a third pitch does not triple output.
+   const peak=Math.max(.0001,e.vel*(broken||pickup?.26:.32)/Math.sqrt(Math.max(1,pitches.length)));
+   g.gain.setValueAtTime(.00001,t);g.gain.linearRampToValueAtTime(peak,t+attack);
+   g.gain.linearRampToValueAtTime(peak*(broken?.64:short?.46:answer?.60:.82),t+hold);
+   g.gain.exponentialRampToValueAtTime(.00001,t+total);
+   for(const pitch of pitches){
+    const fundamental=node(c.createOscillator()),warmth=node(c.createOscillator()),v=node(c.createGain());
+    fundamental.type='sine';fundamental.frequency.value=midi(pitch);fundamental.connect(filter);
+    warmth.type='triangle';warmth.frequency.value=midi(pitch);v.gain.value=broken?.15:.22;
+    warmth.connect(v);v.connect(filter);source(fundamental,t+total+.01);source(warmth,t+total+.01);
+   }
+  }else if(e.kind==='tone'){
+   const filter=node(c.createBiquadFilter());filter.type='lowpass';filter.frequency.setValueAtTime(2400,t);filter.frequency.exponentialRampToValueAtTime(700,t+.5);filter.Q.value=.45;filter.connect(g);
+   this.env(g,t,e.vel*.29,.012,dur+.38);g.connect(this.channels[id].send);
+   [[1,1],[2,.22],[3,.07]].forEach(([mul,level])=>{const o=node(c.createOscillator()),v=node(c.createGain());o.type='sine';o.frequency.value=midi(e.note)*mul;v.gain.value=level;o.connect(v);v.connect(filter);source(o,t+dur+.46);});
+  }else{
+   this.env(g,t,e.vel*.3,.014,dur+.16);g.connect(this.channels[id].send);
+   const n=node(c.createBufferSource()),band=node(c.createBiquadFilter());n.buffer=this.noise;band.type='bandpass';band.frequency.value=midi(e.note)*1.7;band.Q.value=5.5;n.connect(band);band.connect(g);source(n,t+dur+.23,.65);
+   const o=node(c.createOscillator()),v=node(c.createGain());o.frequency.value=midi(e.note);v.gain.value=.19;o.connect(v);v.connect(g);source(o,t+dur+.23);
+  }
+  let remaining=sources.length;
+  sources.forEach(n=>n.onended=()=>{this.nodes.delete(n);if(--remaining===0)nodes.forEach(x=>{try{x.disconnect();}catch(_){}});});
+ }
+ setVolume(v){this.master.gain.setTargetAtTime(Math.max(0,Math.min(.85,v)),this.ctx.currentTime,.025);}
+ updateGain(id){const ch=this.channels[id];ch.gain.gain.setTargetAtTime(ch.muted?0:ch.volume/.70,this.ctx.currentTime,.018);}
+ setChannelVolume(id,v){if(!this.channels[id])this.channel(id);this.channels[id].volume=Math.max(0,Math.min(1,v));this.updateGain(id);}
+ expression(id,value,reference){if(!this.channels[id])this.channel(id);this.channels[id].color.gain.setTargetAtTime((value-reference)*10,this.ctx.currentTime,.025);}
+ mute(id,value){if(!this.channels[id])this.channel(id);this.channels[id].muted=value;this.updateGain(id);if(value)this.stopDevice(id);}
+ stopDevice(id){for(const n of this.nodes)if(n._duijuId===id){try{n.stop(this.ctx.currentTime+.03);}catch(_){}}}
+ stop(){for(const n of this.nodes){try{n.stop(this.ctx.currentTime+.025);}catch(_){}}}
+}
+root.DuijuSynth=DuijuSynth;
+})(window);
+
+
+/* One-bar response A/B. Pure functions; no rendering, clocks, network or random input.
+   A is the archived first-round Pulse A rule. B keeps all recorded attacks intact. */
+(function(root){'use strict';
+const old=root.PulseLab||(typeof require==='function'?require('../baseline/model.js'):null);
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,Number.isFinite(n)?n:a));
+const clean=old.clean,STEP=old.STEP,DURATION=old.BAR;
+function quantize(times){return clean((times||[]).filter(t=>Number.isFinite(t)&&t>=0&&t<DURATION).map(t=>({step:Math.round(t/STEP),kind:'kick',vel:.74})));}
+function layered(input,density=.5){
+ const source=clean(input);if(!source.length)return[];
+ density=clamp(density,0,1);
+ const anchors=source.map(n=>({...n,role:'anchor',sourceStep:n.step,origin:'you'}));
+ const additions=[],occupied=new Set(source.map(n=>n.step+':'+n.kind));
+ const anchorSteps=new Set(source.map(n=>n.step));
+ const minVelocity=Math.min(...source.map(n=>n.vel));
+ const add=(step,kind,velocity,role,sourceStep=null)=>{
+  step=Math.round(step);if(step<0||step>15||occupied.has(step+':'+kind))return false;
+  // A main drum attack stays a single perceptible anchor, not doubled by support.
+  if(anchorSteps.has(step))return false;
+  const vel=Math.min(velocity,minVelocity*.82);
+  occupied.add(step+':'+kind);additions.push({step,kind,vel,dur:kind==='kick'?.22:kind==='rim'?.09:.045,origin:'partner',role,sourceStep});return true;
+ };
+ const head=source[0].step,last=source.at(-1).step;
+ // Preserve the shortest *adjacent* input pair. Revoice it softly later in the bar.
+ const pairs=source.slice(1).map((n,i)=>({first:source[i],last:n,gap:n.step-source[i].step})).filter(p=>p.gap>0&&p.gap<=3).sort((a,b)=>a.gap-b.gap||a.first.step-b.first.step);
+ if(pairs.length){const pair=pairs[0];const candidates=[head+8,head+4,head+6,head+10,head+12];
+  const at=candidates.find(s=>s>pair.last.step&&s+pair.gap<=14&&!anchorSteps.has(s)&&!anchorSteps.has(s+pair.gap));
+  if(at!==undefined){add(at,'rim',.53,'echo',pair.first.step);add(at+pair.gap,'rim',.47,'echo',pair.last.step);}
+ }
+ // Only a single attack does not specify a tempo. This is an explicit fixed-grid
+ // proposal at the demo's 96 BPM, not an inference from that one tap.
+ add(head+8,'kick',.46,'support',head);
+ const closing=last<4?head+12:last<12?Math.min(14,Math.ceil((last+2)/2)*2):null;
+ if(closing!==null)add(closing,'rim',.49,'ending',last);
+ // A sparse supporting pulse; source-derived pair always has priority over grid.
+ for(const s of [head+4,head+12])add(s,'rim',.42,'support',null);
+ const pulse=pairs.length&&pairs[0].gap===3?3:2;
+ for(let s=head+pulse;s<16;s+=pulse)add(s,'hat',s%4===2?.40:.32,'support',null);
+ // At the high end only, short lead-in/cadence details; no autonomous extension.
+ if(last<14)add(14,'rim',.41,'ending',last);
+ for(const s of [head+7,head+11,head+15,head+5,head+9,head+3,head+13,head+1])add(s,'hat',.26,'detail',null);
+ const budget=Math.min(26-anchors.length,4+Math.round(density*6));
+ return [...anchors,...additions.slice(0,budget)].sort((a,b)=>a.step-b.step||(a.role==='anchor'?-1:b.role==='anchor'?1:0));
+}
+function buildPair(input,density=.5){const source=clean(input);if(!source.length)return {source:[],sparse:[],layered:[],duration:DURATION};
+ const previous=new old.PulseModel('A');previous.richness=clamp(density,0,1);previous.load(source,0);
+ return {source,sparse:previous.current.map(n=>({...n})),layered:layered(source,density),duration:DURATION};
+}
+function stats(values){let energy=0,peak=0;for(const n of values){energy+=n*n;peak=Math.max(peak,Math.abs(n));}return {rms:Math.sqrt(energy/Math.max(1,values.length)),peak};}
+function normalise(buffers){const a=stats(buffers.sparse),b=stats(buffers.layered);let target=.045;
+ for(const s of [a,b])if(s.rms>1e-10&&s.peak>0)target=Math.min(target,.65*s.rms/s.peak);
+ const result={metrics:{targetRms:target,before:{sparse:a,layered:b},after:{},gains:{}}};
+ for(const key of ['sparse','layered']){const s=key==='sparse'?a:b,g=s.rms>1e-10?target/s.rms:0;const x=Float32Array.from(buffers[key],v=>v*g);result[key]=x;result.metrics.gains[key]=g;result.metrics.after[key]=stats(x);}
+ return result;
+}
+const api={buildPair,layered,quantize,normalise,stats,STEP,DURATION,PRESETS:{one:[0],close:[0,2],spaced:[0,8],three:[0,2,10],original:[0,2,7,12]}};
+if(typeof module!=='undefined'&&module.exports)module.exports=api;root.ReplyAB=api;
+})(typeof window!=='undefined'?window:globalThis);
+
+
+/* Same rhythm, role-specific accompaniment. No DOM, clocks, network or randomness.
+ * Input taps carry timing, NOT pitch. Tonal pitches below are a system proposal
+ * inside the original D-minor vocabulary. Each input onset has a foreground event.
+ */
+(function(root){'use strict';
+const A=root.ReplyAB||(typeof require==='function'?require('../ab-src/reply.js'):null);
+const P=root.PulseLab||(typeof require==='function'?require('../baseline/model.js'):null);
+const ROLES={
+ pulse:{name:'脉冲',en:'Pulse',color:'#d95535',phrases:['重音','切分','留白'],english:['Accent','Syncopation','Space'],defaultPhrase:1,desc:['用鼓点的不同附和方式，把你的节奏衬托起来。','Layered drum support around your rhythm.']},
+ voice:{name:'声线',en:'Voice',color:'#496da1',phrases:['短句','轻答','长线'],english:['Short phrase','Light reply','Long line'],defaultPhrase:1,desc:['用旋律接住你的敲击。','Your rhythm, given a melodic voice.']},
+ dust:{name:'微尘',en:'Dust',color:'#7b8452',phrases:['颗粒','点缀','余韵'],english:['Grains','Touches','Trails'],defaultPhrase:1,desc:['让敲击生出颗粒与余韵。','Small grains and trails around your taps.']},
+ harmony:{name:'和声',en:'Harmony',color:'#aa7b3d',phrases:['短和弦','分解','接句'],english:['Short chords','Arpeggio','Answer'],defaultPhrase:2,desc:['以短奏、分解和小句附和。','Short chords, broken notes and replies.']}
+};
+const DESCRIPTIONS={
+ voice:[['主音之间用短旋律连接，句尾收住。','Short melodic links between your attacks.'],['较短、较轻的回应，保留清楚的空隙。','Lighter replies with shorter notes and room.'],['拉长主音、加入柔和连接，不抹掉起音。','Sustained main notes and gentle connections.']],
+ dust:[['清楚的颗粒主干，周围有短小粒簇。','Distinct grains surrounded by small clusters.'],['亮一些的点缀错落出现，不把空隙填满。','Bright touches, scattered with deliberate gaps.'],['主音后留衰减的回声与较长的尾音。','Fading repeats and longer tails after each grain.']],
+ harmony:[['每次短和弦有音高走向，及时收住。','Moving chord voicings with short endings.'],['和弦中的音依次出现，接住敲击时位。','Chord tones unfold around your attack times.'],['主干之后用小句接话，最后短和弦落下。','Small pickups answer, then close with a chord.']],
+ pulse:[['保留你熟悉的分层鼓点，并更明确地强调落点。','The familiar layered pulse, with clearer accents.'],['在反拍与空隙上做更灵活的附和，保留主干。','More syncopated support around the offbeats.'],['减少填充，只留下有意义的回应与收尾。','Less filling, more deliberate space and endings.']]
+};
+for(const r of Object.values(ROLES)){Object.freeze(r.phrases);Object.freeze(r.english);Object.freeze(r);}
+Object.freeze(ROLES);
+const clone=x=>JSON.parse(JSON.stringify(x)),clamp=(x,a,b)=>Math.max(a,Math.min(b,Number.isFinite(x)?x:a));
+const SCALE=[62,65,67,69,70,72,74];
+const VOICINGS=[[50,57,65],[53,60,69],[55,62,70],[50,57,65],[48,55,67],[53,60,69]];
+function voicePitch(source,i){if(i===0)return 62;const gap=source[i].step-source[i-1].step;const contour=[0,3,1,2,4,3,1,0];let ix=contour[i%contour.length];if(gap>=6)ix=Math.max(0,ix-1);return SCALE[ix];}
+function planSupport(source,role,phrase){
+ const occupied=new Set(source.map(n=>n.step)),slots=[],head=source[0].step,last=source.at(-1).step;
+ const add=(step,layer,sourceStep=null)=>{if(step<0||step>=16||occupied.has(step))return false;occupied.add(step);slots.push({step,layer,sourceStep});return true;};
+ // First retain the audible relation of a close pair; no hash picks arbitrary notes.
+ const pairs=source.slice(1).map((n,i)=>({first:source[i].step,last:n.step,gap:n.step-source[i].step})).filter(p=>p.gap>0&&p.gap<=3).sort((a,b)=>a.gap-b.gap||a.first-b.first);
+ if(pairs.length){const q=pairs[0],at=[head+8,head+4,head+6,head+10].find(s=>s>q.last&&s+q.gap<15&&!occupied.has(s)&&!occupied.has(s+q.gap));if(at!==undefined){add(at,'echo',q.first);add(at+q.gap,'echo',q.last);}}
+ // A bounded cadence is present even for one tap; rhythm-only input does not tell
+ // us a harmonic cadence, so this is explicitly the instrument's proposal.
+ const end=[head+14,head+12,head+10,head+8,head+6,head+4,head+2].find(s=>s<16&&s>last&&!occupied.has(s));
+ if(end!==undefined)add(end,'ending',last);
+ // Preferred support placements have a stable relationship to the recorded head.
+ const routes=role==='voice'?(phrase===1?[4,6,12,3,11,9,1,7,13,15]:phrase===2?[5,11,3,13,7,9,1,15,4,12]:[6,12,4,9,3,11,2,13,7,15]):
+  role==='dust'?(phrase===1?[1,5,9,3,13,7,11,15,4,12]:phrase===2?[4,11,7,13,6,10,1,15]:[2,4,8,11,6,12,3,13,7,15]):
+  phrase===1?[4,12,6,10,3,7,11,15,2,9]:phrase===2?[3,6,10,13,4,7,11,15,2,5]:[9,11,13,5,7,3,12,6,4,15];
+ for(const off of routes){const at=head+off;const nearest=source.reduce((best,n)=>Math.abs(n.step-at)<Math.abs(best.step-at)?n:best,source[0]);add(at,'support',nearest.step);}
+ // Fine particle subdivisions supplement the display's coarse 16 cells only
+ // at the richer end; input itself retains the shared 16-step capture rule.
+ if(role==='dust'&&phrase===1)for(const n of source){add(n.step+.5,'detail',n.step);add(n.step+1.5,'detail',n.step);}
+ return slots;
+}
+
+function composePulse(source,phrase=1,density=.5){
+ const d=clamp(density,0,1);
+ const full=A.layered(source,d).map(n=>({...n}));
+ if(!full.length)return {role:'pulse',phrase,density:d,source,foreground:[],full:[],duration:A.DURATION};
+ const anchors=full.filter(n=>n.role==='anchor').map(n=>({...n}));
+ if(phrase===1)return {role:'pulse',phrase,density:d,source,foreground:anchors,full,duration:A.DURATION};
+ const occupied=new Set(anchors.map(n=>`${n.step}:${n.kind}`));
+ const support=[];
+ const add=(step,kind,vel,role='support',sourceStep=null)=>{
+  step=Math.round(step);if(step<0||step>15)return false;
+  const key=`${step}:${kind}`;if(occupied.has(key))return false;
+  occupied.add(key);support.push({step,kind,vel,dur:kind==='kick'?.22:kind==='rim'?.09:.045,origin:'partner',role,sourceStep});return true;
+ };
+ const head=source[0].step,last=source.at(-1).step;
+ const baseSupports=full.filter(n=>n.role!=='anchor');
+ if(phrase===2){
+  baseSupports.filter(n=>n.role==='echo'||n.role==='ending').forEach(n=>add(n.step,n.kind,Math.min((n.vel||.3)*.98,.42),n.role,n.sourceStep));
+  const routes=[3,6,10,13,7,11,15,5,9,1,14,12,4,8,2];
+  const budget=3+Math.round(d*5);
+  for(const off of routes){
+   const at=head+off;if(at>15||(at<=last&&off<6))continue;
+   const nearest=source.reduce((best,n)=>Math.abs(n.step-at)<Math.abs(best.step-at)?n:best,source[0]);
+   const kind=(off%4===3||off%4===1)?'hat':'rim';
+   const vel=kind==='hat'?(d>.62?.30:.24):.34;
+   add(at,kind,vel,'support',nearest.step);
+   if(support.length>=budget)break;
+  }
+  const phraseFull=[...anchors,...support].sort((a,b)=>a.step-b.step||(a.role==='anchor'?-1:b.role==='anchor'?1:0));
+  return {role:'pulse',phrase,density:d,source,foreground:anchors,full:phraseFull,duration:A.DURATION};
+ }
+ const chosen=[];
+ const pushIf=pred=>baseSupports.filter(pred).forEach(n=>chosen.push(n));
+ pushIf(n=>n.role==='echo');
+ pushIf(n=>n.role==='ending');
+ if(d>.45)pushIf(n=>n.role==='support'&&n.kind==='rim');
+ if(d>.72)pushIf(n=>n.role==='detail'||(n.role==='support'&&n.kind==='hat'));
+ chosen.forEach((n,idx)=>{if(idx<4+Math.round(d*2))add(n.step,n.kind,Math.min(n.vel||.3,n.kind==='hat'?.18:.30),n.role,n.sourceStep);});
+ const phraseFull=[...anchors,...support].sort((a,b)=>a.step-b.step||(a.role==='anchor'?-1:b.role==='anchor'?1:0));
+ return {role:'pulse',phrase,density:d,source,foreground:anchors,full:phraseFull,duration:A.DURATION};
+}
+
+function compose(input,role='voice',phrase=1,density=.5){
+ const meta=ROLES[role];if(!meta||!Number.isInteger(phrase)||phrase<1||phrase>meta.phrases.length)throw new RangeError('Unknown role or expression');
+ const source=P.clean(input),d=clamp(density,0,1);
+ if(!source.length)return {role,phrase,density:d,source:[],foreground:[],full:[],duration:A.DURATION};
+ if(role==='pulse')return composePulse(source,phrase,d);
+ const foreground=source.map((n,i)=>{
+  const next=source[i+1]?.step??16,space=(next-n.step)*A.STEP,base={step:n.step,vel:n.vel,layer:'anchor',sourceStep:n.step,origin:'you',expression:0};
+  if(role==='voice')return {...base,kind:'tone',note:voicePitch(source,i),dur:Math.min(Math.max(.05,space-.025),phrase===3?.62:phrase===2?.12:.24)};
+  if(role==='dust')return {...base,kind:'grain',note:[81,86,84,89,86][i%5]+(phrase===2?5:0),dur:Math.min(Math.max(.045,space-.025),phrase===1?.085:phrase===2?.14:.46)};
+  const harmony=VOICINGS[i%VOICINGS.length].slice(),notes=phrase===1?harmony:phrase===2?[harmony[2]]:[harmony[2]];
+  return {...base,kind:'chord',notes,note:notes.at(-1),harmony,articulation:phrase===1?'short':phrase===2?'broken':'answer',dur:Math.min(Math.max(.05,space-.025),phrase===1?.19:phrase===2?.23:.15),maxDuration:Math.min(.27,Math.max(.05,space-.025))};
+ });
+ const slots=planSupport(source,role,phrase),minVel=Math.min(...foreground.map(n=>n.vel));
+ const budget=Math.min(32-foreground.length,role==='voice'?(phrase===1?4+Math.round(d*5):phrase===2?3+Math.round(d*4):3+Math.round(d*4)):role==='dust'?(phrase===1?4+Math.round(d*8):phrase===2?3+Math.round(d*4):4+Math.round(d*5)):4+Math.round(d*6));
+ // For grains, start introducing subdivisions at high richness while preserving
+ // a close-pair echo and cadence. The original user's anchors are never removed.
+ let chosen=slots.slice(0,budget);
+ if(role==='dust'&&phrase===1&&d>.7){const fine=slots.filter(s=>s.layer==='detail').slice(0,Math.max(1,Math.floor(d*3)));chosen=[...chosen.slice(0,Math.max(0,budget-fine.length)),...fine];}
+ const support=chosen.map((s,j)=>{
+  const index=Math.max(0,source.findIndex(n=>n.step===s.sourceStep)),parent=foreground[index],end=s.layer==='ending';
+  let vel=(s.layer==='echo'?.48:end?.44:s.layer==='detail'?.28:.36);vel=Math.min(vel,minVel*.78);
+  const base={...s,vel,origin:'partner',expression:0};
+  const remaining=Math.max(.035,A.DURATION-s.step*A.STEP-.018);
+  if(role==='voice'){
+   const note=s.layer==='echo'?parent.note: end?62: SCALE[(Math.max(0,SCALE.indexOf(parent.note))+(phrase===2?2:1)+(j%2))%SCALE.length];
+   return {...base,kind:'tone',note:phrase===3&&!end?note-12:note,dur:Math.min(remaining,phrase===1?.16:phrase===2?.085:.32),vel:phrase===3?vel*.8:vel};
+  }
+  if(role==='dust')return {...base,kind:'grain',note:phrase===3?parent.note:[86,93,89,96,84,91][j%6]+(phrase===2?5:0),dur:Math.min(remaining,phrase===1?.055:phrase===2?.08:.32),vel:phrase===3?Math.min(vel,.48*Math.exp(-Math.max(0,s.step-parent.step)/18)):vel};
+  let harmonic=parent.harmony.slice();
+  let notes;
+  if(phrase===1){const v=VOICINGS[(index+1+j%2)%VOICINGS.length];harmonic=v.slice();notes=end?v.slice():j%2?[v[1],v[2]]:[v[2]];}
+  else if(phrase===2){const tones=[harmonic[0]+12,harmonic[1],harmonic[2],harmonic[1]+12];notes=[s.layer==='echo'?parent.note:tones[j%4]];}
+  else notes=end?[50,57,65]:[s.layer==='echo'?parent.note: harmonic[(j+1)%3]+(j%2===0?12:0)];
+  const dur=Math.min(remaining,phrase===1?.12:phrase===2?.20:end?.24:.11);
+  return {...base,kind:'chord',note:notes.at(-1),notes,harmony:phrase===3&&end?[50,57,65]:harmonic,articulation:phrase===2?'broken':phrase===1?'short':'answer',dur,maxDuration:Math.min(remaining,.30)};
+ });
+ const full=[...foreground,...support].sort((a,b)=>a.step-b.step||(a.layer==='anchor'?-1:b.layer==='anchor'?1:0));
+ return {role,phrase,density:d,source,foreground,full,duration:A.DURATION};
+}
+const api={ROLES,DESCRIPTIONS,compose,STEP:A.STEP,DURATION:A.DURATION,quantize:A.quantize,PRESETS:A.PRESETS};
+root.RoleAccompaniment=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
+})(typeof window!=='undefined'?window:globalThis);
+
+
+(function(root){'use strict';
+const {buildPair,quantize,normalise,stats,PRESETS,STEP,DURATION}=root.ReplyAB;const SR=24000;
+const ICON={play:'<path d="m8 5 11 7-11 7Z" fill="currentColor" stroke="none"/>',stop:'<rect x="6" y="6" width="12" height="12" rx="1" fill="currentColor" stroke="none"/>',record:'<circle cx="12" cy="12" r="6" fill="currentColor" stroke="none"/>',back:'<path d="m14 5-7 7 7 7M7 12h14"/>',gear:'<path d="m9 3-.6 2.5-2 1.2L4 6l-2 3 2 1.8v2.4L2 15l2 3 2.4-.7 2 1.2L9 21h4l.6-2.5 2-1.2 2.4.7 2-3-2-1.8v-2.4L20 9l-2-3-2.4.7-2-1.2L13 3Z"/><circle cx="11" cy="12" r="3"/>',speaker:'<path d="M10 5 5 9H2v6h3l5 4V5Zm5 3c3 2 3 6 0 8m3-11c5 4 5 10 0 14"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9 8a3 3 0 0 1 6 1c0 2-3 2-3 5m0 3v.1"/>',next:'<path d="m9 5 7 7-7 7"/>',cross:'<path d="m6 6 12 12M18 6 6 18"/>',wave:'<path d="M3 13v1m4-6v10m5-15v18m5-14v10m4-6v2"/>',download:'<path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>'};
+const ico=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[n]||ICON.wave}</svg>`;
+const safe=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+class AudioAB{
+ constructor(){this.ctx=null;this.master=null;this.live=null;this.volume=.65;this.promise=null;this.source=null;this.gate=null;this.cache=new Map();this.audit=[];this.starts=0;this.stops=0;}
+ async ensure(){if(this.promise)return this.promise;this.promise=(async()=>{if(!this.ctx){const AC=root.AudioContext||root.webkitAudioContext;if(!AC)throw new Error('AudioContext unavailable');this.ctx=new AC();this.master=this.ctx.createGain();this.master.gain.value=this.volume;this.master.connect(this.ctx.destination);this.live=new root.DuijuSynth(this.ctx,this.master);this.live.setVolume(.55);}await this.ctx.resume();if(this.ctx.state!=='running')throw new Error('Audio output blocked');})();try{await this.promise;}finally{this.promise=null;}}
+ volumeTo(v){this.volume=Math.max(0,Math.min(1,v));if(this.master)this.master.gain.setTargetAtTime(this.volume,this.ctx.currentTime,.015);}
+ tap(){const t=this.ctx.currentTime+.003;this.live.note('finger',{kind:'kick',vel:.78,dur:.22,note:38,expression:0},t,0);this.audit.push({kind:'finger',at:t});}
+ async renderNotes(notes){const Offline=root.OfflineAudioContext||root.webkitOfflineAudioContext;if(!Offline)throw new Error('OfflineAudioContext unavailable');
+  const c=new Offline(1,Math.round(SR*DURATION),SR),s=new root.DuijuSynth(c);s.setVolume(.55);
+  for(const n of notes)s.note('reply',{...n,note:n.kind==='kick'?38:n.kind==='rim'?50:84,expression:0},n.step*STEP,0);
+  const data=new Float32Array((await c.startRendering()).getChannelData(0));
+  const release=Math.round(.018*SR);for(let i=0;i<release;i++)data[data.length-release+i]*=(release-1-i)/release;
+  return data;
+ }
+ async prepare(seed,density){const key=JSON.stringify([seed,density]);if(this.cache.has(key))return this.cache.get(key);
+  const pair=buildPair(seed,density);if(!pair.source.length)throw new Error('No rhythm');
+  const [a,b,source]=await Promise.all([this.renderNotes(pair.sparse),this.renderNotes(pair.layered),this.renderNotes(pair.source)]);
+  const matched=normalise({sparse:a,layered:b});const srcStat=stats(source);const srcGain=srcStat.rms?Math.min(.65/srcStat.peak,matched.metrics.targetRms/srcStat.rms):0;
+  const data={key,pair,arrays:{sparse:matched.sparse,layered:matched.layered,source:Float32Array.from(source,x=>x*srcGain)},metrics:matched.metrics,density,sampleRate:SR,duration:DURATION};
+  this.cache.set(key,data);if(this.cache.size>8)this.cache.delete(this.cache.keys().next().value);return data;
+ }
+ play(data,kind,done){this.stop();const buffer=this.ctx.createBuffer(1,data.arrays[kind].length,SR);buffer.getChannelData(0).set(data.arrays[kind]);const source=this.ctx.createBufferSource(),gate=this.ctx.createGain();source.buffer=buffer;source.connect(gate);gate.connect(this.master);source.onended=()=>{source.disconnect();gate.disconnect();if(this.source===source){this.source=null;this.gate=null;done();}};
+  const start=this.ctx.currentTime+.028;this.source=source;this.gate=gate;source.start(start);this.starts++;this.audit.push({kind,start,end:start+DURATION,sourceKey:data.key,eventCount:data.pair[kind==='source'?'source':kind].length});return start;
+ }
+ stop(){this.live?.stop();if(this.source){const s=this.source,g=this.gate;this.source=null;this.gate=null;s.onended=()=>{s.disconnect();g.disconnect();};g.gain.cancelScheduledValues(this.ctx.currentTime);g.gain.setValueAtTime(g.gain.value,this.ctx.currentTime);g.gain.linearRampToValueAtTime(0,this.ctx.currentTime+.01);try{s.stop(this.ctx.currentTime+.012);}catch(_){}}this.stops++;}
+}
+
+class RoleAudio extends AudioAB{
+ constructor(){super();this.roleCache=new Map();}
+ async renderRoleNotes(notes,role){
+  if(role==='pulse')return this.renderNotes(notes);
+  const Offline=root.OfflineAudioContext||root.webkitOfflineAudioContext;
+  if(!Offline)throw new Error('Offline audio unavailable');
+  const context=new Offline(1,Math.round(SR*DURATION),SR),synth=new root.DuijuSynth(context);synth.setVolume(.55);
+  for(const n of notes)synth.note('reply',{...n,expression:0},n.step*STEP,0);
+  const data=new Float32Array((await context.startRendering()).getChannelData(0));
+  const release=Math.round(.06*SR);for(let i=0;i<release;i++)data[data.length-release+i]*=(release-1-i)/release;
+  return data;
+ }
+ async prepareRole(seed,role,phrase,density){
+  const key=JSON.stringify([seed,role,phrase,density]);if(this.roleCache.has(key))return this.roleCache.get(key);
+  const plan=root.RoleAccompaniment.compose(seed,role,phrase,density);if(!plan.source.length)throw new Error('No rhythm');
+  let arrays,metrics;
+  if(role==='pulse'&&phrase===1){
+   const original=await super.prepare(seed,density);
+   // Phrase 1 keeps the accepted Pulse B rendering path as the accent reference.
+   arrays={full:original.arrays.layered,foreground:original.arrays.source,source:original.arrays.source};metrics={reference:'Original Pulse B',...original.metrics};
+  }else{
+   const [main,full,raw]=await Promise.all([this.renderRoleNotes(plan.foreground,role),this.renderRoleNotes(plan.full,role),this.renderNotes(plan.source)]);
+   const matched=normalise({sparse:main,layered:full}),rs=stats(raw),gain=rs.rms?Math.min(.65/rs.peak,matched.metrics.targetRms/rs.rms):0;
+   arrays={full:matched.layered,foreground:matched.sparse,source:Float32Array.from(raw,n=>n*gain)};metrics=role==='pulse'?{reference:'Pulse layered accompaniment',...matched.metrics}:matched.metrics;
+  }
+  const data={key,plan,arrays,role,phrase,density,metrics,duration:DURATION,sampleRate:SR,
+    pair:{full:plan.full,foreground:plan.foreground,source:plan.source}};
+  this.roleCache.set(key,data);if(this.roleCache.size>24)this.roleCache.delete(this.roleCache.keys().next().value);
+  return data;
+ }
+}
+root.RoleAudio=RoleAudio;root.RoleUI={ico,safe};
+})(window);
+
+
+/* Procedural role art. Event positions and note marks are real plan data. */
+(function(root){'use strict';
+function draw(canvas,role,notes=[],progress=0,active=false,energy=0){
+ if(!canvas)return;const ctx=canvas.getContext('2d');if(!ctx)return;const w=+canvas.dataset.w||300,h=+canvas.dataset.h||204;
+ ctx.setTransform(canvas.width/w,0,0,canvas.height/h,0,0);ctx.clearRect(0,0,w,h);ctx.save();ctx.scale(w/300,h/204);ctx.lineCap='round';
+ const color=root.RoleAccompaniment.ROLES[role].color,now=progress*16,step=Math.floor(now),anchor=n=>n.layer==='anchor'||n.role==='anchor'||(!n.layer&&!n.role),random=n=>{const v=Math.sin(n*127.1+311.7)*43758.5453;return v-Math.floor(v);};
+ if(role==='pulse'){
+  const x=150,y=99;ctx.strokeStyle='#d3d7c9';ctx.lineWidth=1;for(const r of [39,59,79]){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.stroke();}
+  for(let i=0;i<16;i++){const theta=i/16*Math.PI*2-Math.PI/2,ev=notes.filter(n=>Math.floor(n.step)===i),isAnchor=ev.some(anchor);ctx.strokeStyle=ev.length?isAnchor?color:'#9ba98a':'#b9c0ae';ctx.lineWidth=ev.length?isAnchor?3.8:2:1.2;ctx.beginPath();ctx.moveTo(x+Math.cos(theta)*75,y+Math.sin(theta)*75);ctx.lineTo(x+Math.cos(theta)*(ev.length?88:82),y+Math.sin(theta)*(ev.length?88:82));ctx.stroke();if(active&&i===step){ctx.fillStyle=color;ctx.beginPath();ctx.arc(x+Math.cos(theta)*79,y+Math.sin(theta)*79,5.5,0,Math.PI*2);ctx.fill();}}
+  ctx.fillStyle='#363b30';ctx.beginPath();ctx.arc(x,y,25+energy*4,0,Math.PI*2);ctx.fill();ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,6+energy*2,0,Math.PI*2);ctx.fill();if(energy){ctx.strokeStyle=color;ctx.globalAlpha=energy*.4;ctx.beginPath();ctx.arc(x,y,28+(1-energy)*45,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;}
+ }else if(role==='voice'){
+  const event=active?notes.filter(n=>n.step<=now).at(-1):notes.find(anchor),note=event?.note||65,frequency=(note-50)/18;
+  for(let row=0;row<7;row++){ctx.beginPath();for(let x=10;x<=290;x+=2){const u=(x-10)/280,y=41+row*11+Math.sin(u*Math.PI*(3+frequency)+row*.22)*Math.sin(u*Math.PI)**1.6*(25+energy*9)*[.58,.84,1,.9,.76,.5,.36][row];if(x===10)ctx.moveTo(x,y);else ctx.lineTo(x,y);}ctx.strokeStyle=row===2||row===3?color:row<2?'#a8b7bc':'#bec6bd';ctx.lineWidth=row===2?2:1.1;ctx.stroke();}
+  for(const n of notes){const x=10+n.step/15*280,y=168-((n.note-48)%24)*1.25;ctx.strokeStyle=anchor(n)?'#a7b3b3':'#d1d8ca';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,187);ctx.stroke();ctx.fillStyle=color;ctx.globalAlpha=anchor(n)?1:.43;ctx.beginPath();ctx.arc(x,y,active&&Math.floor(n.step)===step?4.3:anchor(n)?3:2,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;}
+ }else if(role==='dust'){
+  for(let i=0;i<135;i++){const u=random(i+1),v=random(i+54),x=10+u*280,y=89+Math.sin(u*7)*13+(v-.5)*(35*Math.sin(u*Math.PI)+10)*2,col=Math.floor(u*16),ev=notes.find(n=>Math.floor(n.step)===col),hot=active&&col===step;ctx.fillStyle=ev?color:'#bbc4a8';ctx.globalAlpha=hot?1:ev?.65:.35+v*.2;ctx.beginPath();ctx.arc(x,y,(ev?1.8:1)+(hot?1.2:0)+random(i+8)*.6,0,Math.PI*2);ctx.fill();}ctx.globalAlpha=1;
+  for(const n of notes){const x=10+n.step/15*280;ctx.strokeStyle=color;ctx.globalAlpha=anchor(n)?.65:.28;ctx.lineWidth=anchor(n)?2:1;ctx.beginPath();ctx.moveTo(x,173);ctx.lineTo(Math.min(293,x+n.dur/root.RoleAccompaniment.STEP*17),173);ctx.stroke();}ctx.globalAlpha=1;
+ }else{
+  const current=active?notes.filter(n=>n.step<=now&&n.step+n.dur/root.RoleAccompaniment.STEP>now).at(-1):notes[0],tones=current?.harmony||[50,57,65],held=active&&current;
+  for(let row=0;row<3;row++){const center=49+row*29,arch=16+(tones[row]%12)*.5+(held?energy*2:0);ctx.beginPath();for(let x=15;x<=285;x+=2){const u=(x-15)/270,y=center-Math.sin(Math.PI*u)*arch+Math.sin(u*Math.PI*2+row*.3)*5;if(x===15)ctx.moveTo(x,y);else ctx.lineTo(x,y);}for(let x=285;x>=15;x-=2){const u=(x-15)/270,y=center+Math.sin(Math.PI*u)*10+Math.sin(u*Math.PI*2+row*.3)*5;ctx.lineTo(x,y);}ctx.closePath();ctx.fillStyle=color;ctx.globalAlpha=held?.1:.06;ctx.fill();ctx.globalAlpha=1;ctx.strokeStyle=row===1?color:'#b7a587';ctx.lineWidth=held?1.8:1.2;ctx.stroke();}
+  for(const n of notes){const x=10+n.step/16*280,len=Math.max(3,n.dur/root.RoleAccompaniment.STEP/16*280);ctx.strokeStyle=color;ctx.globalAlpha=anchor(n)?.85:.43;ctx.lineWidth=anchor(n)?2:1.5;for(let j=0;j<(n.notes?.length||1);j++){ctx.beginPath();ctx.moveTo(x,155+j*6);ctx.lineTo(Math.min(294,x+len),155+j*6);ctx.stroke();}}ctx.globalAlpha=1;
+ }
+ ctx.restore();
+}
+root.RoleArt={draw};
+})(window);
+
+
+
+(function(root){
+class DuijuSpatial{
+ constructor(){this.width=508;this.height=566;this.gap=8;this.threshold=44;}
+ collision(id,p,positions){return Object.entries(positions).some(([other,q])=>other!==id&&p.x<q.x+this.width-2&&p.x+this.width-2>q.x&&p.y<q.y+this.height-20&&p.y+this.height-20>q.y);}
+ snap(id,p,positions){
+  const candidates=[];
+  for(const [other,q]of Object.entries(positions)){if(other===id)continue;for(const sign of [-1,1]){const target={x:q.x+sign*(this.width+this.gap),y:q.y};const dx=p.x-target.x,dy=p.y-target.y;if(Math.abs(dx)<=this.threshold&&Math.abs(dy)<=this.threshold&&target.x>=12&&target.y>=12&&!this.collision(id,target,positions))candidates.push({...target,score:dx*dx+dy*dy,other});}}
+  candidates.sort((a,b)=>a.score-b.score);if(candidates.length)return{...candidates[0],snapped:true,collision:false};
+  return{...p,snapped:false,collision:this.collision(id,p,positions)};
+ }
+ edges(positions){const edges=[];for(const [left,a]of Object.entries(positions))for(const [right,b]of Object.entries(positions))if(left!==right&&Math.abs((b.x-a.x)-(this.width+this.gap))<=3&&Math.abs(a.y-b.y)<=6)edges.push({left,right,state:'connected'});return edges;}
+}
+root.DuijuSpatial=DuijuSpatial;
+})(typeof window!=='undefined'?window:globalThis);
+
+/* Scheme B: same accepted single-tile generator; explicit local loop permission.
+   This adapter uses structured upstream plans, never their rendered PCM as input.
+   Musical clocks are logical browser clocks, NOT a wireless synchronization test. */
+(function(root){'use strict';
+const M=root.RoleAccompaniment,P=root.PulseLab,D=M.DURATION,clone=x=>JSON.parse(JSON.stringify(x));
+const cfg=p=>[p.role,p.phrase,p.density],same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+const anchor=n=>n.layer==='anchor'||n.role==='anchor',support=n=>!anchor(n);
+const pitched=n=>Array.isArray(n.notes)?n.notes.at(-1):n.kind==='tone'||n.kind==='grain'?n.note:null;
+const scale=[50,53,55,57,58,60,62,65,67,69,70,72,74,77,79,81,82,84,86];
+const nearest=(n,lo=50,hi=86)=>scale.filter(v=>v>=lo&&v<=hi).reduce((a,b)=>Math.abs(b-n)<Math.abs(a-n)?b:a,62);
+function linked(local,upstream){
+ const p=clone(local),all=upstream.full,ownSteps=new Set(p.foreground.map(n=>n.step));
+ const parentAt=step=>all.filter(n=>anchor(n)&&n.step<=step).at(-1)||upstream.foreground[0];
+ // Give the incoming whole phrase a hierarchy: anchors are fixed; support may
+ // make room for the actual left-side activity. Echo pairs keep their interval.
+ const used=new Set(ownSteps),leftSupport=new Set(all.filter(support).map(n=>n.step));
+ const echo=p.full.filter(n=>(n.layer||n.role)==='echo');
+ if(echo.length===2){for(const shift of [0,1,-1,2,-2]){const ss=echo.map(n=>n.step+shift);if(ss.every(v=>v>=0&&v<16&&!used.has(v))&&(shift===-2||ss.every(v=>!leftSupport.has(v)))){echo.forEach((n,i)=>{n.step=ss[i];used.add(n.step);});break;}}}
+ for(const n of p.full.filter(support)){
+  const layer=n.layer||n.role;
+  if(layer!=='echo'){
+   const choices=[n.step,n.step+1,n.step-1,n.step+2,n.step-2].filter(s=>s>=(p.source[0]?.step||0)&&s<16&&!used.has(s));
+   const fit=choices.find(s=>!leftSupport.has(s));if(fit!==undefined)n.step=fit;used.add(n.step);
+  }
+  n.dur=Math.min(n.dur,Math.max(.025,D-n.step*M.STEP-.018));
+ }
+ // Tonal information is inherited only when it exists. Rhythm input itself
+ // still contains no inferred key. Current vocabulary remains D minor.
+ for(const n of p.full){
+  const parent=parentAt(n.sourceStep??n.step),pitch=parent&&pitched(parent);
+  if(!Number.isFinite(pitch))continue;
+  if(p.role==='voice'){
+   const register=upstream.role==='voice'?12:0;
+   const interval=anchor(n)?0:((n.layer==='echo')?0:2);
+   n.note=nearest(pitch+register+interval,55,86);
+  }else if(p.role==='harmony'){
+   const incoming=parent.harmony?.slice(0,3)||[50,57,nearest(pitch,60,74)];
+   n.harmony=incoming;
+   n.notes=n.notes.length===3?incoming.slice():n.notes.map((_,i)=>incoming[(i+(anchor(n)?2:1))%3]);
+   n.note=n.notes.at(-1);
+  }else if(p.role==='dust')n.note=nearest(pitch+24,74,86);
+ }
+ // Update both lists together; foreground is never attenuated on every hop.
+ p.foreground=p.full.filter(anchor).map(n=>clone(n));
+ p.full.sort((a,b)=>a.step-b.step||(anchor(a)?-1:anchor(b)?1:0));
+ return p;
+}
+class ArrangeModel{
+ constructor(){this.revision=0;this.edges=[];this.wantedEdges=[];this.pending=null;this.clocks={};this.tiles={};
+  for(const [id,role,phrase,present]of [['A','pulse',1,true],['B','harmony',2,false],['C','voice',1,false]]){
+   this.clocks[id]={origin:0};this.tiles[id]={id,role,phrase,density:.5,ownSeed:[],fallback:[],useOwn:true,current:null,present,loop:false,clockId:id,memories:{pulse:1,voice:1,dust:1,harmony:2}};
+  }
+ }
+ change(){this.revision++;this.pending=null;return this.revision;}
+ setSeed(id,notes){const d=this.tiles[id];const q=P.clean(notes);if(!q.length)return false;d.ownSeed=clone(q);d.useOwn=true;d.fallback=clone(q);this.change();return true;}
+ configure(id,patch){const d=this.tiles[id];if(!d)throw new Error('unknown tile');
+  if(patch.role){if(!M.ROLES[patch.role])throw new Error('unknown role');d.memories[d.role]=d.phrase;d.role=patch.role;d.phrase=d.memories[d.role];}
+  if(patch.phrase!==undefined){if(!Number.isInteger(patch.phrase)||patch.phrase<1||patch.phrase>3)throw new Error('invalid expression');d.phrase=patch.phrase;d.memories[d.role]=patch.phrase;}
+  if(patch.density!==undefined)d.density=Math.max(0,Math.min(1,Number.isFinite(patch.density)?patch.density:.5));
+  this.change();
+ }
+ present(id,value){const d=this.tiles[id];d.present=!!value;if(!value)d.loop=false;this.change();}
+ setEdges(edges){const parents={},children={};for(const e of edges){if(!this.tiles[e.left]||!this.tiles[e.right]||e.left===e.right||parents[e.right]||children[e.left])throw new Error('invalid neighbor chain');parents[e.right]=e.left;children[e.left]=e.right;}
+  for(const id of Object.keys(this.tiles)){let x=id,seen=new Set();while(parents[x]){if(seen.has(x))throw new Error('cycle');seen.add(x);x=parents[x];}}
+  const filtered=edges.filter(e=>this.tiles[e.left].present&&this.tiles[e.right].present).map(e=>({left:e.left,right:e.right}));
+  if(!same(filtered,this.wantedEdges)){this.wantedEdges=filtered;this.change();}
+ }
+ compile(){const plans={},clocks={},visiting=new Set(),parents=Object.fromEntries(this.wantedEdges.map(e=>[e.right,e.left]));
+  const visit=id=>{if(id in plans)return plans[id];if(visiting.has(id))throw new Error('cycle');visiting.add(id);const d=this.tiles[id];if(!d.present){plans[id]=null;return null;}
+   const upId=parents[id],up=upId?visit(upId):null;clocks[id]=up?clocks[upId]:d.clockId;
+   const unchanged=d.current&&same(cfg(d.current),[d.role,d.phrase,d.density]);
+   let plan,source;
+   if(up){source=clone(up.rootSeed);plan=linked(M.compose(source,d.role,d.phrase,d.density),up);}
+   else if(d.current&&unchanged&&(!d.useOwn||d.current.source)){
+    plan=clone(d.current);source=clone(plan.rootSeed);plan.detached=true;
+   }else{source=clone(d.useOwn?d.ownSeed:d.fallback);plan=M.compose(source,d.role,d.phrase,d.density);}
+   if(!source.length){plans[id]=null;visiting.delete(id);return null;}
+   plan.source=up?upId:null; // Input onsets are in rootSeed, not overloaded as source.
+   plan.rootSeed=source;plan.role=d.role;plan.phrase=d.phrase;plan.density=d.density;
+   if(up)plan.detached=false;
+   plan.signature=JSON.stringify([plan.role,plan.phrase,plan.density,plan.source,plan.foreground,plan.full]);
+   plans[id]=plan;visiting.delete(id);return plan;
+  };
+  for(const id of Object.keys(this.tiles))visit(id);
+  return {revision:this.revision,plans,clocks,edges:clone(this.wantedEdges)};
+ }
+ stage(job,now){if(job.revision!==this.revision)return null;
+  const changes=Object.keys(this.tiles).filter(id=>job.plans[id]?.signature!==this.tiles[id].current?.signature||job.clocks[id]&&job.clocks[id]!==this.tiles[id].clockId);
+  let at=now+.045;
+  // A connected component adopts its leftmost available musical clock. The
+  // upstream sound is never rescheduled merely because a new right tile joins.
+  const driver=changes.find(id=>this.tiles[id].loop)||changes.find(id=>Object.values(this.tiles).some(d=>d.loop&&job.clocks[id]===d.clockId));
+  if(driver){const clock=job.clocks[driver]||this.tiles[driver].clockId,origin=this.clocks[clock].origin;at=origin+Math.ceil((now+.12-origin)/D)*D;}
+  this.pending={...job,at,changes};return this.pending;
+ }
+ commit(now){if(!this.pending||now+1e-8<this.pending.at)return[];const job=this.pending;if(job.revision!==this.revision){this.pending=null;return[];}
+  const updates=[];for(const id of job.changes){const d=this.tiles[id],old=d.current;d.current=job.plans[id];if(job.clocks[id])d.clockId=job.clocks[id];
+   if(d.current?.source){d.fallback=clone(d.current.rootSeed);d.useOwn=false;}
+   updates.push({id,old,plan:d.current,at:job.at});
+  }
+  this.edges=clone(job.edges);this.pending=null;return updates;
+ }
+ enableLoop(id,now){const d=this.tiles[id];if(!d.present||!d.current)return null;const clock=this.clocks[d.clockId],running=Object.values(this.tiles).some(x=>x.loop&&x.clockId===d.clockId);
+  const established=running||clock.started===true;const start=established?clock.origin+Math.ceil((now+.10-clock.origin)/D)*D:now+.05;if(!established)clock.origin=start;clock.started=true;d.loop=true;return start;
+ }
+ mute(id){this.tiles[id].loop=false;}
+ phase(id,now){const d=this.tiles[id],origin=this.clocks[d.clockId].origin;return ((now-origin)%D+D)%D/D;}
+}
+root.ArrangeModel=ArrangeModel;root.ArrangeLinked=linked;
+})(typeof window!=='undefined'?window:globalThis);
+
+/* Pre-rendered loops retain RoleAudio/DuijuSynth. Per-device gains and cancellable
+   boundary handovers replace the old one-device playback adapter only. */
+(function(root){'use strict';
+const D=root.RoleAccompaniment.DURATION,SR=24000;
+class ArrangeAudio extends root.RoleAudio{
+ constructor(){super();this.volume=.45;this.mix={};this.linkCache=new Map();this.switches=[];this.offset=null;}
+ async ensure(){await super.ensure();if(this.offset===null)this.offset=performance.now()/1000-this.ctx.currentTime;}
+ now(){return this.ctx&&this.offset!==null?this.ctx.currentTime+this.offset:performance.now()/1000;}
+ time(at){return Math.max(this.ctx.currentTime,at-this.offset);}
+ channel(id){if(!this.mix[id]){const gain=this.ctx.createGain();gain.gain.value=.65;gain.connect(this.master);const live=new root.DuijuSynth(this.ctx,gain);live.setVolume(.55);this.mix[id]={gain,live,current:null,queued:null};}return this.mix[id];}
+ volumeTile(id,value){if(this.ctx)this.channel(id).gain.gain.setTargetAtTime(value,this.ctx.currentTime,.015);}
+ tapTile(id){const c=this.channel(id);c.live.note('finger',{kind:'kick',vel:.78,dur:.22,note:38,expression:0},this.ctx.currentTime+.003,0);}
+ clearRecordGuide(id){const c=this.mix[id];if(!c?.guide)return;for(const n of c.guide){try{n.stop();}catch(_){}}c.guide.clear();}
+ recordGuide(id,captureAt){
+  this.clearRecordGuide(id);const c=this.channel(id),ctx=this.ctx,beat=D/4;c.guide=new Set();
+  // Two preparatory beats, then four quiet timing cues. Cues never enter the motif.
+  for(let i=0;i<6;i++){const at=captureAt+(i-2)*beat,t=this.time(at),o=ctx.createOscillator(),g=ctx.createGain();
+   o.type='sine';o.frequency.value=i===2?1500:1050;g.gain.setValueAtTime(.00001,t);g.gain.linearRampToValueAtTime(i===2?.075:.05,t+.001);g.gain.exponentialRampToValueAtTime(.00001,t+.027);
+   o.connect(g);g.connect(c.gain);c.guide.add(o);o.onended=()=>{c.guide.delete(o);o.disconnect();g.disconnect();};o.start(t);o.stop(t+.03);this.audit.push({type:'record-guide',id,at,beat:i-2});
+  }
+ }
+ async preparePlan(plan){
+  if(!plan)return null;const key=plan.signature;if(this.linkCache.has(key))return this.linkCache.get(key);
+  let data;
+  if(!plan.source&&!plan.detached){data=await super.prepareRole(plan.rootSeed,plan.role,plan.phrase,plan.density);data={...data,key,plan};}
+  else{
+   const [main,full,raw]=await Promise.all([this.renderRoleNotes(plan.foreground,plan.role),this.renderRoleNotes(plan.full,plan.role),this.renderNotes(plan.rootSeed)]);
+   const matched=root.ReplyAB.normalise({sparse:main,layered:full}),rs=root.ReplyAB.stats(raw),gain=rs.rms?Math.min(.65/rs.peak,matched.metrics.targetRms/rs.rms):0;
+   data={key,plan,arrays:{full:matched.layered,foreground:matched.sparse,source:Float32Array.from(raw,x=>x*gain)},duration:D,sampleRate:SR,metrics:matched.metrics};
+  }
+  this.linkCache.set(key,data);if(this.linkCache.size>90)this.linkCache.delete(this.linkCache.keys().next().value);return data;
+ }
+ make(id,data,at,loop,kind='full',done=()=>{}){
+  const c=this.channel(id),buffer=this.ctx.createBuffer(1,data.arrays[kind].length,SR);buffer.copyToChannel(data.arrays[kind],0);
+  const source=this.ctx.createBufferSource(),gate=this.ctx.createGain();source.buffer=buffer;source.loop=loop;source.loopStart=0;source.loopEnd=D;source.connect(gate);gate.connect(c.gain);
+  const start=this.time(at);gate.gain.setValueAtTime(1,start);source.start(start);const record={source,gate,at:start+this.offset,data,loop,kind,id};
+  source.onended=()=>{try{source.disconnect();gate.disconnect();}catch(_){}if(c.current===record){c.current=null;done();}this.audit.push({type:'ended',id,at:this.now()});};
+  this.audit.push({type:loop?'loop-start':'once-start',id,at:record.at,key:data.key});return record;
+ }
+ dispose(record,at=this.now()){if(!record)return;const t=this.time(at);record.gate.gain.cancelScheduledValues(t);record.gate.gain.setValueAtTime(1,t);record.gate.gain.linearRampToValueAtTime(0,t+.008);try{record.source.stop(t+.010);}catch(_){} }
+ playTile(id,data,at,loop,done,kind='full'){this.mute(id);const c=this.channel(id);c.current=this.make(id,data,at,loop,kind,done);return c.current.at;}
+ queueTile(id,data,at){const c=this.channel(id);this.cancelTile(id);if(!c.current)return;
+  const next=this.make(id,data,at,true),old=c.current,t=this.time(at);next.gate.gain.setValueAtTime(0,t);next.gate.gain.linearRampToValueAtTime(1,t+.008);
+  old.gate.gain.cancelScheduledValues(t);old.gate.gain.setValueAtTime(1,t);old.gate.gain.linearRampToValueAtTime(0,t+.008);c.queued={next,old,at};
+ }
+ cancelTile(id){const c=this.mix[id];if(!c?.queued)return;const q=c.queued;c.queued=null;
+  if(this.now()<q.at){q.next.gate.gain.cancelScheduledValues(this.ctx.currentTime);q.next.gate.gain.setValueAtTime(0,this.ctx.currentTime);try{q.next.source.stop(this.ctx.currentTime);}catch(_){}q.old.gate.gain.cancelScheduledValues(this.ctx.currentTime);q.old.gate.gain.setValueAtTime(1,this.ctx.currentTime);}
+  else{c.current=q.next;this.dispose(q.old);}
+ }
+ finalize(id){const c=this.mix[id];if(!c?.queued)return;const q=c.queued;c.queued=null;c.current=q.next;try{q.old.source.stop(this.ctx.currentTime+.011);}catch(_){}this.audit.push({type:'commit',id,at:q.at});}
+ cancelAll(){for(const id of Object.keys(this.mix))this.cancelTile(id);}
+ mute(id){const c=this.mix[id];if(!c)return;this.clearRecordGuide(id);this.cancelTile(id);const old=c.current;c.current=null;this.dispose(old);c.live.stop();this.audit.push({type:'mute',id,at:this.now()});}
+ shutdown(){for(const id of Object.keys(this.mix))this.mute(id);}
+}
+root.ArrangeAudio=ArrangeAudio;
+})(window);
+
+/* Templates inherited from echoy-role-accompaniment-v2.html. */
+(function(root){'use strict';
+const {ROLES}=root.RoleAccompaniment,{ico,safe}=root.RoleUI,keys=['voice','dust','harmony','pulse'];
+class InheritedView{
+ constructor(app,id){this.app=app;this.id=id;this.actual=false;}
+ get tile(){return this.app.model.tiles[this.id];}get ui(){return this.app.ui[this.id];}
+ get role(){return this.actual&&this.tile.current?this.tile.current.role:this.tile.role;}
+ get phrase(){return this.actual&&this.tile.current?this.tile.current.phrase:this.tile.phrase;}
+ get density(){return this.tile.density;}get battery(){return this.ui.battery;}get audio(){return {volume:this.ui.volume};}
+ t(zh,en){return this.app.t(zh,en);}name(role=this.role){return this.app.lang==='en'?ROLES[role].en:ROLES[role].name;}
+ phraseName(role=this.role,p=this.phrase){return (this.app.lang==='en'?ROLES[role].english:ROLES[role].phrases)[p-1];}
+ batterySvg(){return `<div class="battery ${this.battery<15?'low':''}" role="img" aria-label="${this.t('电量','Battery')} ${this.battery}%"><svg width="23" height="17" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="1" y="3" width="19" height="12" rx="2"/><path d="M22 7v4"/><rect x="4" y="6" width="${13*this.battery/100}" height="6" fill="currentColor" stroke="none"/></svg><span>${this.battery}%</span></div>`;}
+ slider(kind){const volume=kind==='volume',v=volume?this.audio.volume:this.density;return `<div class="side ${kind}" role="slider" tabindex="0" data-control="${kind}" aria-label="${volume?this.t('音量','Volume'):this.t('简洁与丰富','Simple / Rich')}" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(v*100)}" style="--value:${v}"><span class="top">${volume?ico('speaker'):this.t('丰富','Rich')}</span><div class="rail"><i class="fill"></i><span class="thumb">${volume?'':'='}</span></div><span class="bottom-label">${volume?this.t('音量','Volume'):this.t('简洁','Simple')}</span></div>`;}
+ header(title){return `<header class="screen-header"><button class="back" data-act="back" aria-label="${this.t('返回','Back')}">${ico('back')}</button><h2>${title}</h2>${this.batterySvg()}</header>`;}
+ home(){return `<section class="page" data-route="home"><header class="home-head"><div class="identity"><span class="identity-role">${this.name()}</span><span class="identity-separator" aria-hidden="true">·</span><small>${this.phraseName()}</small></div>${this.batterySvg()}</header><div class="state-line" id="state" aria-live="polite"></div>${this.slider('volume')}<button class="pad" id="pad" aria-label="${this.t('敲击面：平时试奏，录制时记录节奏','Pad: audition normally; capture only while recording')}"><canvas width="600" height="408" aria-hidden="true"></canvas><span class="input-touch-label" id="touch-label"></span></button>${this.slider('richness')}<div class="progress-line"><i></i></div><div class="steps" role="img" aria-label="${this.t('当前16格起音，实心为输入主干','16 onset cells; solid marks show your anchors')}">${Array.from({length:16},(_,i)=>`<i data-step="${i}"></i>`).join('')}</div><nav class="actions"><button class="action" data-act="role" id="role-open">${ico('wave')}<strong>${this.t('角色','Role')}</strong></button><div class="merge-strip" data-mode="idle" role="group" aria-label="${this.t('本机录制与播放','Record and play this tile')}"><i class="merge-tint record-tint" aria-hidden="true"></i><i class="merge-tint play-tint" aria-hidden="true"></i><i class="merge-divider" aria-hidden="true"></i><button class="merge-record" data-act="record" id="record-entry">${ico('record')}<span>${this.t('录制','Record')}</span></button><button class="merge-play" data-act="play" id="transport">${ico('play')}<span>${this.t('播放','Play')}</span></button><button class="merge-single" id="strip-action" data-act="inactive" disabled inert aria-hidden="true" tabindex="-1"></button></div><button class="action" data-act="settings" id="settings">${ico('gear')}<strong>${this.t('设置','Settings')}</strong></button></nav></section>`;}
+ rolePage(){const i=keys.indexOf(this.role),before=keys[(i+3)%4],after=keys[(i+1)%4];return `<section class="page" data-route="role">${this.header(this.t('角色与表达','Role & phrase'))}<div class="role-gallery"><button class="role-neighbor prev" data-act="prev-role" aria-label="${this.t('上一个角色','Previous role')}"><canvas width="146" height="96" data-w="73" data-h="48" data-role-art="${before}"></canvas><span>${this.name(before)}</span>${ico('back')}</button><div class="role-card"><canvas width="412" height="202" data-w="206" data-h="101" data-role-art="${this.role}"></canvas><strong>${this.name()}</strong></div><button class="role-neighbor next" data-act="next-role" aria-label="${this.t('下一个角色','Next role')}"><canvas width="146" height="96" data-w="73" data-h="48" data-role-art="${after}"></canvas><span>${this.name(after)}</span>${ico('next')}</button></div><p class="role-note">${this.t(...ROLES[this.role].desc)}</p><div class="phrase-choices">${ROLES[this.role].phrases.map((_,j)=>`<button data-phrase="${j+1}" aria-pressed="${this.phrase===j+1}"><span aria-hidden="true">${[0,1,2,3,4].map(k=>`<i style="height:${j===0?[8,17,6,12,5][k]:j===1?[14,6,11,5,16][k]:[8,12,18,14,10][k]}px"></i>`).join('')}</span>${this.phraseName(this.role,j+1)}</button>`).join('')}</div><button class="gallery-transport" data-act="play" id="gallery-play"></button></section>`;}
+}
+root.InheritedView=InheritedView;
+})(window);
+
+/* Integrates the approved B experience in the existing role-study product pages. */
+(function(root){'use strict';
+const M=root.RoleAccompaniment,{ROLES,PRESETS,DURATION:D,STEP}=M,{ico,safe}=root.RoleUI;
+const keys=['voice','dust','harmony','pulse'],clone=x=>JSON.parse(JSON.stringify(x));
+const pauseIcon='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx=".8"/><rect x="13.5" y="5" width="4" height="14" rx=".8"/></svg>';
+const BEAT=D/4,PREP_BEATS=2;
+
+class ArrangeApp{
+ constructor(){this.model=new root.ArrangeModel();this.audio=new root.ArrangeAudio();this.spatial=new root.DuijuSpatial();this.lang='zh-CN';this.selected='A';this.positions={A:{x:32,y:22}};this.proposed=[];this.contactTimer=null;this.network=true;this.token=0;this.data={};this.stagedData={};this.compiling=new Set();this.ui={};this.views={};this.units={};this.previewSequence=0;this.stats=[];
+  for(const id of ['A','B','C']){this.ui[id]={route:'home',battery:72,volume:.65,fault:'',loading:false,booting:false,imu:0,left:'none',right:'none',state:'ready',raw:[],captureAt:0,preview:null,loopAt:0,hit:null,lastStep:-1,key:'',localToken:0};this.views[id]=new root.InheritedView(this,id);}
+  this.buildDesk();this.bind();this.render();this.timer=setInterval(()=>this.tick(),16);this.frame=this.frame.bind(this);requestAnimationFrame(this.frame);
+ }
+ t(zh,en){return this.lang==='en'?en:zh;}now(){return this.audio.now();}tile(id){return this.model.tiles[id];}
+ blocked(id){const u=this.ui[id];return !this.tile(id).present||u.fault||u.loading||u.booting||u.battery===0;}
+ capturing(id){return ['unlocking','countin','recording'].includes(this.ui[id].state);}
+ canRecord(id){return !this.tile(id).current?.source&&!this.model.wantedEdges.some(e=>e.right===id)&&!this.proposed.some(e=>e.right===id);}
+ buildDesk(){for(const id of ['A','B','C']){
+   const unit=document.createElement('section');unit.className='unit';unit.dataset.tile=id;
+   unit.innerHTML=`<div class="device-handle" role="button" tabindex="0" aria-label="Move tile ${id}"><span class="handle-name"></span><span class="handle-grip" aria-hidden="true">⠿</span></div><div class="shell"><div class="screen" data-screen="${id}"></div><i class="hardware ai"></i><i class="hardware boot"></i><i class="hardware power"></i><i class="usb"></i></div>`;
+   document.getElementById('stage').appendChild(unit);this.units[id]=unit;this.bindDrag(unit.querySelector('.device-handle'),id,false);
+   const chip=document.querySelector(`[data-shelf="${id}"]`);this.bindDrag(chip,id,true);
+  }
+ }
+ selectedId(id){this.selected=id;document.getElementById('sim-target').value=id;this.syncLab();}
+ layout(){for(const id of Object.keys(this.units)){const unit=this.units[id],present=this.tile(id).present;unit.hidden=!present;document.querySelector(`[data-shelf="${id}"]`).hidden=present;if(present){unit.style.left=this.positions[id].x+'px';unit.style.top=this.positions[id].y+'px';}}
+  document.getElementById('empty-desk').hidden=Object.keys(this.positions).length>0;
+ }
+ mute(id){const d=this.tile(id),u=this.ui[id];this.model.mute(id);u.localToken++;u.preview=null;
+  if(this.autoAfterCommit?.id===id)this.autoAfterCommit=null;
+  if(this.capturing(id)){u.raw=[];u.captureAt=0;}u.state='ready';this.audio.mute(id);this.update(id);}
+ stopAll(){for(const id of ['A','B','C'])this.mute(id);this.previewSequence++;this.render();}
+ async preview(id,kind='full'){
+  const d=this.tile(id),u=this.ui[id];if(this.blocked(id)||this.capturing(id)||!this.data[id]||this.compiling.has(id)||this.model.pending?.changes.includes(id))return;
+  this.mute(id);u.message='';const token=++u.localToken;u.state='preparing';this.update(id);
+  try{await this.audio.ensure();if(token!==u.localToken||this.blocked(id))return;this.audio.volumeTile(id,u.volume);const data=this.data[id],now=this.now(),shared=Object.values(this.model.tiles).some(x=>x.id!==id&&x.loop&&x.clockId===d.clockId),origin=this.model.clocks[d.clockId].origin,start=shared?origin+Math.ceil((now+.06-origin)/D)*D:now+.05;
+   u.preview={data,start,kind};u.state='ready';this.audio.playTile(id,data,start,false,()=>{if(token===u.localToken){u.preview=null;this.update(id);}},kind);this.update(id);
+  }catch(e){if(token===u.localToken)this.fail(id,e);}
+ }
+ async transport(id){const d=this.tile(id),u=this.ui[id];this.selectedId(id);
+  if(this.capturing(id))return;
+  u.message='';if(d.loop||u.preview||u.state==='preparing'||this.autoAfterCommit?.id===id){this.mute(id);return;}
+  if(this.blocked(id)||!d.current||this.compiling.has(id)||this.model.pending?.changes.includes(id))return;
+  const token=++u.localToken;u.state='preparing';this.update(id);
+  try{await this.audio.ensure();if(token!==u.localToken||this.blocked(id))return;this.flush();const at=this.model.enableLoop(id,this.now());if(at===null)return;u.state='ready';u.loopAt=at;u.preview=null;this.audio.volumeTile(id,u.volume);this.audio.playTile(id,this.data[id],at,true);this.update(id);
+  }catch(e){if(token===u.localToken)this.fail(id,e);}
+ }
+ flush(){const pending=this.model.pending;if(!pending||this.now()<pending.at)return;const changed=this.model.commit(this.now());for(const row of changed){this.data[row.id]=this.stagedData[row.id];this.audio.finalize(row.id);this.ui[row.id].key='';if(!row.plan)this.mute(row.id);}
+  const auto=this.autoAfterCommit;this.autoAfterCommit=null;this.compiling.clear();this.render();if(auto&&auto.token===this.ui[auto.id].localToken&&!this.blocked(auto.id)&&!this.capturing(auto.id)&&this.tile(auto.id).current&&!this.tile(auto.id).loop)this.preview(auto.id);
+ }
+ async refresh(auto=null){
+  this.audio.cancelAll();const ticket=++this.token,job=this.model.compile(),autoplay=auto?{id:auto,token:this.ui[auto].localToken}:null;this.model.pending=null;this.autoAfterCommit=autoplay;
+  this.compiling=new Set(Object.keys(job.plans).filter(id=>job.plans[id]?.signature!==this.tile(id).current?.signature||job.clocks[id]&&job.clocks[id]!==this.tile(id).clockId));this.render();
+  try{const entries=await Promise.all(Object.entries(job.plans).map(async([id,p])=>[id,p?await this.audio.preparePlan(p):null]));if(ticket!==this.token)return;
+   const staged=this.model.stage(job,this.now());if(!staged)return;this.stagedData=Object.fromEntries(entries);this.compiling.clear();
+   const latestOnce=Math.max(0,...staged.changes.map(id=>this.ui[id].preview?this.ui[id].preview.start+D:0));staged.at=Math.max(staged.at,latestOnce);
+   this.autoAfterCommit=autoplay&&autoplay.token===this.ui[autoplay.id].localToken?autoplay:null;
+   for(const id of staged.changes)if(this.tile(id).loop&&this.stagedData[id]&&!this.blocked(id))this.audio.queueTile(id,this.stagedData[id],staged.at);
+   this.render();
+  }catch(e){if(ticket!==this.token)return;this.model.pending=null;this.compiling.clear();this.autoAfterCommit=null;this.ui[this.selected].message=this.t('新声音没有准备好，原来的继续','Preparation failed; current sound continues');this.stats.push({type:'prepare-failed',error:String(e)});this.render();}
+ }
+ change(id,patch){if(this.blocked(id)||this.capturing(id))return;this.ui[id].message='';if(this.ui[id].preview&&this.now()<this.ui[id].preview.start)this.mute(id);this.flush();this.selectedId(id);this.model.configure(id,patch);this.refresh();}
+ async tap(id){const u=this.ui[id];if(this.blocked(id)||u.route!=='home'||u.state==='unlocking')return;this.selectedId(id);
+  const token=u.localToken;try{if(!this.audio.ctx||this.audio.ctx.state!=='running')await this.audio.ensure();if(token!==u.localToken||this.blocked(id))return;
+   const now=this.now(),dt=now-u.captureAt;
+   if(['countin','recording'].includes(u.state)&&dt>=0&&dt<D){u.state='recording';u.raw.push(dt);}
+   this.audio.volumeTile(id,u.volume);this.audio.tapTile(id);u.hit=now;
+  }catch(e){if(token===u.localToken)this.fail(id,e);}
+ }
+ async arm(id){const u=this.ui[id];if(this.capturing(id)){this.mute(id);u.message=this.t('已取消，原节奏保留','Cancelled; original rhythm kept');this.render();return;}
+  if(this.blocked(id)||!this.canRecord(id)||this.compiling.has(id)||this.model.pending?.changes.includes(id))return;
+  this.selectedId(id);this.mute(id);u.route='home';u.message='';u.raw=[];u.lastStep=-1;u.hit=null;u.state='unlocking';const token=++u.localToken;this.render();
+  try{await this.audio.ensure();if(token!==u.localToken||this.blocked(id)||!this.canRecord(id))return;
+   this.audio.volumeTile(id,u.volume);u.captureAt=this.now()+.06+PREP_BEATS*BEAT;u.countinAt=u.captureAt-PREP_BEATS*BEAT;u.state='countin';
+   this.audio.recordGuide(id,u.captureAt);this.update(id);
+  }catch(e){if(token===u.localToken)this.fail(id,e);}
+ }
+ async example(id='A'){if(this.blocked(id)||this.capturing(id))return;this.mute(id);this.ui[id].message='';const token=this.ui[id].localToken;try{await this.audio.ensure();if(token!==this.ui[id].localToken||this.blocked(id)||this.capturing(id))return;this.flush();this.model.setSeed(id,root.PulseLab.clean(PRESETS.close.map(step=>({step,kind:'kick',vel:.74}))));this.refresh(id);}catch(e){this.fail(id,e);}}
+ confirmGeometry(){clearTimeout(this.contactTimer);this.proposed=this.network?this.spatial.edges(this.positions).map(e=>({left:e.left,right:e.right})):[];this.paintSeams();
+  this.contactTimer=setTimeout(()=>{this.contactTimer=null;for(const edge of this.proposed){if(this.capturing(edge.right)){this.mute(edge.right);this.ui[edge.right].message=this.t('已接入左邻，录制已取消','Left connected; recording cancelled');}}this.flush();this.model.setEdges(this.proposed);this.refresh();},450);
+ }
+ add(id,p){if(this.tile(id).present)return;this.positions[id]=p||this.freePosition();this.model.present(id,true);this.ui[id].booting=true;this.ui[id].route='home';this.layout();this.render();setTimeout(()=>{this.ui[id].booting=false;this.confirmGeometry();this.render();},220);}
+ freePosition(){let p={x:32,y:22};while(this.spatial.collision('_new',p,this.positions)){p.x+=560;if(p.x>1400){p.x=32;p.y+=588;}}return p;}
+ remove(id){this.flush();this.mute(id);delete this.positions[id];this.model.present(id,false);this.ui[id].route='home';this.layout();this.confirmGeometry();}
+ fail(id,e){this.mute(id);this.ui[id].fault=String(e?.message||e);this.ui[id].key='';this.render();}
+ recover(id){this.mute(id);const u=this.ui[id];u.fault='';u.loading=false;u.battery=u.battery||72;u.route='home';u.key='';this.render();}
+ tick(){this.flush();for(const id of ['A','B','C']){const u=this.ui[id],now=this.now();
+  if(u.state==='countin'&&now>=u.captureAt)u.state='recording';
+  if(u.state==='recording'&&now-u.captureAt>=D){const seed=M.quantize(u.raw);u.lastRaw=u.raw.slice();u.raw=[];u.state='ready';this.audio.clearRecordGuide(id);
+   if(seed.length&&this.canRecord(id)){u.message='';this.model.setSeed(id,seed);this.refresh(id);}
+   else{u.message=this.t('没有录入，原节奏保留','No notes captured; original kept');this.update(id);}
+  }
+  this.update(id);
+ }this.paintSeams();}
+ render(){this.layout();for(const id of ['A','B','C'])this.renderTile(id);this.paintOutside();this.paintSeams();}
+ html(id,text){return text.replace(/\bid="([^"]+)"/g,'data-slot="$1"');}
+ renderTile(id){const d=this.tile(id),u=this.ui[id],screen=this.units[id].querySelector('.screen'),view=this.views[id];if(!d.present)return;
+  const actual=d.current?[d.current.role,d.current.phrase]:[d.role,d.phrase];const k=JSON.stringify([this.lang,u.route,d.role,d.phrase,u.battery,this.blocked(id),u.booting,actual]);screen.style.setProperty('--accent',ROLES[actual[0]].color);
+  if(k!==u.key){u.key=k;let html;if(this.blocked(id))html=this.problem(id);else if(u.route==='home'){view.actual=true;html=view.home();view.actual=false;}else if(u.route==='role'){screen.style.setProperty('--accent',ROLES[d.role].color);html=view.rolePage();}else if(u.route==='settings')html=this.settings(id);else html=this.detail(id);screen.innerHTML=this.html(id,html)+'<div class="seam-mark left" aria-hidden="true"></div><div class="seam-mark right" aria-hidden="true"></div>';this.bindHome(id);this.drawGallery(id);}
+  this.update(id);if(u.route==='role')this.drawGallery(id);this.units[id].querySelector('.handle-name').textContent=this.t('拖动外壳 · ','Drag case · ')+id;
+ }
+ settings(id){const v=this.views[id],d=this.tile(id);return `<section class="page" data-route="settings">${v.header(this.t('设置','Settings'))}<div class="scroll-list"><button class="row" data-act="audition">${ico('play')}<span>${this.t('先听一次','Hear once')}</span></button><button class="row" data-act="record" ${!this.canRecord(id)?'disabled':''}>${ico('record')}<span>${this.t(!this.canRecord(id)?'先拆开左侧，再录自己的节奏':'录一段新的节奏',!this.canRecord(id)?'Unlink left to record your rhythm':'Record a new rhythm')}</span></button><button class="row" data-act="guide">${ico('help')}<span>${this.t('怎么玩','How to play')}</span>${ico('next')}</button><button class="row" data-act="info">${ico('wave')}<span>${this.t('设备与实验说明','Device & experiment')}</span>${ico('next')}</button><button class="row" data-act="export">${ico('download')}<span>${this.t('导出本次节奏','Export this session')}</span></button><div class="row lang-row"><span>${this.t('语言','Language')}</span><button class="lang-small" data-lang="zh-CN">中文</button><button class="lang-small" data-lang="en">EN</button></div><button class="row" data-act="remove">${ico('cross')}<span>${this.t('收起这台（模拟）','Put away this tile')}</span></button></div></section>`;}
+ detail(id){const u=this.ui[id],d=this.tile(id),v=this.views[id];const guide=u.route==='guide';let html;
+  if(guide)html=`<h3>${this.t('先试奏，再录一段。','Try the pad, then record.')}</h3><p>${this.t('中央平时只试奏，不改动节奏。点首页「录制」，预备两拍后自动记录四拍；第一拍可以留空。轻提示音只帮助找拍，不写入节奏。录完附和一次，随后停止。','The pad normally auditions only. Press Record: two preparatory beats, then four beats of capture start automatically. You can leave the first beat empty. Quiet timing cues are not recorded. One reply follows, then stops.')}</p><h3>${this.t('把另一台放到右边。','Place another tile on its right.')}</h3><p>${this.t('拖外壳贴近，等接缝确认。新设备先保持安静；点它自己的 ▶ 开始演奏。换位置，改变左到右的回应；拆开不清空，也不强制停止。','Drag the cases to snap, then wait for confirmation. A new tile stays silent until you press its Play. Reorder to change who follows whom. Splitting keeps the rhythm and does not force a stop.')}</p><p>${this.t('▶ 稳定播放当前乐句，Ⅱ 只暂停本机；再播放时对齐共同拍点。录制时可点「取消」，空录或取消都保留原节奏。角色、表达与丰富程度在拍点切入，音量立即生效。','Play repeats the current phrase; Pause affects only this tile. Resume aligns to the shared beat. Cancel or an empty recording keeps the original. Voice, phrase and richness wait for a bar boundary; volume is immediate.')}</p>`;
+  else html=`<h3>${this.t('单机与多机，同一套声音。','Same instrument, solo or together.')}</h3><p>${this.t('480×480 内屏，R60圆角。四个角色各三种表达来自上一版；原始节奏保留。多机使用左侧完整乐句的主次与音高信息组织自己的附和，不复制全部装饰音。','480×480 display, R60 corners. Twelve expressions retain the previous solo engine. Neighbors use the left phrase’s hierarchy and supplied pitches rather than multiplying all decorative events.')}</p><p>${this.t('本机','Tile')} ${id} · ${u.battery}% · IMU ${u.imu}°<br>${this.t('左 / 右扩展','Left / right slot')}: ${safe(u.left)} / ${safe(u.right)}<br>${this.t('来自左侧','Following')}: ${d.current?.source||'—'}</p><small>${this.t('只是浏览器仿真，共享电脑音频时钟；未验证真机无线、声学同步或GPIO。声音比较的数值匹配不代表主观等响。数据只保留在当前页面内存。','Browser simulation shares the computer audio clock. No hardware wireless, acoustic sync or GPIO verification. RMS matching is not certified perceived loudness. Data lives in this page’s memory only.')}</small>`;
+  return `<section class="page" data-route="detail">${v.header(this.t(guide?'怎么玩':'设备与实验说明',guide?'How to play':'Device & experiment'))}<div class="detail">${html}</div></section>`;
+ }
+ problem(id){const u=this.ui[id],v=this.views[id];const title=u.fault?this.t('暂时无法发声','Audio unavailable'):u.battery===0?this.t('电量已耗尽','Battery empty'):this.t('准备声音','Preparing sound');return `<section class="page status-page" data-route="status"><div class="status-art ${!u.fault?'loading':''}">${ico('wave')}</div><h2>${title}</h2><p>${this.t('节奏保留，恢复不会自动发声。','Rhythm is kept. Recovery never autoplays.')}</p><button data-act="recover">${this.t('恢复到静止','Restore, stay silent')}</button></section>`;}
+ /* Presentation adapter only: active controls reuse arm()/transport(). Mutually
+    exclusive hit areas switch immediately; animation never delays cancellation. */
+ updateStrip(id,screen,{capture,busy,pending,preparing}){
+  const strip=screen.querySelector('.merge-strip');if(!strip)return;
+  const d=this.tile(id),mode=capture?'cancel':busy?'pause':'idle',previous=strip.dataset.mode;
+  const record=strip.querySelector('.merge-record'),play=strip.querySelector('.merge-play'),single=strip.querySelector('.merge-single');
+  const focused=strip.contains(document.activeElement);
+  strip.dataset.mode=mode;strip.setAttribute('aria-label',this.t('本机录制与播放','Record and play this tile'));
+  if(strip.dataset.locale!==this.lang){
+   record.innerHTML=ico('record')+`<span>${this.t('录制','Record')}</span>`;
+   play.innerHTML=ico('play')+`<span>${this.t('播放','Play')}</span>`;
+   strip.dataset.locale=this.lang;
+  }
+  record.disabled=mode!=='idle'||!this.canRecord(id)||preparing||pending;
+  play.disabled=mode!=='idle'||!d.current||pending||preparing;
+  for(const button of [record,play]){button.inert=mode!=='idle';button.setAttribute('aria-hidden',String(mode!=='idle'));button.tabIndex=mode==='idle'?0:-1;}
+  record.setAttribute('aria-pressed','false');record.dataset.mode='record';play.dataset.mode='play';
+  record.setAttribute('aria-label',this.t('录制：预备两拍，记录四拍','Record: two count-in beats, four recording beats'));
+  record.title=!this.canRecord(id)?this.t('先拆开左侧，再录自己的节奏','Unlink left before recording'):'';
+  play.setAttribute('aria-label',this.t('播放本机，稳定重复这段','Play this tile; repeat the current phrase'));
+  single.disabled=mode==='idle';single.inert=mode==='idle';single.tabIndex=mode==='idle'?-1:0;
+  single.setAttribute('aria-hidden',String(mode==='idle'));
+  // Removing the inactive action also keeps delegated events unambiguous.
+  single.dataset.act=mode==='cancel'?'record':mode==='pause'?'play':'inactive';
+  if(single.dataset.mode!==mode||single.dataset.locale!==this.lang){
+   single.innerHTML=(mode==='cancel'?ico('cross'):pauseIcon)+`<span>${this.t(mode==='cancel'?'取消':'暂停',mode==='cancel'?'Cancel':'Pause')}</span>`;
+   single.dataset.mode=mode;single.dataset.locale=this.lang;
+  }
+  single.setAttribute('aria-label',this.t(mode==='cancel'?'取消录制，保留原节奏':'暂停本机',mode==='cancel'?'Cancel recording; keep original':'Pause this tile'));
+  if(focused&&previous!==mode){
+   const next=mode!=='idle'?single:previous==='cancel'?record:play;
+   (next.disabled?record:next).focus({preventScroll:true});
+  }
+ }
+ update(id){const d=this.tile(id),u=this.ui[id],screen=this.units[id]?.querySelector('.screen');if(!screen||!d.present||this.blocked(id))return;
+  const pending=this.model.pending?.changes.includes(id),preparing=this.compiling.has(id),capture=this.capturing(id),awaiting=this.autoAfterCommit?.id===id;
+  const busy=!!(u.preview||d.loop||u.state==='preparing'||awaiting);
+  const put=(slot,text)=>{const el=screen.querySelector(`[data-slot="${slot}"]`);if(el&&el.textContent!==text)el.textContent=text;};
+  let status='';
+  if(capture){
+   if(u.state==='unlocking')status=this.t('准备录制','Preparing to record');
+   else if(u.state==='countin')status=this.t('预备 · ','Ready · ')+Math.max(1,Math.min(PREP_BEATS,Math.ceil((u.captureAt-this.now())/BEAT)));
+   else status=this.t('录入 · ','Recording · ')+Math.max(1,Math.min(4,1+Math.floor((this.now()-u.captureAt)/BEAT)))+' / 4';
+  }
+  else if(preparing)status=this.t('准备新的声音','Preparing a new sound');
+  else if(pending)status=this.t('下一小节生效','Changes at the next bar');
+  else if(u.preview)status=this.now()<u.preview.start?this.t('等共同拍点试听','Audition at the shared beat'):this.t('试听一次 · 结束自动停','One reply · Stops at the end');
+  else if(d.loop&&this.now()<u.loopAt)status=this.t('等共同拍点开始','Waiting for the shared beat');
+  else if(!d.current)status=this.t('中央试奏 · 录制才保存','Tap to try · Record to keep');
+  put('state',u.message||status);put('touch-label',!d.current&&!capture?this.t('试奏区','Try here'):'');
+  screen.querySelector('.state-line')?.classList.toggle('capture',capture);screen.querySelector('.pad')?.classList.toggle('empty',!d.current&&!capture);
+  for(const el of screen.querySelectorAll('[data-control]')){const v=el.dataset.control==='volume'?u.volume:d.density;el.style.setProperty('--value',v);el.setAttribute('aria-valuenow',Math.round(v*100));if(el.dataset.control==='richness')el.setAttribute('aria-disabled',String(capture));}
+  this.updateStrip(id,screen,{capture,busy,pending,preparing});
+  const gallery=screen.querySelector('[data-slot="gallery-play"]');if(gallery){const mode=busy?'pause':'audition';if(gallery.dataset.mode!==mode||gallery.dataset.renderLocale!==this.lang){gallery.innerHTML=(busy?pauseIcon:ico('play'))+`<span>${this.t(busy?'暂停本机':'试听一次',busy?'Pause this tile':'Hear once')}</span>`;gallery.dataset.mode=mode;gallery.dataset.renderLocale=this.lang;}gallery.disabled=capture||!busy&&(!d.current||pending||preparing);}
+  for(const btn of screen.querySelectorAll('[data-phrase],[data-act="prev-role"],[data-act="next-role"],[data-act="role"],[data-act="settings"]'))btn.disabled=capture;
+  document.getElementById('sample').disabled=this.blocked('A')||this.capturing('A')||!this.canRecord('A');
+ }
+ drawGallery(id){const d=this.tile(id),u=this.ui[id];if(u.route!=='role')return;for(const c of this.units[id].querySelectorAll('[data-role-art]')){const role=c.dataset.roleArt;const raw=d.current?.rootSeed||d.ownSeed,notes=raw.length?M.compose(raw,role,role===d.role?d.phrase:d.memories[role],d.density).full:[];root.RoleArt.draw(c,role,notes);}}
+ paintSeams(){for(const id of ['A','B','C']){const screen=this.units[id].querySelector('.screen');for(const side of ['left','right']){const el=screen.querySelector('.seam-mark.'+side);if(!el)continue;const find=edges=>edges.find(e=>e[side==='left'?'right':'left']===id);const established=find(this.model.edges),wanted=find(this.proposed),same=established&&wanted&&established.left===wanted.left&&established.right===wanted.right;el.className='seam-mark '+side+(same?' connected':established||wanted?' pending':'');}}}
+ paintOutside(){const put=(id,text)=>{const el=document.getElementById(id);if(el&&el.textContent!==text)el.textContent=text;};
+  put('page-title',this.t('先敲一段，再把声音摆在一起。','Tap a rhythm. Bring the voices together.'));
+  put('page-desc',this.t('点「录制」，两拍预备后录四拍；先听一次，喜欢再点 ▶。把另一台放到右侧，再点它自己的 ▶。','Press Record: two count-in beats, then capture four. Hear once, then press Play to keep it. Add a tile on the right and press its Play.'));
+  put('sample',this.t('先听“两下紧挨”的示例','Try a close-pair example'));
+  document.getElementById('sample').disabled=this.blocked('A')||this.capturing('A')||!!this.tile('A').current?.source;
+  put('desk-help',this.t('拖上方外壳移动 · 拆开不清空、不强制暂停 · 每台单独发声','Drag the top case handles · Splitting keeps sound and rhythm · Each tile controls its own output'));
+  put('shelf-title',this.t('再拿一台 · 拖到桌上','Another voice · Drag onto the desk'));
+  for(const id of ['A','B','C']){const d=this.tile(id),chip=document.querySelector(`[data-shelf="${id}"]`);chip.querySelector('strong').textContent=this.views[id].name(d.role);chip.querySelector('span').textContent=this.t('拖上桌 · 初始静音','Drag onto desk · Starts silent');}
+  put('empty-desk',this.t('把下面的一台拖上来，开始演奏。','Drag a tile from below to start.'));
+  put('lab-summary',this.t('模拟与检查（不必先看）','Simulation & checks (optional)'));
+  put('footer-note',this.t('方案 B 整合实验 · 不覆盖 v5.1.0 · 共享浏览器音频时钟，不是真机同步','Scheme B study · v5.1.0 untouched · Shared browser clock, not hardware sync'));
+ }
+ bindHome(id){const screen=this.units[id].querySelector('.screen'),pad=screen.querySelector('.pad');if(pad){pad.onpointerdown=e=>{if(e.button!==0||e.isPrimary===false)return;e.preventDefault();pad.focus({preventScroll:true});this.tap(id);};pad.onkeydown=e=>{if(['Enter',' '].includes(e.key)&&!e.repeat){e.preventDefault();this.tap(id);}};}
+  for(const el of screen.querySelectorAll('[data-control]')){let drag=null;const volume=el.dataset.control==='volume';const get=()=>volume?this.ui[id].volume:this.tile(id).density;const set=v=>{if(!volume&&this.capturing(id))return;v=Math.min(1,Math.max(0,v));if(volume){this.ui[id].volume=v;this.audio.volumeTile(id,v);this.update(id);}else{if(this.ui[id].preview&&this.now()<this.ui[id].preview.start)this.mute(id);this.flush();this.model.configure(id,{density:v});this.audio.cancelAll();this.token++;this.compiling.add(id);clearTimeout(this.densityTimer);this.densityTimer=setTimeout(()=>this.refresh(),85);this.update(id);}};
+   el.onpointerdown=e=>{if(e.button!==0||e.isPrimary===false||!volume&&this.capturing(id))return;e.preventDefault();this.selectedId(id);el.setPointerCapture(e.pointerId);drag={id:e.pointerId,y:e.clientY,v:get()};el.classList.add('grabbing');};el.onpointermove=e=>{if(drag?.id===e.pointerId)set(drag.v+(drag.y-e.clientY)/180);};const end=e=>{if(drag?.id===e.pointerId){drag=null;el.classList.remove('grabbing');if(!volume){clearTimeout(this.densityTimer);this.refresh();}}};el.onpointerup=end;el.onpointercancel=end;el.onlostpointercapture=end;el.onkeydown=e=>{if(['ArrowUp','ArrowDown','Home','End'].includes(e.key)){e.preventDefault();set(e.key==='Home'?0:e.key==='End'?1:get()+(e.key==='ArrowUp'?.05:-.05));}};
+  }
+ }
+ bind(){document.body.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled)return;if(b.dataset.lang){this.lang=b.dataset.lang;document.documentElement.lang=this.lang;this.render();return;}
+  const id=b.closest('[data-tile]')?.dataset.tile;if(!id)return;this.selectedId(id);const d=this.tile(id),u=this.ui[id];if(b.dataset.phrase){this.change(id,{phrase:+b.dataset.phrase});return;}
+  const act=b.dataset.act;if(act==='play'){if(u.route==='role'){if(d.loop||u.preview||u.state==='preparing'||this.autoAfterCommit?.id===id)this.mute(id);else this.preview(id);}else this.transport(id);}else if(act==='prev-role'||act==='next-role')this.change(id,{role:keys[(keys.indexOf(d.role)+(act==='next-role'?1:3))%4]});else if(['role','settings','guide','info'].includes(act)){u.route=act;this.renderTile(id);}else if(act==='back'){u.route=['info','guide'].includes(u.route)?'settings':'home';this.renderTile(id);}else if(act==='record')this.arm(id);else if(act==='audition'){u.route='home';this.renderTile(id);this.preview(id);}else if(act==='remove')this.remove(id);else if(act==='recover')this.recover(id);else if(act==='export')this.export();});
+  document.getElementById('sample').onclick=()=>this.example('A');document.getElementById('sim-target').onchange=e=>this.selectedId(e.target.value);
+  document.getElementById('sim-battery').oninput=e=>{const id=this.selected;this.ui[id].battery=+e.target.value;if(!+e.target.value)this.mute(id);this.renderTile(id);};
+  document.getElementById('sim-imu').oninput=e=>{this.ui[this.selected].imu=+e.target.value;this.ui[this.selected].key='';this.renderTile(this.selected);};
+  for(const side of ['left','right'])document.getElementById('sim-'+side).onchange=e=>{this.ui[this.selected][side]=e.target.value;this.ui[this.selected].key='';this.renderTile(this.selected);};
+  document.getElementById('sim-network').onchange=e=>{this.network=e.target.value==='online';this.confirmGeometry();};
+  document.getElementById('sim-fault').onclick=()=>this.fail(this.selected,new Error('Simulated output failure'));
+  document.getElementById('sim-loading').onclick=()=>{this.mute(this.selected);this.ui[this.selected].loading=true;this.renderTile(this.selected);};
+  document.getElementById('sim-recover').onclick=()=>this.recover(this.selected);document.getElementById('sim-remove').onclick=()=>this.remove(this.selected);
+  document.getElementById('export-all').onclick=()=>this.export();
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){this.stopAll();}else if(e.code==='Space'&&!e.repeat&&!e.target.closest('button,input,select,[role]')){e.preventDefault();this.transport(this.selected);}});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)this.stopAll();});root.addEventListener('pagehide',()=>this.stopAll());
+ }
+ syncLab(){const u=this.ui[this.selected];document.getElementById('sim-battery').value=u.battery;document.getElementById('sim-imu').value=u.imu;for(const s of ['left','right'])document.getElementById('sim-'+s).value=u[s];}
+ export(){const payload={study:'Echoy Arrange B 06',simulated:true,edges:this.model.edges,positions:this.positions,tiles:Object.fromEntries(Object.entries(this.model.tiles).map(([id,d])=>[id,{role:d.role,phrase:d.phrase,density:d.density,ownSeed:d.ownSeed,current:d.current,loop:d.loop,clock:d.clockId}])),limitations:['browser shared clock, not wireless sync','16-step rhythm quantization','neighbor adapter newly tested; single-tile source engine retained']};const a=document.createElement('a'),url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));a.href=url;a.download='echoy-arrange-B-session.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+ frame(){for(const id of ['A','B','C']){if(!this.tile(id).present||this.ui[id].route!=='home'||this.blocked(id))continue;const d=this.tile(id),u=this.ui[id],s=this.units[id].querySelector('.screen'),c=s.querySelector('.pad canvas');if(!c)continue;const now=this.now(),recording=u.state==='recording',capture=this.capturing(id),once=u.preview,plan=this.audio.openingMode==='pickup'?(this.data[id]?.opening?.plan||d.current):d.current;const progress=recording?(now-u.captureAt)/D:once?(now-once.start)/D:this.model.phase(id,now);const active=recording||!!once&&progress>=0&&progress<1||d.loop&&now>=u.loopAt;
+   const notes=capture?M.compose(M.quantize(u.raw),d.role,d.phrase,d.density).foreground:once?once.data.arrays&&once.kind==='source'?once.data.plan.rootSeed:once.kind==='foreground'?once.data.plan.foreground:once.data.plan.full:plan?.full||[];
+   const role=capture?d.role:once?.kind==='source'?'pulse':once?once.data.plan.role:plan?.role||d.role,step=Math.min(15,Math.floor(Math.max(0,progress)*16));
+   if(active&&step!==u.lastStep){if(notes.some(n=>Math.floor(n.step)===step))u.hit=now;u.lastStep=step;}
+   root.RoleArt.draw(c,role,notes,Math.max(0,Math.min(1,progress)),active,u.hit?Math.max(0,1-(now-u.hit)/.4):0);
+   for(const dot of s.querySelectorAll('[data-step]')){const matches=notes.filter(n=>Math.floor(n.step)===+dot.dataset.step);dot.className=matches.length?'hit '+(matches.some(n=>n.layer==='anchor'||n.role==='anchor'||(!n.layer&&!n.role))?'anchor':'support'):'';if(active&&step===+dot.dataset.step)dot.classList.add('current');}
+   const line=s.querySelector('.progress-line');line.classList.toggle('recording',recording);line.classList.toggle('shown',recording||!!once);line.querySelector('i').style.width=Math.max(0,Math.min(1,progress))*100+'%';
+  }
+  if(document.getElementById('lab').open&&(!this.auditAt||performance.now()-this.auditAt>400)){this.auditAt=performance.now();document.getElementById('audit').textContent=JSON.stringify({edges:this.model.edges,pending:this.model.pending?{at:this.model.pending.at,changes:this.model.pending.changes}:null,tiles:Object.fromEntries(Object.entries(this.model.tiles).map(([id,d])=>[id,{source:d.current?.source||null,role:d.current?.role||d.role,phrase:d.current?.phrase||d.phrase,loop:d.loop,clock:d.clockId,onsets:d.current?.full.length||0}]))},null,2);}
+  requestAnimationFrame(this.frame);
+ }
+ bindDrag(el,id,reserve){let drag=null;
+  el.addEventListener('pointerdown',e=>{if(e.button!==0||e.isPrimary===false)return;e.preventDefault();el.setPointerCapture(e.pointerId);this.selectedId(id);const stage=document.getElementById('stage').getBoundingClientRect(),p=this.positions[id];drag={id:e.pointerId,x:e.clientX,y:e.clientY,offsetX:reserve?254:e.clientX-stage.x-p.x,offsetY:reserve?20:e.clientY-stage.y-p.y,old:p?{...p}:null,moved:false};if(!reserve)this.units[id].classList.add('moving');});
+  el.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;if(Math.abs(e.clientX-drag.x)+Math.abs(e.clientY-drag.y)>5)drag.moved=true;if(!drag.moved)return;
+   const viewport=document.getElementById('viewport'),v=viewport.getBoundingClientRect();if(e.clientX>v.right-38)viewport.scrollLeft+=25;if(e.clientX<v.left+38)viewport.scrollLeft-=25;if(e.clientY>v.bottom-30)viewport.scrollTop+=18;if(e.clientY<v.top+30)viewport.scrollTop-=18;
+   const stage=document.getElementById('stage').getBoundingClientRect();drag.point={x:Math.max(12,Math.min(1850-508,e.clientX-stage.x-drag.offsetX)),y:Math.max(12,Math.min(1160-566,e.clientY-stage.y-drag.offsetY))};
+   const snap=this.spatial.snap(id,drag.point,this.positions);drag.snap=snap;
+   const ghost=document.getElementById('snap-ghost');ghost.hidden=!snap.snapped;ghost.style.left=snap.x+'px';ghost.style.top=snap.y+'px';
+   if(!reserve){this.units[id].style.left=drag.point.x+'px';this.units[id].style.top=drag.point.y+'px';}
+  });
+  const end=(e,cancel)=>{if(!drag||drag.id!==e.pointerId)return;document.getElementById('snap-ghost').hidden=true;this.units[id].classList.remove('moving');if(!cancel&&drag.moved&&drag.point){const vp=document.getElementById('viewport').getBoundingClientRect(),inside=e.clientX>=vp.x&&e.clientX<=vp.right&&e.clientY>=vp.y&&e.clientY<=vp.bottom;const p=drag.snap?.snapped?{x:drag.snap.x,y:drag.snap.y}:drag.point;
+    if(inside&&!this.spatial.collision(id,p,this.positions)){if(reserve)this.add(id,p);else{this.positions[id]=p;this.confirmGeometry();}}
+    else if(!reserve){const dock=document.getElementById('shelf').getBoundingClientRect();if(e.clientY>=dock.y&&e.clientY<=dock.bottom)this.remove(id);}
+   }drag=null;this.layout();};
+  el.addEventListener('pointerup',e=>end(e,false));el.addEventListener('pointercancel',e=>end(e,true));el.addEventListener('lostpointercapture',e=>{if(drag)end(e,true);});
+  el.addEventListener('keydown',e=>{if(reserve&&['Enter',' '].includes(e.key)){e.preventDefault();this.add(id);return;}const deltas={ArrowLeft:[-32,0],ArrowRight:[32,0],ArrowUp:[0,-32],ArrowDown:[0,32]};if(reserve||!deltas[e.key])return;e.preventDefault();const [dx,dy]=deltas[e.key],old=this.positions[id],p={x:Math.max(12,old.x+dx),y:Math.max(12,old.y+dy)},snap=this.spatial.snap(id,p,this.positions);if(!snap.collision){this.positions[id]={x:snap.x,y:snap.y};this.layout();this.confirmGeometry();}});
+ }
+}
+root.arrange=new ArrangeApp();root.ArrangeApp=ArrangeApp;
+})(window);
+</script><script>
+/* Echoy opening A/B study, 2026-10-17.
+   Frozen input: reference/v4/echoy-arrange-B-v4.html at a83a64ea4708a4ffcb3cfd70799f6effeef110bd.
+   Composition stays untouched. The experiment decorates completed plans and PCM only. */
+(function(root){'use strict';
+ const STEP=root.RoleAccompaniment.STEP;
+ const clone=x=>JSON.parse(JSON.stringify(x));
+ const base=plan=>plan?.openingBase||plan;
+ function apply(input,mode='original'){
+  const plan=base(input);if(!plan||mode!=='pickup')return plan;
+  const source=plan.rootSeed||(Array.isArray(plan.source)?plan.source:[]);
+  const head=source[0]?.step,first=plan.foreground?.[0];
+  if(!first||!Number.isFinite(head)||head<=0)return plan;
+  const gap=Math.max(1,Math.min(3,source.length>1?source[1].step-head:2));
+  const steps=plan.density>=.5&&head>=gap*2?[head-gap*2,head-gap]:[head-Math.min(head,gap)];
+  const soft=Math.min(...plan.foreground.map(n=>n.vel));
+  const scale=[38,41,43,45,46,48,50,53,55,57,58,60,62,65,67,69,70,72,74,77,79,81,82,84,86];
+  const lower=scale.filter(n=>n<first.note).at(-1)??first.note;
+  const intro=steps.map((step,i)=>{
+   const n={step,kind:plan.role==='pulse'?'rim':first.kind,vel:soft*(i===steps.length-1?.56:.44),
+    dur:Math.min(.12,(head-step)*STEP*.45),note:i===steps.length-1?first.note:lower,
+    layer:'pickup',role:'pickup',sourceStep:head,origin:'partner',expression:0};
+   // A short, single-pitch Harmony pickup uses the already chosen voicing.
+   if(n.kind==='chord'){
+    n.harmony=clone(first.harmony||first.notes||[first.note]);
+    n.notes=[n.harmony[Math.min(i+1,n.harmony.length-1)]];
+    n.note=n.notes[0];n.articulation='answer';n.maxDuration=n.dur;
+   }
+   return n;
+  });
+  return {...plan,openingBase:plan,openingIntro:intro,
+   full:[...intro,...plan.full].sort((a,b)=>a.step-b.step),
+   signature:JSON.stringify(['echoy-opening-v1',plan.signature||plan, intro])};
+ }
+ function mix(data,plan,raw){
+  const sr=data.sampleRate,head=plan.openingBase.rootSeed?.[0]?.step??plan.openingBase.source?.[0]?.step;
+  const boundary=Math.round(head*STEP*sr),end=Math.max(0,boundary-Math.round(.012*sr));
+  const fade=Math.min(Math.round(.04*sr),Math.max(1,end-Math.round(plan.openingIntro[0].step*STEP*sr)));
+  const gain=data.metrics?.gains?.layered??1,layer=new Float32Array(raw.length);
+  let peak=0;
+  for(let i=0;i<end;i++){
+   const window=i>=end-fade?.5-.5*Math.cos(Math.PI*(end-i)/fade):1;
+   layer[i]=raw[i]*gain*window;peak=Math.max(peak,Math.abs(layer[i]));
+  }
+  // Bound the added layer only; never turn down or recompress the original phrase.
+  const originalPeak=root.ReplyAB.stats(data.arrays.full).peak;
+  const cap=Math.min(.25,originalPeak*.55),introGain=peak>cap?cap/peak:1;
+  const full=new Float32Array(data.arrays.full);
+  for(let i=0;i<end;i++)full[i]+=layer[i]*introGain;
+  return {plan,full,boundary,introGain,peak:root.ReplyAB.stats(full).peak};
+ }
+ const api={apply,base,mix};root.OpeningStudy=api;
+})(typeof window!=='undefined'?window:globalThis);
+
+(function(root){'use strict';
+ const study=root.OpeningStudy,app=root.arrange,D=root.RoleAccompaniment.DURATION;
+ const oldPrepare=root.ArrangeAudio.prototype.preparePlan,oldMake=root.ArrangeAudio.prototype.make;
+ // Store both conditions beside the original cache. Current plans, inheritance,
+ // detachment, capture clocks and the original normalization path are unchanged.
+ root.ArrangeAudio.prototype.preparePlan=async function(plan){
+  const data=await oldPrepare.call(this,plan);if(!data)return data;
+  this.openingCache??=new Map();
+  if(this.openingCache.has(data.key))return this.openingCache.get(data.key);
+  const candidate=study.apply(data.plan,'pickup');
+  if(candidate===data.plan)return data;
+  const promise=this.renderRoleNotes(candidate.openingIntro,candidate.role)
+   .then(raw=>({...data,opening:study.mix(data,candidate,raw)}))
+   .catch(error=>{this.openingCache.delete(data.key);throw error;});
+  this.openingCache.set(data.key,promise);
+  if(this.openingCache.size>60)this.openingCache.delete(this.openingCache.keys().next().value);
+  return promise;
+ };
+ function playback(data,mode){return mode==='pickup'&&data?.opening?{...data,
+  key:data.opening.plan.signature,plan:data.opening.plan,arrays:{...data.arrays,full:data.opening.full}}:data;}
+ root.ArrangeAudio.prototype.make=function(id,data,at,loop,kind='full',done=()=>{}){
+  return oldMake.call(this,id,kind==='full'?playback(data,this.openingMode):data,at,loop,kind,done);
+ };
+ app.audio.openingMode='original';
+ const oldPreview=app.preview.bind(app);
+ app.preview=async function(id,kind='full'){
+  await oldPreview(id,kind);
+  const p=this.ui[id].preview;if(p&&kind==='full')p.data=playback(p.data,this.audio.openingMode);
+ };
+ const el=id=>document.getElementById(id),text=(id,zh,en)=>{const n=el(id),v=app.t(zh,en);if(n.textContent!==v)n.textContent=v;};
+ let busy=false,request=0,lastView='',notice='';
+ function valid(id){return app.tile(id).present&&!app.blocked(id)&&!app.capturing(id)&&!!app.data[id]&&!app.compiling.has(id)&&!app.model.pending?.changes.includes(id);}
+ function paint(){
+  const id=app.selected,d=app.tile(id),data=app.data[id],intro=data?.opening?.plan.openingIntro||[],mode=app.audio.openingMode;
+  text('opening-title','起音对比','Compare the opening');
+  text('opening-desc','同一段敲击，听两种开头。先载入示例，也可以在设备上录制自己的节奏。','One rhythm, two openings. Load an example or record your own taps on the tile.');
+  text('opening-example','载入留白示例','Load a delayed-start example');
+  text('opening-head-example','载入首拍示例','Load a beat-one example');
+  text('opening-a','A · 原版','A · Original');text('opening-b','B · 提前起音','B · Early pickup');
+  text('opening-stop','停止','Stop');text('opening-target-label','试听设备','Audition tile');
+  text('opening-hint','点击 A 或 B，从头单独听一次。设备上的播放也使用当前版本；Esc 停止全部声音。','Click A or B to hear the selected tile once from the start. Tile playback uses the selected version. Esc stops all sound.');
+  el('opening-target').value=id;
+  for(const option of el('opening-target').options)option.disabled=!app.tile(option.value).present;
+  for(const [button,value]of [['opening-a','original'],['opening-b','pickup']]){
+   el(button).disabled=busy||!valid(id);el(button).setAttribute('aria-pressed',String(mode===value));
+  }
+  const canLoad=!busy&&!app.blocked(id)&&!app.capturing(id)&&app.canRecord(id)&&!app.compiling.has(id)&&!app.model.pending?.changes.includes(id);
+  el('opening-example').disabled=!canLoad;el('opening-head-example').disabled=!canLoad;
+  el('opening-target').disabled=busy;
+  const head=d.current?.rootSeed?.[0]?.step,seconds=Number.isFinite(head)?(head*D/16).toFixed(3):'';
+  const playing=app.ui[id].preview||d.loop;
+  const state=busy?app.t('正在准备试听…','Preparing…'):notice||(!data?app.t('先载入示例，或点设备上的「录制」。','Load an example, or press Record on the tile.'):head===0?app.t('第一下就在首拍：没有前导留白，A 与 B 完全相同。','Your first tap is on beat one: A and B are identical.'):app.t(`第一下在 ${seconds} 秒；B 在它之前加入 ${intro.length} 个轻音。`,`First tap: ${seconds} s. B adds ${intro.length} soft pickup note(s) before it.`));
+  const label=playing?app.t(`正在听 ${mode==='pickup'?'B · 提前起音':'A · 原版'} · 设备 ${id}`,`Playing ${mode==='pickup'?'B · Early pickup':'A · Original'} · Tile ${id}`):app.t(`当前：${mode==='pickup'?'B · 提前起音':'A · 原版'} · 设备 ${id}`,`Selected: ${mode==='pickup'?'B · Early pickup':'A · Original'} · Tile ${id}`);
+  text('opening-state',label,label);text('opening-info',state,state);
+  const view=JSON.stringify([id,d.current?.signature,mode,app.lang]);
+  if(view!==lastView){lastView=view;
+   const seed=d.current?.rootSeed||[],all=d.current?.full||[],extra=mode==='pickup'?intro:[];
+   for(const [row,notes]of [['input',seed],['reply',[...all,...extra]]]){
+    const grid=el('opening-'+row);grid.replaceChildren();
+    for(let step=0;step<16;step++){
+     const cell=document.createElement('span');cell.className='opening-cell'+(step%4===0?' beat':'');
+     const hits=notes.filter(n=>Math.floor(n.step)===step),pickup=hits.some(n=>n.layer==='pickup'),anchor=hits.some(n=>n.layer==='anchor'||n.role==='anchor'||row==='input');
+     if(hits.length)cell.classList.add(pickup?'pickup':anchor?'tap':'reply');
+     cell.title=app.t(`第 ${step+1} 格`, `Step ${step+1}`);cell.setAttribute('aria-hidden','true');grid.appendChild(cell);
+    }
+   }
+  }
+  text('opening-input-label','你的敲击','Your taps');text('opening-reply-label','完整呼应','Full reply');
+  text('opening-legend','深绿：你的敲击　浅绿：原有呼应　橙色：提前起音','Dark green: your taps · Light green: existing reply · Orange: pickup');
+ }
+ async function listen(mode){
+  const id=app.selected;if(busy||!valid(id))return;
+  notice='';app.stopAll();app.audio.openingMode=mode;paint();await app.preview(id);paint();
+ }
+ async function example(steps){
+  const id=app.selected;if(app.blocked(id)||app.capturing(id)||!app.canRecord(id))return;
+  const ticket=++request;busy=true;notice='';app.stopAll();paint();
+  try{
+   await app.audio.ensure();if(ticket!==request||app.capturing(id)||app.blocked(id))return;
+   app.flush();app.model.setSeed(id,root.PulseLab.clean(steps.map(step=>({step,kind:'kick',vel:.74}))));
+   // Presets change the rhythm only; role, phrase, density and loudness stay as chosen.
+   await app.refresh();
+  }catch(error){if(ticket===request)notice=app.t('声音未能启动，请再点击试听。','Audio did not start. Click an audition button to retry.');}
+  finally{if(ticket===request)busy=false;paint();}
+ }
+ el('opening-a').onclick=()=>listen('original');el('opening-b').onclick=()=>listen('pickup');
+ el('opening-example').onclick=()=>example([4,6]);el('opening-head-example').onclick=()=>example([0,2]);
+ el('opening-stop').onclick=()=>{request++;busy=false;notice='';app.stopAll();paint();};
+ el('opening-target').onchange=e=>{notice='';app.selectedId(e.target.value);paint();};
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){request++;busy=false;notice='';paint();}});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden){request++;busy=false;}paint();});
+ root.addEventListener('pagehide',()=>{request++;busy=false;});
+ const oldOutside=app.paintOutside.bind(app);app.paintOutside=function(){oldOutside();paint();};
+ // Keep the external state in sync with recording, one-shot completion and pending commits.
+ setInterval(paint,120);paint();
+ root.OpeningController={listen,example,paint,playback};
+})(window);
+
+</script></body></html>

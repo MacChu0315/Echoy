@@ -869,4 +869,5 @@ int main(int argc,char **argv)
         if (argc>1 && (unsigned)atoi(argv[1])!=i) continue;
         run(i,j!=0);
     }
+    return 0;
 }

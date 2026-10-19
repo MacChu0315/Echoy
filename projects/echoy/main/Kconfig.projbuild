@@ -1,4 +1,12 @@
 menu "Echoy diagnostic build"
+
+    config ECHOY_PHRASE_PICKUP
+        bool "Add the auditioned local phrase pickup"
+        default y
+        help
+            Add 1-2 quiet lead-in notes only to local playback and artwork.
+            Disable for original-algorithm PCM regression. Relationship plans,
+            recording and the office speaker profile are unchanged.
 config ECHOY_MAGNET_DIAGNOSTICS
     bool "Enable read-only magnetic/link snapshots and rejected-startup logs"
     default n

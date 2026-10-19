@@ -7,7 +7,11 @@ static echoy_control_view_t owner;
 static int64_t test_now;
 static unsigned reads, encodes, submissions, selected_phrase;
 static unsigned invalidations, volume_actions;
-static int volume_knob_y;
+static int volume_knob_y, richness_knob_y;
+static unsigned density_actions;
+static double queued_density;
+static uint64_t queued_density_request;
+static bool reject_density;
 static bool role_visible;
 static esp_gsp_image_complete_cb_t pending_complete;
 static void *pending_ctx;
@@ -44,7 +48,7 @@ VIEW_STUB(echoy_view_text, const char *)
 VIEW_STUB(echoy_view_color, uint32_t)
 VIEW_STUB(echoy_view_value, int32_t)
 esp_gsp_err_t echoy_view_y(echoy_view_cache_t v, const char *name, int32_t value)
-{ (void)v; if (!strcmp(name, "volume_knob")) volume_knob_y = value; return ESP_GSP_OK; }
+{ (void)v; if (!strcmp(name, "volume_knob")) volume_knob_y = value; if (!strcmp(name,"richness_knob")) richness_knob_y=value; return ESP_GSP_OK; }
 VIEW_STUB(echoy_view_x, int32_t)
 VIEW_STUB(echoy_view_opacity, uint8_t)
 VIEW_STUB(echoy_view_scale, uint32_t)
@@ -135,6 +139,23 @@ static bool set_volume(void *ctx, echoy_action_t action, double value, int64_t a
     volume_actions++;
     return true;
 }
+/* Accepted means queued, not reflected in the owner's published snapshot. */
+static bool queue_density(void *ctx, echoy_action_t action, double value, int64_t at)
+{
+    (void)ctx;assert(action==ECHOY_ACT_DENSITY && at==test_now);
+    density_actions++;queued_density=value;queued_density_request=(uint64_t)at+1;return !reject_density;
+}
+static void publish_density(void)
+{
+    owner.state.density=queued_density;owner.state.revision++;
+    owner.state.plan_pending=true;owner.preparing=true;
+}
+static void drag_density(struct echoy_ui *u, int from, int to)
+{
+    pointer(NULL,432,from,true,u);test_now+=1000;
+    pointer(NULL,432,to,true,u);test_now+=1000;
+    pointer(NULL,432,to,false,u);
+}
 static struct echoy_ui *setup(void)
 {
     struct echoy_ui *u = calloc(1, sizeof(*u));
@@ -159,7 +180,56 @@ int main(int argc, char **argv)
 {
     assert(argc == 2);
     struct echoy_ui *u = setup();
-    if (!strcmp(argv[1], "idle-pointer-art") || !strcmp(argv[1], "volume-pointer-art") ||
+    if (!strncmp(argv[1],"density-",8)) {
+        u->route=HOME;u->platform.perform_action=queue_density;
+        refresh(u,test_now,true);
+        reject_density=!strcmp(argv[1],"density-rejected");
+        drag_density(u,200,146); /* .5 -> .8 */
+        if(reject_density) {
+            assert(u->richness==owner.state.density && density_actions==1);
+            test_now+=100000;tick(NULL,u);assert(density_actions==1);
+        } else {
+            assert(density_actions==1 && fabs(queued_density-.8)<1e-12);
+            assert(fabs(u->richness-.8)<1e-12 && richness_knob_y==59);
+            for(unsigned i=0;i<4;i++){test_now+=20000;tick(NULL,u);assert(richness_knob_y==59);}
+            if(!strcmp(argv[1],"density-async-rejected")) {
+                owner.density_rejected_request=queued_density_request;
+                test_now+=20000;tick(NULL,u);
+                assert(!density_busy(u) && u->richness==owner.state.density);
+                drag_density(u,200,164);
+                assert(density_actions==2 && density_busy(u));
+                test_now+=20000;tick(NULL,u);assert(density_busy(u)); /* Old rejection is not this edit. */
+                publish_density();test_now+=20000;tick(NULL,u);assert(!density_busy(u));
+            } else if(!strcmp(argv[1],"density-delayed")) {
+                publish_density();test_now+=20000;tick(NULL,u);assert(richness_knob_y==59);
+                owner.state.plan_pending=false;owner.preparing=false;
+                owner.state.density=.2;owner.state.revision++;
+                test_now+=20000;tick(NULL,u);assert(richness_knob_y==126);
+            } else if(!strcmp(argv[1],"density-latest")) {
+                drag_density(u,200,254); /* .8 -> .5, while .8 is still queued. */
+                assert(density_actions==1 && fabs(u->richness-.5)<1e-12 && richness_knob_y==92);
+                publish_density();test_now+=100000;tick(NULL,u);
+                assert(density_actions==2 && fabs(queued_density-.5)<1e-12 && richness_knob_y==92);
+                test_now+=20000;tick(NULL,u);assert(richness_knob_y==92);
+                publish_density();test_now+=20000;tick(NULL,u);assert(richness_knob_y==92);
+            } else if(!strcmp(argv[1],"density-held")) {
+                publish_density();test_now+=20000;tick(NULL,u);
+                pointer(NULL,432,200,true,u);test_now+=1000;pointer(NULL,432,164,true,u);
+                int target=richness_knob_y;test_now+=90000;tick(NULL,u);assert(richness_knob_y==target);
+                test_now+=20000;tick(NULL,u);assert(richness_knob_y==target);
+                publish_density();test_now+=20000;tick(NULL,u);assert(richness_knob_y==target);
+                pointer(NULL,432,164,false,u);assert(richness_knob_y==target);
+            } else if(!strcmp(argv[1],"density-measurement") || !strcmp(argv[1],"density-fault") ||
+                      !strcmp(argv[1],"density-capture") || !strcmp(argv[1],"density-removed")) {
+                if(!strcmp(argv[1],"density-measurement"))owner.measurement_active=true;
+                if(!strcmp(argv[1],"density-fault"))owner.condition=ECHOY_AUDIO_FAULT;
+                if(!strcmp(argv[1],"density-capture"))owner.state.phase=ECHOY_RECORDING;
+                if(!strcmp(argv[1],"density-removed"))owner.present=false;
+                test_now+=20000;tick(NULL,u);assert(u->richness==owner.state.density && !u->density_dirty);
+                assert(density_actions==1);
+            } else assert(!"Unknown density regression");
+        }
+    } else if (!strcmp(argv[1], "idle-pointer-art") || !strcmp(argv[1], "volume-pointer-art") ||
         !strcmp(argv[1], "capture-dirty-art")) {
         u->canvas_registered[0] = u->canvas_registered[1] = true;
         u->route = HOME;

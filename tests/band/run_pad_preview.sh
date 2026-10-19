@@ -7,5 +7,5 @@ trap 'rm -rf "$preview_build"' EXIT HUP INT TERM
  -I"$root/projects/echoy/main" "$root/tests/band/test_pad_preview.c" \
  "$root/projects/echoy/main/echoy_band.c" "$root/projects/echoy/main/echoy_model.c" \
  "$root/projects/echoy/main/echoy_music.c" "$root/projects/echoy/main/echoy_arrange.c" \
- "$root/projects/echoy/main/echoy_audio.c" -lm -o "$preview_build/test_pad_preview"
+ "$root/projects/echoy/main/echoy_audio.c" "$root/projects/echoy/main/echoy_pickup.c" -lm -o "$preview_build/test_pad_preview"
 "$preview_build/test_pad_preview"

@@ -3,12 +3,15 @@
 #include "echoy_ui.h"
 #include "gsp_sim_bridge.h"
 #include <stdio.h>
+#include <assert.h>
 #include <stdlib.h>
 
 static echoy_ui_handle_t ui;
 static bool initializing;
 static unsigned submitted, capacity;
-static bool measurement_test;
+static bool measurement_test, feedback_test, density_queued;
+static double density_target;
+static int64_t density_apply_us;
 
 /* Model the bounded ESP-IDF queue while its render task is occupied by the
  * first frame. Forward accepted calls to the actual simulator, not a fake UI. */
@@ -56,6 +59,11 @@ static bool brightness(void *ctx, unsigned percent)
 static bool read_view(void *ctx, echoy_control_view_t *out)
 {
     (void)ctx;
+    if (feedback_test && density_queued && clock_us(NULL)>=density_apply_us) {
+        view.state.density=density_target;view.state.revision++;
+        density_queued=false;
+        fprintf(stderr,"FEEDBACK_FIXTURE applied=%.17g\n",density_target);
+    }
     *out = view;
     return true;
 }
@@ -72,6 +80,12 @@ static bool action(void *ctx, echoy_action_t kind, double value, int64_t at)
         }
         return false;
     }
+    if (feedback_test && kind==ECHOY_ACT_DENSITY) {
+        assert(!density_queued);
+        density_target=value;density_apply_us=at+500000;density_queued=true;
+        fprintf(stderr,"FEEDBACK_FIXTURE queued=%.17g\n",value);
+        return true;
+    }
     if (kind == ECHOY_ACT_TAP) {
         view.battery_unknown = !view.battery_unknown;
         view.battery = view.battery_unknown ? 0 : 37;
@@ -87,6 +101,9 @@ static bool action(void *ctx, echoy_action_t kind, double value, int64_t at)
 }
 esp_gsp_err_t gsp_bridge_app_init(esp_gsp_handle_t gsp)
 {
+    if (getenv("ECHOY_TEST_FEEDBACK")) {
+        feedback_test=true;view.battery_unknown=false;view.battery=100;
+    }
     capacity = getenv("ECHOY_TEST_QUEUE_DEPTH") ? (unsigned)atoi(getenv("ECHOY_TEST_QUEUE_DEPTH")) : 64;
     if (getenv("ECHOY_TEST_MEASUREMENT")) {
         measurement_test = true;

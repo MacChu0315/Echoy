@@ -39,12 +39,13 @@ class DeviceRuntime(unittest.TestCase):
                  '-DCONFIG_ECHOY_OFFICE_VOICING_TRIAL=0',
                  '-I'+str(HERE/'stubs'),'-I'+str(HERE),'-I'+str(main),
                  str(HERE/'test_runtime.c'),str(HERE/'fakes.c'),
-                 *[str(main/(name+'.c')) for name in ['platform_device','echoy_band','echoy_model','echoy_music','echoy_arrange','echoy_audio','echoy_audio_probe','echoy_device_pcm','echoy_output_measurement']],
+                 *[str(main/(name+'.c')) for name in ['platform_device','echoy_band','echoy_model','echoy_music','echoy_arrange','echoy_audio','echoy_pickup','echoy_audio_probe','echoy_device_pcm','echoy_output_measurement']],
                  '-Wl,--wrap=echoy_output_measurement_analyze',
                  '-Wl,--wrap=echoy_band_action',
                  '-Wl,--wrap=echoy_audio_cut_harmony_bass',
                  '-Wl,--wrap=echoy_band_cut_harmony_bass_job',
                  '-Wl,--wrap=echoy_band_voice_for_speaker_job',
+                 '-Wl,--wrap=echoy_band_prepare_pickup_job',
                  '-Wl,--wrap=echoy_audio_voice_for_speaker',
                  '-Wl,--wrap=fake_log','-Wl,--wrap=xSemaphoreTake','-Wl,--wrap=board_audio_write','-Wl,--wrap=echoy_band_create_configured','-Wl,--wrap=echoy_band_prepare_job','-Wl,--wrap=echoy_band_calibrate_job','-lm','-o',str(cls.binary)]
         if os.environ.get('ECHOY_RUNTIME_SANITIZE')=='1':
@@ -64,6 +65,7 @@ class DeviceRuntime(unittest.TestCase):
         office=[arg.replace('-DCONFIG_ECHOY_OFFICE_VOICING_TRIAL=0','-DCONFIG_ECHOY_OFFICE_VOICING_TRIAL=1')
                    .replace('-DCONFIG_ECHOY_AUDIO_DIAGNOSTICS=1','-DCONFIG_ECHOY_AUDIO_DIAGNOSTICS=0')
                 for arg in normal]
+        office.insert(1,"-DCONFIG_ECHOY_PHRASE_PICKUP=1")
         office[-1]=str(cls.office_binary)
         subprocess.run(office,check=True)
     @classmethod
@@ -124,6 +126,9 @@ class DeviceRuntime(unittest.TestCase):
     def test_harmony_trial_stays_on_worker_and_paused(self):self.run_case('harmony_worker',self.trial_binary)
     def test_harmony_trial_failure_keeps_old_valid_bank(self):self.run_case('harmony_failure',self.trial_binary)
     def test_harmony_trial_stale_job_cannot_play(self):self.run_case('harmony_stale',self.trial_binary)
+    def test_density_owner_rejection_reaches_ui(self):self.run_case('density_rejection')
+    def test_pickup_worker_and_stale_role(self):self.run_case('pickup_worker',self.office_binary)
+    def test_pickup_shutdown_in_flight(self):self.run_case('pickup_stop',self.office_binary)
     def test_office_voicing_disabled_in_ordinary_build(self):self.run_case('office_disabled',self.normal_binary)
     def test_office_all_roles_use_one_voicing_and_office_trims(self):self.run_case('office_roles',self.office_binary)
     def test_office_worker_keeps_old_publication_and_pause(self):self.run_case('office_worker',self.office_binary)

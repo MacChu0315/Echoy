@@ -572,3 +572,15 @@ bool __wrap_echoy_audio_voice_for_speaker(const echoy_plan_t *plan,echoy_audio_l
     if (atomic_exchange(&fake_office_voice_failure,0)) return false;
     return __real_echoy_audio_voice_for_speaker(plan,loops);
 }
+
+atomic_bool fake_pickup_hold, fake_pickup_blocked;
+bool __real_echoy_band_prepare_pickup_job(echoy_band_job_t *);
+bool __wrap_echoy_band_prepare_pickup_job(echoy_band_job_t *job)
+{
+    assert(self && !strcmp(self->name,"echoy_prepare") && self->priority==1);
+    while(atomic_load(&fake_pickup_hold)) {
+        atomic_store(&fake_pickup_blocked,true);fake_sleep_ms(1);
+    }
+    atomic_store(&fake_pickup_blocked,false);
+    return __real_echoy_band_prepare_pickup_job(job);
+}

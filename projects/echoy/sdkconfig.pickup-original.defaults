@@ -1,0 +1,2 @@
+# Regression only: append after the normal application and office-voicing defaults.
+# CONFIG_ECHOY_PHRASE_PICKUP is not set

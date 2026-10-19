@@ -80,3 +80,32 @@ bool echoy_device_pcm_convert(echoy_device_pcm_t *state, const float *source, in
     }
     return true;
 }
+
+void echoy_pickup_pcm_reset(echoy_pickup_pcm_t *state)
+{
+    memset(state,0,sizeof(*state));
+    echoy_device_pcm_reset(&state->processor);
+}
+bool echoy_device_pcm_add_pickup(echoy_pickup_pcm_t *state, const float *source,
+    const uint8_t *gate, int16_t *original, size_t frames)
+{
+    if (!state || !source || !gate || !original) return false;
+    for (size_t i=0; i<frames; ++i)
+        if (!isfinite(source[i]) || fabsf(source[i]) > FLT_MAX/(ECHOY_DEVICE_PCM_GAIN*16)) return false;
+    const int ceiling=(int)floorf(ECHOY_DEVICE_PCM_CEILING*32767);
+    for (size_t i=0; i<frames; ++i) {
+        if (!gate[i]) { state->active=false; continue; }
+        if (!state->active) echoy_device_pcm_reset(&state->processor);
+        state->active=true;
+        int16_t added;
+        echoy_device_pcm_stats_t stats;
+        if (!echoy_device_pcm_convert(&state->processor,source+i,&added,1,&stats)) return false;
+        /* Bound the addition only. Never attenuate an existing base sample,
+         * including an unusually loud cue. Outside the gate bytes are intact. */
+        int base=original[i], delta=added;
+        if (delta>0) { int room=ceiling-base; delta=room>0 ? (delta<room ? delta : room) : 0; }
+        if (delta<0) { int room=-ceiling-base; delta=room<0 ? (delta>room ? delta : room) : 0; }
+        original[i]=(int16_t)(base+delta);
+    }
+    return true;
+}

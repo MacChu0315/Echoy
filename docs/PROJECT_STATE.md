@@ -1,18 +1,25 @@
 # Echoy project state
 
-The v1.1.0 source includes the three-device horizontal-link repair, shared Flash
-calibration, earlier local recording replies, corrected guide and center audition.
-See [release details](releases/v1.1.0.md) for behavior, package identity and checks,
-and [development](development.md) for the pinned environment and test commands.
+## v1.2.0 source
 
-The v1.1.0 source is merged into `master`; the source tag remains unchanged.
-The [GitHub Release](https://github.com/MacChu0315/Echoy/releases/tag/v1.1.0)
-provides the accepted firmware, checksums, installation guide and license
-materials. README download links point to this release. The older v1.0.0
-package remains available as a historical version.
+The accepted phrase pickup, complete battery percentage and richness feedback
+fixes are frozen for v1.2.0, retaining the v1.1.0 three-device repair, early local
+reply, random audition, input guards and office speaker profile. Version
+identifiers and generated About text are unified at 1.2.0; the version-freeze
+step does not change musical or interaction behavior.
 
-Detailed device snapshots, experiment logs and local workspace notes for this
-release are retained privately. Existing published verification records remain
-historical and do not describe the current release unless explicitly referenced.
-The accepted firmware is unchanged by publication cleanup. Unmerged experimental
-features are excluded. Archive branches are frozen, not ongoing state journals.
+The fresh pinned build and release regressions pass. The exact 1.2.0 package
+was installed and validated on three devices while retaining their bootloaders
+and Recovery. The source is squash-merged into `master`; annotated tag
+`v1.2.0` identifies that integrated commit rather than the former local release
+commit. See
+[release details](releases/v1.2.0.md) and [development](development.md) for the
+artifact identity, original-mode switch and validation scope. Private device
+snapshots, local paths and experiment logs remain outside tracked release files.
+
+## Published version
+
+The existing GitHub firmware download remains at v1.1.0. A GitHub Release and
+firmware assets for 1.2.0 have not been published. README links continue to
+point to the available v1.1.0 download until firmware publication is authorized.
+The v1.1.0 and older tags/assets remain unchanged.

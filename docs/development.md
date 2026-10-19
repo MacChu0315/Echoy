@@ -1,9 +1,10 @@
 # Developing Echoy
 
 Run all commands below from the **Echoy repository root**, not this `docs/`
-directory. The v1.1.0 source includes the accepted three-device repair and local
-recording-reply work. See [v1.1.0](releases/v1.1.0.md) for current source/package
-identity and validation. Historical `echoy-three-basic-ba951963754a` and
+directory. The [v1.2.0](releases/v1.2.0.md) source freezes the accepted
+phrase pickup and UI fixes, retaining the v1.1.0 three-device repair and local
+recording-reply work. Firmware publication on GitHub is pending; [v1.1.0](releases/v1.1.0.md)
+remains the published download. Historical `echoy-three-basic-ba951963754a` and
 `echoy-dual-accepted-20261014` tags remain immutable. Unmerged experimental features are excluded from this version.
 
 The examples assume the original workspace layout: Echoy beside a compatible
@@ -67,7 +68,7 @@ python3 ../esp-mosaico-vibe/submodule/esp-mosaico-utils/mosaico-tools/skills/idf
 ```
 
 The portable audio/linkage sources compile for the pinned ESP32-S31 SDK.
-The v1.1.0 code includes speaker output, fixed Flash contact calibration,
+The v1.2.0 code retains speaker output, fixed Flash contact calibration,
 complete horizontal-neighbor admission and the three-device coordinator. Joined
 startup is supported. Targeted recording/following and ABC→BCA were confirmed
 on hardware; this is not exhaustive RF/acoustic qualification. A recorded root
@@ -114,3 +115,32 @@ recorded fonts, fontTools, Pillow and CairoSVG: `python3 tools/generate_scene.py
 Edit the generator rather than its JSON/view-key outputs.
 
 Follow [AGENTS.md](../AGENTS.md) and preserve [third-party notices](../THIRD_PARTY_NOTICES.md).
+
+
+## Phrase pickup regression
+
+The local pickup layer follows the frozen audition reference in
+`reference/opening/`. It does not change relationship or recording plans.
+Firmware enables `CONFIG_ECHOY_PHRASE_PICKUP` by default. For an original-mode
+comparison, disable that option or append `sdkconfig.pickup-original.defaults`
+in a fresh build directory. Keep `sdkconfig.office-voicing-trial.defaults` and
+`CONFIG_ECHOY_OFFICE_VOICING_TRIAL=y` in both configurations.
+
+The native desk retains original playback by default; set
+`ECHOY_PHRASE_PICKUP=1` to exercise the added layer. Existing page layout and
+random center audition are unchanged. Use separate build directories and native
+ports when another development session is running.
+
+```sh
+sh tests/pickup/run.sh
+python3 tests/pickup/compare_retained.py --baseline 8d8ae5f --output output/pickup-reference
+python3 -m unittest discover -s tests/device_runtime -v
+ECHOY_PHRASE_PICKUP=1 python3 tools/check_three_chain.py --build-dir output/build-sim-pickup --output output/pickup-native
+```
+
+Build the native directory before running its check. `tests/pickup/run.sh` covers
+HTML event/mix parity, actual device PCM, published transitions, original
+v1.1.0 audition samples/random state/input guards, and the real three-owner early
+reply (including failure, Pause and already-playing peers). It checks pickup
+artwork against the bank currently sounding, independently of group readiness.
+These checks do not establish speaker listening or physical wireless acceptance.

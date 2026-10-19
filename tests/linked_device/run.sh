@@ -7,5 +7,5 @@ trap 'rm -rf "$peer_build"' EXIT HUP INT TERM
  -I"$root/projects/echoy/main" "$root/tests/linked_device/test_band_peer.c" \
  "$root/projects/echoy/main/echoy_band.c" "$root/projects/echoy/main/echoy_arrange.c" \
  "$root/projects/echoy/main/echoy_model.c" "$root/projects/echoy/main/echoy_music.c" \
- "$root/projects/echoy/main/echoy_audio.c" -lm -o "$peer_build/test_peer"
+ "$root/projects/echoy/main/echoy_audio.c" "$root/projects/echoy/main/echoy_pickup.c" -lm -o "$peer_build/test_peer"
 "$peer_build/test_peer"

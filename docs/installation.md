@@ -56,6 +56,20 @@ and role selections are session state and reset on restart.
    status and the live device before retrying. Do not infer success solely from
    the home screen.
 
+## Local v1.2.0 package
+
+The prepared local `echoy-v1.2.0.irisfw` adds phrase pickup and the battery/slider
+fixes described in [v1.2.0](releases/v1.2.0.md). It is not yet a GitHub download;
+the published v1.1.0 links and checksum above remain valid for that older package.
+
+For the local package, verify SHA-256
+`a0dfee5977225c7c9c868facc47a2d2582ce03022b77fcb02abc007c90e9c39f`
+and use the same official installation workflow with its absolute filename.
+All cooperating devices must use the same package; About should then show
+**1.2.0**. Keep its `SHA256SUMS.txt`, `LICENSE`, `THIRD_PARTY_NOTICES.md` and
+`echoy-v1.2.0-licenses.zip`. Recovery requirements and session-reset behavior are
+unchanged. Do not substitute the v1.1.0 checksum for the v1.2.0 file.
+
 ## Basic operation
 
 - Tap the center to audition the selected role. Slow taps give longer fragments;
