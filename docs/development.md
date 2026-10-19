@@ -1,9 +1,9 @@
 # Developing Echoy
 
 Run all commands below from the **Echoy repository root**, not this `docs/`
-directory. The local [v1.2.0](releases/v1.2.0.md) source freezes the accepted
+directory. The [v1.2.0](releases/v1.2.0.md) source freezes the accepted
 phrase pickup and UI fixes, retaining the v1.1.0 three-device repair and local
-recording-reply work. GitHub publication is pending; [v1.1.0](releases/v1.1.0.md)
+recording-reply work. Firmware publication on GitHub is pending; [v1.1.0](releases/v1.1.0.md)
 remains the published download. Historical `echoy-three-basic-ba951963754a` and
 `echoy-dual-accepted-20261014` tags remain immutable. Unmerged experimental features are excluded from this version.
 
