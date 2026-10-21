@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 root=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
-bsp="$root/../esp-mosaico-vibe/submodule/esp-mosaico-bsp/components"
+bsp="$root/../esp-mosaico-vibe-iris02/submodule/esp-mosaico-bsp/components"
 transaction_build=$(mktemp -d /tmp/echoy-transaction-tests.XXXXXX)
 trap 'rm -rf "$transaction_build"' EXIT HUP INT TERM
 "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -g -O1 ${TRANSACTION_TEST_CFLAGS:-} \

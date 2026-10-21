@@ -90,7 +90,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("output", type=Path, help="new local capture directory")
     parser.add_argument("--device-id", required=True)
-    parser.add_argument("--mosaico", type=Path, default=ROOT.parent / "esp-mosaico-vibe/mosaico.py")
+    parser.add_argument("--mosaico", type=Path, default=ROOT.parent / "esp-mosaico-vibe-iris02/mosaico.py")
     parser.add_argument("--project", type=Path, default=ROOT / "projects/echoy")
     args = parser.parse_args()
     if len(args.device_id) != 32 or any(c not in "0123456789abcdef" for c in args.device_id):

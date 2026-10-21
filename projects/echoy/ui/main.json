@@ -5487,14 +5487,14 @@
       "y": 298,
       "w": 230,
       "h": 28,
-      "text": "1.2.0",
+      "text": "1.2.1",
       "font_size": 17,
       "fg_color": "#34392f",
       "text_align": "right",
       "font": "fonts/NotoSansSC-Regular.otf",
       "bind": "info_value_version",
       "bind_target": "text",
-      "font_charset": "1.2.0 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%._+-电脑模拟本地构建模拟电量未知"
+      "font_charset": "1.2.1 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%._+-电脑模拟本地构建模拟电量未知"
     },
     {
       "type": "label",
@@ -5614,14 +5614,14 @@
       "y": 298,
       "w": 230,
       "h": 28,
-      "text": "1.2.0",
+      "text": "1.2.1",
       "font_size": 17,
       "fg_color": "#34392f",
       "text_align": "right",
       "font": "fonts/LiberationSans-Regular.ttf",
       "bind": "info_value_version_en",
       "bind_target": "text",
-      "font_charset": "1.2.0 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%._+-"
+      "font_charset": "1.2.1 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%._+-"
     },
     {
       "type": "label",

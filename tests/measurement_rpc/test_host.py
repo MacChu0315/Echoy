@@ -34,7 +34,7 @@ class HostTests(unittest.TestCase):
         self.stale = False
         self.identity_id = host.RIGHT_DEVICE_ID
         self.identity_extra = dict(firmware_mode="normal", board_id="esp-mosaico",
-                                   layout_id="mosaico-retained-recovery-2m-v1",
+                                   layout_id="mosaico-retained-test-2m-v2",
                                    queue=dict(device_id=host.RIGHT_DEVICE_ID, running=[], queued=[]))
         self.fail_start = False
         self.expected_start_gain = 0
@@ -207,6 +207,7 @@ class HostTests(unittest.TestCase):
     def test_wrong_mode_board_layout_or_busy_gateway_does_not_consume_attempt(self):
         mutations = [dict(firmware_mode="recovery"), dict(board_id="other-board"),
                      dict(layout_id="other-layout"),
+                     dict(layout_id="mosaico-retained-recovery-2m-v1"),
                      dict(queue=dict(device_id=host.RIGHT_DEVICE_ID, running=["upload"], queued=[])),
                      dict(queue=dict(device_id=host.RIGHT_DEVICE_ID, running=[], queued=["restart"])),
                      dict(queue=dict(device_id=host.RIGHT_DEVICE_ID, running=[])),

@@ -2,7 +2,7 @@
 set -eu
 ulimit -c 0
 root=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
-bsp="$root/../esp-mosaico-vibe/submodule/esp-mosaico-bsp/components"
+bsp="$root/../esp-mosaico-vibe-iris02/submodule/esp-mosaico-bsp/components"
 contact_build=$(mktemp -d /tmp/echoy-horizontal.XXXXXX)
 trap 'rm -rf "$contact_build"' EXIT HUP INT TERM
 "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -Wno-unused-variable -g -O1 ${CONTACT_TEST_CFLAGS:-} \

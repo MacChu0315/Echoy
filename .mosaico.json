@@ -1,13 +1,13 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "workspace": {
     "projects_dir": "projects",
-    "init_template": "../esp-mosaico-vibe/submodule/esp-mosaico-utils/mosaico-tools/templates/hello_world/mosaico-template.json",
+    "init_template": "../esp-mosaico-vibe-iris02/submodule/esp-mosaico-utils/mosaico-tools/templates/hello_world/mosaico-template.json",
     "run_dir": ".codex-runs/mosaico"
   },
   "dependencies": {
-    "bsp": "../esp-mosaico-vibe/submodule/esp-mosaico-bsp",
-    "esp_iris": "../esp-mosaico-vibe/submodule/esp-mosaico-utils/ESP-Iris"
+    "bsp": "../esp-mosaico-vibe-iris02/submodule/esp-mosaico-bsp",
+    "esp_iris": "../esp-mosaico-vibe-iris02/submodule/esp-mosaico-utils/ESP-Iris"
   },
   "build": {
     "runner": "builtin"

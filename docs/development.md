@@ -1,5 +1,9 @@
 # Developing Echoy
 
+This branch prepares a local **1.2.1 / Iris 0.2 migration candidate**. See
+[migration scope and device approval gate](iris-0.2-migration.md). It is not
+a replacement for the accepted v1.2.0 firmware until physical validation.
+
 Run all commands below from the **Echoy repository root**, not this `docs/`
 directory. The [v1.2.0](releases/v1.2.0.md) source freezes the accepted
 phrase pickup and UI fixes, retaining the v1.1.0 three-device repair and local
@@ -8,7 +12,7 @@ remains the published download. Historical `echoy-three-basic-ba951963754a` and
 `echoy-dual-accepted-20261014` tags remain immutable. Unmerged experimental features are excluded from this version.
 
 The examples assume the original workspace layout: Echoy beside a compatible
-`esp-mosaico-vibe` checkout and the pinned `.toolchains/` directory. A clone of
+`esp-mosaico-vibe-iris02` checkout and the pinned `.toolchains/` directory. A clone of
 Echoy alone does not install that SDK, BSP, GSP compiler, simulator or host audio
 tools. Follow the official Mosaico workspace setup and resolve the versions in
 [dependencies.json](dependencies.json) before running these commands. This README
@@ -64,7 +68,7 @@ Versions remain pinned in [dependency pins](dependencies.json).
 export IDF_PATH="$PWD/../.toolchains/esp-idf-7b9cc1a"
 export GSPC_EXECUTABLE="$PWD/../.toolchains/gspc-0.6.1/gspc"
 export GSP_SIM_EXECUTABLE="$PWD/../.toolchains/gsp-sim-1.5.1/sim"
-python3 ../esp-mosaico-vibe/submodule/esp-mosaico-utils/mosaico-tools/skills/idf-low-noise-build/scripts/idf_low_noise_build.py --project projects/echoy build
+python3 ../esp-mosaico-vibe-iris02/submodule/esp-mosaico-utils/mosaico-tools/skills/idf-low-noise-build/scripts/idf_low_noise_build.py --project projects/echoy build
 ```
 
 The portable audio/linkage sources compile for the pinned ESP32-S31 SDK.

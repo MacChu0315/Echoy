@@ -1,7 +1,7 @@
 {
-  "vibe": "95469e63b621fc6ece3b0e313af8c1ba59dcd066",
-  "utils": "fc63d43f3ac72aa54e701b07b07fbed07a16b3ca",
-  "bsp": "a2c985ad698b3f04a21c63e006b43e7e948bc1d7",
+  "vibe": "849e3d046b9441409d4ce5754eb249c9495f2db5",
+  "utils": "632adc76c11643cce7147c031ad9583a2bedd17e",
+  "bsp": "5f88b91e1be055d1d3674364123b2779a1758377",
   "esp_idf": "7b9cc1ac79f865983f59bb8ff3ff43eb74ff1dbe",
   "target": "esp32s31",
   "esp_gsp": "1.5.1",
