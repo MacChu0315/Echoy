@@ -58,3 +58,5 @@ history, so stale README claims do not contradict the accepted version.
 When sharing a skills-only package, export an explicit file allowlist into a
 separate checkout. Inspect its diff/history before pushing; an otherwise small
 commit on the application branch can expose the entire application ancestry.
+
+For a compact archive or user-chosen stopping point, read [review handoff](references/review-handoff.md); installed source and evidence commits can differ.

@@ -52,3 +52,5 @@ Compare equivalent states at the device resolution, including relevant languages
 and reduced-motion settings. Report executed input flows, localized visual
 differences and unresolved device checks. Simulator callbacks cannot establish
 physical touch latency, battery behavior, speaker output or wireless timing.
+
+For checkpoint capture, asset generation or stale build selectors, read [capture, assets and effective configuration](references/capture-and-assets.md).

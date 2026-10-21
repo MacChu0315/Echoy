@@ -1,4 +1,4 @@
-"""Portable, offline structure checks for all eight distributed skills.
+"""Portable, offline structure checks for all nine distributed skills.
 
 This is not a YAML certification, client discovery test or behavioral evaluation.
 """
@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ENGINEERING = {
     'mosaico-gsp-parity', 'mosaico-runtime-performance',
     'mosaico-peer-cooperation', 'mosaico-audio-validation',
-    'mosaico-release-evidence',
+    'mosaico-release-evidence', 'mosaico-realtime-input',
 }
 
 

@@ -57,3 +57,5 @@ Report baseline and candidate identity, stage measurements, resource margins,
 behavior checks and remaining uncertainty. Different hand-played inputs support
 an observed improvement, not a controlled percentage speedup. Host tests cannot
 establish FreeRTOS scheduling, PSRAM bandwidth or physical DMA margins.
+
+For dynamic Canvas/frame-rate work, read [rendering measurements and exact caches](references/rendering.md); distinguish active workload rates from cheap sleeping frames.

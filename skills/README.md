@@ -1,6 +1,6 @@
 # Mosaico 体验与设计技能
 
-全部 8 项技能与选择方式见[统一入口](../README.md)，工程技能见[工程分组](../.agents/skills/README.md)。
+全部 9 项技能与选择方式见[统一入口](../README.md)，工程技能见[工程分组](../.agents/skills/README.md)。
 
 **技能包 v0.1.0 是试用版，不是 Echoy 产品版本或最终固件归档。** 本包来自已审议的项目讨论与原型复核提炼稿。
 
@@ -14,7 +14,7 @@
 
 ## 与仓库原有技能的关系
 
-五项工程技能仍在 `.agents/skills/`，与本组统一在 `skills/mosaico-development` 分支维护；本次不修改技能正文。这三项暂存于 `skills/`，不会自动安装或覆盖现有技能。状态设计负责产品语义和用户意图；已有 `mosaico-peer-cooperation` 侧重协作实现／调试，两者不需要每次同时加载。
+六项工程技能位于 `.agents/skills/`，与本组统一在独立 `mosaico-dev-skills` 库维护；本组 3 项技能正文未改。这三项暂存于 `skills/`，不会自动安装或覆盖现有技能。状态设计负责产品语义和用户意图；已有 `mosaico-peer-cooperation` 侧重协作实现／调试，两者不需要每次同时加载。
 
 ## 使用
 
@@ -32,4 +32,4 @@ python -m unittest discover -s tests -v
 
 检查文件组织、约定格式、内部引用、自包含性和评估案例结构，无第三方依赖。**独立 agent 的有／无 skill 行为对照未执行。** 包检查通过不代表任务成功率提升，也不代表产品 UI、固件或硬件验收通过。
 
-见 [验证记录](../docs/mosaico-skills-verification.md) 和 [行为评估方法](../evals/mosaico-experience/README.md)。完整聊天、旧原型与最终工程未复制进本分支。本次结构检查已覆盖全部 8 项技能，见[整理验证记录](../docs/skills-consolidation.md)；历史 v0.1.0 检查仅覆盖本组 3 项，独立行为对照仍未执行。
+见 [验证记录](../docs/mosaico-skills-verification.md) 和 [行为评估方法](../evals/mosaico-experience/README.md)。完整聊天、旧原型与最终工程未复制进本分支。本次结构检查已覆盖全部 9 项技能，见[整理验证记录](../docs/skills-consolidation.md)；历史 v0.1.0 检查仅覆盖本组 3 项，独立行为对照仍未执行。

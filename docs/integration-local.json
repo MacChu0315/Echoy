@@ -1,0 +1,12 @@
+{
+  "echoy_commit": "93708358381ed625c639f7cd413ed05ee93f9ca3",
+  "skills_commit": "df553e23ad501f529e1ffaad75c3f09a794f2a1e",
+  "scope": "Fresh depth1 file-transport recursive clone of actual local Echoy integration branch; not remote GitHub clone",
+  "unit_tests": 16,
+  "engineering_links": 6,
+  "submodule_mode": "160000",
+  "skills_symlink_mode": "120000",
+  "parent_clean": true,
+  "module_clean": true,
+  "exit_code": 0
+}

@@ -1,0 +1,145 @@
+{
+  "echoy_skills_commit": "033a3fba4b9d4bc8af7707942abddcd604ee857a",
+  "files": [
+    {
+      "path": ".agents/skills/README.md",
+      "source_sha256": "5412477c583a86a4b867f2b0c8a0b5da9c006b61b0bd8041b42175426b22d974",
+      "current_sha256": "7c5e872a3b0b85717e2b064c6e94db42cf62b66f1a4db9c05ebd10f21c6bd919",
+      "unchanged": false
+    },
+    {
+      "path": ".agents/skills/VALIDATION.md",
+      "source_sha256": "3611ee94a6771a9fe3f95790d7b5f00db4d1e537c6cd0ab0414935f75b3ff877",
+      "current_sha256": "3611ee94a6771a9fe3f95790d7b5f00db4d1e537c6cd0ab0414935f75b3ff877",
+      "unchanged": true
+    },
+    {
+      "path": ".agents/skills/mosaico-audio-validation/SKILL.md",
+      "source_sha256": "f5e71ff1734cc324788a4983f1da5dcd251ddda216b38519422d5877cc865764",
+      "current_sha256": "f5e71ff1734cc324788a4983f1da5dcd251ddda216b38519422d5877cc865764",
+      "unchanged": true
+    },
+    {
+      "path": ".agents/skills/mosaico-gsp-parity/SKILL.md",
+      "source_sha256": "a4baed446c8d0d427a38206acbd9c9841612f774c9346721ed53f42b899799ed",
+      "current_sha256": "dd4e1a6783db338588394497c9b4e78f8ad4a243b27c19799ebc5f273e04f553",
+      "unchanged": false
+    },
+    {
+      "path": ".agents/skills/mosaico-peer-cooperation/SKILL.md",
+      "source_sha256": "390627049fe0881c30d163ec24a994bed3a3248cf6d17878b414140b09d4dddf",
+      "current_sha256": "390627049fe0881c30d163ec24a994bed3a3248cf6d17878b414140b09d4dddf",
+      "unchanged": true
+    },
+    {
+      "path": ".agents/skills/mosaico-release-evidence/SKILL.md",
+      "source_sha256": "efe71eb8e93bd49befe032065aad9b35bc5bf89878c55b829f9545c3c7b95d7a",
+      "current_sha256": "244a89fc998b0fa5e4b81309a49d26a65926957de8f4b98199d4df7d264ef6a9",
+      "unchanged": false
+    },
+    {
+      "path": ".agents/skills/mosaico-release-evidence/references/acceptance-record.md",
+      "source_sha256": "362e08591c7fd8a96a4aed2dc7f34b6fa913621d99b9f48074cd8ced6fa1508b",
+      "current_sha256": "362e08591c7fd8a96a4aed2dc7f34b6fa913621d99b9f48074cd8ced6fa1508b",
+      "unchanged": true
+    },
+    {
+      "path": ".agents/skills/mosaico-runtime-performance/SKILL.md",
+      "source_sha256": "232d8f8e1967dc65884f5730bdc265acb8df3fd16c02a03f65d30ba8e9d11990",
+      "current_sha256": "362f569f9193bf7bf4313e5b043cdf30d8ccea25fa2bfff4b71facbcb9435995",
+      "unchanged": false
+    },
+    {
+      "path": ".gitignore",
+      "source_sha256": "6feaded4e28ea86e001a6751b4e3d960e8b7c31b9616ff9936b79297086e809b",
+      "current_sha256": "6feaded4e28ea86e001a6751b4e3d960e8b7c31b9616ff9936b79297086e809b",
+      "unchanged": true
+    },
+    {
+      "path": "README.md",
+      "source_sha256": "ca163c54f77a4712f8f04eb6c0d556281a275786f914f27cbe7a4eb587c03929",
+      "current_sha256": "72f02a491f366c9a3cc8801b81ac5275462029c5587b9827943db3e9b71e6f56",
+      "unchanged": false
+    },
+    {
+      "path": "docs/mosaico-skills-verification.md",
+      "source_sha256": "d41bc91bab70c52a8eba3ba33b1a9d7f7650f7c7ce869bc32e3b2a0e4792d88d",
+      "current_sha256": "d41bc91bab70c52a8eba3ba33b1a9d7f7650f7c7ce869bc32e3b2a0e4792d88d",
+      "unchanged": true
+    },
+    {
+      "path": "docs/skills-consolidation.md",
+      "source_sha256": "5151379f01d6632c32b29ac203f3dd9a5af0ebfa29fa6cb510c2cae312069d7c",
+      "current_sha256": "5151379f01d6632c32b29ac203f3dd9a5af0ebfa29fa6cb510c2cae312069d7c",
+      "unchanged": true
+    },
+    {
+      "path": "evals/mosaico-experience/README.md",
+      "source_sha256": "ef79e522a3c39797df7dcb763efa44af689472e8d169c6f80d1706b27fc2b8be",
+      "current_sha256": "ef79e522a3c39797df7dcb763efa44af689472e8d169c6f80d1706b27fc2b8be",
+      "unchanged": true
+    },
+    {
+      "path": "evals/mosaico-experience/cases.json",
+      "source_sha256": "eab5e0ae3f7a4472dbdc51e4c93ff5082771bf04007f1264fcb652422ef50bd7",
+      "current_sha256": "eab5e0ae3f7a4472dbdc51e4c93ff5082771bf04007f1264fcb652422ef50bd7",
+      "unchanged": true
+    },
+    {
+      "path": "skills/README.md",
+      "source_sha256": "c0fbdc4a7f2dc6784737f36d54e5086427c9aaeb9f8b3f072e4def2be477966b",
+      "current_sha256": "b793b9870a229ebaebe355df9057a166a94c3768207bb31d2fcb169a3edc525c",
+      "unchanged": false
+    },
+    {
+      "path": "skills/iterating-mosaico-ui/SKILL.md",
+      "source_sha256": "24f862df684e4f61da70e50a0a360b2154d84cceb6d00ee7fd4a955b1fe96e42",
+      "current_sha256": "24f862df684e4f61da70e50a0a360b2154d84cceb6d00ee7fd4a955b1fe96e42",
+      "unchanged": true
+    },
+    {
+      "path": "skills/iterating-mosaico-ui/references/ui-review-cases.md",
+      "source_sha256": "10e08d971fba3d32b89340f4aa0b2b8739cd4a2fd0c34fedcb3fe9d85fb8494a",
+      "current_sha256": "10e08d971fba3d32b89340f4aa0b2b8739cd4a2fd0c34fedcb3fe9d85fb8494a",
+      "unchanged": true
+    },
+    {
+      "path": "skills/modeling-mosaico-multi-device-interactions/SKILL.md",
+      "source_sha256": "7d4f6bae1aabd7b863fd9b4337b523de8214c0219975eb639bf881ec26363f42",
+      "current_sha256": "7d4f6bae1aabd7b863fd9b4337b523de8214c0219975eb639bf881ec26363f42",
+      "unchanged": true
+    },
+    {
+      "path": "skills/modeling-mosaico-multi-device-interactions/references/state-sequences.md",
+      "source_sha256": "c0e6eacc814fdd9d94a7b62b9a57b1c9a49beede34e8ebc9506556384b2a315b",
+      "current_sha256": "c0e6eacc814fdd9d94a7b62b9a57b1c9a49beede34e8ebc9506556384b2a315b",
+      "unchanged": true
+    },
+    {
+      "path": "skills/prototyping-mosaico-experiences/SKILL.md",
+      "source_sha256": "aceb24e25c1d7a6f0bcf40448e0873b818b9dfcb819f18529b7b0b7e1c9edb2d",
+      "current_sha256": "aceb24e25c1d7a6f0bcf40448e0873b818b9dfcb819f18529b7b0b7e1c9edb2d",
+      "unchanged": true
+    },
+    {
+      "path": "skills/prototyping-mosaico-experiences/references/experience-and-handoff.md",
+      "source_sha256": "b1105df799c5a650f3da9d0365c9dd4d76c9ca63e665baf81a03e71843abcd4c",
+      "current_sha256": "b1105df799c5a650f3da9d0365c9dd4d76c9ca63e665baf81a03e71843abcd4c",
+      "unchanged": true
+    },
+    {
+      "path": "tests/test_mosaico_skills.py",
+      "source_sha256": "f4be9c9b452c45206597815ec218df2e83fa2ceaa683f58e01c356ac7621f6fa",
+      "current_sha256": "f4be9c9b452c45206597815ec218df2e83fa2ceaa683f58e01c356ac7621f6fa",
+      "unchanged": true
+    },
+    {
+      "path": "tests/test_skill_catalog.py",
+      "source_sha256": "534ee2ec2eae746f10e465993f4c3666b8725fa5fd5b2d61aa4c7a3f63aec138",
+      "current_sha256": "5922787bca51590f1e7e1e00ee3408803033385fba86b935b3bab61a9d18f032",
+      "unchanged": false
+    }
+  ],
+  "imported_library_commit": "8958188444ef5ab0050c3d2901db794097ef2eef",
+  "current_distribution": "MacChu0315/Echoy:skills/mosaico-development"
+}
