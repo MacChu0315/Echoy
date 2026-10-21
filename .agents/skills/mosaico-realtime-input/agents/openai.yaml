@@ -1,4 +1,0 @@
-interface:
-  display_name: "Mosaico 实时输入与回放"
-  short_description: "Shared sensor processing, freshness and replay"
-  default_prompt: "Use $mosaico-realtime-input to verify this project's sensor-to-behavior pipeline and replay semantics."

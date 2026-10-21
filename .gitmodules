@@ -1,0 +1,4 @@
+[submodule "mosaico-dev-skills"]
+	path = mosaico-dev-skills
+	url = https://github.com/MacChu0315/mosaico-dev-skills.git
+	branch = main
