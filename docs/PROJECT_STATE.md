@@ -5,8 +5,10 @@
 This branch prepares version 1.2.1 against a pinned matching Iris/Vibe Mode 0.2
 workspace, preserving the accepted v1.2.0 application behavior. The candidate
 build, offline package checks, C/PCM regressions and native three-owner checks
-pass. No device transition or platform upload has been performed. See [migration details](iris-0.2-migration.md) for the changed
-contracts and the approval required before the first device transition.
+pass. The 1.2.1 candidate was successfully saved as a Mosaico platform draft;
+it has not been submitted for review. No device transition has been performed.
+See [migration details](iris-0.2-migration.md) for the changed contracts and the
+approval required before the first device transition.
 
 ## v1.2.0 source
 
