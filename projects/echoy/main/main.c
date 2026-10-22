@@ -61,10 +61,15 @@ static bool set_brightness(void *ctx, unsigned percent)
 
 void app_main(void)
 {
+    /* Echoy has no haptics. Take ownership of the motor before any slow or
+     * fallible startup work instead of inheriting another firmware's output. */
+    const esp_err_t motor_error = bsp_motor_set(false);
     ESP_ERROR_CHECK_WITHOUT_ABORT(esp_iris_boot_probe());
     /* Keep Recovery reachable even when the external UI image is absent or
      * invalid. */
     iris_ota_support_start();
+    CHECK_START(motor_error);
+    ESP_LOGI(TAG, "Motor disabled for Echoy");
     CHECK_START(nvs_flash_init());
 
     esp_gsp_config_t app_config;

@@ -4,16 +4,26 @@
 
 void app_main(void);
 static bool rendering, in_ui_callback, ready, audio, healthy;
+static bool motor_on = true, motor_attempted, motor_off_before_iris, iris_started, powered;
 static unsigned brightness_calls, fail_level, fail_remaining;
 static int actual_brightness = -1;
 static echoy_platform_t captured;
 static const char *test_case;
 
 esp_err_t esp_iris_boot_probe(void) { return ESP_OK; }
-void iris_ota_support_start(void) {}
+esp_err_t bsp_motor_set(bool on)
+{
+    motor_attempted = true;
+    assert(!iris_started && !powered);
+    if (!strcmp(test_case,"motor_failure")) return ESP_FAIL;
+    motor_on = on;
+    return ESP_OK;
+}
+void iris_ota_support_start(void) { motor_off_before_iris = !motor_on; iris_started = true; }
 esp_err_t nvs_flash_init(void) { return ESP_OK; }
-esp_err_t ui_bundle_open(esp_gsp_config_t *p) { (void)p; return ESP_OK; }
-esp_err_t bsp_power_init(void) { return ESP_OK; }
+esp_err_t ui_bundle_open(esp_gsp_config_t *p)
+{ (void)p; return strcmp(test_case,"bundle_failure") ? ESP_OK : ESP_FAIL; }
+esp_err_t bsp_power_init(void) { powered = true; return ESP_OK; }
 esp_err_t bsp_i2c_init(void) { return ESP_OK; }
 esp_err_t board_display_init(esp_display_present_target_config_t *p) { (void)p; return ESP_OK; }
 esp_err_t bsp_display_brightness_set(int level)
@@ -69,7 +79,12 @@ int main(int argc, char **argv)
     assert(argc == 2); test_case = argv[1];
     if (!strcmp(test_case,"initial_failure")) { fail_level = 100; fail_remaining = 1; }
     app_main();
-    if (!strcmp(test_case,"initial_failure")) {
+    assert(motor_attempted && iris_started);
+    if (!strcmp(test_case,"motor_failure")) {
+        assert(!powered && !rendering && !audio && !healthy && !ready);
+    } else if (!strcmp(test_case,"bundle_failure")) {
+        assert(!powered && !rendering && !audio && !healthy && !ready);
+    } else if (!strcmp(test_case,"initial_failure")) {
         assert(!rendering && !audio && !healthy && !ready);
         assert(actual_brightness == -1);
     } else if (!strcmp(test_case,"radio_failure") || !strcmp(test_case,"health_failure")) {
@@ -87,5 +102,6 @@ int main(int argc, char **argv)
         assert(captured.set_brightness(NULL,60) && actual_brightness == 60);
         assert(brightness_calls == 4);
     }
+    if (strcmp(test_case,"motor_failure")) assert(!motor_on && motor_off_before_iris);
     puts("PASS startup ordering and brightness ownership");
 }

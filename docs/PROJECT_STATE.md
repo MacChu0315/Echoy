@@ -18,11 +18,17 @@ I2S interrupts are now IRAM-safe, with a compile guard and bundle validation.
 Audio buffers, deadlines, musical synthesis and UI behavior are unchanged.
 
 The rebuilt 1.2.1 candidate passed the official installation/healthy check on
-one device with the reviewed Vibe Mode 0.2.0 base. Four new startup tests, 54
+one device with the reviewed Vibe Mode 0.2.0 base. Six startup tests, 54
 device-runtime tests and the board-audio checks pass. The original faulty
 archive remains preserved. The fixed candidate and validation boundaries are
 listed in [migration details](iris-0.2-migration.md). Final physical interaction,
 listening and multi-device acceptance remain separate from startup acceptance.
+
+The user subsequently reported continuous vibration. Echoy had no motor
+initialization despite having no haptic feature. It now explicitly disables the
+motor before other startup work; failure keeps Iris available and stops the
+application. The replacement candidate passed healthy installation, and the
+user confirmed that continuous vibration stopped after returning to Echoy.
 
 Vibe Mode independently reports LittleFS `Corrupted dir pair at {0x0, 0x1}`
 and mount error `-84`. A bounded metadata probe found nonempty NAND data without

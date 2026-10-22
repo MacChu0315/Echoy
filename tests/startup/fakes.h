@@ -45,6 +45,7 @@ typedef struct {
 typedef struct { const char *version; } esp_app_desc_t;
 
 esp_err_t esp_iris_boot_probe(void);
+esp_err_t bsp_motor_set(bool);
 void iris_ota_support_start(void);
 esp_err_t nvs_flash_init(void);
 esp_err_t ui_bundle_open(esp_gsp_config_t *);

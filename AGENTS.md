@@ -14,6 +14,9 @@
 - Set initial panel brightness before GSP starts; do not race main-task panel
   commands with rendering. Keep display scratch in PSRAM and I2S interrupts
   IRAM-safe during the host's post-HEALTHY Flash inventory reads.
+- Echoy has no haptics: explicitly disable the motor at app entry, including
+  early-failure paths. A shutdown error must preserve Iris access and stop
+  further application startup.
 - Validate UI behavior with actual C callbacks in the matching official native
   simulator. Scene-only rendering and UI-only audio models are insufficient.
 - Recording captures touch timing, not microphone audio. Preserve initial rests,

@@ -49,6 +49,12 @@ class Startup(unittest.TestCase):
     def test_health_failure_keeps_audio_inactive(self):
         self.check_case("health_failure")
 
+    def test_inherited_motor_is_off_even_when_ui_bundle_is_invalid(self):
+        self.check_case("bundle_failure")
+
+    def test_motor_shutdown_failure_keeps_recovery_and_stops_app(self):
+        self.check_case("motor_failure")
+
     def check_case(self, case):
         result = subprocess.run([str(self.binary), case], capture_output=True, text=True, timeout=5)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)

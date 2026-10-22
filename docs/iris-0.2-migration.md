@@ -54,8 +54,8 @@ host Python for `ESP_IRIS_PYTHON` and for the artifact checker:
 ```sh
 "$IRIS_PYTHON" tools/check_iris_bundle.py \
   --utils ../esp-mosaico-vibe-iris02/submodule/esp-mosaico-utils \
-  --build-dir output/iris02/build-startup-fix \
-  --bundle output/iris02/build-startup-fix/echoy-system-update.irisfw
+  --build-dir output/iris02/build-motor-off \
+  --bundle output/iris02/build-motor-off/echoy-system-update.irisfw
 ```
 
 The checker uses the official Iris parser and verifies actual application/ELF
@@ -91,15 +91,20 @@ internal DMA memory for Wi-Fi initialization. IRAM-safe I2S interrupts preserve
 audio service while the host verifies Flash inventory after HEALTHY; audio
 deadlines and queue sizes are not relaxed.
 
+Echoy also explicitly disables its unused motor at app entry, before slow or
+fallible initialization. A motor shutdown failure retains Iris access but stops
+further application startup. The user confirmed that this replacement stops the
+continuous vibration observed with the earlier startup-only correction.
+
 The fixed 1.2.1 candidate was freshly built with the pinned dependencies and
 passed the official bundle checker and single-device healthy installation.
-Four startup lifecycle tests, 54 device-runtime tests and the board-audio checks
+Six startup lifecycle tests, 54 device-runtime tests and the board-audio checks
 pass. The bundle checker rejects the old configuration without IRAM-safe I2S.
 Temporary diagnostic RPCs and allocation probes are excluded from this package.
 
 Fixed archive SHA-256:
-`c98697dbd78f610e46bf7b686afe159a9b05066b6f81253ab18786f51cd96690`.
-The local artifact is `output/iris02/artifacts/echoy-v1.2.1-iris02-fixed.irisfw`.
+`e4f5d0ae2c98f36383d9e0ed24eb0590df6113d86f612e19b0ac0bff2fbbcfc5`.
+The local artifact is `output/iris02/artifacts/echoy-v1.2.1-iris02-motor-off.irisfw`.
 It has not replaced the platform attachment or been submitted for review.
 Vibe Mode's separate NAND/LittleFS mount failure remains unresolved; no medium
 format or erase is included. Startup acceptance is not full physical audio,
