@@ -5,10 +5,28 @@
 This branch prepares version 1.2.1 against a pinned matching Iris/Vibe Mode 0.2
 workspace, preserving the accepted v1.2.0 application behavior. The candidate
 build, offline package checks, C/PCM regressions and native three-owner checks
-pass. The 1.2.1 candidate was successfully saved as a Mosaico platform draft;
-it has not been submitted for review. No device transition has been performed.
+pass. The 1.2.1 candidate was saved as a Mosaico platform draft; the user has
+since reported that platform review rejected it for startup/memory, rendering
+and LittleFS failures.
+
+An authorized single-device test on 2026-10-22 installed the reviewed Vibe Mode
+0.2.0 base and the exact uploaded candidate. The application image was written,
+but its 45-second healthy-acceptance check failed. Live identity confirmed
+Echoy 1.2.1 and the expected ELF hash. All 36 rendering samples from approximately
+8 to 183 seconds after boot reported 0.0 fps; the screen was incomplete, and the post-startup snapshot
+RPC was unavailable. No valid retained core dump or `ESP_ERR_NO_MEM` was observed
+in the captured evidence; the precise application stall remains unlocalized.
+
+The device successfully returned to Vibe Mode 0.2.0. That boot separately
+reported LittleFS `Corrupted dir pair at {0x0, 0x1}` and mount error `-84`.
+Its cause and relation to the review environment remain unverified. No storage
+format or application fix was performed. The candidate is not physically
+accepted; recording, audio, touch and multi-device acceptance remain pending.
+Private device identities, logs, screenshots and the scoped ongoing device
+authorization are retained in ignored local evidence, outside release content.
 See [migration details](iris-0.2-migration.md) for the changed contracts and the
-approval required before the first device transition.
+device-transition procedure. Further device work must use its applicable task
+authorization.
 
 ## v1.2.0 source
 
