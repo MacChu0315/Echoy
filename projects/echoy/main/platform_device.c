@@ -38,6 +38,15 @@
 #define COMMAND_COUNT 32
 #define DIAGNOSTIC_BYTES 512
 #define OWNER_TRACE_ROWS 16u
+#define AUDIO_OWNER_PRIORITY 6
+#ifdef ESP_PLATFORM
+_Static_assert(AUDIO_OWNER_PRIORITY > CONFIG_ESP_IRIS_TASK_PRIORITY,
+               "PCM owner must preempt Iris worker and service tasks");
+_Static_assert(AUDIO_OWNER_PRIORITY > CONFIG_ESP_GSP_RENDER_TASK_PRIORITY,
+               "PCM owner must preempt rendering");
+_Static_assert(AUDIO_OWNER_PRIORITY < configMAX_PRIORITIES,
+               "PCM owner priority must fit the RTOS configuration");
+#endif
 static const char *TAG = "echoy_device";
 #if CONFIG_ECHOY_OUTPUT_MEASUREMENT
 /* A stopped/recreated runtime must not reset the authorization's boot budget. */
@@ -1354,14 +1363,16 @@ esp_err_t echoy_device_start(echoy_device_handle_t *out, echoy_platform_t *platf
         release_context(d);
         return ESP_ERR_NO_MEM;
     }
-    /* Floating-point tasks become core-affine on this port. Choose the core
-     * explicitly before the first FP operation: Wi-Fi runs at priority 23 on
-     * core 0, while this uninterrupted PCM owner must outrank UI on core 1. */
+    /* Floating-point tasks become core-affine on this port. Wi-Fi runs at
+     * priority 23 on core 0. On core 1, preempt GSP and the pinned TinyUSB /
+     * Iris workers (priority 5): an equal-priority 10 ms time slice consumes
+     * a complete PCM block even when its DMA completion is already queued. */
 #ifdef ESP_PLATFORM
     BaseType_t owner_created = xTaskCreatePinnedToCore(
-        owner_worker, "echoy_audio", 12288, d, 5, &d->owner_task, 1);
+        owner_worker, "echoy_audio", 12288, d, AUDIO_OWNER_PRIORITY, &d->owner_task, 1);
 #else
-    BaseType_t owner_created = xTaskCreate(owner_worker, "echoy_audio", 12288, d, 5, &d->owner_task);
+    BaseType_t owner_created = xTaskCreate(owner_worker, "echoy_audio", 12288, d,
+                                          AUDIO_OWNER_PRIORITY, &d->owner_task);
 #endif
     if (owner_created != pdPASS) {
         atomic_store(&d->stopping, true);

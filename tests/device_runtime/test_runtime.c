@@ -474,6 +474,18 @@ static void missed_deadline(void)
     puts("PASS output deadline miss faults instead of writing catch-up blocks");
 }
 
+static void audio_owner_priority(void)
+{
+    echoy_device_handle_t d;
+    start(&d);
+    /* Pinned Iris worker/service and TinyUSB tasks run at priority 5.
+     * A 10 ms equal-priority time slice consumes a complete PCM block. */
+    assert(fake_task_priority("echoy_audio") > 5);
+    assert(fake_task_priority("echoy_audio") > fake_task_priority("echoy_prepare"));
+    stop(&d);
+    puts("PASS PCM owner preempts the pinned USB and Iris service priorities");
+}
+
 static void deadline_trace_is_frozen_and_truthful(void)
 {
     echoy_device_handle_t d;
@@ -1221,6 +1233,8 @@ int main(int argc, char **argv)
         flush_failure();
     else if (!strcmp(argv[1], "deadline"))
         missed_deadline();
+    else if (!strcmp(argv[1], "owner_priority"))
+        audio_owner_priority();
     else if (!strcmp(argv[1], "deadline_trace"))
         deadline_trace_is_frozen_and_truthful();
     else if (!strcmp(argv[1], "acceptance_gate"))

@@ -15,7 +15,7 @@ and the normal leak checks. Some restricted execution environments prevent
 LeakSanitizer from inspecting threads; this produces its `ptrace` fatal error,
 not a passing leak result. Run the same local test outside that restriction.
 
-The original 27 runtime checks remain. The suite now has 51 test methods,
+The original 27 runtime checks remain. The suite now has 55 test methods,
 including diagnostic failure subcases, and separately compiles an ordinary
 build to verify that its measurement API cannot open a microphone. They cover:
 
@@ -24,6 +24,9 @@ build to verify that its measurement API cannot open a microphone. They cover:
 - Record followed by Cancel in one FIFO batch, with no delayed capture or cue.
 - Queue overflow closing output, discarding stale actions and requiring recovery.
 - Partial PCM acceptance, initialization failure, failed flush and late output.
+- Actual PCM task creation uses a priority above the pinned Iris/TinyUSB
+  services and preparation worker. This checks the scheduling contract;
+  the pthread fixture does not emulate FreeRTOS preemption.
 - Recovery preserving the seed without restoring playback permission.
 - Empty battery remaining latched when the next health read is unknown.
 - Shutdown during startup or immutable preparation, timeout retention and retry.

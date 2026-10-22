@@ -39,6 +39,9 @@
 - Initialize RF before audio. Keep sensor/network I/O, synthesis, allocation,
   GSP RPC and filesystem work off the PCM owner. Preserve immutable preparation
   jobs, cancellation generations and nonblocking cached-state publication.
+- Keep the core-1 PCM owner above GSP and the pinned Iris/TinyUSB service
+  priorities. Equal-priority time slicing must not delay ready DMA buffers;
+  preserve the existing audio deadlines and buffer sizes.
 - Prepare home artwork on its private worker from copied frame/plan data. GSP
   owns touch and UI operations. Keep large UI/art storage in explicit PSRAM;
   borrowed buffers remain immutable until release. Failed stop/flush retains

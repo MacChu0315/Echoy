@@ -54,8 +54,8 @@ host Python for `ESP_IRIS_PYTHON` and for the artifact checker:
 ```sh
 "$IRIS_PYTHON" tools/check_iris_bundle.py \
   --utils ../esp-mosaico-vibe-iris02/submodule/esp-mosaico-utils \
-  --build-dir output/iris02/build-motor-off \
-  --bundle output/iris02/build-motor-off/echoy-system-update.irisfw
+  --build-dir output/iris02/build-audio-priority \
+  --bundle output/iris02/build-audio-priority/echoy-system-update.irisfw
 ```
 
 The checker uses the official Iris parser and verifies actual application/ELF
@@ -96,15 +96,25 @@ fallible initialization. A motor shutdown failure retains Iris access but stops
 further application startup. The user confirmed that this replacement stops the
 continuous vibration observed with the earlier startup-only correction.
 
+The PCM owner also runs at priority 6 on core 1, above the pinned Iris/TinyUSB
+workers at 5 and GSP at 4. Recording/role-switch failures retained the same Boot
+ID: DMA interrupts continued every approximately 5 ms, but the owner did not
+consume completed buffers in time. Equal-priority scheduling is now excluded
+by the task priority, compile-time checks and a task-creation regression.
+The single-device recheck included recording/playback and 20 subsequent plan
+updates without a write error or deadline miss; the user observed no protection
+page in that run. This is not long-duration or multi-device qualification.
+
 The fixed 1.2.1 candidate was freshly built with the pinned dependencies and
 passed the official bundle checker and single-device healthy installation.
-Six startup lifecycle tests, 54 device-runtime tests and the board-audio checks
+Six startup lifecycle tests, 55 device-runtime tests and the board-audio checks
 pass. The bundle checker rejects the old configuration without IRAM-safe I2S.
-Temporary diagnostic RPCs and allocation probes are excluded from this package.
+Temporary diagnostic RPCs, allocation probes and I2S timing callbacks are excluded
+from this package.
 
 Fixed archive SHA-256:
-`e4f5d0ae2c98f36383d9e0ed24eb0590df6113d86f612e19b0ac0bff2fbbcfc5`.
-The local artifact is `output/iris02/artifacts/echoy-v1.2.1-iris02-motor-off.irisfw`.
+`14476a1b6c82b3a6a202479c12db371dadff6c53b1f07ae3f4c27aad25ffbce2`.
+The local artifact is `output/iris02/artifacts/echoy-v1.2.1-iris02-audio-priority.irisfw`.
 It has not replaced the platform attachment or been submitted for review.
 Vibe Mode's separate NAND/LittleFS mount failure remains unresolved; no medium
 format or erase is included. Startup acceptance is not full physical audio,

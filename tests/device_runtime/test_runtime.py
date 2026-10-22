@@ -100,6 +100,7 @@ class DeviceRuntime(unittest.TestCase):
     def test_initial_audio_open_failure_needs_recovery(self):self.run_case('open_failure')
     def test_flush_failure_stops_output(self):self.run_case('flush_failure')
     def test_late_output_faults_without_catchup(self):self.run_case('deadline')
+    def test_audio_owner_outranks_iris_and_usb_services(self):self.run_case('owner_priority')
     def test_deadline_trace_records_delayed_write_and_exact_lateness(self):self.run_case('deadline_trace')
     def test_audio_waits_for_explicit_activation(self):self.run_case('acceptance_gate')
     def test_shutdown_before_activation(self):self.run_case('stop_unactivated')
