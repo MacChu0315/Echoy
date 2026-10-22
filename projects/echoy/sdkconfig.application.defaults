@@ -6,6 +6,9 @@ CONFIG_ESP_IRIS_HEALTH_TIMEOUT_MS=45000
 # Main accepts the image after UI creation and before activating audio. The
 # delayed default acceptance task would write flash during PCM streaming.
 # CONFIG_ESP_MOSAICO_APP_AUTO_ACCEPT is not set
+# The Iris host reads Flash inventory after HEALTHY. Keep I2S DMA interrupts
+# running during those cache-disabled reads, after audio has been activated.
+CONFIG_I2S_ISR_IRAM_SAFE=y
 # The loading view submits 27 component changes plus initial image/callback
 # commands. Keep that bounded startup burst above the SDK default of 24 slots.
 CONFIG_ESP_GSP_QUEUE_DEPTH=64

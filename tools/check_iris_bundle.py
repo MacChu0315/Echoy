@@ -34,6 +34,7 @@ def main():
         "CONFIG_ESP_IRIS_OTA_DEFAULT_VIA_RECOVERY=y",
         "# CONFIG_ESP_IRIS_OTA is not set",
         "# CONFIG_ESP_MOSAICO_APP_AUTO_ACCEPT is not set",
+        "CONFIG_I2S_ISR_IRAM_SAFE=y",
         "CONFIG_ECHOY_OFFICE_VOICING_TRIAL=y", "CONFIG_ECHOY_PHRASE_PICKUP=y",
         "# CONFIG_ECHOY_OUTPUT_MEASUREMENT is not set",
     ):

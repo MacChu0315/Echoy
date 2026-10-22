@@ -54,23 +54,24 @@ host Python for `ESP_IRIS_PYTHON` and for the artifact checker:
 ```sh
 "$IRIS_PYTHON" tools/check_iris_bundle.py \
   --utils ../esp-mosaico-vibe-iris02/submodule/esp-mosaico-utils \
-  --build-dir output/iris02/build-firmware \
-  --bundle output/iris02/build-firmware/echoy-system-update.irisfw
+  --build-dir output/iris02/build-startup-fix \
+  --bundle output/iris02/build-startup-fix/echoy-system-update.irisfw
 ```
 
 The checker uses the official Iris parser and verifies actual application/ELF
 identity, archive bytes, UI image, partition table, protocol configuration,
 voicing and bilingual About defaults. Run the pickup/PCM, group, runtime,
 BSP-adapter and native UI/three-owner checks described in [development](development.md).
-Local results: the pinned firmware build and offline bundle checker pass; all
+Original migration results: the pinned firmware build and offline bundle checker passed; all
 16 targeted regression command groups pass, including 54 device-runtime methods.
 The measurement host has 20 passing methods and UI responsiveness has 60 passing
 groups. A direct accepted-v1.2.0 comparison covers 144 office-voiced pickup cases
 and 8,640,000 byte-identical PCM samples. The official native three-owner check
 passes 10/10 when run separately from compilation, with zero late blocks, zero
-clipping and exact paused silence. All application C source remains unchanged.
+clipping and exact paused silence. That original candidate left application C
+source unchanged; the device-driven startup corrections below are subsequent.
 
-Candidate archive SHA-256:
+Original, failed-on-device candidate archive SHA-256:
 `dade481bea0f688d5550d6404d4073f8bb8b5eb2be500939253ee04555213dd8`.
 The build retains upstream SDK include-validation warnings, an optional IDF
 extension trust warning, and the size warning for the smaller retained Vibe Mode
@@ -79,6 +80,36 @@ override or partition-size workaround is enabled.
 
 These are local checks; platform upload acceptance, physical listening and
 physical three-device behavior remain separate gates.
+
+## Device-driven startup corrections
+
+The original candidate could stall when main-task brightness control overlapped
+the first LCD transfer. Initial brightness is now set before GSP starts, with
+successful values cached to avoid a duplicate main-task write. Manual changes
+continue on the serialized UI callback path. One PSRAM DMA draw buffer preserves
+internal DMA memory for Wi-Fi initialization. IRAM-safe I2S interrupts preserve
+audio service while the host verifies Flash inventory after HEALTHY; audio
+deadlines and queue sizes are not relaxed.
+
+The fixed 1.2.1 candidate was freshly built with the pinned dependencies and
+passed the official bundle checker and single-device healthy installation.
+Four startup lifecycle tests, 54 device-runtime tests and the board-audio checks
+pass. The bundle checker rejects the old configuration without IRAM-safe I2S.
+Temporary diagnostic RPCs and allocation probes are excluded from this package.
+
+Fixed archive SHA-256:
+`c98697dbd78f610e46bf7b686afe159a9b05066b6f81253ab18786f51cd96690`.
+The local artifact is `output/iris02/artifacts/echoy-v1.2.1-iris02-fixed.irisfw`.
+It has not replaced the platform attachment or been submitted for review.
+Vibe Mode's separate NAND/LittleFS mount failure remains unresolved; no medium
+format or erase is included. Startup acceptance is not full physical audio,
+interaction or three-device acceptance.
+
+```sh
+python3 -m unittest discover -s tests/startup -v
+python3 -m unittest discover -s tests/device_runtime -v
+sh tests/board_audio/run.sh
+```
 
 ## First device transition — approval required
 

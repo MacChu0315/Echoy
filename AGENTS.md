@@ -11,6 +11,9 @@
 - Preserve the 480x480 layout and approved interactions. Hardware hides the
   simulator-only put-away action. Brightness is manual 20–100%; idle, touch and
   playback must not change it.
+- Set initial panel brightness before GSP starts; do not race main-task panel
+  commands with rendering. Keep display scratch in PSRAM and I2S interrupts
+  IRAM-safe during the host's post-HEALTHY Flash inventory reads.
 - Validate UI behavior with actual C callbacks in the matching official native
   simulator. Scene-only rendering and UI-only audio models are insufficient.
 - Recording captures touch timing, not microphone audio. Preserve initial rests,

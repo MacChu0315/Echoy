@@ -9,19 +9,26 @@ pass. The 1.2.1 candidate was saved as a Mosaico platform draft; the user has
 since reported that platform review rejected it for startup/memory, rendering
 and LittleFS failures.
 
-An authorized single-device test on 2026-10-22 installed the reviewed Vibe Mode
-0.2.0 base and the exact uploaded candidate. The application image was written,
-but its 45-second healthy-acceptance check failed. Live identity confirmed
-Echoy 1.2.1 and the expected ELF hash. All 36 rendering samples from approximately
-8 to 183 seconds after boot reported 0.0 fps; the screen was incomplete, and the post-startup snapshot
-RPC was unavailable. No valid retained core dump or `ESP_ERR_NO_MEM` was observed
-in the captured evidence; the precise application stall remains unlocalized.
+Authorized single-device diagnosis on 2026-10-22 reproduced the startup failure.
+Initial main-task brightness control raced the first display transfer. After
+moving it before rendering, radio initialization exposed internal DMA allocation
+failure (`ESP_ERR_NO_MEM`). Display scratch now uses one PSRAM DMA buffer. The
+host's post-HEALTHY Flash inventory also exposed an audio deadline failure;
+I2S interrupts are now IRAM-safe, with a compile guard and bundle validation.
+Audio buffers, deadlines, musical synthesis and UI behavior are unchanged.
 
-The device successfully returned to Vibe Mode 0.2.0. That boot separately
-reported LittleFS `Corrupted dir pair at {0x0, 0x1}` and mount error `-84`.
-Its cause and relation to the review environment remain unverified. No storage
-format or application fix was performed. The candidate is not physically
-accepted; recording, audio, touch and multi-device acceptance remain pending.
+The rebuilt 1.2.1 candidate passed the official installation/healthy check on
+one device with the reviewed Vibe Mode 0.2.0 base. Four new startup tests, 54
+device-runtime tests and the board-audio checks pass. The original faulty
+archive remains preserved. The fixed candidate and validation boundaries are
+listed in [migration details](iris-0.2-migration.md). Final physical interaction,
+listening and multi-device acceptance remain separate from startup acceptance.
+
+Vibe Mode independently reports LittleFS `Corrupted dir pair at {0x0, 0x1}`
+and mount error `-84`. A bounded metadata probe found nonempty NAND data without
+a LittleFS marker in the first two logical pages; this does not establish that
+the rest of the medium is empty or recoverable. No format or erase was performed.
+Storage recovery remains pending a data-preservation decision and investigation.
 Private device identities, logs, screenshots and the scoped ongoing device
 authorization are retained in ignored local evidence, outside release content.
 See [migration details](iris-0.2-migration.md) for the changed contracts and the

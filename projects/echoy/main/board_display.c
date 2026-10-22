@@ -41,6 +41,13 @@ esp_err_t board_display_init(esp_display_present_target_config_t *out_target)
         .fb = {
             .mode = ESP_DISPLAY_PRESENT_MODE_AUTO,
         },
+        /* Keep the partition rendering scratch out of the internal DMA heap
+         * needed by Wi-Fi startup. The S31 presenter supports PSRAM DMA.
+         * Retain one buffer instead of enabling another copy worker. */
+        .drawbuf = {
+            .buffers = 1,
+            .in_psram = true,
+        },
     };
     ESP_LOGI(TAG, "GSP present target %dx%d RGB565 TE=%s GPIO=%d",
              BSP_LCD_H_RES, BSP_LCD_V_RES,

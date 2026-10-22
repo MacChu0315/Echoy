@@ -33,11 +33,19 @@ static const char *TAG = "echoy";
 static echoy_ui_handle_t s_ui;
 static echoy_device_handle_t s_device;
 static echoy_snapshot_diagnostics_handle_t s_snapshot_diagnostics;
+static int s_brightness_percent = -1;
 
 static bool set_brightness(void *ctx, unsigned percent)
 {
     (void)ctx;
-    return bsp_display_brightness_set((int)percent) == ESP_OK;
+    if (s_brightness_percent == (int)percent) {
+        return true;
+    }
+    if (bsp_display_brightness_set((int)percent) != ESP_OK) {
+        return false;
+    }
+    s_brightness_percent = (int)percent;
+    return true;
 }
 
 /* UI/peripheral failures must not reboot-loop out of retained Recovery. */
@@ -73,6 +81,11 @@ void app_main(void)
     CHECK_START(bsp_power_init());
     CHECK_START(bsp_i2c_init());
     CHECK_START(board_display_init(&display));
+    /* Establish the initial level before GSP can submit pixels on the same
+     * panel IO. UI creation also requests 100% on the main task; the cache
+     * prevents that duplicate command racing the first display transfer.
+     * Subsequent manual changes run in GSP's serialized UI callbacks. */
+    CHECK_START(set_brightness(NULL, 100) ? ESP_OK : ESP_FAIL);
 
     esp_lcd_touch_handle_t touch = NULL;
     CHECK_START(board_touch_init(&touch));
