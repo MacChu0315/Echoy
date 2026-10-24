@@ -116,9 +116,15 @@ Fixed archive SHA-256:
 `14476a1b6c82b3a6a202479c12db371dadff6c53b1f07ae3f4c27aad25ffbce2`.
 The local artifact is `output/iris02/artifacts/echoy-v1.2.1-iris02-audio-priority.irisfw`.
 It has not replaced the platform attachment or been submitted for review.
-Vibe Mode's separate NAND/LittleFS mount failure remains unresolved; no medium
-format or erase is included. Startup acceptance is not full physical audio,
-interaction or three-device acceptance.
+The tested device's separate NAND/LittleFS failure was repaired on 2026-10-24
+by an explicitly authorized filesystem rebuild using a temporary maintenance
+image. A 16 KiB write/read test, post-reboot readback, probe removal and empty
+directory check passed. The unchanged Vibe Mode 0.2.0 subsequently mounted NAND
+and registered its file service. The exact Echoy package above was restored;
+its code does not format NAND. This device-local maintenance is not included
+in the release archive and does not repair another device's stored filesystem.
+Startup acceptance is not full physical audio, interaction or three-device
+acceptance.
 
 ```sh
 python3 -m unittest discover -s tests/startup -v

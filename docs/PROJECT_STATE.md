@@ -42,11 +42,16 @@ completed with zero write errors or deadline misses; the user reported no
 protection page in this run. Long-duration and three-device acceptance remain
 pending. The original strict fault handling is unchanged.
 
-Vibe Mode independently reports LittleFS `Corrupted dir pair at {0x0, 0x1}`
-and mount error `-84`. A bounded metadata probe found nonempty NAND data without
-a LittleFS marker in the first two logical pages; this does not establish that
-the rest of the medium is empty or recoverable. No format or erase was performed.
-Storage recovery remains pending a data-preservation decision and investigation.
+The tested device's NAND/LittleFS mount failure was repaired on 2026-10-24
+through an explicitly authorized filesystem rebuild. A target-bound temporary
+maintenance image formatted the NAND block device, wrote and read a 16 KiB
+probe, then verified it after a real reboot and removed it. The empty-filesystem
+check passed. The unchanged Vibe Mode 0.2.0 image then registered its NAND file
+service with no mount error in the captured boot. The exact current Echoy
+package was restored healthy; bootloader and partition-table hashes matched
+their pre-maintenance values. The production application contains no formatter.
+This repairs that device's filesystem state, not other devices automatically;
+full media health and power-loss testing were not performed.
 Private device identities, logs, screenshots and the scoped ongoing device
 authorization are retained in ignored local evidence, outside release content.
 See [migration details](iris-0.2-migration.md) for the changed contracts and the
