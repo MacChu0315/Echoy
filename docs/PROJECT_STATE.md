@@ -99,8 +99,10 @@ These are paired startup-worker measurements with UI active, not a general
 speed guarantee. The ordinary package excludes both reference synthesis and
 diagnostic code, and passed two software restarts with normal application state,
 zero audio write/deadline errors and no observed LCD transfer failures. Idle free
-PSRAM was approximately 9.63 MB. Physical cold-boot/listening/interaction feedback
-on this package is pending; the earlier fixed-audio package remains preserved.
+PSRAM was approximately 9.63 MB. The user accepted the current single-device
+experience on this package. This records user acceptance without claiming an
+additional instrumented cold-boot run. Long-duration and three-device physical
+acceptance remain pending; the earlier fixed-audio package remains preserved.
 
 The tested device's NAND/LittleFS mount failure was repaired on 2026-10-24
 through an explicitly authorized filesystem rebuild. A target-bound temporary

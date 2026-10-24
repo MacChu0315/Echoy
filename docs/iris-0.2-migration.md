@@ -152,7 +152,9 @@ runtime construction. In twelve same-device paired plans, Harmony preparation
 averaged 1.060 to 0.556 seconds, Voice 1.073 to 0.929, Dust 0.361 to 0.324 and
 Pulse 0.393 to 0.381. All numerical checks passed (maximum sample error 2.50e-7).
 The ordinary image contains no diagnostic/reference code. Installation and two
-software restarts passed; physical cold-boot and listening feedback is pending.
+software restarts passed, and the user accepted the current single-device
+experience. No additional instrumented cold-boot run is claimed by this feedback;
+long-duration and three-device physical acceptance remain pending.
 
 Current archive SHA-256:
 `a16b35c00491785e517d9b238eaa3fa4973f491dd8aa678bdd17a72963f39e18`.
