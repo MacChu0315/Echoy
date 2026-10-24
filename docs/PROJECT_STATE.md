@@ -104,6 +104,13 @@ experience on this package. This records user acceptance without claiming an
 additional instrumented cold-boot run. Long-duration and three-device physical
 acceptance remain pending; the earlier fixed-audio package remains preserved.
 
+An authorized single-device muted-loop soak is now being recorded locally with
+official read-only logs and five-minute status snapshots. The bounded background
+recorder preserves collection gaps and boot/firmware identity; host or USB
+interruptions must not be counted as healthy device uptime. Collection setup is
+verified, but no long-duration result is claimed yet. Private recorder details
+and evidence remain outside release content. Multi-device checks are still pending.
+
 The tested device's NAND/LittleFS mount failure was repaired on 2026-10-24
 through an explicitly authorized filesystem rebuild. A target-bound temporary
 maintenance image formatted the NAND block device, wrote and read a 16 KiB
