@@ -6,7 +6,7 @@ idf_component_register(
         "echoy_snapshot_diagnostics.c" "board_touch_trace.c"
         "echoy_art_producer.c"
         "echoy_device_pcm.c"
-        "echoy_display.c"
+        "echoy_display.c" "board_display_io.c"
         "board_link.c" "echoy_radio.c" "echoy_link_codec.c" "echoy_link_protocol.c" "echoy_group.c"
     INCLUDE_DIRS "."
     REQUIRES esp_iris esp-mosaico-bsp esp_mosaico_app_recovery
@@ -18,3 +18,8 @@ idf_build_get_property(echoy_idf_path IDF_PATH)
 idf_define_esp_err_codes(HEADERS "${echoy_idf_path}/components/esp_wifi/include/esp_now.h")
 include("${MOSAICO_UTILS_ROOT}/mosaico-tools/cmake/gsp_bundle.cmake")
 mosaico_gsp_add_ui_bundle(${COMPONENT_LIB} "../ui/main.json")
+# Apply the application-specific LCD queue budget through the public IO
+# constructor without changing the shared BSP or its DMA transport policy.
+target_link_options(${COMPONENT_LIB} INTERFACE
+    "-Wl,--wrap=esp_lcd_new_panel_io_spi"
+    "-Wl,-u,__wrap_esp_lcd_new_panel_io_spi")

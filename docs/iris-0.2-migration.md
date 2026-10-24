@@ -54,8 +54,8 @@ host Python for `ESP_IRIS_PYTHON` and for the artifact checker:
 ```sh
 "$IRIS_PYTHON" tools/check_iris_bundle.py \
   --utils ../esp-mosaico-vibe-iris02/submodule/esp-mosaico-utils \
-  --build-dir output/iris02/build-audio-priority \
-  --bundle output/iris02/build-audio-priority/echoy-system-update.irisfw
+  --build-dir output/iris02/build-lcd-queue \
+  --bundle output/iris02/build-lcd-queue/echoy-system-update.irisfw
 ```
 
 The checker uses the official Iris parser and verifies actual application/ELF
@@ -105,6 +105,18 @@ The single-device recheck included recording/playback and 20 subsequent plan
 updates without a write error or deadline miss; the user observed no protection
 page in that run. This is not long-duration or multi-device qualification.
 
+Power-on testing subsequently found a distinct LCD transport allocation failure.
+PSRAM rendering scratch did not bound the pinned BSP's internal DMA bounce
+buffers: its ten queued transfers could retain far more internal memory than
+the application could spare. The application's public panel-IO constructor
+wrapper now caps only this QSPI LCD to two queued transfers, approximately
+16 KiB of staging payload plus overhead. BSP/SDK code and transport flags are
+unchanged. Host isolation/error and archive-order checks pass, and the ELF call
+path was verified. Five software restarts had normal app state and no observed
+LCD errors. The user confirmed two physical power-on starts reached the home
+screen and responded to touch; the final cold boot also passed live log checks.
+The Iris shadow screenshot alone must not be treated as panel acceptance.
+
 The fixed 1.2.1 candidate was freshly built with the pinned dependencies and
 passed the official bundle checker and single-device healthy installation.
 Six startup lifecycle tests, 55 device-runtime tests and the board-audio checks
@@ -113,14 +125,14 @@ Temporary diagnostic RPCs, allocation probes and I2S timing callbacks are exclud
 from this package.
 
 Fixed archive SHA-256:
-`14476a1b6c82b3a6a202479c12db371dadff6c53b1f07ae3f4c27aad25ffbce2`.
-The local artifact is `output/iris02/artifacts/echoy-v1.2.1-iris02-audio-priority.irisfw`.
+`160e253bda0d26b9189cc58e751ec3638cf0a7d102af4ae1603c37bf15326600`.
+The local artifact is `output/iris02/artifacts/echoy-v1.2.1-iris02-lcd-queue.irisfw`.
 It has not replaced the platform attachment or been submitted for review.
 The tested device's separate NAND/LittleFS failure was repaired on 2026-10-24
 by an explicitly authorized filesystem rebuild using a temporary maintenance
 image. A 16 KiB write/read test, post-reboot readback, probe removal and empty
 directory check passed. The unchanged Vibe Mode 0.2.0 subsequently mounted NAND
-and registered its file service. The exact Echoy package above was restored;
+and registered its file service. The then-current Echoy package was restored;
 its code does not format NAND. This device-local maintenance is not included
 in the release archive and does not repair another device's stored filesystem.
 Startup acceptance is not full physical audio, interaction or three-device
@@ -130,6 +142,7 @@ acceptance.
 python3 -m unittest discover -s tests/startup -v
 python3 -m unittest discover -s tests/device_runtime -v
 sh tests/board_audio/run.sh
+sh tests/display_io/run.sh
 ```
 
 ## First device transition — approval required

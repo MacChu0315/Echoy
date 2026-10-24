@@ -14,6 +14,9 @@
 - Set initial panel brightness before GSP starts; do not race main-task panel
   commands with rendering. Keep display scratch in PSRAM and I2S interrupts
   IRAM-safe during the host's post-HEALTHY Flash inventory reads.
+- Bound the LCD's internal DMA transfer queue separately from render scratch.
+  Iris screenshots show the rendered shadow, not proof of physical LCD output;
+  verify transfer logs and actual screen behavior across warm and cold starts.
 - Echoy has no haptics: explicitly disable the motor at app entry, including
   early-failure paths. A shutdown error must preserve Iris access and stop
   further application startup.

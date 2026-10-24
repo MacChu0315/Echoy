@@ -42,6 +42,21 @@ completed with zero write errors or deadline misses; the user reported no
 protection page in this run. Long-duration and three-device acceptance remain
 pending. The original strict fault handling is unchanged.
 
+A later power-on test exposed LCD transfer `ESP_ERR_NO_MEM` even while the
+rendered shadow and application state appeared normal. The pinned BSP's internal
+DMA staging used a ten-entry LCD queue. An application-scoped wrapper of the
+public panel-IO constructor now caps only the board's QSPI LCD queue at two,
+preserving the BSP transport flags and bounding staging payload to roughly
+16 KiB plus allocator/descriptor overhead. Host policy and archive-link tests
+pass; the actual ELF calls the wrapper. Five distinct software restarts showed
+normal application state and no observed LCD transfer errors. The user confirmed
+two physical power-on starts reached a responsive home screen; the final cold
+boot was also checked through live identity and transfer logs. This replaces
+the earlier insufficient installation/shadow-only startup conclusion.
+Startup still spends roughly 4–5 seconds on the shared preparing-sound/status
+view in complete software-restart traces, mostly generating audition resources.
+The shared recovery button is potentially misleading during that normal wait.
+
 The tested device's NAND/LittleFS mount failure was repaired on 2026-10-24
 through an explicitly authorized filesystem rebuild. A target-bound temporary
 maintenance image formatted the NAND block device, wrote and read a 16 KiB
