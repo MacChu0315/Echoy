@@ -121,6 +121,42 @@ Edit the generator rather than its JSON/view-key outputs.
 Follow [AGENTS.md](../AGENTS.md) and preserve [third-party notices](../THIRD_PARTY_NOTICES.md).
 
 
+## Build-time fixed audio
+
+Firmware enables `CONFIG_ECHOY_PREBUILT_AUDIO` by default. A native host C
+compiler (`cc`, `gcc` or `clang`, selected by `ECHOY_HOST_CC`) runs the unchanged
+production synthesizer during the build. Three timing/tap cues and four complete
+audition phrases are embedded as little-endian float32, together with the original
+eight audition windows per role. The selected office/device gain table and
+speaker profile are part of the resource contract. Changes to the generator,
+synthesizer, gains or headers regenerate the binary and its hash manifest.
+
+Startup validates the resource and copies it into ordinary owned PSRAM buffers;
+there is no filesystem cache, persistent-data migration or runtime synthesis
+fallback. Invalid resources, mismatched profiles and allocation failures stop
+sound preparation through the existing failure path. Random selection, recorded
+phrase synthesis, pickup and UI behavior remain unchanged. The resource adds
+1,000,932 bytes of embedded data; with PSRAM rodata enabled, the immutable copy
+also consumes PSRAM in addition to the existing owned playback buffers.
+
+```sh
+sh tests/audio/run_fixed_audio.sh
+```
+
+This compares every sample/window against the original C synthesis for office,
+device and native reference profiles, rejects corrupt resources, exercises failed
+allocations and runs the existing random-audition regression through the fixed
+path. `tools/check_iris_bundle.py` verifies the actual app contains the generated
+bytes and that the input hashes still match the source tree.
+
+For native simulator coverage, configure `projects/echoy/pc` with
+`-DECHOY_PREBUILT_AUDIO=ON`; it embeds the native reference profile and uses the
+same loader. The default native build remains the synthesis reference. Firmware
+can disable `CONFIG_ECHOY_PREBUILT_AUDIO` for comparisons. The opt-in
+`CONFIG_ECHOY_VERIFY_PREBUILT_AUDIO` diagnostic regenerates all seven assets on
+the ESP and checks sample errors and window positions before PCM activation;
+leave it disabled in ordinary builds and startup measurements.
+
 ## Phrase pickup regression
 
 The local pickup layer follows the frozen audition reference in

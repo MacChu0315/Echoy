@@ -54,8 +54,8 @@ host Python for `ESP_IRIS_PYTHON` and for the artifact checker:
 ```sh
 "$IRIS_PYTHON" tools/check_iris_bundle.py \
   --utils ../esp-mosaico-vibe-iris02/submodule/esp-mosaico-utils \
-  --build-dir output/iris02/build-lcd-queue \
-  --bundle output/iris02/build-lcd-queue/echoy-system-update.irisfw
+  --build-dir output/iris02/build-fixed-audio \
+  --bundle output/iris02/build-fixed-audio/echoy-system-update.irisfw
 ```
 
 The checker uses the official Iris parser and verifies actual application/ELF
@@ -124,10 +124,27 @@ pass. The bundle checker rejects the old configuration without IRAM-safe I2S.
 Temporary diagnostic RPCs, allocation probes and I2S timing callbacks are excluded
 from this package.
 
-Fixed archive SHA-256:
+LCD-queue rollback archive SHA-256:
 `160e253bda0d26b9189cc58e751ec3638cf0a7d102af4ae1603c37bf15326600`.
 The local artifact is `output/iris02/artifacts/echoy-v1.2.1-iris02-lcd-queue.irisfw`.
-It has not replaced the platform attachment or been submitted for review.
+
+The subsequent fixed-audio candidate embeds build-generated float32 timing/tap
+cues and audition pools; recording, gains, randomness and UI remain unchanged.
+The original C synthesizer generates the assets, and the actual ESP comparison
+passed for all seven buffers with maximum absolute sample error 1.45e-6. Sound
+preparation measured about 3.42 seconds in the previous package and 0.132–0.148
+seconds in this candidate. This is not the complete power-on duration. It adds
+about 1 MB to Flash and PSRAM rodata. The final package excludes the numerical
+diagnostic; installation and two software restarts reached normal app state
+without observed LCD transfer errors or audio write/deadline failures. The user
+confirmed two physical power-on starts and normal four-role audition, recording
+and repeated role changes. Long-duration and three-device physical acceptance
+remain separate.
+
+Current archive SHA-256:
+`7fdecb9f0e4f4866d131c5d48454dc68cd4458c9f070fbf3cdd807aa825a7ac6`.
+The local artifact is `output/iris02/artifacts/echoy-v1.2.1-iris02-fixed-audio.irisfw`.
+Neither archive has replaced the platform attachment or been submitted for review.
 The tested device's separate NAND/LittleFS failure was repaired on 2026-10-24
 by an explicitly authorized filesystem rebuild using a temporary maintenance
 image. A 16 KiB write/read test, post-reboot readback, probe removal and empty
@@ -143,6 +160,7 @@ python3 -m unittest discover -s tests/startup -v
 python3 -m unittest discover -s tests/device_runtime -v
 sh tests/board_audio/run.sh
 sh tests/display_io/run.sh
+sh tests/audio/run_fixed_audio.sh
 ```
 
 ## First device transition — approval required

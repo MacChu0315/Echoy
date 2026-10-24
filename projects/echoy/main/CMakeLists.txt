@@ -23,3 +23,29 @@ mosaico_gsp_add_ui_bundle(${COMPONENT_LIB} "../ui/main.json")
 target_link_options(${COMPONENT_LIB} INTERFACE
     "-Wl,--wrap=esp_lcd_new_panel_io_spi"
     "-Wl,-u,__wrap_esp_lcd_new_panel_io_spi")
+
+if(CONFIG_ECHOY_PREBUILT_AUDIO)
+    # A native compiler runs the unchanged portable synth on the build host.
+    # Never use CMAKE_C_COMPILER here: it produces ESP executables.
+    find_program(ECHOY_HOST_CC NAMES cc gcc clang REQUIRED NO_CMAKE_FIND_ROOT_PATH)
+    get_filename_component(echoy_root "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
+    set(echoy_fixed_profile device)
+    if(CONFIG_ECHOY_OFFICE_VOICING_TRIAL)
+        set(echoy_fixed_profile office)
+    endif()
+    set(echoy_fixed_bin "${CMAKE_CURRENT_BINARY_DIR}/echoy_fixed_audio.bin")
+    file(GLOB echoy_fixed_headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/*.h")
+    add_custom_command(OUTPUT "${echoy_fixed_bin}" "${CMAKE_CURRENT_BINARY_DIR}/echoy_fixed_audio.json"
+        COMMAND "${PYTHON}" "${echoy_root}/tools/generate_fixed_audio.py"
+            --cc "${ECHOY_HOST_CC}" --profile "${echoy_fixed_profile}" --output "${echoy_fixed_bin}"
+        DEPENDS "${echoy_root}/tools/generate_fixed_audio.py" "${echoy_root}/tools/generate_fixed_audio.c"
+            "${CMAKE_CURRENT_LIST_DIR}/echoy_audio.c" "${CMAKE_CURRENT_LIST_DIR}/echoy_music.c"
+            "${CMAKE_CURRENT_LIST_DIR}/echoy_device_pcm.c" ${echoy_fixed_headers}
+        VERBATIM)
+    target_add_binary_data(${COMPONENT_LIB} "${echoy_fixed_bin}" BINARY ALIGN 4)
+    target_sources(${COMPONENT_LIB} PRIVATE echoy_fixed_audio.c echoy_fixed_audio_embedded.c)
+    target_compile_definitions(${COMPONENT_LIB} PRIVATE ECHOY_USE_FIXED_AUDIO=1)
+    if(CONFIG_ECHOY_VERIFY_PREBUILT_AUDIO)
+        target_sources(${COMPONENT_LIB} PRIVATE echoy_fixed_audio_verify.c)
+    endif()
+endif()

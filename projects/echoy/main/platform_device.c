@@ -823,8 +823,13 @@ static void prepare_worker(void *arg)
     const bool preview_speaker=false;
 #endif
     xEventGroupWaitBits(d->done, STARTED, pdFALSE, pdTRUE, portMAX_DELAY);
+    int64_t startup_at=esp_timer_get_time();
     echoy_band_t *band = atomic_load(&d->stopping) ? NULL :
                         echoy_band_create_configured(preview_speaker,role_gains);
+    ESP_LOGI(TAG, "fixed audio startup %s: %lldus PSRAM=%u internal=%u",
+             band?"ready":"failed", (long long)(esp_timer_get_time()-startup_at),
+             (unsigned)heap_caps_get_free_size(MALLOC_CAP_SPIRAM),
+             (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL|MALLOC_CAP_8BIT));
     if (band) echoy_band_enable_pickup(band, CONFIG_ECHOY_PHRASE_PICKUP);
     xQueueSend(d->startup, &band, portMAX_DELAY);
     ESP_LOGI(TAG, "musical role gain milli: pulse=%u voice=%u dust=%u harmony=%u",

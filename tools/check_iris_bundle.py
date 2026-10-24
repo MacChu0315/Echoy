@@ -85,6 +85,21 @@ print(json.dumps({p.name: [p.type, p.subtype, p.offset, p.size] for p in table})
     firmware = inspect_firmware_image(components["application"].data)
     assert firmware.project_name == "echoy" and firmware.version == version
     assert hashlib.sha256((args.build_dir / "echoy.elf").read_bytes()).hexdigest() == firmware.elf_sha256
+    fixed_audio = None
+    if "CONFIG_ECHOY_PREBUILT_AUDIO=y" in config:
+        resource = args.build_dir / "esp-idf/main/echoy_fixed_audio.bin"
+        metadata = json.loads(resource.with_suffix(".json").read_text())
+        audio = resource.read_bytes()
+        assert metadata["schema"] == 1 and metadata["profile"] == "office"
+        assert metadata["sample_rate"] == 24000 and metadata["seed"] == 0x2555
+        assert metadata["bytes"] == len(audio)
+        assert metadata["sha256"] == hashlib.sha256(audio).hexdigest()
+        assert components["application"].data.count(audio) == 1, "fixed audio missing/duplicated in actual app"
+        for source, digest in metadata["inputs"].items():
+            assert hashlib.sha256((root / source).read_bytes()).hexdigest() == digest, source
+        fixed_audio = {"bytes": len(audio), "sha256": metadata["sha256"],
+                       "profile": metadata["profile"],
+                       "diagnostic_parity": "CONFIG_ECHOY_VERIFY_PREBUILT_AUDIO=y" in config}
     scene = json.loads((root / "projects/echoy/ui/main.json").read_text())
     labels = [o for o in scene["objects"] if o.get("bind") in {"info_value_version", "info_value_version_en"}]
     assert len(labels) == 2 and all(o["text"] == version for o in labels)
@@ -92,6 +107,7 @@ print(json.dumps({p.name: [p.type, p.subtype, p.offset, p.size] for p in table})
                       "schema": bundle.manifest["schema"],
                       "bundle_sha256": hashlib.sha256(args.bundle.read_bytes()).hexdigest(),
                       "elf_sha256": firmware.elf_sha256,
+                      "fixed_audio": fixed_audio,
                       "scope": "offline artifact/configuration/partition checks; no device or platform acceptance"}, indent=2))
 
 

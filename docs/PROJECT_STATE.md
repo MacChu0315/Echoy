@@ -53,9 +53,31 @@ normal application state and no observed LCD transfer errors. The user confirmed
 two physical power-on starts reached a responsive home screen; the final cold
 boot was also checked through live identity and transfer logs. This replaces
 the earlier insufficient installation/shadow-only startup conclusion.
-Startup still spends roughly 4–5 seconds on the shared preparing-sound/status
-view in complete software-restart traces, mostly generating audition resources.
-The shared recovery button is potentially misleading during that normal wait.
+The subsequent startup optimization moves only fixed timing/tap cues and the
+four audition phrases to build-time generation using the original C synthesizer.
+Float32 samples, eight onset choices per role and the selected office gains are
+preserved; recorded music still uses background synthesis. The existing startup
+UI is unchanged. On the tested device, sound preparation fell from approximately
+3.42 seconds to 0.132–0.148 seconds across the final candidate's installation,
+two software restarts and final cold boot. This measures sound preparation, not
+total power-on time.
+The app image grows by 1,000,192 bytes; the PSRAM rodata copy adds about 1 MB of
+steady memory use, leaving approximately 10.2 MB free in the observed idle state.
+
+Three host profiles match original synthesis sample-for-sample, including all
+audition bounds. Allocation/corruption tests, sanitizer checks, the existing
+55 runtime/6 startup tests and ten native simulator checks pass. A separate ESP
+diagnostic compared all seven assets with on-device synthesis: maximum absolute
+sample error was 1.45e-6 and relative L2 error at most 1.63e-6. The installed final
+candidate excludes that diagnostic and has normal application state, no observed
+LCD transfer errors and zero audio deadline/write errors in the startup checks.
+The baseline's existing GPIO-service/already-disabled-I2S initialization messages
+remain; they were not introduced by this optimization. The user confirmed two
+physical power-on starts, audition of all four roles, recording and repeated role
+changes were normal on this candidate. The final cold-boot readback also showed
+normal state and zero audio write/deadline errors after those interactions.
+Long-duration and three-device physical
+acceptance remain outside this single-device check.
 
 The tested device's NAND/LittleFS mount failure was repaired on 2026-10-24
 through an explicitly authorized filesystem rebuild. A target-bound temporary
