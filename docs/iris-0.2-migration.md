@@ -54,8 +54,8 @@ host Python for `ESP_IRIS_PYTHON` and for the artifact checker:
 ```sh
 "$IRIS_PYTHON" tools/check_iris_bundle.py \
   --utils ../esp-mosaico-vibe-iris02/submodule/esp-mosaico-utils \
-  --build-dir output/iris02/build-fixed-audio \
-  --bundle output/iris02/build-fixed-audio/echoy-system-update.irisfw
+  --build-dir output/iris02/build-dynamic-audio \
+  --bundle output/iris02/build-dynamic-audio/echoy-system-update.irisfw
 ```
 
 The checker uses the official Iris parser and verifies actual application/ELF
@@ -141,10 +141,23 @@ confirmed two physical power-on starts and normal four-role audition, recording
 and repeated role changes. Long-duration and three-device physical acceptance
 remain separate.
 
-Current archive SHA-256:
+Fixed-audio rollback archive SHA-256:
 `7fdecb9f0e4f4866d131c5d48454dc68cd4458c9f070fbf3cdd807aa825a7ac6`.
 The local artifact is `output/iris02/artifacts/echoy-v1.2.1-iris02-fixed-audio.irisfw`.
-Neither archive has replaced the platform attachment or been submitted for review.
+The subsequent dynamic-preparation candidate shares anchor-note synthesis
+between foreground and FULL without changing either mix's summation order or
+normalization, and embeds 36 common triangle tables. It adds 590,352 bytes to
+the application, including 589,824 bytes of tables; other valid pitches retain
+runtime construction. In twelve same-device paired plans, Harmony preparation
+averaged 1.060 to 0.556 seconds, Voice 1.073 to 0.929, Dust 0.361 to 0.324 and
+Pulse 0.393 to 0.381. All numerical checks passed (maximum sample error 2.50e-7).
+The ordinary image contains no diagnostic/reference code. Installation and two
+software restarts passed; physical cold-boot and listening feedback is pending.
+
+Current archive SHA-256:
+`a16b35c00491785e517d9b238eaa3fa4973f491dd8aa678bdd17a72963f39e18`.
+The local artifact is `output/iris02/artifacts/echoy-v1.2.1-iris02-dynamic-audio.irisfw`.
+These archives have not replaced the platform attachment or been submitted for review.
 The tested device's separate NAND/LittleFS failure was repaired on 2026-10-24
 by an explicitly authorized filesystem rebuild using a temporary maintenance
 image. A 16 KiB write/read test, post-reboot readback, probe removal and empty
@@ -161,6 +174,7 @@ python3 -m unittest discover -s tests/device_runtime -v
 sh tests/board_audio/run.sh
 sh tests/display_io/run.sh
 sh tests/audio/run_fixed_audio.sh
+sh tests/audio/run_preparation.sh
 ```
 
 ## First device transition — approval required
