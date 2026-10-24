@@ -86,6 +86,22 @@ print(json.dumps({p.name: [p.type, p.subtype, p.offset, p.size] for p in table})
     assert firmware.project_name == "echoy" and firmware.version == version
     assert hashlib.sha256((args.build_dir / "echoy.elf").read_bytes()).hexdigest() == firmware.elf_sha256
     fixed_audio = None
+    triangle_tables = None
+    if "CONFIG_ECHOY_PREBUILT_TRIANGLES=y" in config:
+        folder = args.build_dir / "echoy_triangle_tables"
+        metadata = json.loads((folder / "echoy_triangle_tables.json").read_text())
+        tables = (folder / "echoy_triangle_tables.bin").read_bytes()
+        assert metadata["schema"] == 1 and metadata["sample_rate"] == 24000
+        assert metadata["table_frames"] == 4096
+        assert metadata["bytes"] == len(tables) == len(metadata["harmonics"]) * 4096 * 4
+        assert metadata["sha256"] == hashlib.sha256(tables).hexdigest()
+        assert metadata["header_sha256"] == hashlib.sha256((folder / "echoy_triangle_tables.h").read_bytes()).hexdigest()
+        assert components["application"].data.count(tables) == 1, "triangle tables missing/duplicated in actual app"
+        for source, digest in metadata["inputs"].items():
+            assert hashlib.sha256((root / source).read_bytes()).hexdigest() == digest, source
+        triangle_tables = {"bytes": len(tables), "tables": len(metadata["harmonics"]),
+                           "sha256": metadata["sha256"],
+                           "diagnostic_parity": "CONFIG_ECHOY_VERIFY_PREPARATION=y" in config}
     if "CONFIG_ECHOY_PREBUILT_AUDIO=y" in config:
         resource = args.build_dir / "esp-idf/main/echoy_fixed_audio.bin"
         metadata = json.loads(resource.with_suffix(".json").read_text())
@@ -108,6 +124,7 @@ print(json.dumps({p.name: [p.type, p.subtype, p.offset, p.size] for p in table})
                       "bundle_sha256": hashlib.sha256(args.bundle.read_bytes()).hexdigest(),
                       "elf_sha256": firmware.elf_sha256,
                       "fixed_audio": fixed_audio,
+                      "triangle_tables": triangle_tables,
                       "scope": "offline artifact/configuration/partition checks; no device or platform acceptance"}, indent=2))
 
 

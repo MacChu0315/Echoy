@@ -79,6 +79,19 @@ normal state and zero audio write/deadline errors after those interactions.
 Long-duration and three-device physical
 acceptance remain outside this single-device check.
 
+Two follow-on preparation optimizations are local candidates: foreground/FULL
+share each anchor note's synthesis while retaining independent effects and
+normalization, and the build generates 36 shared triangle tables for common
+chord pitches. The public MIDI 0–127 range retains runtime construction outside
+the cached range. Tables add 589,824 bytes of immutable data; the shared rendering
+uses existing SOURCE storage temporarily instead of allocating another loop.
+Against the retained `eff8303` source, 224 host plans have bit-identical samples
+and normalization before/after office voicing. The duplicate-note regression,
+table comparisons, ASan/UBSan, 55 runtime/6 startup tests and ten native checks
+pass. LeakSanitizer was disabled for the sandboxed sanitizer run. These host
+results do not establish device timing or physical listening acceptance; the
+previous fixed-audio package remains the last physically accepted candidate.
+
 The tested device's NAND/LittleFS mount failure was repaired on 2026-10-24
 through an explicitly authorized filesystem rebuild. A target-bound temporary
 maintenance image formatted the NAND block device, wrote and read a 16 KiB

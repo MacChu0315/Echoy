@@ -124,7 +124,7 @@ Follow [AGENTS.md](../AGENTS.md) and preserve [third-party notices](../THIRD_PAR
 ## Build-time fixed audio
 
 Firmware enables `CONFIG_ECHOY_PREBUILT_AUDIO` by default. A native host C
-compiler (`cc`, `gcc` or `clang`, selected by `ECHOY_HOST_CC`) runs the unchanged
+compiler (`cc`, `gcc` or `clang`, selected by `ECHOY_HOST_CC`) runs the production
 production synthesizer during the build. Three timing/tap cues and four complete
 audition phrases are embedded as little-endian float32, together with the original
 eight audition windows per role. The selected office/device gain table and
@@ -156,6 +156,40 @@ can disable `CONFIG_ECHOY_PREBUILT_AUDIO` for comparisons. The opt-in
 `CONFIG_ECHOY_VERIFY_PREBUILT_AUDIO` diagnostic regenerates all seven assets on
 the ESP and checks sample errors and window positions before PCM activation;
 leave it disabled in ordinary builds and startup measurements.
+
+## Dynamic preparation and chord tables
+
+Foreground and FULL now share each anchor note's synthesis while preserving each
+mix's note-addition order. Delay, compression, fade and normalization remain
+independent. SOURCE storage temporarily holds the foreground send, then is filled
+with the original source loop; no extra sample buffer is allocated. The special
+Pulse phrase-1 normalization path remains separate. Office voicing still retains
+the original normalization inputs before replacing FULL.
+
+`CONFIG_ECHOY_PREBUILT_TRIANGLES` defaults on for firmware. The production table
+builder generates 36 immutable tables (589,824 bytes), deduplicated by harmonic
+count, for common chord pitches MIDI 48–84. Other legal pitches retain runtime
+construction, preserving the public MIDI 0–127 range. The generated header and
+binary manifest are build outputs. With PSRAM rodata, this adds about 576 KiB of
+steady PSRAM as well as Flash; runtime fallback scratch remains available.
+
+```sh
+sh tests/audio/run_preparation.sh
+python3 tests/audio/check_preparation.py --baseline eff8303
+```
+
+The retained-source comparison requires that baseline commit in local Git history.
+It checks all three sample arrays and normalization values before/after office
+voicing for 224 plans, including every MIDI pitch, overlapping notes and reversed
+onsets. The note-count regression detects repeated foreground synthesis. Host CPU
+times are reported separately from device performance; sanitizer flags can be
+passed using `AUDIO_TEST_CFLAGS`.
+
+Native desks opt in with `-DECHOY_PREBUILT_TRIANGLES=ON`. The bounded, silent
+`CONFIG_ECHOY_VERIFY_PREPARATION` device diagnostic compares twelve plans against
+separate rendering/runtime tables before activating PCM. Keep it off in ordinary
+builds; it intentionally delays startup. No new microphone or playback RPC is
+registered by this diagnostic.
 
 ## Phrase pickup regression
 

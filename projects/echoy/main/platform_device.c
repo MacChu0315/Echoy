@@ -823,8 +823,13 @@ static void prepare_worker(void *arg)
     const bool preview_speaker=false;
 #endif
     xEventGroupWaitBits(d->done, STARTED, pdFALSE, pdTRUE, portMAX_DELAY);
+    bool startup_ready=!atomic_load(&d->stopping);
+#if CONFIG_ECHOY_VERIFY_PREPARATION
+    extern bool echoy_audio_check_preparation(void);
+    if(startup_ready)startup_ready=echoy_audio_check_preparation();
+#endif
     int64_t startup_at=esp_timer_get_time();
-    echoy_band_t *band = atomic_load(&d->stopping) ? NULL :
+    echoy_band_t *band = !startup_ready || atomic_load(&d->stopping) ? NULL :
                         echoy_band_create_configured(preview_speaker,role_gains);
     ESP_LOGI(TAG, "fixed audio startup %s: %lldus PSRAM=%u internal=%u",
              band?"ready":"failed", (long long)(esp_timer_get_time()-startup_at),

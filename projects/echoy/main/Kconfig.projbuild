@@ -1,5 +1,23 @@
 menu "Echoy diagnostic build"
 
+    config ECHOY_PREBUILT_TRIANGLES
+        bool "Generate shared chord waveform tables at build time"
+        default y
+        help
+            Precompute the original triangle waveform for the common chord
+            pitch range, deduplicated by harmonic count. Other legal pitches
+            retain the original runtime synthesis. No pitch, note, voicing or
+            normalization changes. Disable for numeric/performance references.
+
+    config ECHOY_VERIFY_PREPARATION
+        bool "Compare optimized preparation against reference on the device"
+        depends on ECHOY_PREBUILT_TRIANGLES
+        default n
+        help
+            Silent, bounded twelve-plan startup comparison of separate versus
+            shared note synthesis and runtime versus prebuilt chord tables.
+            Deliberately delays readiness; keep off in ordinary builds.
+
     config ECHOY_PREBUILT_AUDIO
         bool "Generate fixed cues and audition phrases at build time"
         default y
