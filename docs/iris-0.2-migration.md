@@ -154,7 +154,15 @@ Pulse 0.393 to 0.381. All numerical checks passed (maximum sample error 2.50e-7)
 The ordinary image contains no diagnostic/reference code. Installation and two
 software restarts passed, and the user accepted the current single-device
 experience. No additional instrumented cold-boot run is claimed by this feedback;
-long-duration and three-device physical acceptance remain pending.
+three-device physical acceptance remains pending.
+
+An authorized muted continuous-playback soak was then observed for 18 h 55 min
+38 s and stopped at the user's request on 2026-10-25. Across 227 status samples
+and 2,271 audio-counter records, boot/firmware identity stayed unchanged, crash
+count and audio write/deadline errors remained zero, and free PSRAM stayed at
+8,722,572 bytes. No collection gap or increased device log-drop counter was
+observed. The stopped recorder's evidence is preserved. This is acceptance
+evidence for that bounded single-device workload, not multi-device qualification.
 
 Current archive SHA-256:
 `a16b35c00491785e517d9b238eaa3fa4973f491dd8aa678bdd17a72963f39e18`.

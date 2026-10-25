@@ -39,8 +39,8 @@ priority changes. The new task-creation regression fails on the old setting.
 The final package excludes timing probes and passed healthy installation.
 In the single-device recheck, recording/playback and 20 subsequent plan updates
 completed with zero write errors or deadline misses; the user reported no
-protection page in this run. Long-duration and three-device acceptance remain
-pending. The original strict fault handling is unchanged.
+protection page in this run. That check alone did not establish long-duration or
+three-device acceptance. The original strict fault handling is unchanged.
 
 A later power-on test exposed LCD transfer `ESP_ERR_NO_MEM` even while the
 rendered shadow and application state appeared normal. The pinned BSP's internal
@@ -101,15 +101,21 @@ diagnostic code, and passed two software restarts with normal application state,
 zero audio write/deadline errors and no observed LCD transfer failures. Idle free
 PSRAM was approximately 9.63 MB. The user accepted the current single-device
 experience on this package. This records user acceptance without claiming an
-additional instrumented cold-boot run. Long-duration and three-device physical
-acceptance remain pending; the earlier fixed-audio package remains preserved.
+additional instrumented cold-boot run. Three-device physical acceptance remains
+pending; the earlier fixed-audio package remains preserved.
 
-An authorized single-device muted-loop soak is now being recorded locally with
-official read-only logs and five-minute status snapshots. The bounded background
-recorder preserves collection gaps and boot/firmware identity; host or USB
-interruptions must not be counted as healthy device uptime. Collection setup is
-verified, but no long-duration result is claimed yet. Private recorder details
-and evidence remain outside release content. Multi-device checks are still pending.
+The authorized muted-loop soak was stopped at the user's request on 2026-10-25;
+the collector is stopped and its logs are preserved. The verified window lasted
+18 h 55 min 38 s, from 2026-10-24 18:34 to 2026-10-25 13:29 (UTC+8). All 227
+device/application snapshots retained one boot and firmware identity, normal
+state, volume zero and continuous playback. All 2,271 audio-counter records had
+zero write errors and deadline misses; crash count remained zero. Free PSRAM
+stayed at 8,722,572 bytes; internal free memory varied from 63,347 to 63,727 bytes.
+No collection gap or new increase in the device log-drop counter was observed.
+This supports stability of the observed single-device muted-loop workload, not
+arbitrary interaction, physical sound, indefinite operation or multi-device
+qualification. Private evidence remains outside release content. Multi-device
+checks are still pending.
 
 The tested device's NAND/LittleFS mount failure was repaired on 2026-10-24
 through an explicitly authorized filesystem rebuild. A target-bound temporary
