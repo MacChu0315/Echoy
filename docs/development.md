@@ -1,5 +1,11 @@
 # Developing Echoy
 
+This branch prepares a local **1.2.1 / Iris 0.2 migration candidate**. See
+[migration scope and device approval gate](iris-0.2-migration.md). It is not
+a general release replacement for the accepted v1.2.0 firmware. Current acceptance
+includes single-device checks, the bounded soak and user-completed dual-device
+testing; physical three-device acceptance and platform review remain separate.
+
 Run all commands below from the **Echoy repository root**, not this `docs/`
 directory. The [v1.2.0](releases/v1.2.0.md) source freezes the accepted
 phrase pickup and UI fixes, retaining the v1.1.0 three-device repair and local
@@ -8,7 +14,7 @@ remains the published download. Historical `echoy-three-basic-ba951963754a` and
 `echoy-dual-accepted-20261014` tags remain immutable. Unmerged experimental features are excluded from this version.
 
 The examples assume the original workspace layout: Echoy beside a compatible
-`esp-mosaico-vibe` checkout and the pinned `.toolchains/` directory. A clone of
+`esp-mosaico-vibe-iris02` checkout and the pinned `.toolchains/` directory. A clone of
 Echoy alone does not install that SDK, BSP, GSP compiler, simulator or host audio
 tools. Follow the official Mosaico workspace setup and resolve the versions in
 [dependencies.json](dependencies.json) before running these commands. This README
@@ -64,7 +70,7 @@ Versions remain pinned in [dependency pins](dependencies.json).
 export IDF_PATH="$PWD/../.toolchains/esp-idf-7b9cc1a"
 export GSPC_EXECUTABLE="$PWD/../.toolchains/gspc-0.6.1/gspc"
 export GSP_SIM_EXECUTABLE="$PWD/../.toolchains/gsp-sim-1.5.1/sim"
-python3 ../esp-mosaico-vibe/submodule/esp-mosaico-utils/mosaico-tools/skills/idf-low-noise-build/scripts/idf_low_noise_build.py --project projects/echoy build
+python3 ../esp-mosaico-vibe-iris02/submodule/esp-mosaico-utils/mosaico-tools/skills/idf-low-noise-build/scripts/idf_low_noise_build.py --project projects/echoy build
 ```
 
 The portable audio/linkage sources compile for the pinned ESP32-S31 SDK.
@@ -116,6 +122,76 @@ Edit the generator rather than its JSON/view-key outputs.
 
 Follow [AGENTS.md](../AGENTS.md) and preserve [third-party notices](../THIRD_PARTY_NOTICES.md).
 
+
+## Build-time fixed audio
+
+Firmware enables `CONFIG_ECHOY_PREBUILT_AUDIO` by default. A native host C
+compiler (`cc`, `gcc` or `clang`, selected by `ECHOY_HOST_CC`) runs the production
+production synthesizer during the build. Three timing/tap cues and four complete
+audition phrases are embedded as little-endian float32, together with the original
+eight audition windows per role. The selected office/device gain table and
+speaker profile are part of the resource contract. Changes to the generator,
+synthesizer, gains or headers regenerate the binary and its hash manifest.
+
+Startup validates the resource and copies it into ordinary owned PSRAM buffers;
+there is no filesystem cache, persistent-data migration or runtime synthesis
+fallback. Invalid resources, mismatched profiles and allocation failures stop
+sound preparation through the existing failure path. Random selection, recorded
+phrase synthesis, pickup and UI behavior remain unchanged. The resource adds
+1,000,932 bytes of embedded data; with PSRAM rodata enabled, the immutable copy
+also consumes PSRAM in addition to the existing owned playback buffers.
+
+```sh
+sh tests/audio/run_fixed_audio.sh
+```
+
+This compares every sample/window against the original C synthesis for office,
+device and native reference profiles, rejects corrupt resources, exercises failed
+allocations and runs the existing random-audition regression through the fixed
+path. `tools/check_iris_bundle.py` verifies the actual app contains the generated
+bytes and that the input hashes still match the source tree.
+
+For native simulator coverage, configure `projects/echoy/pc` with
+`-DECHOY_PREBUILT_AUDIO=ON`; it embeds the native reference profile and uses the
+same loader. The default native build remains the synthesis reference. Firmware
+can disable `CONFIG_ECHOY_PREBUILT_AUDIO` for comparisons. The opt-in
+`CONFIG_ECHOY_VERIFY_PREBUILT_AUDIO` diagnostic regenerates all seven assets on
+the ESP and checks sample errors and window positions before PCM activation;
+leave it disabled in ordinary builds and startup measurements.
+
+## Dynamic preparation and chord tables
+
+Foreground and FULL now share each anchor note's synthesis while preserving each
+mix's note-addition order. Delay, compression, fade and normalization remain
+independent. SOURCE storage temporarily holds the foreground send, then is filled
+with the original source loop; no extra sample buffer is allocated. The special
+Pulse phrase-1 normalization path remains separate. Office voicing still retains
+the original normalization inputs before replacing FULL.
+
+`CONFIG_ECHOY_PREBUILT_TRIANGLES` defaults on for firmware. The production table
+builder generates 36 immutable tables (589,824 bytes), deduplicated by harmonic
+count, for common chord pitches MIDI 48–84. Other legal pitches retain runtime
+construction, preserving the public MIDI 0–127 range. The generated header and
+binary manifest are build outputs. With PSRAM rodata, this adds about 576 KiB of
+steady PSRAM as well as Flash; runtime fallback scratch remains available.
+
+```sh
+sh tests/audio/run_preparation.sh
+python3 tests/audio/check_preparation.py --baseline eff8303
+```
+
+The retained-source comparison requires that baseline commit in local Git history.
+It checks all three sample arrays and normalization values before/after office
+voicing for 224 plans, including every MIDI pitch, overlapping notes and reversed
+onsets. The note-count regression detects repeated foreground synthesis. Host CPU
+times are reported separately from device performance; sanitizer flags can be
+passed using `AUDIO_TEST_CFLAGS`.
+
+Native desks opt in with `-DECHOY_PREBUILT_TRIANGLES=ON`. The bounded, silent
+`CONFIG_ECHOY_VERIFY_PREPARATION` device diagnostic compares twelve plans against
+separate rendering/runtime tables before activating PCM. Keep it off in ordinary
+builds; it intentionally delays startup. No new microphone or playback RPC is
+registered by this diagnostic.
 
 ## Phrase pickup regression
 

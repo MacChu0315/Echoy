@@ -11,6 +11,15 @@
 - Preserve the 480x480 layout and approved interactions. Hardware hides the
   simulator-only put-away action. Brightness is manual 20–100%; idle, touch and
   playback must not change it.
+- Set initial panel brightness before GSP starts; do not race main-task panel
+  commands with rendering. Keep display scratch in PSRAM and I2S interrupts
+  IRAM-safe during the host's post-HEALTHY Flash inventory reads.
+- Bound the LCD's internal DMA transfer queue separately from render scratch.
+  Iris screenshots show the rendered shadow, not proof of physical LCD output;
+  verify transfer logs and actual screen behavior across warm and cold starts.
+- Echoy has no haptics: explicitly disable the motor at app entry, including
+  early-failure paths. A shutdown error must preserve Iris access and stop
+  further application startup.
 - Validate UI behavior with actual C callbacks in the matching official native
   simulator. Scene-only rendering and UI-only audio models are insufficient.
 - Recording captures touch timing, not microphone audio. Preserve initial rests,
@@ -33,6 +42,9 @@
 - Initialize RF before audio. Keep sensor/network I/O, synthesis, allocation,
   GSP RPC and filesystem work off the PCM owner. Preserve immutable preparation
   jobs, cancellation generations and nonblocking cached-state publication.
+- Keep the core-1 PCM owner above GSP and the pinned Iris/TinyUSB service
+  priorities. Equal-priority time slicing must not delay ready DMA buffers;
+  preserve the existing audio deadlines and buffer sizes.
 - Prepare home artwork on its private worker from copied frame/plan data. GSP
   owns touch and UI operations. Keep large UI/art storage in explicit PSRAM;
   borrowed buffers remain immutable until release. Failed stop/flush retains

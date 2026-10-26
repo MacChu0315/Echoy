@@ -6,7 +6,7 @@ idf_component_register(
         "echoy_snapshot_diagnostics.c" "board_touch_trace.c"
         "echoy_art_producer.c"
         "echoy_device_pcm.c"
-        "echoy_display.c"
+        "echoy_display.c" "board_display_io.c"
         "board_link.c" "echoy_radio.c" "echoy_link_codec.c" "echoy_link_protocol.c" "echoy_group.c"
     INCLUDE_DIRS "."
     REQUIRES esp_iris esp-mosaico-bsp esp_mosaico_app_recovery
@@ -18,3 +18,44 @@ idf_build_get_property(echoy_idf_path IDF_PATH)
 idf_define_esp_err_codes(HEADERS "${echoy_idf_path}/components/esp_wifi/include/esp_now.h")
 include("${MOSAICO_UTILS_ROOT}/mosaico-tools/cmake/gsp_bundle.cmake")
 mosaico_gsp_add_ui_bundle(${COMPONENT_LIB} "../ui/main.json")
+# Apply the application-specific LCD queue budget through the public IO
+# constructor without changing the shared BSP or its DMA transport policy.
+target_link_options(${COMPONENT_LIB} INTERFACE
+    "-Wl,--wrap=esp_lcd_new_panel_io_spi"
+    "-Wl,-u,__wrap_esp_lcd_new_panel_io_spi")
+
+if(CONFIG_ECHOY_PREBUILT_AUDIO)
+    # A native compiler runs the unchanged portable synth on the build host.
+    # Never use CMAKE_C_COMPILER here: it produces ESP executables.
+    find_program(ECHOY_HOST_CC NAMES cc gcc clang REQUIRED NO_CMAKE_FIND_ROOT_PATH)
+    get_filename_component(echoy_root "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
+    set(echoy_fixed_profile device)
+    if(CONFIG_ECHOY_OFFICE_VOICING_TRIAL)
+        set(echoy_fixed_profile office)
+    endif()
+    set(echoy_fixed_bin "${CMAKE_CURRENT_BINARY_DIR}/echoy_fixed_audio.bin")
+    file(GLOB echoy_fixed_headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/*.h")
+    add_custom_command(OUTPUT "${echoy_fixed_bin}" "${CMAKE_CURRENT_BINARY_DIR}/echoy_fixed_audio.json"
+        COMMAND "${PYTHON}" "${echoy_root}/tools/generate_fixed_audio.py"
+            --cc "${ECHOY_HOST_CC}" --profile "${echoy_fixed_profile}" --output "${echoy_fixed_bin}"
+        DEPENDS "${echoy_root}/tools/generate_fixed_audio.py" "${echoy_root}/tools/generate_fixed_audio.c"
+            "${CMAKE_CURRENT_LIST_DIR}/echoy_audio.c" "${CMAKE_CURRENT_LIST_DIR}/echoy_music.c"
+            "${CMAKE_CURRENT_LIST_DIR}/echoy_device_pcm.c" ${echoy_fixed_headers}
+        VERBATIM)
+    target_add_binary_data(${COMPONENT_LIB} "${echoy_fixed_bin}" BINARY ALIGN 4)
+    target_sources(${COMPONENT_LIB} PRIVATE echoy_fixed_audio.c echoy_fixed_audio_embedded.c)
+    target_compile_definitions(${COMPONENT_LIB} PRIVATE ECHOY_USE_FIXED_AUDIO=1)
+    if(CONFIG_ECHOY_VERIFY_PREBUILT_AUDIO)
+        target_sources(${COMPONENT_LIB} PRIVATE echoy_fixed_audio_verify.c)
+    endif()
+endif()
+
+if(CONFIG_ECHOY_PREBUILT_TRIANGLES)
+    find_program(ECHOY_HOST_CC NAMES cc gcc clang REQUIRED NO_CMAKE_FIND_ROOT_PATH)
+    get_filename_component(echoy_root "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
+    include("${echoy_root}/tools/cmake/triangle_tables.cmake")
+    echoy_add_triangle_tables(${COMPONENT_LIB} "${echoy_root}" "${ECHOY_HOST_CC}" "${PYTHON}")
+    if(CONFIG_ECHOY_VERIFY_PREPARATION)
+        target_sources(${COMPONENT_LIB} PRIVATE echoy_audio_reference.c echoy_audio_preparation_check.c)
+    endif()
+endif()

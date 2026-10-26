@@ -132,7 +132,7 @@ def require_complete(status, run_id):
 
 def require_start_identity(device):
     if (device.get("firmware_mode") != "normal" or device.get("board_id") != "esp-mosaico" or
-            device.get("layout_id") != "mosaico-retained-recovery-2m-v1"):
+            device.get("layout_id") != "mosaico-retained-test-2m-v2"):
         raise ValueError("start requires the expected application mode, board, and retained Recovery layout")
     queue = device.get("queue")
     if (not isinstance(queue, dict) or queue.get("device_id") != RIGHT_DEVICE_ID or
@@ -315,7 +315,7 @@ def main():
     parser.add_argument("--input-gain-db", type=int, choices=range(0, 31, 6), default=0)
     parser.add_argument("--run-id", type=int, help="exact completed generation to collect")
     parser.add_argument("--output", type=Path, help="new local evidence directory; never overwritten")
-    parser.add_argument("--mosaico", type=Path, default=ROOT.parent / "esp-mosaico-vibe/mosaico.py")
+    parser.add_argument("--mosaico", type=Path, default=ROOT.parent / "esp-mosaico-vibe-iris02/mosaico.py")
     parser.add_argument("--project", type=Path, default=ROOT / "projects/echoy")
     args = parser.parse_args()
     output = args.output or ARTIFACT_ROOT / f"{args.action}-{datetime.now(timezone.utc):%Y%m%dT%H%M%S}-{uuid.uuid4().hex[:8]}"

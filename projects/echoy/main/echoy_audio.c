@@ -14,12 +14,28 @@
 #define DELAY_FRAMES 7500u
 #define TRIANGLE_SIZE 4096u
 #define SINE_SIZE 1024u
+#if ECHOY_USE_PREBUILT_TRIANGLES
+#include "echoy_triangle_tables.h"
+_Static_assert(ECHOY_TRIANGLE_TABLE_RATE==ECHOY_AUDIO_SAMPLE_RATE &&
+               ECHOY_TRIANGLE_TABLE_SIZE==TRIANGLE_SIZE,"Regenerate triangle tables for this synth");
+static const float *prebuilt_triangle(unsigned harmonics)
+{
+    unsigned low=0,high=ECHOY_TRIANGLE_TABLE_COUNT;
+    while(low<high) {
+        unsigned middle=low+(high-low)/2;
+        if(echoy_triangle_harmonics[middle]<harmonics)low=middle+1;else high=middle;
+    }
+    return low<ECHOY_TRIANGLE_TABLE_COUNT && echoy_triangle_harmonics[low]==harmonics ?
+           echoy_triangle_tables[low]:NULL;
+}
+#endif
 
 typedef struct { float b0, b1, b2, a1, a2, x1, x2, y1, y2, q, resonance; unsigned type; } biquad_t;
 typedef struct {
     float send[ECHOY_AUDIO_LOOP_FRAMES], delay[DELAY_FRAMES], feedback[128];
     float triangle[3][TRIANGLE_SIZE], sine[SINE_SIZE + 1];
     unsigned triangle_harmonics[3];
+    const float *triangle_selected[3];
     bool speaker_profile;
     echoy_note_t source[16], sparse[17];
 } workspace_t;
@@ -200,7 +216,7 @@ static float triangle_sample(const float *table, uint32_t phase)
 }
 
 static void render_note(float *dry, float *send, size_t frames, const echoy_note_t *note,
-                        workspace_t *work)
+                        workspace_t *work, float *anchor_dry, float *anchor_send)
 {
     double at = note->step * .15625;
     float duration = note->duration ? note->duration : .2f;
@@ -238,10 +254,15 @@ static void render_note(float *dry, float *send, size_t frames, const echoy_note
         for (unsigned p = 0; p < pitches; ++p) {
             frequencies[p] = midi(note->note_count ? note->notes[p] : note->note);
             unsigned harmonics = (unsigned)((SR / 2 - 1) / frequencies[p]);
+#if ECHOY_USE_PREBUILT_TRIANGLES
+            work->triangle_selected[p]=prebuilt_triangle(harmonics);
+            if(work->triangle_selected[p])continue;
+#endif
             if (work->triangle_harmonics[p] != harmonics) {
                 triangle_table(work->triangle[p], harmonics, work->sine);
                 work->triangle_harmonics[p] = harmonics;
             }
+            work->triangle_selected[p]=work->triangle[p];
         }
     }
     static const float attacks[] = {.004f, .001f, .001f, .012f, .014f};
@@ -314,7 +335,7 @@ static void render_note(float *dry, float *send, size_t frames, const echoy_note
         } else {
             for (unsigned p = 0; p < pitches; ++p) {
                 if (frequencies[p] < SR / 2) {
-                    float triangle = triangle_sample(work->triangle[p], oscillators[p].phase);
+                    float triangle = triangle_sample(work->triangle_selected[p], oscillators[p].phase);
                     if (work->speaker_profile) {
                         static const float upper[] = {.20f, .10f};
                         /* Fixed per-note phase offsets reduce coincident peaks;
@@ -346,6 +367,10 @@ static void render_note(float *dry, float *send, size_t frames, const echoy_note
         float sample = (float)(value * gain);
         dry[i] += sample;
         if (wet) send[i] += sample;
+        if (anchor_dry) {
+            anchor_dry[i] += sample;
+            if (wet) anchor_send[i] += sample;
+        }
     }
 }
 
@@ -438,20 +463,10 @@ static void compress(float *samples, size_t frames, const float *sine)
     }
 }
 
-static void render(float *output, size_t frames, const echoy_note_t *notes, size_t count,
-                   bool anchors_only, bool pulse, bool fade, workspace_t *work)
+static void finish_render(float *output, size_t frames, bool pulse, bool fade, workspace_t *work)
 {
-    memset(output, 0, frames * sizeof(float));
-    memset(work->send, 0, frames * sizeof(float));
     memset(work->delay, 0, sizeof(work->delay));
     memset(work->feedback, 0, sizeof(work->feedback));
-    for (size_t i = 0; i < count; ++i) {
-        if (!anchors_only || notes[i].layer == ECHOY_ANCHOR) {
-            echoy_note_t event = notes[i];
-            if (pulse) event.note = event.kind == ECHOY_KICK ? 38 : event.kind == ECHOY_RIM ? 50 : 84;
-            render_note(output, work->send, frames, &event, work);
-        }
-    }
     biquad_t damp = {0};
     filter_set(&damp, 0, 2900, 1, work->sine);
     for (size_t i = 0; i < frames; ++i) {
@@ -467,6 +482,43 @@ static void render(float *output, size_t frames, const echoy_note_t *notes, size
         size_t release = pulse ? 432 : 1440;
         for (size_t i = 0; i < release; ++i) output[frames - release + i] *= (float)(release - 1 - i) / release;
     }
+}
+
+static void render(float *output, size_t frames, const echoy_note_t *notes, size_t count,
+                   bool anchors_only, bool pulse, bool fade, workspace_t *work)
+{
+    memset(output,0,frames*sizeof(float));
+    memset(work->send,0,frames*sizeof(float));
+    for (size_t i=0;i<count;i++) {
+        if (!anchors_only || notes[i].layer==ECHOY_ANCHOR) {
+            echoy_note_t event=notes[i];
+            if (pulse) event.note=event.kind==ECHOY_KICK?38:event.kind==ECHOY_RIM?50:84;
+            render_note(output,work->send,frames,&event,work,NULL,NULL);
+        }
+    }
+    finish_render(output,frames,pulse,fade,work);
+}
+
+/* Share note synthesis, not post-mix processing: both sums retain their original
+ * note order and get independent delay/compressor/fade state. SOURCE is unused
+ * until these two loops finish, so its buffer can hold the anchor send without
+ * adding an allocation or raising the preparation memory peak. */
+static void render_pair(float *full, float *foreground, float *anchor_send, size_t frames,
+                        const echoy_note_t *notes, size_t count, bool pulse, workspace_t *work)
+{
+    memset(full,0,frames*sizeof(float));
+    memset(foreground,0,frames*sizeof(float));
+    memset(anchor_send,0,frames*sizeof(float));
+    memset(work->send,0,frames*sizeof(float));
+    for (size_t i=0;i<count;i++) {
+        echoy_note_t event=notes[i];
+        if (pulse) event.note=event.kind==ECHOY_KICK?38:event.kind==ECHOY_RIM?50:84;
+        render_note(full,work->send,frames,&event,work,
+                    event.layer==ECHOY_ANCHOR?foreground:NULL,anchor_send);
+    }
+    finish_render(full,frames,pulse,true,work);
+    memcpy(work->send,anchor_send,frames*sizeof(float));
+    finish_render(foreground,frames,pulse,true,work);
 }
 
 /* Sum short float blocks, then accumulate in double: the 60,000-frame RMS
@@ -577,19 +629,36 @@ echoy_audio_result_t echoy_audio_prepare(const echoy_plan_t *plan, bool original
     }
 #ifdef ESP_PLATFORM
     int64_t profile_start = esp_timer_get_time();
+    int64_t source_us=0,pair_us=0;
 #endif
-    render(loops->samples[ECHOY_AUDIO_SOURCE], loops->frames, work->source, plan->source_count, false, true, true, work);
+    bool separate=original_pulse1;
+#if ECHOY_AUDIO_REFERENCE_PREPARATION
+    separate=true;
+#endif
+    if (separate) {
+        render(loops->samples[ECHOY_AUDIO_SOURCE],loops->frames,work->source,plan->source_count,false,true,true,work);
 #ifdef ESP_PLATFORM
-    int64_t profile_source = esp_timer_get_time();
+        source_us=esp_timer_get_time()-profile_start;
 #endif
-    if (original_pulse1) {
-        size_t count = original_sparse(work->source, plan->source_count, work->sparse);
-        render(loops->samples[ECHOY_AUDIO_FOREGROUND], loops->frames, work->sparse, count, false, true, true, work);
-    } else render(loops->samples[ECHOY_AUDIO_FOREGROUND], loops->frames, plan->events, plan->count, true, plan->role == ECHOY_PULSE, true, work);
+        if (original_pulse1) {
+            size_t count=original_sparse(work->source,plan->source_count,work->sparse);
+            render(loops->samples[ECHOY_AUDIO_FOREGROUND],loops->frames,work->sparse,count,false,true,true,work);
+        } else render(loops->samples[ECHOY_AUDIO_FOREGROUND],loops->frames,plan->events,plan->count,true,plan->role==ECHOY_PULSE,true,work);
+        render(loops->samples[ECHOY_AUDIO_FULL],loops->frames,plan->events,plan->count,false,plan->role==ECHOY_PULSE,true,work);
 #ifdef ESP_PLATFORM
-    int64_t profile_foreground = esp_timer_get_time();
+        pair_us=esp_timer_get_time()-profile_start-source_us;
 #endif
-    render(loops->samples[ECHOY_AUDIO_FULL], loops->frames, plan->events, plan->count, false, plan->role == ECHOY_PULSE, true, work);
+    } else {
+        render_pair(loops->samples[ECHOY_AUDIO_FULL],loops->samples[ECHOY_AUDIO_FOREGROUND],
+                    loops->samples[ECHOY_AUDIO_SOURCE],loops->frames,plan->events,plan->count,plan->role==ECHOY_PULSE,work);
+#ifdef ESP_PLATFORM
+        pair_us=esp_timer_get_time()-profile_start;
+#endif
+        render(loops->samples[ECHOY_AUDIO_SOURCE],loops->frames,work->source,plan->source_count,false,true,true,work);
+#ifdef ESP_PLATFORM
+        source_us=esp_timer_get_time()-profile_start-pair_us;
+#endif
+    }
 #ifdef ESP_PLATFORM
     int64_t profile_full = esp_timer_get_time();
 #endif
@@ -608,10 +677,10 @@ echoy_audio_result_t echoy_audio_prepare(const echoy_plan_t *plan, bool original
     if (original_pulse1) memcpy(loops->samples[ECHOY_AUDIO_FOREGROUND], loops->samples[ECHOY_AUDIO_SOURCE], loops->frames * sizeof(float));
     loops->target_rms = target;
 #ifdef ESP_PLATFORM
-    ESP_LOGI("echoy_synth", "role=%u phrase=%u events=%u source_us=%lld foreground_us=%lld full_us=%lld normalize_us=%lld",
+    ESP_LOGI("echoy_synth", "role=%u phrase=%u events=%u source_us=%lld foreground_full_us=%lld normalize_us=%lld reused_anchors=%u",
              (unsigned)plan->role, plan->phrase, (unsigned)plan->count,
-             (long long)(profile_source-profile_start), (long long)(profile_foreground-profile_source),
-             (long long)(profile_full-profile_foreground), (long long)(esp_timer_get_time()-profile_full));
+             (long long)source_us, (long long)pair_us,
+             (long long)(esp_timer_get_time()-profile_full), (unsigned)!separate);
 #endif
     free(work);
     *out = loops;

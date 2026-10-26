@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 root=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
-bsp="$root/../esp-mosaico-vibe/submodule/esp-mosaico-bsp/components"
+bsp="$root/../esp-mosaico-vibe-iris02/submodule/esp-mosaico-bsp/components"
 mag_build=$(mktemp -d /tmp/echoy-mag-tests.XXXXXX)
 trap 'rm -rf "$mag_build"' EXIT HUP INT TERM
 for profile in enabled disabled; do

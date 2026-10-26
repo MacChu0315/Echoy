@@ -1,4 +1,5 @@
 #include "echoy_band.h"
+#include "echoy_fixed_audio.h"
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -334,8 +335,16 @@ static void sync_plans(echoy_band_t *b)
             c->origin_us, c->started);
     }
 }
+static bool prepare_previews(echoy_band_t *b, bool speaker, const float gains[4],
+                             const echoy_fixed_audio_t *fixed);
 echoy_band_t *echoy_band_create_configured(bool speaker,const float gains[4])
 {
+    const echoy_fixed_audio_t *fixed=NULL;
+#if ECHOY_USE_FIXED_AUDIO
+    echoy_fixed_audio_t asset;
+    if (!echoy_fixed_audio_embedded(speaker,gains,&asset)) return NULL;
+    fixed=&asset;
+#endif
     echoy_band_t *b = calloc(1, sizeof(*b));
     if (!b) {
         return NULL;
@@ -378,12 +387,17 @@ echoy_band_t *echoy_band_create_configured(bool speaker,const float gains[4])
         echoy_model_select_role(b->voices[i].model, echoy_arrange_get_tile(b->arrange, i)->role, 0);
     }
     for (unsigned i = 0; i < 3; i++) {
-        if (echoy_audio_render_cue((echoy_audio_cue_t)i, &b->cues[i]) != ECHOY_AUDIO_OK) {
+#if ECHOY_USE_FIXED_AUDIO
+        echoy_audio_result_t result=echoy_fixed_audio_cue(fixed,(echoy_audio_cue_t)i,&b->cues[i]);
+#else
+        echoy_audio_result_t result=echoy_audio_render_cue((echoy_audio_cue_t)i,&b->cues[i]);
+#endif
+        if (result != ECHOY_AUDIO_OK) {
             echoy_band_delete(b);
             return NULL;
         }
     }
-    if (!echoy_band_prepare_previews(b,speaker,gains)) {
+    if (!prepare_previews(b,speaker,gains,fixed)) {
         echoy_band_delete(b);return NULL;
     }
     sync_plans(b);
@@ -393,12 +407,33 @@ echoy_band_t *echoy_band_create(void)
 { return echoy_band_create_configured(false,NULL); }
 bool echoy_band_prepare_previews(echoy_band_t *b, bool speaker, const float gains[4])
 {
+#if ECHOY_USE_FIXED_AUDIO
+    echoy_fixed_audio_t fixed;
+    if (!echoy_fixed_audio_embedded(speaker,gains,&fixed)) return false;
+    return prepare_previews(b,speaker,gains,&fixed);
+#else
+    return prepare_previews(b,speaker,gains,NULL);
+#endif
+}
+static bool prepare_previews(echoy_band_t *b, bool speaker, const float gains[4],
+                             const echoy_fixed_audio_t *fixed)
+{
+#if ECHOY_USE_FIXED_AUDIO
+    (void)speaker; (void)gains;
+#else
+    (void)fixed;
+#endif
     if (!b || b->render_until) return false;
     for (unsigned i=0;i<CUES;i++) if(b->scheduled[i].used)return false;
     echoy_audio_preview_pool_t prepared[4]={0};
     for(unsigned role=0;role<4;role++) {
-        if(echoy_audio_render_preview_pool((echoy_role_t)role,speaker,gains?gains[role]:1,
-                                      &prepared[role])!=ECHOY_AUDIO_OK) {
+#if ECHOY_USE_FIXED_AUDIO
+        echoy_audio_result_t result=echoy_fixed_audio_preview(fixed,(echoy_role_t)role,&prepared[role]);
+#else
+        echoy_audio_result_t result=echoy_audio_render_preview_pool((echoy_role_t)role,speaker,
+                                                                  gains?gains[role]:1,&prepared[role]);
+#endif
+        if(result!=ECHOY_AUDIO_OK) {
             for(unsigned i=0;i<4;i++)echoy_audio_free_preview_pool(&prepared[i]);
             return false;
         }

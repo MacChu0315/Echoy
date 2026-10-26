@@ -2,6 +2,9 @@
 #include "board_audio.h"
 #ifdef ESP_PLATFORM
 #include "sdkconfig.h"
+#if !CONFIG_I2S_ISR_IRAM_SAFE
+#error "Echoy requires IRAM-safe I2S interrupts during Iris Flash inventory reads"
+#endif
 #endif
 #include "bsp/esp_mosaico.h"
 #include "esp_codec_dev.h"

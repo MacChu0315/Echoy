@@ -62,3 +62,35 @@ target_compile_options(echoy_chain_desk PRIVATE -Wall -Wextra)
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_link_options(echoy_chain_desk PRIVATE "-Wl,--wrap=recv")
 endif()
+
+option(ECHOY_PREBUILT_AUDIO "Exercise build-time fixed audio in the native desk" OFF)
+option(ECHOY_PREBUILT_TRIANGLES "Use generated shared chord waveform tables" OFF)
+if(ECHOY_PREBUILT_TRIANGLES)
+    find_package(Python3 REQUIRED COMPONENTS Interpreter)
+    get_filename_component(echoy_root "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
+    include("${echoy_root}/tools/cmake/triangle_tables.cmake")
+    foreach(target echoy_desk echoy_chain_desk)
+        echoy_add_triangle_tables(${target} "${echoy_root}" "${CMAKE_C_COMPILER}" "${Python3_EXECUTABLE}")
+    endforeach()
+endif()
+if(ECHOY_PREBUILT_AUDIO)
+    find_package(Python3 REQUIRED COMPONENTS Interpreter)
+    get_filename_component(echoy_root "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
+    set(fixed_source "${CMAKE_CURRENT_BINARY_DIR}/echoy_fixed_audio_data.c")
+    file(GLOB fixed_headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/../main/*.h")
+    add_custom_command(OUTPUT "${fixed_source}" "${CMAKE_CURRENT_BINARY_DIR}/echoy_fixed_audio.bin"
+        "${CMAKE_CURRENT_BINARY_DIR}/echoy_fixed_audio.json"
+        COMMAND "${Python3_EXECUTABLE}" "${echoy_root}/tools/generate_fixed_audio.py"
+            --cc "${CMAKE_C_COMPILER}" --profile reference
+            --output "${CMAKE_CURRENT_BINARY_DIR}/echoy_fixed_audio.bin" --c-source "${fixed_source}"
+        DEPENDS "${echoy_root}/tools/generate_fixed_audio.py" "${echoy_root}/tools/generate_fixed_audio.c"
+            ../main/echoy_audio.c ../main/echoy_music.c ../main/echoy_device_pcm.c ${fixed_headers}
+        VERBATIM)
+    add_library(echoy_fixed_audio STATIC "${fixed_source}" ../main/echoy_fixed_audio.c
+        ../main/echoy_fixed_audio_embedded.c)
+    target_include_directories(echoy_fixed_audio PRIVATE ../main)
+    foreach(target echoy_desk echoy_chain_desk)
+        target_compile_definitions(${target} PRIVATE ECHOY_USE_FIXED_AUDIO=1)
+        target_link_libraries(${target} PRIVATE echoy_fixed_audio)
+    endforeach()
+endif()

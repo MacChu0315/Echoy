@@ -1,0 +1,16 @@
+/* Diagnostic build only: retain the independent foreground/full rendering and
+ * runtime triangle construction for a same-device numerical/timing comparison.
+ * Host regressions additionally compare against the actual eff8303 source. */
+#undef ECHOY_USE_PREBUILT_TRIANGLES
+#define ECHOY_USE_PREBUILT_TRIANGLES 0
+#define ECHOY_AUDIO_REFERENCE_PREPARATION 1
+#define echoy_audio_prepare reference_echoy_audio_prepare
+#define echoy_audio_free_loops reference_echoy_audio_free_loops
+#define echoy_audio_cut_harmony_bass reference_echoy_audio_cut_harmony_bass
+#define echoy_audio_voice_for_speaker reference_echoy_audio_voice_for_speaker
+#define echoy_audio_render_cue reference_echoy_audio_render_cue
+#define echoy_audio_render_preview_pool reference_echoy_audio_render_preview_pool
+#define echoy_audio_free_preview_pool reference_echoy_audio_free_preview_pool
+#define echoy_audio_free_buffer reference_echoy_audio_free_buffer
+#define echoy_audio_render_pickup reference_echoy_audio_render_pickup
+#include "echoy_audio.c"

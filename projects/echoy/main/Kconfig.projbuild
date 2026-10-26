@@ -1,5 +1,43 @@
 menu "Echoy diagnostic build"
 
+    config ECHOY_PREBUILT_TRIANGLES
+        bool "Generate shared chord waveform tables at build time"
+        default y
+        help
+            Precompute the original triangle waveform for the common chord
+            pitch range, deduplicated by harmonic count. Other legal pitches
+            retain the original runtime synthesis. No pitch, note, voicing or
+            normalization changes. Disable for numeric/performance references.
+
+    config ECHOY_VERIFY_PREPARATION
+        bool "Compare optimized preparation against reference on the device"
+        depends on ECHOY_PREBUILT_TRIANGLES
+        default n
+        help
+            Silent, bounded twelve-plan startup comparison of separate versus
+            shared note synthesis and runtime versus prebuilt chord tables.
+            Deliberately delays readiness; keep off in ordinary builds.
+
+    config ECHOY_PREBUILT_AUDIO
+        bool "Generate fixed cues and audition phrases at build time"
+        default y
+        help
+            Use the production C synthesizer on the build host and embed its
+            float32 output with the selected device/office profile. Startup
+            validates and copies it to owned PSRAM buffers. Recorded phrases
+            are still synthesized on the background worker. Disable only for
+            reference comparisons; this does not change stored user data.
+
+    config ECHOY_VERIFY_PREBUILT_AUDIO
+        bool "Compare fixed assets against on-device synthesis at startup"
+        depends on ECHOY_PREBUILT_AUDIO
+        default n
+        help
+            Diagnostic build only. Re-synthesizes each cue and role before PCM
+            activation, compares samples and onset bounds, and rejects errors
+            above 1e-5 absolute/relative L2. Intentionally delays startup.
+            Keep disabled for normal builds and startup timing measurements.
+
     config ECHOY_PHRASE_PICKUP
         bool "Add the auditioned local phrase pickup"
         default y

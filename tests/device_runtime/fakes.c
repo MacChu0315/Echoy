@@ -272,6 +272,12 @@ struct fake_task {
     struct fake_task *next;
 };
 static struct fake_task *tasks;
+unsigned fake_task_priority(const char *name)
+{
+    for (const struct fake_task *task = tasks; task; task = task->next)
+        if (!strcmp(task->name, name)) return task->priority;
+    return 0;
+}
 static _Thread_local struct fake_task *self;
 static atomic_int task_creates;
 static void *entry(void *p)
