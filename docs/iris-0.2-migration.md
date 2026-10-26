@@ -1,7 +1,9 @@
 # Iris 0.2 migration candidate
 
-Version **1.2.1 is a local migration candidate**, not a published or physically
-accepted release. The accepted v1.2.0 source tag and firmware remain unchanged.
+Version **1.2.1 is an Iris 0.2 migration candidate** with single-device acceptance,
+a bounded muted-loop soak and user-completed dual-device testing. Platform review
+and physical three-device acceptance remain separate. The accepted v1.2.0 source
+tag and firmware remain unchanged.
 The candidate moves Echoy onto the Iris 0.2 application/host contract while
 preserving the accepted musical and UI behavior.
 
@@ -167,7 +169,16 @@ evidence for that bounded single-device workload, not multi-device qualification
 Current archive SHA-256:
 `a16b35c00491785e517d9b238eaa3fa4973f491dd8aa678bdd17a72963f39e18`.
 The local artifact is `output/iris02/artifacts/echoy-v1.2.1-iris02-dynamic-audio.irisfw`.
-These archives have not replaced the platform attachment or been submitted for review.
+On 2026-10-26 a second, already ABI2 device received this exact archive after its
+previous application's exact restore package was preserved. Both devices reported
+the same Echoy ELF, normal state, no crash and zero audio write/deadline errors in
+the captured checks. Radio logs showed reciprocal horizontal peers and the same
+group graph; the final snapshots showed a paused root and a paused follower with
+their revisions committed. The user reported finishing testing and authorized
+source push and replacement of the platform firmware attachment. No detailed
+manual scenario checklist or acoustic phase measurement is inferred from that
+report. Physical three-device acceptance remains pending. Platform attachment
+updates and review approval are distinct from device/user acceptance.
 The tested device's separate NAND/LittleFS failure was repaired on 2026-10-24
 by an explicitly authorized filesystem rebuild using a temporary maintenance
 image. A 16 KiB write/read test, post-reboot readback, probe removal and empty

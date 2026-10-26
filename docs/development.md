@@ -2,7 +2,9 @@
 
 This branch prepares a local **1.2.1 / Iris 0.2 migration candidate**. See
 [migration scope and device approval gate](iris-0.2-migration.md). It is not
-a replacement for the accepted v1.2.0 firmware until physical validation.
+a general release replacement for the accepted v1.2.0 firmware. Current acceptance
+includes single-device checks, the bounded soak and user-completed dual-device
+testing; physical three-device acceptance and platform review remain separate.
 
 Run all commands below from the **Echoy repository root**, not this `docs/`
 directory. The [v1.2.0](releases/v1.2.0.md) source freezes the accepted

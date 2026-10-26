@@ -117,6 +117,18 @@ arbitrary interaction, physical sound, indefinite operation or multi-device
 qualification. Private evidence remains outside release content. Multi-device
 checks are still pending.
 
+On 2026-10-26, a second already-ABI2 device was made available for Echoy testing.
+Its previous application's exact restore archive was preserved, and the same
+tested Echoy package was installed without changing the base or formatting data.
+Both live ELF identities matched the current archive. Readback showed normal
+state, committed revisions, a paused root/follower pair and reciprocal horizontal
+peers in one group; captured audio write/deadline counters and crash counts were
+zero. The user reported completing dual-device testing and authorized source push
+and a platform attachment update. This is user-reported dual-device acceptance
+with the listed observations, not an individually witnessed scenario matrix or
+measured acoustic synchronization. Physical three-device acceptance and platform
+review remain separate pending work.
+
 The tested device's NAND/LittleFS mount failure was repaired on 2026-10-24
 through an explicitly authorized filesystem rebuild. A target-bound temporary
 maintenance image formatted the NAND block device, wrote and read a 16 KiB
